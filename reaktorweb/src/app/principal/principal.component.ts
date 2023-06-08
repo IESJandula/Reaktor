@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { SimpleComputerDTO } from '../computer-dto';
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SimpleComputerDTO} from '../computer-dto';
 import {interval, Subscription} from "rxjs";
-import {URL_SERVER, URL_WEB} from "../constants";
+import {URL_SERVER} from "../constants";
 
 @Component({
   selector: 'principal-compo',

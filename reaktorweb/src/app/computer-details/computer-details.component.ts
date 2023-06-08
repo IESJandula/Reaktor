@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {ComputerDTO} from "../computer-dto";
 import Axios from "axios";
-import {URL_SERVER, URL_WEB} from "../constants";
+import {URL_SERVER} from "../constants";
 
 @Component({
   selector: 'app-computer-details',
