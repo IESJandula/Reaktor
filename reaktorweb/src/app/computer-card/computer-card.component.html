@@ -1,0 +1,17 @@
+<div class="card">
+  <div class="card-header" [ngStyle]="getStyle()">
+    <img src="{{ logoUrl }}" class="logo" alt="Logo" height="30">
+    <button class="btn btn-primary" (click)="goToDetails(id)">View Details</button>
+  </div>
+  <div class="card-body">
+    <div class="card-title">
+      <h5>Malware count: {{ malwareCount }}</h5>
+      <h5 *ngIf="isAdmin"> SOY ADMINISTRADOR </h5>
+    </div>
+    <div class="card-text">
+      <p>Location: {{ location }}</p>
+      <p>Responsable: {{ responsable }}</p>
+    </div>
+  </div>
+</div>
+
