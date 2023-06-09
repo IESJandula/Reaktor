@@ -64,7 +64,7 @@ copy ".\Reaktor\target\Reaktor-0.0.1-SNAPSHOT-jar-with-dependencies.jar" ".\depl
 
 - LINUX:
 ```
-cp -r ./Reaktor/target/Reaktor-0.0.1-SNAPSHOT-jar-with-dependencies.jar ./deploy/
+cp -r ./Reaktor/target/Reaktor-0.0.1-SNAPSHOT-jar-with-dependencies.jar ./deploy/ReaktorServer.jar
 ```
 10. Crear un archivo llamado nginx.conf en la carpeta deploy con el siguiente contenido. <br>
 ```
