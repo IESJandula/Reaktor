@@ -31,6 +31,7 @@ Para instalar y configurar el proyecto REAKTOR, se deben seguir los siguientes p
 6. Realizar un build del proyecto web
 ```
 cd reaktorweb
+npm install
 ng build
 cd ..
 ```
