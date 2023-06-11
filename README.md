@@ -111,6 +111,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 12. Ejecutar el siguiente comando para crear la imagen de Docker. <br>
+
 Dockerfile-mysql
 ```
 docker build -t reaktor-mysql -f Dockerfile-mysql .
