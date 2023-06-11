@@ -80,21 +80,27 @@ server {
 }
 
 ```
-11. Crear un Dockerfile en la carpeta deploy con el siguiente contenido. <br>
+11. Crear un Dockerfile para cada uno de los servicios en la carpeta deploy con el siguiente contenido. <br>
+
+Dockerfile-mysql
 ```
 # Utiliza una imagen base de MySQL
 FROM mysql:latest
 ENV MYSQL_ROOT_PASSWORD=toor
 ENV MYSQL_DATABASE=reaktor
 EXPOSE 3306
-
+```
+Dockerfile-reaktor
+```
 # Utiliza una imagen base de Java
 FROM openjdk:19
 WORKDIR /app
 COPY ReaktorServer.jar .
 EXPOSE 8084
 CMD ["java", "-jar", "ReaktorServer.jar"]
-
+```
+Dockerfile-nginx
+```
 # Usa la imagen oficial de Nginx como base
 FROM nginx
 RUN rm /etc/nginx/conf.d/default.conf
@@ -105,15 +111,33 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 12. Ejecutar el siguiente comando para crear la imagen de Docker. <br>
+Dockerfile-mysql
 ```
-docker build -t reaktor .
+docker build -t reaktor-mysql -f Dockerfile-mysql .
+```
+Dockerfile-reaktor
+```
+docker build -t reaktor -f Dockerfile-reaktor .
+```
+Dockerfile-nginx
+```
+docker build -t reaktor-nginx -f Dockerfile-nginx .
 ```
 
 13. Ejecutar el siguiente comando para crear el contenedor de Docker. <br>
-```
-docker run -d -p 80:80 -p 8084:8084 --name reaktor reaktor
-```
 
+Dockerfile-mysql
+```
+docker run -d -p 3306:3306 --network=host --name reaktor-mysql reaktor-mysql
+```
+Dockerfile-reaktor
+```
+docker run -d -p 8084:8084 --network=host --name reaktor reaktor
+```
+Dockerfile-nginx
+```
+docker run -d -p 80:80 --network=host --name reaktor-nginx reaktor-nginx
+```
 ## Uso
 
 ## Créditos

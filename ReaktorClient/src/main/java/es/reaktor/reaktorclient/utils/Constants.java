@@ -13,24 +13,24 @@ public class Constants
      * - COMMONS CONSTANTS -
      * This variable is used to store the commons constants of the application
      */
-    public static final String EMPTY_STRING                         = "";
-    public static final String UNKNOWN                              = "Unknown\\"+ UUID.randomUUID();
+    public static final String EMPTY_STRING /*...................*/ = "";
+    public static final String UNKNOWN /*........................*/ = "Unknown\\"+ UUID.randomUUID();
 
     /**
      * - OUT PUT COMMAND -
      * This variable is used to store the output command in console
      */
-    public static final String OUTPUT_MODEL_CONSOLE                 = "Product";
-    public static final String OUTPUT_GRAPHIC_CARD_ID_CONSOLE       = "PNPDeviceID";
-    public static final String OUTPUT_ID_SOUND_CARD_CONSOLE         = "DeviceID";
-    public static final String OUTPUT_RAM_ID_CONSOLE                = "BankLabel  PartNumber";
+    public static final String OUTPUT_MODEL_CONSOLE /*...........*/ = "Product";
+    public static final String OUTPUT_GRAPHIC_CARD_ID_CONSOLE /*.*/ = "PNPDeviceID";
+    public static final String OUTPUT_ID_SOUND_CARD_CONSOLE /*...*/ = "DeviceID";
+    public static final String OUTPUT_RAM_ID_CONSOLE /*..........*/ = "BankLabel  PartNumber";
 
     /**
      * - OPERATING SYSTEM -
      * This variable is used to store the operating system of the application
      */
-    public static final String OS_WINDOWS                           = "Windows";
-    public static final String OS_LINUX                             = "Linux";
+    public static final String OS_WINDOWS /*.....................*/ = "Windows";
+    public static final String OS_LINUX /*.......................*/ = "Linux";
 
     /**
      * - OPTIONS -
@@ -54,11 +54,11 @@ public class Constants
      * This array is used to store the allowed arguments of the application
      */
     public static final String[] ALLOWED_ARGUMENTS  = {
-        HELP_PARAMETERS, // -h
-        CLASSROOM_PARAMETERS, // -a
-        DESCRIPTION_PARAMETERS, // -d
-        PROFESSOR_PARAMETERS, // -p
-        IS_ADMIN_PARAMETERS // -admin
+        HELP_PARAMETERS, //         -h
+        CLASSROOM_PARAMETERS, //    -a
+        DESCRIPTION_PARAMETERS, //  -d
+        PROFESSOR_PARAMETERS, //    -p
+        IS_ADMIN_PARAMETERS //      -admin
     };
 
     /**
@@ -86,8 +86,8 @@ public class Constants
             Example: "java -jar ReaktorClient.jar -a 2.11" For Enter The Classroom Parameter
             Example: "java -jar ReaktorClient.jar -p Cayetano" For Enter The Professor Parameter -admin
             Example: "java -jar ReaktorClient.jar -a 2.11 -p Cayetano" For Enter The Classroom And Professor Parameter 
-            Example: "java -jar ReaktorClient.jar -a 2.11 -p Cayetano -d Second row, right-hand side second computer from the centre" For Enter The Classroom, Professor And Description Location Parameter
-            Example: "java -jar ReaktorClient.jar -a 2.11 -p Cayetano -d Second row, right-hand side second computer from the centre" For Enter The Classroom, Professor And Description Location Parameter -admin
+            Example: "java -jar ReaktorClient.jar -a 2.11 -p Cayetano -d Second row, right-hand side second computer from the centre"
+            Example: "java -jar ReaktorClient.jar -admin true -a 2.11 -p Cayetano -d Second row, right-hand side second computer from the centre"
         """;
 
 }

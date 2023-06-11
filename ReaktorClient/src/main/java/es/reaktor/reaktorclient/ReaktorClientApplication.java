@@ -3,6 +3,7 @@ package es.reaktor.reaktorclient;
 import es.reaktor.reaktorclient.models.Reaktor;
 import es.reaktor.reaktorclient.utils.ActionsArguments;
 import es.reaktor.reaktorclient.utils.CheckerArguments;
+import es.reaktor.reaktorclient.utils.Constants;
 import es.reaktor.reaktorclient.utils.HttpCommunicationSender;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
@@ -60,7 +61,7 @@ public class ReaktorClientApplication implements CommandLineRunner
     {
 
         // como actualmente no soporta linux, introduzco esta linea para que no se ejecute en linux
-        if (!System.getProperty("os.name").toLowerCase().contains("windows"))
+        if (!System.getProperty("os.name").toLowerCase().contains(Constants.OS_WINDOWS.toLowerCase()))
         {
             System.err.println("This application at the moment does not support Linux");
             System.exit(0);
