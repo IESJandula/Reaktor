@@ -60,7 +60,7 @@ public class ReaktorClientApplication implements CommandLineRunner
     {
 
         // como actualmente no soporta linux, introduzco esta linea para que no se ejecute en linux
-        if (System.getProperty("os.name").toLowerCase().contains("linux"))
+        if (!System.getProperty("os.name").toLowerCase().contains("windows"))
         {
             System.err.println("This application at the moment does not support Linux");
             System.exit(0);
