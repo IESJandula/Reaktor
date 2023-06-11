@@ -113,7 +113,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-12. Ejecutar el siguiente comando para crear la imagen de Docker. <br>
+12. Ejecutar los siguientes comandos para crear las imagenes Docker. <br>
 
 Dockerfile-mysql
 ```
@@ -128,7 +128,7 @@ Dockerfile-nginx
 docker build -t reaktor-nginx -f Dockerfile-nginx .
 ```
 
-13. Ejecutar el siguiente comando para crear el contenedor de Docker. <br>
+13. Ejecutar los siguientes comandos para arrancar los contenedores Docker. <br>
 
 Dockerfile-mysql
 ```
