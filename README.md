@@ -41,6 +41,7 @@ cd ..
 mvn -f ./Reaktor/pom.xml clean package
 mvn -f ./ReaktorClient/pom.xml clean package
 ```
+
 8. Crear una carpeta e introducir la carpeta que se encuentra en el interior de la carpeta generada en el dist de reaktorweb.
 
 - WINDOWS:
@@ -66,6 +67,7 @@ copy ".\Reaktor\target\Reaktor-0.0.1-SNAPSHOT-jar-with-dependencies.jar" ".\depl
 ```
 cp -r ./Reaktor/target/Reaktor-0.0.1-SNAPSHOT-jar-with-dependencies.jar ./deploy/ReaktorServer.jar
 ```
+
 10. Crear un archivo llamado nginx.conf en la carpeta deploy con el siguiente contenido. <br>
 ```
 server {
@@ -78,8 +80,8 @@ server {
         try_files $uri $uri/ /index.html;
     }
 }
-
 ```
+
 11. Crear un Dockerfile para cada uno de los servicios en la carpeta deploy con el siguiente contenido. <br>
 
 Dockerfile-mysql
@@ -110,6 +112,7 @@ RUN test -f /usr/share/nginx/html/index.html || echo "Archivo index.html no enco
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
+
 12. Ejecutar el siguiente comando para crear la imagen de Docker. <br>
 
 Dockerfile-mysql
