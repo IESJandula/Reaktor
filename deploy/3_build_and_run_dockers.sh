@@ -18,3 +18,9 @@ sudo docker run -d -p 80:80 --network=host --name reaktor-nginx reaktor-nginx
 
 sleep 10
 sudo docker run -d -p 8084:8084 --network=host --name reaktor reaktor
+
+# Open ports
+
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --zone=public --add-port=8084/tcp --permanent
+sudo firewall-cmd --reload
