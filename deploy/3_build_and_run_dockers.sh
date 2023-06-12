@@ -8,7 +8,6 @@ sudo docker build -t reaktor-mysql -f Dockerfile .
 
 cd ../proxy_and_web
 
-sudo apt-get install unzip
 unzip reaktorweb.zip
 rm reaktorweb.zip
 
