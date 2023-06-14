@@ -25,6 +25,10 @@ public class BeepSound extends Thread
 	
 	/** Beep - Path - 02 */
 	private static final String BEEP_PATH_2 = "Debug/net6.0/BeepReaktor.exe" ;
+
+    /** Beep - Path - 03 */
+    private static final String BEEP_PATH_3 = "Debug" + File.separator + "net6.0" + File.separator + "BeepReaktor.exe" ;
+
 	
 	
     private final CommandExecutor commandExecutor;
@@ -39,7 +43,7 @@ public class BeepSound extends Thread
     {
         try
         {
-            String command = this.getFile().getAbsolutePath();
+            String command = "C:" + File.separator + BEEP_PATH_3;
             this.commandExecutor.executeCommand(command);
         }
         catch (Exception reaktorClientException)
