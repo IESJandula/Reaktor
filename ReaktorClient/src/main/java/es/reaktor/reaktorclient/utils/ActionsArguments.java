@@ -37,9 +37,21 @@ public class ActionsArguments
     private void writeConfiguration(String[] args) throws ReaktorClientException
     {
 
-        Map<String, String> argumentsContent = obtainsArguments(args);
+        //Map<String, String> argumentsContent = obtainsArguments(args);
 
-        Configuration configuration = createConfiguration(argumentsContent);
+    	ParametersParser parametersParser = new ParametersParser();
+    	Configuration configuration = new Configuration();
+		try
+		{
+			configuration=parametersParser.parse(args);
+		} 
+		catch (IllegalArgumentException excep)
+		{
+			excep.printStackTrace();
+			throw new IllegalArgumentException(excep.toString());
+			
+		}
+        //Configuration configuration = createConfiguration(argumentsContent);
 
         checkConfiguration(configuration);
 

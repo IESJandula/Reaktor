@@ -36,11 +36,11 @@ public class Constants
      * - OPTIONS -
      * This variable is used to store the options of the application
      */
-    public static final String HELP_PARAMETERS /*................*/ = "-h";
-    public static final String CLASSROOM_PARAMETERS /*...........*/ = "-a";
-    public static final String DESCRIPTION_PARAMETERS /*.........*/ = "-d";
-    public static final String PROFESSOR_PARAMETERS /*...........*/ = "-p";
-    public static final String IS_ADMIN_PARAMETERS /*............*/ = "-admin";
+    public static final String HELP_PARAMETERS /*................*/ = "h";
+    public static final String CLASSROOM_PARAMETERS /*...........*/ = "a";
+    public static final String DESCRIPTION_PARAMETERS /*.........*/ = "d";
+    public static final String PROFESSOR_PARAMETERS /*...........*/ = "p";
+    public static final String IS_ADMIN_PARAMETERS /*............*/ = "admin";
 
     /**
      * - PATH FILES -

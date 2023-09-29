@@ -66,7 +66,8 @@ public class ReaktorClientApplication implements CommandLineRunner
             System.err.println("This application at the moment does not support Linux");
             System.exit(0);
         }
-
+        
+        /*
         // This attribute is used to check the arguments of the application
         CheckerArguments checkerArguments = new CheckerArguments();
 
@@ -76,7 +77,7 @@ public class ReaktorClientApplication implements CommandLineRunner
             log.info("Arguments are incorrect");
             throw new IllegalArgumentException(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
         }
-
+		*/
         // If the arguments are correct start the application
         SpringApplication.run(ReaktorClientApplication.class, args);
     }
