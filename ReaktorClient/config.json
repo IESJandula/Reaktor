@@ -1,6 +1,6 @@
 {
-  "classroom" : "David",
-  "professor" : "Paco",
-  "description" : "DavidPC",
-  "isAdmin" : false
+  "classroom" : "2-DAM",
+  "professor" : "David",
+  "description" : "Ordenador David",
+  "isAdmin" : true
 }
