@@ -1,7 +1,7 @@
 spring:
   jpa.hibernate.ddl-auto: create
   datasource:
-    url: jdbc:mysql://localhost:3306/reaktor
+    url: jdbc:mysql://144.24.2.220:3306/reaktor
     username: root
     password: toor
     hikari:
