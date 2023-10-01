@@ -57,6 +57,11 @@ public class ReaktorClientApplication implements CommandLineRunner
     @Autowired
     private ActionsArguments actionsArguments;
 
+    /**
+     * Method main
+     * @param args the arguments
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws InterruptedException
     {
 
@@ -67,7 +72,8 @@ public class ReaktorClientApplication implements CommandLineRunner
             System.exit(0);
         }
         
-        /*
+        /* THAT ITS THE METHODS USED FOR THE LAST VERION OF REAKTOR WITHOUT APACHE COMMONS-CLI
+         * 
         // This attribute is used to check the arguments of the application
         CheckerArguments checkerArguments = new CheckerArguments();
 
@@ -78,29 +84,31 @@ public class ReaktorClientApplication implements CommandLineRunner
             throw new IllegalArgumentException(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
         }
 		*/
-        // If the arguments are correct start the application
+   
+        // Start the application 
         SpringApplication.run(ReaktorClientApplication.class, args);
     }
 
+    /**
+     * Method run Start the application
+     * @param args the arguments
+     * @throws Exception
+     */
     @Override
     public void run(String... args) throws Exception
     {
-
         try
         {
             // We carry out the actions with the arguments that are passed on to us
-            this.actionsArguments.actionArguments(args);
+            this.actionsArguments.writeConfiguration(args);
             
             // Send the update information to Server REAKTOR
             log.info("Sending information to server REAKTOR");
             this.httpCommunicationSender.sendPost(this.httpCommunicationSender.createHttpPostReaktor(this.reaktorServerUrl+"/reaktor", this.reaktor));
-
         }
         catch (ReaktorClientException reaktorClientException)
         {
             log.error("Error in the application", reaktorClientException);
         }
-
-
     }
 }

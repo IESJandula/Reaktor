@@ -1,195 +1,189 @@
 package es.reaktor.reaktorclient.utils;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import es.reaktor.models.Configuration;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 
-
 /**
- * @author David Martinez Flores
+ * @author David Martinez Flores 
+ * This class is used for parse arguments and check its
  */
 public class ParametersParser
 {
-	/** Attribute isAdmin */
-	private Option isAdmin = new Option(Constants.IS_ADMIN_PARAMETERS, "admin", true, "The admin commands");
+	/** Attribute isAdmin with the admin value */
+	private Option isAdmin = new Option(Constants.IS_ADMIN_PARAMETERS,Constants.IS_ADMIN_PARAMETERS_LONG, true, "The admin commands");
 
-	/** Attribute professorParameters */
-	private Option professorParameters = new Option(Constants.PROFESSOR_PARAMETERS, "professor", true,
-			"The professor parameters");
+	/** Attribute professorParameters with the professor parameters value */
+	private Option professorParameters = new Option(Constants.PROFESSOR_PARAMETERS, Constants.PROFESSOR_PARAMETERS_LONG,
+			true, "The professor parameters");
 
-	/** Attribute descriptionParameters */
-	private Option descriptionParameters = new Option(Constants.DESCRIPTION_PARAMETERS, "description", true,"the description parameters");
+	/**
+	 * Attribute descriptionParameters with the description parameters argument
+	 * value
+	 */
+	private Option descriptionParameters = new Option(Constants.DESCRIPTION_PARAMETERS,
+			Constants.DESCRIPTION_PARAMETERS_LONG, true, "the description parameters");
 
-	/** Attribute classRoomParameters */
-	private Option classRoomParameters = new Option(Constants.CLASSROOM_PARAMETERS, "classroom", true,
-			"the classroom parameters");
+	/** Attribute classRoomParameters with the classroom parameters value */
+	private Option classRoomParameters = new Option(Constants.CLASSROOM_PARAMETERS, Constants.CLASSROOM_PARAMETERS_LONG,
+			true, "the classroom parameters");
 
-	/** Attribute helpParameter */
-	private Option helpParameter = new Option(Constants.HELP_PARAMETERS, "help", false, "The show help parameter");
+	/** Attribute helpParameter for display help */
+	private Option helpParameter = new Option(Constants.HELP_PARAMETERS, Constants.HELP_PARAMETERS_LONG, false,
+			"The show help parameter");
 
-	/** Attribute commandLine*/
+	/** Attribute commandLine with all Options for parse */
 	private CommandLine commandLine;
 
 	/**
-	 * Method parse
+	 * Method parse that method parse all the arguments
 	 * 
-	 * @param cmdArgs
-	 * @throws IllegalArgumentException
+	 * @param cmdArgs the arguments String array
+	 * @throws IllegalArgumentException exepction for error on parsing
 	 */
 	public Configuration parse(String[] cmdArgs) throws IllegalArgumentException
 	{
-		// Create the options
-		Options commandLineOptions = new Options();
+		// Create the all Options
+		Options allOptions = new Options();
 
-		// Add to the command line options
-		commandLineOptions.addOption(this.classRoomParameters);
-		commandLineOptions.addOption(this.descriptionParameters);
-		commandLineOptions.addOption(this.helpParameter);
-		commandLineOptions.addOption(this.isAdmin);
-		commandLineOptions.addOption(this.professorParameters);
+		// Add to the Options
+		allOptions.addOption(this.classRoomParameters);
+		allOptions.addOption(this.descriptionParameters);
+		allOptions.addOption(this.helpParameter);
+		allOptions.addOption(this.isAdmin);
+		allOptions.addOption(this.professorParameters);
 
 		// Parse to commandLine
 		try
 		{
-			this.commandLine = new DefaultParser().parse(commandLineOptions, cmdArgs);
+			this.commandLine = new DefaultParser().parse(allOptions, cmdArgs);
 		} catch (ParseException parseException)
 		{
-			String errorString = "Error parsing command line arguments";
-			throw new IllegalArgumentException(errorString, parseException);
-			
-		} catch (IllegalArgumentException parseException)
-		{
-			
-			throw new IllegalArgumentException(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
+			// Using StringBuilder for String exception msg
+			StringBuilder fullError = new StringBuilder();
+			fullError.append("Error parsing command line arguments");
+			fullError.append(" or ");
+			fullError.append(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
+
+			// trhowing the exception IllegalArgumentException if exist any error with arguments
+			throw new IllegalArgumentException(fullError.toString(), parseException);
 		}
 
-		// Getting parameter values
-		String classRoomParameters = this.getCmdStringOption(this.classRoomParameters);
-		String descriptionParameters = this.getCmdStringOption(this.descriptionParameters);
-		String isAdmin = this.getCmdStringOption(this.isAdmin);
-		String professorParameters = this.getCmdStringOption(this.professorParameters);
-		boolean helpParam = this.commandLine.hasOption(this.helpParameter.getOpt()) || this.commandLine.hasOption(this.helpParameter.getLongOpt());
+		// Getting parameter values on Strings values
+		String classRoomParametersString = this.getCmdStringOption(this.classRoomParameters);
+		String descriptionParametersString = this.getCmdStringOption(this.descriptionParameters);
+		String isAdminString = this.getCmdStringOption(this.isAdmin);
+		String professorParametersString = this.getCmdStringOption(this.professorParameters);
+		boolean helpParam = this.commandLine.hasOption(this.helpParameter.getOpt())
+				|| this.commandLine.hasOption(this.helpParameter.getLongOpt());
 
 		Configuration configuration = new Configuration();
-		
+
 		// If the option is not null or is not empty, that have anything
 
-		//Checking classRoomParameters
-		this.checkingClassRoom(classRoomParameters,configuration);
+		// Checking classRoomParameters
+		this.checkingClassRoom(classRoomParametersString, configuration);
 
 		// Checking descriptionParameters
-		this.checkingDescription(descriptionParameters,configuration);
+		this.checkingDescription(descriptionParametersString, configuration);
 
 		// Checking isAdmin
-		this.checkingAdmin(isAdmin,configuration);
+		this.checkingAdmin(isAdminString, configuration);
 
 		// Checking professorParameters
-		this.checkingProfessor(professorParameters,configuration);
+		this.checkingProfessor(professorParametersString, configuration);
 
 		// Checking Help parameter
 		this.checkingHelp(helpParam);
-		
-		System.out.println(configuration);
-		
+
 		return configuration;
 	}
 
 	/**
-	 * Method checkingHelp
-	 * @param helpParam
+	 * Method checkingHelp for checking the argument
+	 * 
+	 * @param helpParam the parameter
 	 */
 	private void checkingHelp(boolean helpParam)
 	{
 		if (helpParam)
 		{
-			// Set the parameter
-			System.out.println("IMPRIMIR AYUDA ");
-	        System.out.println(Constants.HELP_COMMAND_OUTPUT);
-	        System.exit(0);
-		} 
+			// Display the Help
+			System.out.println(Constants.HELP_COMMAND_OUTPUT);
+			//Exit
+			System.exit(0);
+		}
 
 	}
 
 	/**
-	 * Method checkingProfessor
-	 * @param professorParameters
+	 * 
+	 * Method checkingProfessor for checking the argument
+	 * 
+	 * @param professorParameters with the String value
+	 * @param configuration the configuration for reaktor
 	 */
-	private void checkingProfessor(String professorParameters,Configuration configuration)
+	private void checkingProfessor(String professorParameters, Configuration configuration)
 	{
 		if (professorParameters != null && !professorParameters.isEmpty())
 		{
 			// Set the parameter
-
-			// smartPhone.setSerialNumber(Integer.valueOf(this.getCmdStringOption(this.serialNumberOption)));
-			System.out.println(this.getMultiWordCmdOption(this.professorParameters));
 			configuration.setProfessor(professorParameters);
-		} 
+		}
 	}
 
 	/**
-	 * Method checkingAdmin
-	 * @param isAdmin
+	 * 
+	 * Method checkingAdmin for checking the argument
+	 * 
+	 * @param isAdmin with the String value
+	 * @param configuration the configuration for reaktor
 	 */
-	private void checkingAdmin(String isAdmin,Configuration configuration)
+	private void checkingAdmin(String isAdmin, Configuration configuration)
 	{
 		if (isAdmin != null && !isAdmin.isEmpty())
 		{
 			// Set the parameter
-			System.out.println(this.getMultiWordCmdOption(this.isAdmin));
 			configuration.setIsAdmin(Boolean.parseBoolean(isAdmin));
-		} 
+		}
 	}
 
 	/**
-	 * Method checkingDescription
-	 * @param descriptionParameters
+	 * 
+	 * Method checkingDescription for checking the argument
+	 * 
+	 * @param descriptionParameters with the String value
+	 * @param configuration the configuration for reaktor
 	 */
-	private void checkingDescription(String descriptionParameters,Configuration configuration)
+	private void checkingDescription(String descriptionParameters, Configuration configuration)
 	{
 		if (descriptionParameters != null && !descriptionParameters.isEmpty())
 		{
 			// Set the parameter
-			System.out.println(this.getMultiWordCmdOption(this.descriptionParameters));
 			configuration.setDescription(descriptionParameters);
 		}
 	}
 
 	/**
-	 * Method checkingClassRoom
-	 * @param classRoomParameters
+	 * 
+	 * Method checkingClassRoom for checking the argument
+	 * 
+	 * @param classRoomParameters with the String value
+	 * @param configuration the configuration for reaktor
 	 */
-	private void checkingClassRoom(String classRoomParameters,Configuration configuration)
+	private void checkingClassRoom(String classRoomParameters, Configuration configuration)
 	{
 		if (classRoomParameters != null && !classRoomParameters.isEmpty())
 		{
 			// Set the parameter
-			System.out.println(this.getMultiWordCmdOption(this.classRoomParameters));
 			configuration.setClassroom(classRoomParameters);
 
 		}
-	}
-
-	/**
-	 * Return the String option value from the command line given the representing
-	 * option
-	 *
-	 * @param option with the representing option of the command line
-	 * @return the value of the option, null if unsettled
-	 */
-	private String getMultiWordCmdOption(final Option option)
-	{
-		String outcome = null;
-
-		String[] optionValues = this.commandLine.getOptionValues(option.getOpt());
-
-		if (optionValues != null && optionValues.length > 0)
-		{
-			// Join the values into a single string
-			outcome = String.join(" ", optionValues);
-		}
-
-		return outcome;
 	}
 
 	/**
@@ -206,7 +200,8 @@ public class ParametersParser
 		if (this.commandLine.hasOption(option.getOpt()))
 		{
 			outcome = this.commandLine.getOptionValue(option.getOpt()).trim();
-		} else if (this.commandLine.hasOption(option.getLongOpt()))
+		} 
+		else if (this.commandLine.hasOption(option.getLongOpt()))
 		{
 			outcome = this.commandLine.getOptionValue(option.getLongOpt()).trim();
 		}

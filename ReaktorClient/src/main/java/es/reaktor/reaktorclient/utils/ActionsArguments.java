@@ -18,7 +18,7 @@ import java.util.Map;
 @Service
 public class ActionsArguments
 {
-
+    /** Attribute writeFiles*/
     @Autowired
     private WriteFiles writeFiles;
 
@@ -27,40 +27,58 @@ public class ActionsArguments
      *
      * @param args Arguments of the command line
      */
+    @Deprecated
+    //THIS METHOD IS USED ON LAST VERSION WITHOUT APACHE COMMONS-CLI
     public void actionArguments(String[] args) throws ReaktorClientException
     {
         // If the first argument is "-a" or "-p" we execute the action
         writeConfiguration(args);
     }
 
-
-    private void writeConfiguration(String[] args) throws ReaktorClientException
+    /**
+     * Method writeConfiguration
+     * @param args
+     * @throws ReaktorClientException
+     */
+    public void writeConfiguration(String[] args) throws ReaktorClientException
     {
-
+    	//THIS MAP IS USED BY THE LAST VERSION FROM REAKTOR WITHOUT APACHE COMMONS-CLI
+    	//obtainsArguments() METHOD IS NOW DEPRECATED
         //Map<String, String> argumentsContent = obtainsArguments(args);
 
+    	//Calling to ParametersParser for check arguments
     	ParametersParser parametersParser = new ParametersParser();
     	Configuration configuration = new Configuration();
 		try
-		{
+		{	//Getting the configuration values from ParametersParser
 			configuration=parametersParser.parse(args);
 		} 
 		catch (IllegalArgumentException excep)
 		{
+			//Exception if exist any error on argumetns
 			excep.printStackTrace();
 			throw new IllegalArgumentException(excep.toString());
 			
 		}
+		
+		//THAT IS THE ONLY WAY TO CREATE THE CONFIGURATION OBJECT ON THE LAST VERSION OF REAKTOR WITHOUT APACHE COMMONS-CLI
         //Configuration configuration = createConfiguration(argumentsContent);
+		
+		//Checking the configuration attribue values
+        this.checkConfiguration(configuration);
 
-        checkConfiguration(configuration);
-
+        //Getting the configuration values and transform to JSON
         this.writeFiles.escribirResultadoJson(configuration);
-
     }
 
+    /**
+     * Method checkConfiguration
+     * @param configuration
+     */
     public void checkConfiguration(Configuration configuration)
     {
+    	//If any attribute of configuration is null or empty string ("") , set "Unknow" string value.
+    	
         if (configuration.getClassroom() == null || configuration.getClassroom().isEmpty())
         {
             configuration.setClassroom(Constants.UNKNOWN);
@@ -88,6 +106,7 @@ public class ActionsArguments
      * @param args Arguments of the command line
      * @return Map with the arguments and the content of the arguments
      */
+    @Deprecated
     private Map<String, String> obtainsArguments(String[] args)
     {
 
@@ -124,6 +143,7 @@ public class ActionsArguments
      * @param argsList              List of arguments
      * @param entryOptionsArguments List of options arguments and indices
      */
+    @Deprecated
     private Map<String, String> extractedInformationOfArguments(List<String> argsList, List<Map.Entry<String, Integer>> entryOptionsArguments)
     {
 
@@ -162,6 +182,12 @@ public class ActionsArguments
     }
 
 
+    /**
+     * Method createConfiguration
+     * @param argsAllContent
+     * @return
+     */
+    @Deprecated
     private Configuration createConfiguration(Map<String, String> argsAllContent)
     {
         Configuration configuration = new Configuration();
@@ -194,6 +220,7 @@ public class ActionsArguments
      *
      * @param argsContent Map with the options arguments and the index of the arguments
      */
+    @Deprecated
     private void checkerContentArguments(List<Map.Entry<String, Integer>> argsContent)
     {
         // loop to check if the arguments content is empty
@@ -213,6 +240,7 @@ public class ActionsArguments
      * @param arguments  Arguments of the command line
      * @param argsIndice Map for storage the arguments and the index of the arguments
      */
+    @Deprecated
     private static void extractedArguments(List<String> arguments, Map<String, Integer> argsIndice)
     {
         // if contains the argument "-a"
@@ -241,7 +269,4 @@ public class ActionsArguments
             argsIndice.put(arguments.get(arguments.indexOf(Constants.IS_ADMIN_PARAMETERS)), arguments.indexOf(Constants.IS_ADMIN_PARAMETERS));
         }
     }
-
-
-
 }
