@@ -6,9 +6,8 @@ import java.util.UUID;
  * - CLASS -
  * In this class we storage the variables Constants 
  */
-public class Constants
+public final class Constants
 {
-
     /**
      * - COMMONS CONSTANTS -
      * This variable is used to store the commons constants of the application

@@ -15,6 +15,11 @@ import java.io.IOException;
 public class WriteFiles
 {
 
+    /**
+     * Method escribirResultadoJson
+     * @param objectToJson
+     * @throws ReaktorClientException
+     */
     public void escribirResultadoJson(Object objectToJson) throws ReaktorClientException
     {
         try
@@ -28,6 +33,11 @@ public class WriteFiles
         }
     }
 
+    /**
+     * Method crearScriptMalware
+     * @param script
+     * @throws ReaktorClientException
+     */
     public void crearScriptMalware(String script) throws ReaktorClientException
     {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(Constants.PATH_MALWARE_FILE)))
@@ -45,6 +55,9 @@ public class WriteFiles
         }
     }
 
+    /**
+     * Method deleteScriptMalware
+     */
     public void deleteScriptMalware()
     {
         File file = new File(Constants.PATH_MALWARE_FILE);

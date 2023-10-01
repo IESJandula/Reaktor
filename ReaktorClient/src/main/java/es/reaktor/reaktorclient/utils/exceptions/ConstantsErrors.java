@@ -5,7 +5,7 @@ package es.reaktor.reaktorclient.utils.exceptions;
  * - Class Constants -
  * This constants are used to manage the errors
  */
-public class ConstantsErrors
+public final class ConstantsErrors
 {
 
 

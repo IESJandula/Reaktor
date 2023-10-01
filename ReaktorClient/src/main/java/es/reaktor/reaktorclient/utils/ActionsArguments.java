@@ -46,12 +46,12 @@ public class ActionsArguments
     	//obtainsArguments() METHOD IS NOW DEPRECATED
         //Map<String, String> argumentsContent = obtainsArguments(args);
 
-    	//Calling to ParametersParser for check arguments
-    	ParametersParser parametersParser = new ParametersParser();
+    	//Creation new configuration
     	Configuration configuration = new Configuration();
 		try
 		{	//Getting the configuration values from ParametersParser
-			configuration=parametersParser.parse(args);
+			//Calling to ParametersParser for check arguments
+			configuration=new ParametersParser().parse(args);
 		} 
 		catch (IllegalArgumentException excep)
 		{

@@ -3,12 +3,11 @@ package es.reaktor.reaktorclient.utils;
 /**
  * - CLASS -
  * This class is used to check the arguments of the application
+ * THIS CLASS IS ONLY USED ON THE LAST VERSION WITHOUT APACHE COMMONS-CLI
  */
+@Deprecated
 public class CheckerArguments
 {
-
-
-
     /**
      * - METHOD -
      * This method is used to check the arguments of the application

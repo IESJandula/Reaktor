@@ -5,7 +5,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
 import es.reaktor.models.Configuration;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 
@@ -16,29 +15,44 @@ import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 public class ParametersParser
 {
 	/** Attribute isAdmin with the admin value */
-	private Option isAdmin = new Option(Constants.IS_ADMIN_PARAMETERS,Constants.IS_ADMIN_PARAMETERS_LONG, true, "The admin commands");
+	private Option isAdmin;
 
 	/** Attribute professorParameters with the professor parameters value */
-	private Option professorParameters = new Option(Constants.PROFESSOR_PARAMETERS, Constants.PROFESSOR_PARAMETERS_LONG,
-			true, "The professor parameters");
+	private Option professorParameters;
 
 	/**
-	 * Attribute descriptionParameters with the description parameters argument
-	 * value
+	 * Attribute descriptionParameters with the description parameters argument value
 	 */
-	private Option descriptionParameters = new Option(Constants.DESCRIPTION_PARAMETERS,
-			Constants.DESCRIPTION_PARAMETERS_LONG, true, "the description parameters");
+	private Option descriptionParameters;
 
 	/** Attribute classRoomParameters with the classroom parameters value */
-	private Option classRoomParameters = new Option(Constants.CLASSROOM_PARAMETERS, Constants.CLASSROOM_PARAMETERS_LONG,
-			true, "the classroom parameters");
+	private Option classRoomParameters;
 
 	/** Attribute helpParameter for display help */
-	private Option helpParameter = new Option(Constants.HELP_PARAMETERS, Constants.HELP_PARAMETERS_LONG, false,
-			"The show help parameter");
+	private Option helpParameter;
 
 	/** Attribute commandLine with all Options for parse */
 	private CommandLine commandLine;
+
+	
+	/**
+	 * Constructor for create new ParametersParser
+	 * @param isAdmin
+	 * @param professorParameters
+	 * @param descriptionParameters
+	 * @param classRoomParameters
+	 * @param helpParameter
+	 * @param commandLine
+	 */
+	public ParametersParser()
+	{
+		this.isAdmin = new Option(Constants.IS_ADMIN_PARAMETERS,Constants.IS_ADMIN_PARAMETERS_LONG, true, "The admin commands");
+		this.professorParameters =  new Option(Constants.PROFESSOR_PARAMETERS, Constants.PROFESSOR_PARAMETERS_LONG,true, "The professor parameters");
+		this.descriptionParameters = new Option(Constants.DESCRIPTION_PARAMETERS,Constants.DESCRIPTION_PARAMETERS_LONG, true, "the description parameters");
+		this.classRoomParameters = new Option(Constants.CLASSROOM_PARAMETERS, Constants.CLASSROOM_PARAMETERS_LONG,true, "the classroom parameters");
+		this.helpParameter = new Option(Constants.HELP_PARAMETERS, Constants.HELP_PARAMETERS_LONG, false,"The show help parameter");
+		this.commandLine = null;
+	}
 
 	/**
 	 * Method parse that method parse all the arguments
@@ -62,7 +76,8 @@ public class ParametersParser
 		try
 		{
 			this.commandLine = new DefaultParser().parse(allOptions, cmdArgs);
-		} catch (ParseException parseException)
+		} 
+		catch (ParseException parseException)
 		{
 			// Using StringBuilder for String exception msg
 			StringBuilder fullError = new StringBuilder();
@@ -79,8 +94,7 @@ public class ParametersParser
 		String descriptionParametersString = this.getCmdStringOption(this.descriptionParameters);
 		String isAdminString = this.getCmdStringOption(this.isAdmin);
 		String professorParametersString = this.getCmdStringOption(this.professorParameters);
-		boolean helpParam = this.commandLine.hasOption(this.helpParameter.getOpt())
-				|| this.commandLine.hasOption(this.helpParameter.getLongOpt());
+		boolean helpParam = this.commandLine.hasOption(this.helpParameter.getOpt())|| this.commandLine.hasOption(this.helpParameter.getLongOpt());
 
 		Configuration configuration = new Configuration();
 

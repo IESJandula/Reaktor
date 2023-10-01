@@ -2,10 +2,8 @@ package es.reaktor.reaktorclient;
 
 import es.reaktor.reaktorclient.models.Reaktor;
 import es.reaktor.reaktorclient.utils.ActionsArguments;
-import es.reaktor.reaktorclient.utils.CheckerArguments;
 import es.reaktor.reaktorclient.utils.Constants;
 import es.reaktor.reaktorclient.utils.HttpCommunicationSender;
-import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+//IMPORTS FOR THE VERSION WITHOUT APACHE COMMONS-CLI
+//import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
+//import es.reaktor.reaktorclient.utils.CheckerArguments;
 
 /**
  * - CLASS -
@@ -72,7 +73,7 @@ public class ReaktorClientApplication implements CommandLineRunner
             System.exit(0);
         }
         
-        /* THAT ITS THE METHODS USED FOR THE LAST VERION OF REAKTOR WITHOUT APACHE COMMONS-CLI
+        /* THAT METHODS IS USED ON THE LAST VERION OF REAKTOR WITHOUT APACHE COMMONS-CLI
          * 
         // This attribute is used to check the arguments of the application
         CheckerArguments checkerArguments = new CheckerArguments();

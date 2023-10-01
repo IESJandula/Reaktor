@@ -1,6 +1,6 @@
 {
-  "classroom" : "Unknown\\e660000d-57bf-4839-8af4-ba414f81cd09",
-  "professor" : "Unknown\\e660000d-57bf-4839-8af4-ba414f81cd09",
-  "description" : "Unknown\\e660000d-57bf-4839-8af4-ba414f81cd09",
-  "isAdmin" : false
+  "classroom" : "David",
+  "professor" : "123",
+  "description" : "123",
+  "isAdmin" : true
 }
