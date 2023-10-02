@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedWriter;
@@ -12,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class WriteFiles
 {
 
@@ -29,6 +32,7 @@ public class WriteFiles
         }
         catch (IOException streamWriteException)
         {
+        	
             throw new ReaktorClientException(ConstantsErrors.ERROR_WRITE_FILE, "500", streamWriteException);
         }
     }
@@ -51,6 +55,7 @@ public class WriteFiles
         }
         catch (IOException streamWriteException)
         {
+        	log.error(ConstantsErrors.ERROR_WRITE_FILE);
             throw new ReaktorClientException(ConstantsErrors.ERROR_WRITE_FILE, "500", streamWriteException);
         }
     }
