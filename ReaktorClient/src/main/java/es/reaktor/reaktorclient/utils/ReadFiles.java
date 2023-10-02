@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.reaktor.models.Configuration;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -11,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 @Service
+@Slf4j
 public class ReadFiles
 {
 
@@ -27,7 +30,7 @@ public class ReadFiles
             }
         } catch (FileNotFoundException fileNotFoundException)
         {
-            System.out.println("Error al leer el fichero");
+            log.error("Error al leer el fichero");
         }
         return contentJson;
     }
@@ -43,7 +46,7 @@ public class ReadFiles
             });
         } catch (JsonProcessingException jsonProcessingException)
         {
-            jsonProcessingException.printStackTrace();
+            log.error("Error processing arguments to json document");
             configuration = new Configuration("unknow", "unknow", "unknow", false);
         }
 
