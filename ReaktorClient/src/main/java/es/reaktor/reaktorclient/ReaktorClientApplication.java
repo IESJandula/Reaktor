@@ -14,10 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-//IMPORTS FOR THE VERSION WITHOUT APACHE COMMONS-CLI
-//import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
-//import es.reaktor.reaktorclient.utils.CheckerArguments;
-
 /**
  * - CLASS -
  * This class is encharged of run the applications Client
@@ -72,19 +68,6 @@ public class ReaktorClientApplication implements CommandLineRunner
             System.err.println("This application at the moment does not support Linux");
             System.exit(0);
         }
-        
-        /* THAT METHODS IS USED ON THE LAST VERION OF REAKTOR WITHOUT APACHE COMMONS-CLI
-         * 
-        // This attribute is used to check the arguments of the application
-        CheckerArguments checkerArguments = new CheckerArguments();
-
-        // If the arguments are incorrect exit the application
-        if (!checkerArguments.checkArguments(args))
-        {
-            log.info("Arguments are incorrect");
-            throw new IllegalArgumentException(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-        }
-		*/
    
         // Start the application 
         SpringApplication.run(ReaktorClientApplication.class, args);

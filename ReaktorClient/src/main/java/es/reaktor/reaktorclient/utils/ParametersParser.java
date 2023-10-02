@@ -84,7 +84,7 @@ public class ParametersParser
 			fullError.append("Error parsing command line arguments");
 			fullError.append(" or ");
 			fullError.append(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-
+			
 			// trhowing the exception IllegalArgumentException if exist any error with arguments
 			throw new IllegalArgumentException(fullError.toString(), parseException);
 		}
