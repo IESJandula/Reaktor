@@ -5,8 +5,10 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
 import es.reaktor.models.Configuration;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
+import es.reaktor.reaktorclient.utils.exceptions.ParametersParserException;
 import lombok.extern.slf4j.Slf4j;
 /**
  * @author David Martinez Flores 
@@ -59,9 +61,9 @@ public class ParametersParser
 	 * Method parse that method parse all the arguments
 	 * 
 	 * @param cmdArgs the arguments String array
-	 * @throws IllegalArgumentException exepction for error on parsing
+	 * @throws ParametersParserException exepction for error on parsing
 	 */
-	public Configuration parse(String[] cmdArgs) throws IllegalArgumentException
+	public Configuration parse(String[] cmdArgs) throws ParametersParserException
 	{
 		// Create the all Options
 		Options allOptions = new Options();
@@ -81,7 +83,7 @@ public class ParametersParser
 		catch (ParseException parseException)
 		{
 			log.error(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-			throw new IllegalArgumentException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND, parseException);
+			throw new ParametersParserException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND, parseException);
 		}
 
 		// Getting parameter values on Strings values

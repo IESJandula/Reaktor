@@ -1,12 +1,13 @@
 package es.reaktor.reaktorclient.utils;
 
-import es.reaktor.models.Configuration;
-import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
-import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import es.reaktor.models.Configuration;
+import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
+import es.reaktor.reaktorclient.utils.exceptions.ParametersParserException;
+import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * - CLASS -
@@ -24,8 +25,10 @@ public class ActionsArguments
      * Method writeConfiguration
      * @param args
      * @throws ReaktorClientException
+     * @throws ParametersParserException
      */
-    public void writeConfiguration(String[] args) throws ReaktorClientException
+    
+    public void writeConfiguration(String[] args) throws ReaktorClientException,ParametersParserException
     {
 
     	//Creation new configuration
@@ -35,14 +38,14 @@ public class ActionsArguments
 			//Calling to ParametersParser for check arguments
 			configuration=new ParametersParser().parse(args);
 		} 
-		catch (IllegalArgumentException excep)
+		catch (ParametersParserException excep)
 		{
 			//Exception if exist any error on argumetns
 			log.error(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-			throw new IllegalArgumentException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND,excep);	
+			throw new ParametersParserException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND,excep);
 		}
 		
-		//Checking the configuration attribue values
+		//Checking the configuration attribute values
         this.checkConfiguration(configuration);
 
         //Getting the configuration values and transform to JSON
