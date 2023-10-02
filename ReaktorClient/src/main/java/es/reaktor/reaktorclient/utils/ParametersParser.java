@@ -7,11 +7,12 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import es.reaktor.models.Configuration;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
-
+import lombok.extern.slf4j.Slf4j;
 /**
  * @author David Martinez Flores 
  * This class is used for parse arguments and check its
  */
+@Slf4j
 public class ParametersParser
 {
 	/** Attribute isAdmin with the admin value */
@@ -79,14 +80,8 @@ public class ParametersParser
 		} 
 		catch (ParseException parseException)
 		{
-			// Using StringBuilder for String exception msg
-			StringBuilder fullError = new StringBuilder();
-			fullError.append("Error parsing command line arguments");
-			fullError.append(" or ");
-			fullError.append(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-			
-			// trhowing the exception IllegalArgumentException if exist any error with arguments
-			throw new IllegalArgumentException(fullError.toString(), parseException);
+			log.error(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
+			throw new IllegalArgumentException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND, parseException);
 		}
 
 		// Getting parameter values on Strings values
