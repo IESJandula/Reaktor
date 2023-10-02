@@ -59,7 +59,7 @@ public class ReaktorClientApplication implements CommandLineRunner
      * @param args the arguments
      * @throws InterruptedException
      */
-    public static void main(String[] args) throws InterruptedException
+    public static void main(String[] args)
     {
 
         // como actualmente no soporta linux, introduzco esta linea para que no se ejecute en linux

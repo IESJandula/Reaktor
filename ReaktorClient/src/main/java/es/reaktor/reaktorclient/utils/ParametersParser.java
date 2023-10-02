@@ -82,8 +82,9 @@ public class ParametersParser
 		} 
 		catch (ParseException parseException)
 		{
-			log.error(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-			throw new ParametersParserException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND, parseException);
+			String errorString = ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND;
+			log.error(errorString);
+			throw new ParametersParserException(errorString, parseException);
 		}
 
 		// Getting parameter values on Strings values

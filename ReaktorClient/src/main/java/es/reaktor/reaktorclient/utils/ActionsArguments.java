@@ -41,8 +41,9 @@ public class ActionsArguments
 		catch (ParametersParserException excep)
 		{
 			//Exception if exist any error on argumetns
-			log.error(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-			throw new ParametersParserException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND,excep);
+			String errorString = ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND;
+			log.error(errorString);
+			throw new ParametersParserException(errorString,excep);
 		}
 		
 		//Checking the configuration attribute values

@@ -1,6 +1,6 @@
 {
   "classroom" : "David",
-  "professor" : "123",
-  "description" : "123",
+  "professor" : "test",
+  "description" : "LastTest",
   "isAdmin" : true
 }
