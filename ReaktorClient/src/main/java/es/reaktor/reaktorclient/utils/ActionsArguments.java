@@ -1,7 +1,10 @@
 package es.reaktor.reaktorclient.utils;
 
 import es.reaktor.models.Configuration;
+import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
  * This class is used to execute the action of the arguments
  */
 @Service
+@Slf4j
 public class ActionsArguments
 {
     /** Attribute writeFiles*/
@@ -34,8 +38,8 @@ public class ActionsArguments
 		catch (IllegalArgumentException excep)
 		{
 			//Exception if exist any error on argumetns
-			throw new IllegalArgumentException(excep.toString());
-			
+			log.error(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
+			throw new IllegalArgumentException(ConstantsErrors.ERROR_PARSING_ARGUMENTS+" or "+ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND,excep);	
 		}
 		
 		//Checking the configuration attribue values
