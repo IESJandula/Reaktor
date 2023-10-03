@@ -6,9 +6,8 @@ import java.util.UUID;
  * - CLASS -
  * In this class we storage the variables Constants 
  */
-public class Constants
+public final class Constants
 {
-
     /**
      * - COMMONS CONSTANTS -
      * This variable is used to store the commons constants of the application
@@ -33,14 +32,26 @@ public class Constants
     public static final String OS_LINUX /*.......................*/ = "Linux";
 
     /**
+     *  UPDATED FOR APACHE CLI-VERSION IF YOU DONT USE APACHE CLI-VERSION put "-" on all paramters ("-h","-a"...)
      * - OPTIONS -
      * This variable is used to store the options of the application
      */
-    public static final String HELP_PARAMETERS /*................*/ = "-h";
-    public static final String CLASSROOM_PARAMETERS /*...........*/ = "-a";
-    public static final String DESCRIPTION_PARAMETERS /*.........*/ = "-d";
-    public static final String PROFESSOR_PARAMETERS /*...........*/ = "-p";
-    public static final String IS_ADMIN_PARAMETERS /*............*/ = "-admin";
+    public static final String HELP_PARAMETERS /*................*/ = "h";
+    public static final String CLASSROOM_PARAMETERS /*...........*/ = "a";
+    public static final String DESCRIPTION_PARAMETERS /*.........*/ = "d";
+    public static final String PROFESSOR_PARAMETERS /*...........*/ = "p";
+    public static final String IS_ADMIN_PARAMETERS /*............*/ = "ad";
+    
+    /**
+     *  USED ON THE APACHE COMMONS-CLI VERSION ONLY
+     * - OPTIONS -
+     *  The long version for the options 
+     */
+    public static final String HELP_PARAMETERS_LONG /*................*/ = "help";
+    public static final String CLASSROOM_PARAMETERS_LONG /*...........*/ = "classroom";
+    public static final String DESCRIPTION_PARAMETERS_LONG /*.........*/ = "description";
+    public static final String PROFESSOR_PARAMETERS_LONG /*...........*/ = "professor";
+    public static final String IS_ADMIN_PARAMETERS_LONG /*............*/ = "admin";
 
     /**
      * - PATH FILES -

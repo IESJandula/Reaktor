@@ -5,7 +5,7 @@ package es.reaktor.reaktorclient.utils.exceptions;
  * - Class Constants -
  * This constants are used to manage the errors
  */
-public class ConstantsErrors
+public final class ConstantsErrors
 {
 
 
@@ -37,6 +37,8 @@ public class ConstantsErrors
     public static final String ERROR_WRITE_FILE                     = "Error, writing file failed";
 
     public static final String ERROR_PARSING_JSON_TO_OBJECT         = "Error parsing JSON to object";
+    
+    public static final String ERROR_PARSING_ARGUMENTS              = "Error parsing command line arguments";
 
 
 
