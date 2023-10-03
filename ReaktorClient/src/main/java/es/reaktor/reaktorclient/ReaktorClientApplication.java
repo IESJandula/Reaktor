@@ -1,6 +1,9 @@
 package es.reaktor.reaktorclient;
 
 import es.reaktor.reaktorclient.models.Reaktor;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import es.reaktor.reaktorclient.utils.ActionsArguments;
 import es.reaktor.reaktorclient.utils.CheckerArguments;
 import es.reaktor.reaktorclient.utils.Constants;
@@ -59,7 +62,8 @@ public class ReaktorClientApplication implements CommandLineRunner
 
     public static void main(String[] args) throws InterruptedException
     {
-
+    	
+    	
         // como actualmente no soporta linux, introduzco esta linea para que no se ejecute en linux
         if (!System.getProperty("os.name").toLowerCase().contains(Constants.OS_WINDOWS.toLowerCase()))
         {
@@ -68,19 +72,19 @@ public class ReaktorClientApplication implements CommandLineRunner
         }
 
         // This attribute is used to check the arguments of the application
-        CheckerArguments checkerArguments = new CheckerArguments();
-
-        // If the arguments are incorrect exit the application
-        if (!checkerArguments.checkArguments(args))
-        {
-            log.info("Arguments are incorrect");
-            throw new IllegalArgumentException(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
-        }
+//        CheckerArguments checkerArguments = new CheckerArguments();
+//
+//        // If the arguments are incorrect exit the application
+//        if (!checkerArguments.checkArguments(args))
+//        {
+//            log.info("Arguments are incorrect");
+//            throw new IllegalArgumentException(ConstantsErrors.ERROR_ARGUMENTS_NOT_FOUND);
+//        }
 
         // If the arguments are correct start the application
         SpringApplication.run(ReaktorClientApplication.class, args);
     }
-
+    
     @Override
     public void run(String... args) throws Exception
     {
@@ -91,13 +95,13 @@ public class ReaktorClientApplication implements CommandLineRunner
             this.actionsArguments.actionArguments(args);
             
             // Send the update information to Server REAKTOR
-            log.info("Sending information to server REAKTOR");
+//            log.info("Sending information to server REAKTOR");
             this.httpCommunicationSender.sendPost(this.httpCommunicationSender.createHttpPostReaktor(this.reaktorServerUrl+"/reaktor", this.reaktor));
 
         }
         catch (ReaktorClientException reaktorClientException)
         {
-            log.error("Error in the application", reaktorClientException);
+//            log.error("Error in the application", reaktorClientException);
         }
 
 

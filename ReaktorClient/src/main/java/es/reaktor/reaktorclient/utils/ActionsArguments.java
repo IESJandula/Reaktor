@@ -3,6 +3,9 @@ package es.reaktor.reaktorclient.utils;
 import es.reaktor.models.Configuration;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
+import parseParameter.ConsoleParametersParserException;
+import parseParameter.ParametersParser;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +41,17 @@ public class ActionsArguments
     {
 
         Map<String, String> argumentsContent = obtainsArguments(args);
-
-        Configuration configuration = createConfiguration(argumentsContent);
+        
+        ParametersParser parametersParser = new ParametersParser();
+        
+        Configuration configuration = new Configuration();
+        
+        try {
+			configuration=parametersParser.parse(args);
+		} catch (ConsoleParametersParserException e) {
+			// TODO Auto-generated catch block
+			
+		}
 
         checkConfiguration(configuration);
 
