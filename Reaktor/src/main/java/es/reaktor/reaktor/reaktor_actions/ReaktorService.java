@@ -14,38 +14,52 @@ import java.util.Objects;
 @Service
 public class ReaktorService
 {
+    /** Attribute iMotherboardMalwareRepository*/
     @Autowired
     private IMotherboardMalwareRepository iMotherboardMalwareRepository;
 
+    /** Attribute iMotherboardRepository*/
     @Autowired
     private IMotherboardRepository iMotherboardRepository;
 
+    /** Attribute iCpuRepository*/
     @Autowired
     private ICpuRepository iCpuRepository;
 
+    /** Attribute iGraphicCardRepository*/
     @Autowired
     private IGraphicCardRepository iGraphicCardRepository;
 
+    /** Attribute iHardDiskRepository*/
     @Autowired
     private IHardDiskRepository iHardDiskRepository;
 
+    /** Attribute iNetworkCardRepository*/
     @Autowired
     private INetworkCardRepository iNetworkCardRepository;
 
+    /** Attribute iRamRepository*/
     @Autowired
     private IRamRepository iRamRepository;
 
+    /** Attribute iSoundCardRepository*/
     @Autowired
     private ISoundCardRepository iSoundCardRepository;
 
+    /** Attribute iPartitionRepository*/
     @Autowired
     private IPartitionRepository iPartitionRepository;
 
+    /** Attribute iMalwareRepository*/
     @Autowired
     private IMalwareRepository iMalwareRepository;
 
 
 
+    /**
+     * Method getSimpleComputerDTO
+     * @return
+     */
     public List<SimpleComputerDTO> getSimpleComputerDTO()
     {
         List<SimpleComputerDTO> simpleComputerDTOS = new ArrayList<>();
@@ -56,11 +70,16 @@ public class ReaktorService
         {
             Long malwareCount = this.iMotherboardMalwareRepository.countByMotherboardMalwareId_SerialNumber(motherboard.getSerialNumber());
 
-            simpleComputerDTOS.add(new SimpleComputerDTO(motherboard.getSerialNumber(), malwareCount, motherboard.getClassroom(), motherboard.getProfessor(), motherboard.getComputerOn(), motherboard.getIsAdmin()));
+            simpleComputerDTOS.add(new SimpleComputerDTO(motherboard.getSerialNumber(), malwareCount, motherboard.getClassroom(), motherboard.getTeacher(), motherboard.getComputerOn(), motherboard.getIsAdmin()));
         }
         return simpleComputerDTOS;
     }
 
+    /**
+     * Method getInformationReaktor
+     * @param idComputer
+     * @return
+     */
     public ReaktorDTO getInformationReaktor(String idComputer)
     {
         CpuDTO cpu = this.convertToCpuDTO(this.iCpuRepository.findCpuById_Motherboard_SerialNumber(idComputer));
@@ -99,54 +118,103 @@ public class ReaktorService
         return new ReaktorDTO(motherboard,cpu,graphicCardList,hardDiskList,networkCardList,partitionList,ramList,soundCardList,malwareList);
     }
 
+    /**
+     * Method convertToMalwareDTO
+     * @param malware
+     * @return
+     */
     private MalwareDTO convertToMalwareDTO(Malware malware)
     {
         return new MalwareDTO(malware.getName(),malware.getDescription());
     }
 
 
+    /**
+     * Method convertToPartitionDTO
+     * @param partition
+     * @return
+     */
     private PartitionDTO convertToPartitionDTO(Partition partition)
     {
         return new PartitionDTO(partition.getId().getIdPartition(),partition.getSize(),partition.getLetter(),partition.getOperatingSystem());
     }
 
 
+    /**
+     * Method convertToSoundCardDTO
+     * @param soundCard
+     * @return
+     */
     private SoundCardDTO convertToSoundCardDTO(SoundCard soundCard)
     {
         return new SoundCardDTO(soundCard.getId().getIdSoundCard(),soundCard.getModel(),soundCard.getDriver());
     }
 
+    /**
+     * Method convertToRamDTO
+     * @param ram
+     * @return
+     */
     private RamDTO convertToRamDTO(Ram ram)
     {
         return new RamDTO(ram.getId().getSerialNumberRam(),ram.getSize(),ram.getOccupiedSlots(),ram.getModel(),ram.getType(),ram.getSize());
     }
 
+    /**
+     * Method convertToNetworkCardDTO
+     * @param networkCard
+     * @return
+     */
     private NetworkCardDTO convertToNetworkCardDTO(NetworkCard networkCard)
     {
         return new NetworkCardDTO(networkCard.getId().getIdNetworkCard(),networkCard.getMacAddress(),networkCard.getRj45IsConnected(),networkCard.getModel(),networkCard.getIsWireless());
     }
 
+    /**
+     * Method convertToHardDiskDTO
+     * @param hardDisk
+     * @return
+     */
     private HardDiskDTO convertToHardDiskDTO(HardDisk hardDisk)
     {
         return new HardDiskDTO(hardDisk.getId().getSerialNumberHardDisk(),hardDisk.getSize(),hardDisk.getModel());
     }
 
+    /**
+     * Method convertToGraphicCardDTO
+     * @param graphicCard
+     * @return
+     */
     private GraphicCardDTO convertToGraphicCardDTO(GraphicCard graphicCard)
     {
         return new GraphicCardDTO(graphicCard.getId().getIdGraphicCard(), graphicCard.getModel());
     }
 
+    /**
+     * Method convertToMotherboardDTO
+     * @param motherboard
+     * @return
+     */
     private MotherboardDTO convertToMotherboardDTO(Motherboard motherboard)
     {
-       return new MotherboardDTO(motherboard.getSerialNumber(),motherboard.getModel(),motherboard.getClassroom(),motherboard.getDescription(),motherboard.getProfessor(),motherboard.getLastConnection(),motherboard.getLastUpdateComputerOn(),motherboard.getComputerOn());
+       return new MotherboardDTO(motherboard.getSerialNumber(),motherboard.getModel(),motherboard.getClassroom(),motherboard.getTrolley(),motherboard.getAndaluciaId(),motherboard.getComputerNumber(),motherboard.getTeacher(),motherboard.getLastConnection(),motherboard.getLastUpdateComputerOn(),motherboard.getComputerOn());
     }
-
+    
+    /**
+     * Method convertToCpuDTO
+     * @param cpu
+     * @return
+     */
     private CpuDTO convertToCpuDTO(Cpu cpu)
     {
         return new CpuDTO(cpu.getId().getIdCpu(), cpu.getCores(), cpu.getFrequency(), cpu.getThreads());
     }
 
 
+    /**
+     * Method deleteMalware
+     * @param idMalware
+     */
     public void deleteMalware(String idMalware)
     {
         Malware malwareRemove = this.iMalwareRepository.findById(idMalware).orElseThrow(
@@ -165,6 +233,10 @@ public class ReaktorService
     }
 
 
+    /**
+     * Method getMalwareWeb
+     * @return
+     */
     public List<MalwareDTOWeb> getMalwareWeb()
     {
 

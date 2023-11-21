@@ -12,10 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HardDiskDTO
 {
+    /** Attribute id*/
     private String id;
 
+    /** Attribute size*/
     private Long size;
 
+    /** Attribute model*/
     private String model;
 
 }

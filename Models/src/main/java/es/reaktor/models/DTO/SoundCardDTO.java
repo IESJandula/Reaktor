@@ -11,10 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SoundCardDTO
 {
+    /** Attribute id*/
     private String id;
 
+    /** Attribute model*/
     private String model;
 
+    /** Attribute driver*/
     private String driver;
 
 }

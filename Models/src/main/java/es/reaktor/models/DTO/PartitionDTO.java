@@ -12,11 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PartitionDTO
 {
+    /** Attribute id*/
     private String id;
 
+    /** Attribute size*/
     private Long size;
 
+    /** Attribute letter*/
     private Character letter;
 
+    /** Attribute operatingSystem*/
     private String operatingSystem;
 }

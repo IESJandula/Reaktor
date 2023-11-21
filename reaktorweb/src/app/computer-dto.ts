@@ -28,8 +28,10 @@ export interface Motherboard {
   serialNumber: string;
   model: string;
   classroom: string;
-  description: string;
-  professor: string;
+  trolley: string;
+  andaluciaId: string;
+  computerNumber: string;
+  teacher: string;
   lastConnection: Date;
   lastUpdateComputerOn: Date;
   computerOn: boolean;

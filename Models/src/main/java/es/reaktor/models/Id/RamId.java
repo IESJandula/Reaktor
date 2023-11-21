@@ -21,11 +21,14 @@ import java.io.Serializable;
 public class RamId implements Serializable
 {
 
+    /** Attribute serialVersionUID*/
     @Serial
     private static final long serialVersionUID = 340775589535544668L;
 
+    /** Attribute serialNumberRam*/
     private String serialNumberRam;
 
+    /** Attribute motherboard*/
     @OneToOne
     @JoinColumn(name = "serial_number_motherboard")
     private Motherboard motherboard;

@@ -86,7 +86,7 @@ public final class LinuxMotherboard
      */
     public String getLocation()
     {
-        return this.configuration.getProfessor() + " : " + this.configuration.getClassroom();
+        return this.configuration.getTeacher() + " : " + this.configuration.getClassroom();
     }
 
 }

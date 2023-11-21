@@ -23,11 +23,14 @@ import java.io.Serializable;
 public class SoundCardId implements Serializable
 {
 
+    /** Attribute serialVersionUID*/
     @Serial
     private static final long serialVersionUID = 3622702765595396409L;
 
+    /** Attribute idSoundCard*/
     private String idSoundCard;
 
+    /** Attribute motherboard*/
     @OneToOne
     @JoinColumn(name = "serial_number_motherboard")
     private Motherboard motherboard;

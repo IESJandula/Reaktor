@@ -21,15 +21,21 @@ import java.io.Serializable;
 public class InternetConnectionNetworkCardId implements Serializable
 {
 
+    /** Attribute serialVersionUID*/
     @Serial
     private static final long serialVersionUID = 6657317898848841410L;
 
+    /** Attribute idNetworkCard*/
     @ManyToOne
     private NetworkCard idNetworkCard;
 
+    /** Attribute idInternetConnection*/
     @ManyToOne
     private InternetConnection idInternetConnection;
 
+    /**
+     * Constructor for create new InternetConnectionNetworkCardId
+     */
     public InternetConnectionNetworkCardId()
     {
 

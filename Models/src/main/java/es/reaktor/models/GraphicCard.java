@@ -19,9 +19,11 @@ import lombok.*;
 @NoArgsConstructor
 public class GraphicCard
 {
+    /** Attribute id*/
     @EmbeddedId
     private GraphicCardId id;
 
+    /** Attribute model*/
     @Column(name = "model")
     private String model;
 

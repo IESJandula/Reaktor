@@ -118,17 +118,21 @@ public final class WindowsMotherboard
         return motherboard;
     }
 
+//-------------------------------------CAMBIO---------------------------------------------------------------------------------------------------------------
     /**
      * - Method -
-     * This method is used to set the location and the professor name
+     * This method is used to set the location and the teacher name
      */
     private void setLocationAndProfessorName(Motherboard motherboard)
     {
-        motherboard.setProfessor(this.configuration.getProfessor());
+        motherboard.setTeacher(this.configuration.getTeacher());
         motherboard.setClassroom(this.configuration.getClassroom());
-        motherboard.setDescription(this.configuration.getDescription());
+        motherboard.setTrolley(this.configuration.getTrolley());
         motherboard.setIsAdmin(this.configuration.getIsAdmin());
+        motherboard.setAndaluciaId(this.configuration.getAndaluciaId());
+        motherboard.setComputerNumber(this.configuration.getComputerNumber());
     }
+//-------------------------------------CAMBIO---------------------------------------------------------------------------------------------------------------
 
     /**
      * - Method -

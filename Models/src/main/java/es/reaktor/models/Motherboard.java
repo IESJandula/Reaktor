@@ -43,16 +43,24 @@ public class Motherboard
     private String classroom;
 
     /**
-     * Attribute - description of motherboard
+     * Attribute - trolley of motherboard
      */
     @Column(nullable = false)
-    private String description;
+    private String trolley;
+    
+    /** Attribute andaluciaId*/
+    @Column(nullable = false)
+    private String andaluciaId;
+    
+    /** Attribute computerNumber*/
+    @Column(nullable = false)
+    private String computerNumber;
 
     /**
-     * Attribute - professor of motherboard
+     * Attribute - teacher of motherboard
      */
     @Column(nullable = false)
-    private String professor;
+    private String teacher;
 
     /**
      * Attribute - last connection of motherboard

@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GraphicCardDTO
 {
+    /** Attribute id*/
     private String id;
 
+    /** Attribute model*/
     private String model;
 
 }

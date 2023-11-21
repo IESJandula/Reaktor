@@ -22,12 +22,15 @@ import java.util.Date;
 public class InternetConnectionNetworkCard
 {
 
+    /** Attribute id*/
     @EmbeddedId
     private InternetConnectionNetworkCardId id;
 
+    /** Attribute ip_address*/
     @Column(name = "ip_address")
     private String ip_address;
 
+    /** Attribute last_connection*/
     @Column(name = "last_connection")
     private Date last_connection;
 

@@ -17,6 +17,10 @@ import java.util.Scanner;
 public class ReadFiles
 {
 
+    /**
+     * Method readFileConfiguration
+     * @return
+     */
     public String readFileConfiguration()
     {
         File file               = new File(Constants.PATH_CONFIG_FILE);
@@ -35,6 +39,10 @@ public class ReadFiles
         return contentJson;
     }
 
+    /**
+     * Method readConfiguration
+     * @return
+     */
     public Configuration readConfiguration()
     {
         ObjectMapper mapper = Json.mapper();
@@ -47,7 +55,7 @@ public class ReadFiles
         } catch (JsonProcessingException jsonProcessingException)
         {
             log.error("Error processing arguments to json document");
-            configuration = new Configuration("unknow", "unknow", "unknow", false);
+            configuration = new Configuration("unknow","unknow","unknow","unknow","unknow",false);
         }
 
         return configuration;

@@ -38,7 +38,9 @@ public final class Constants
      */
     public static final String HELP_PARAMETERS /*................*/ = "h";
     public static final String CLASSROOM_PARAMETERS /*...........*/ = "a";
-    public static final String DESCRIPTION_PARAMETERS /*.........*/ = "d";
+    public static final String TROLLEY_PARAMETERS /*...........*/ = "t";
+    public static final String ANDALUCIA_ID_PARAMETERS /*...........*/ = "aid";
+    public static final String COMPUTER_NUMBER_PARAMETERS /*...........*/ = "cn";
     public static final String PROFESSOR_PARAMETERS /*...........*/ = "p";
     public static final String IS_ADMIN_PARAMETERS /*............*/ = "ad";
     
@@ -49,7 +51,9 @@ public final class Constants
      */
     public static final String HELP_PARAMETERS_LONG /*................*/ = "help";
     public static final String CLASSROOM_PARAMETERS_LONG /*...........*/ = "classroom";
-    public static final String DESCRIPTION_PARAMETERS_LONG /*.........*/ = "description";
+    public static final String TROLLEY_PARAMETERS_LONG /*...........*/ = "trolley";
+    public static final String ANDALUCIA_ID_PARAMETERS_LONG /*...........*/ = "andalucia";
+    public static final String COMPUTER_NUMBER_PARAMETERS_LONG /*...........*/ = "computer";
     public static final String PROFESSOR_PARAMETERS_LONG /*...........*/ = "professor";
     public static final String IS_ADMIN_PARAMETERS_LONG /*............*/ = "admin";
 
@@ -67,7 +71,7 @@ public final class Constants
     public static final String[] ALLOWED_ARGUMENTS  = {
         HELP_PARAMETERS, //         -h
         CLASSROOM_PARAMETERS, //    -a
-        DESCRIPTION_PARAMETERS, //  -d
+        //DESCRIPTION_PARAMETERS, //  -d
         PROFESSOR_PARAMETERS, //    -p
         IS_ADMIN_PARAMETERS //      -admin
     };

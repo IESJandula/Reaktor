@@ -15,11 +15,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class NetworkCardId implements Serializable
 {
+    /** Attribute serialVersionUID*/
     @Serial
     private static final long serialVersionUID = 2064496915866351678L;
 
+    /** Attribute idNetworkCard*/
     private String idNetworkCard;
 
+    /** Attribute motherboard*/
     @OneToOne
     @JoinColumn(name = "serial_number_motherboard")
     private Motherboard motherboard;

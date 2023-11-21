@@ -20,11 +20,14 @@ import java.io.Serializable;
 public class PartitionId implements Serializable
 {
 
+    /** Attribute serialVersionUID*/
     @Serial
     private static final long serialVersionUID = 2841246474444094495L;
 
+    /** Attribute idPartition*/
     private String idPartition;
 
+    /** Attribute hardDisk*/
     @ManyToOne
     private HardDisk hardDisk;
 

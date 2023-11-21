@@ -15,15 +15,21 @@ import lombok.Setter;
 public class SoundCard
 {
 
+    /** Attribute id*/
     @EmbeddedId
     private SoundCardId id;
 
+    /** Attribute model*/
     @Column(name = "model")
     private String model;
 
+    /** Attribute driver*/
     @Column(name = "driver")
     private String driver;
 
+    /**
+     * Constructor for create new SoundCard
+     */
     public SoundCard()
     {
 

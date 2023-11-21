@@ -20,13 +20,19 @@ public class ParametersParser
 	/** Attribute isAdmin with the admin value */
 	private Option isAdmin;
 
-	/** Attribute professorParameters with the professor parameters value */
-	private Option professorParameters;
+	/** Attribute teacherParameters with the professor parameters value */
+	private Option teacherParameters;
 
 	/**
 	 * Attribute descriptionParameters with the description parameters argument value
 	 */
-	private Option descriptionParameters;
+	private Option trolleyParameters;
+	
+	/** Attribute andaluciaIdParameters with the andaluciaId value*/
+	private Option andaluciaIdParameters;
+	
+	/** Attribute computerNumberParameters with the computer Number value*/
+	private Option computerNumberParameters;
 
 	/** Attribute classRoomParameters with the classroom parameters value */
 	private Option classRoomParameters;
@@ -41,8 +47,8 @@ public class ParametersParser
 	/**
 	 * Constructor for create new ParametersParser
 	 * @param isAdmin
-	 * @param professorParameters
-	 * @param descriptionParameters
+	 * @param teacherParameters
+	 * @param trolleyParameters
 	 * @param classRoomParameters
 	 * @param helpParameter
 	 * @param commandLine
@@ -50,8 +56,10 @@ public class ParametersParser
 	public ParametersParser()
 	{
 		this.isAdmin = new Option(Constants.IS_ADMIN_PARAMETERS,Constants.IS_ADMIN_PARAMETERS_LONG, true, "The admin commands");
-		this.professorParameters =  new Option(Constants.PROFESSOR_PARAMETERS, Constants.PROFESSOR_PARAMETERS_LONG,true, "The professor parameters");
-		this.descriptionParameters = new Option(Constants.DESCRIPTION_PARAMETERS,Constants.DESCRIPTION_PARAMETERS_LONG, true, "the description parameters");
+		this.teacherParameters =  new Option(Constants.PROFESSOR_PARAMETERS, Constants.PROFESSOR_PARAMETERS_LONG,true, "The professor parameters");
+		this.trolleyParameters = new Option(Constants.TROLLEY_PARAMETERS,Constants.TROLLEY_PARAMETERS_LONG, true, "the trolley parameters");
+		this.andaluciaIdParameters = new Option(Constants.ANDALUCIA_ID_PARAMETERS,Constants.ANDALUCIA_ID_PARAMETERS_LONG, true, "the trolley parameters");
+		this.computerNumberParameters = new Option(Constants.COMPUTER_NUMBER_PARAMETERS,Constants.COMPUTER_NUMBER_PARAMETERS_LONG, true, "the trolley parameters");
 		this.classRoomParameters = new Option(Constants.CLASSROOM_PARAMETERS, Constants.CLASSROOM_PARAMETERS_LONG,true, "the classroom parameters");
 		this.helpParameter = new Option(Constants.HELP_PARAMETERS, Constants.HELP_PARAMETERS_LONG, false,"The show help parameter");
 		this.commandLine = null;
@@ -70,10 +78,12 @@ public class ParametersParser
 
 		// Add to the Options
 		allOptions.addOption(this.classRoomParameters);
-		allOptions.addOption(this.descriptionParameters);
+		allOptions.addOption(this.trolleyParameters);
+		allOptions.addOption(this.andaluciaIdParameters);
+		allOptions.addOption(this.computerNumberParameters);
 		allOptions.addOption(this.helpParameter);
 		allOptions.addOption(this.isAdmin);
-		allOptions.addOption(this.professorParameters);
+		allOptions.addOption(this.teacherParameters);
 
 		// Parse to commandLine
 		try
@@ -89,9 +99,11 @@ public class ParametersParser
 
 		// Getting parameter values on Strings values
 		String classRoomParametersString = this.getCmdStringOption(this.classRoomParameters);
-		String descriptionParametersString = this.getCmdStringOption(this.descriptionParameters);
+		String trolleyParametersString = this.getCmdStringOption(this.trolleyParameters);
+		String andaluciaIdParametersString = this.getCmdStringOption(this.andaluciaIdParameters);
+		String computerNumberParametersString = this.getCmdStringOption(this.computerNumberParameters);
 		String isAdminString = this.getCmdStringOption(this.isAdmin);
-		String professorParametersString = this.getCmdStringOption(this.professorParameters);
+		String professorParametersString = this.getCmdStringOption(this.teacherParameters);
 		boolean helpParam = this.commandLine.hasOption(this.helpParameter.getOpt())|| this.commandLine.hasOption(this.helpParameter.getLongOpt());
 
 		Configuration configuration = new Configuration();
@@ -102,18 +114,44 @@ public class ParametersParser
 		this.checkingClassRoom(classRoomParametersString, configuration);
 
 		// Checking descriptionParameters
-		this.checkingDescription(descriptionParametersString, configuration);
+		this.checkingTrolley(trolleyParametersString, configuration);
+		
+		// Checking andaluciaParameters
+		this.checkingAndalucia(andaluciaIdParametersString, configuration);
+				
+		// Checking computerNumbers
+		this.checkingComputerNumber(computerNumberParametersString, configuration);
 
 		// Checking isAdmin
 		this.checkingAdmin(isAdminString, configuration);
 
-		// Checking professorParameters
-		this.checkingProfessor(professorParametersString, configuration);
+		// Checking teacherParameters
+		this.checkingTeacher(professorParametersString, configuration);
 
 		// Checking Help parameter
 		this.checkingHelp(helpParam);
 
 		return configuration;
+	}
+
+	private void checkingComputerNumber(String computerNumberParametersString, Configuration configuration)
+	{
+		if (computerNumberParametersString != null && !computerNumberParametersString.isEmpty())
+		{
+			// Set the parameter
+			configuration.setComputerNumber(computerNumberParametersString);
+		}
+		
+	}
+
+	private void checkingAndalucia(String andaluciaIdParametersString, Configuration configuration)
+	{
+		if (andaluciaIdParametersString != null && !andaluciaIdParametersString.isEmpty())
+		{
+			// Set the parameter
+			configuration.setAndaluciaId(andaluciaIdParametersString);
+		}
+		
 	}
 
 	/**
@@ -135,17 +173,17 @@ public class ParametersParser
 
 	/**
 	 * 
-	 * Method checkingProfessor for checking the argument
+	 * Method checkingTeacher for checking the argument
 	 * 
-	 * @param professorParameters with the String value
+	 * @param teacherParameters with the String value
 	 * @param configuration the configuration for reaktor
 	 */
-	private void checkingProfessor(String professorParameters, Configuration configuration)
+	private void checkingTeacher(String teacherParameters, Configuration configuration)
 	{
-		if (professorParameters != null && !professorParameters.isEmpty())
+		if (teacherParameters != null && !teacherParameters.isEmpty())
 		{
 			// Set the parameter
-			configuration.setProfessor(professorParameters);
+			configuration.setTeacher(teacherParameters);
 		}
 	}
 
@@ -169,15 +207,15 @@ public class ParametersParser
 	 * 
 	 * Method checkingDescription for checking the argument
 	 * 
-	 * @param descriptionParameters with the String value
+	 * @param trolleyParameter with the String value
 	 * @param configuration the configuration for reaktor
 	 */
-	private void checkingDescription(String descriptionParameters, Configuration configuration)
+	private void checkingTrolley(String trolleyParameter, Configuration configuration)
 	{
-		if (descriptionParameters != null && !descriptionParameters.isEmpty())
+		if (trolleyParameter != null && !trolleyParameter.isEmpty())
 		{
 			// Set the parameter
-			configuration.setDescription(descriptionParameters);
+			configuration.setTrolley(trolleyParameter);
 		}
 	}
 

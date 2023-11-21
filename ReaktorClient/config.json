@@ -1,6 +1,8 @@
 {
   "classroom" : "David",
-  "professor" : "test",
-  "description" : "LastTest",
+  "teacher" : "test",
+  "trolley" : "Carrito 11",
+  "andaluciaId" : "3243-234David",
+  "computerNumber" : "5C",
   "isAdmin" : true
 }
