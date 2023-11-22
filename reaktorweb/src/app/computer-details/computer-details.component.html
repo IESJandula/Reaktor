@@ -3,6 +3,45 @@
   <a href="/" class="back-button">Volver a la página principal</a>
 </div>
 
+
+<h3>COMPUTER DATA</h3>
+<table class="myTable">
+  <thead>
+  <tr>
+    <th>Computer Number</th>
+    <th>Computer S/N</th>
+    <th>Model</th>
+    <th>Andalucia Id</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{this.computer?.motherboardDTO!.computerNumber}}</td>
+      <td>{{this.computer?.motherboardDTO!.computerSerialNumber}}</td>
+      <td>{{this.computer?.motherboardDTO!.model}}</td>
+      <td>{{this.computer?.motherboardDTO!.andaluciaId}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>LOCATION</h3>
+<table class="myTable">
+  <thead>
+  <tr>
+    <th>Classroom</th>
+    <th>Trolley</th>
+    <th>Teacher</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{this.computer?.motherboardDTO!.classroom}}</td>
+      <td>{{this.computer?.motherboardDTO!.trolley}}</td>
+      <td>{{this.computer?.motherboardDTO!.teacher}}</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3>MOTHERBOARD</h3>
 
 <table class="myTable">
