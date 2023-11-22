@@ -25,13 +25,14 @@ export interface ComputerDTO
 
 
 export interface Motherboard {
-  serialNumber: string;
+  motherBoardSerialNumber: string;
   model: string;
   classroom: string;
   trolley: string;
   andaluciaId: string;
   computerNumber: string;
   teacher: string;
+  computerSerialNumber: string;
   lastConnection: Date;
   lastUpdateComputerOn: Date;
   computerOn: boolean;

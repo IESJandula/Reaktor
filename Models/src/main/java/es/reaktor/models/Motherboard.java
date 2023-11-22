@@ -28,7 +28,7 @@ public class Motherboard
      */
     @Id
     @Column(name = "serial_number")
-    private String serialNumber;
+    private String motherBoardSerialNumber;
 
     /**
      * Attribute - model of motherboard
@@ -61,6 +61,10 @@ public class Motherboard
      */
     @Column(nullable = false)
     private String teacher;
+    
+    /** Attribute computerSerialNumber*/
+    @Column(nullable = false)
+    private String computerSerialNumber;
 
     /**
      * Attribute - last connection of motherboard
@@ -89,7 +93,7 @@ public class Motherboard
     /**
      * Attribute - Malware
      */
-    @OneToMany(mappedBy = "serialNumber", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "motherBoardSerialNumber", cascade = CascadeType.ALL)
     private Set<MotherboardMalware> malware;
 
 }

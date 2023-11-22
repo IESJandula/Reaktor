@@ -37,6 +37,9 @@ public class ParametersParser
 	/** Attribute classRoomParameters with the classroom parameters value */
 	private Option classRoomParameters;
 
+	/** Attribute computerSerialNumberParameters with the computer Serial Number parameters value */
+	private Option computerSerialNumberParameters;
+	
 	/** Attribute helpParameter for display help */
 	private Option helpParameter;
 
@@ -56,11 +59,12 @@ public class ParametersParser
 	public ParametersParser()
 	{
 		this.isAdmin = new Option(Constants.IS_ADMIN_PARAMETERS,Constants.IS_ADMIN_PARAMETERS_LONG, true, "The admin commands");
-		this.teacherParameters =  new Option(Constants.PROFESSOR_PARAMETERS, Constants.PROFESSOR_PARAMETERS_LONG,true, "The professor parameters");
+		this.teacherParameters =  new Option(Constants.PROFESSOR_PARAMETERS, Constants.PROFESSOR_PARAMETERS_LONG,true, "The teacher parameters");
 		this.trolleyParameters = new Option(Constants.TROLLEY_PARAMETERS,Constants.TROLLEY_PARAMETERS_LONG, true, "the trolley parameters");
-		this.andaluciaIdParameters = new Option(Constants.ANDALUCIA_ID_PARAMETERS,Constants.ANDALUCIA_ID_PARAMETERS_LONG, true, "the trolley parameters");
-		this.computerNumberParameters = new Option(Constants.COMPUTER_NUMBER_PARAMETERS,Constants.COMPUTER_NUMBER_PARAMETERS_LONG, true, "the trolley parameters");
+		this.andaluciaIdParameters = new Option(Constants.ANDALUCIA_ID_PARAMETERS,Constants.ANDALUCIA_ID_PARAMETERS_LONG, true, "the andalucia id parameters");
+		this.computerNumberParameters = new Option(Constants.COMPUTER_NUMBER_PARAMETERS,Constants.COMPUTER_NUMBER_PARAMETERS_LONG, true, "the computer number parameters");
 		this.classRoomParameters = new Option(Constants.CLASSROOM_PARAMETERS, Constants.CLASSROOM_PARAMETERS_LONG,true, "the classroom parameters");
+		this.computerSerialNumberParameters = new Option(Constants.COMPUTER_SERIAL_NUMBER_PARAMETERS, Constants.COMPUTER_SERIAL_NUMBER_PARAMETERS_LONG,true, "the computer serial number parameters");
 		this.helpParameter = new Option(Constants.HELP_PARAMETERS, Constants.HELP_PARAMETERS_LONG, false,"The show help parameter");
 		this.commandLine = null;
 	}
@@ -84,6 +88,7 @@ public class ParametersParser
 		allOptions.addOption(this.helpParameter);
 		allOptions.addOption(this.isAdmin);
 		allOptions.addOption(this.teacherParameters);
+		allOptions.addOption(this.computerSerialNumberParameters);
 
 		// Parse to commandLine
 		try
@@ -102,6 +107,7 @@ public class ParametersParser
 		String trolleyParametersString = this.getCmdStringOption(this.trolleyParameters);
 		String andaluciaIdParametersString = this.getCmdStringOption(this.andaluciaIdParameters);
 		String computerNumberParametersString = this.getCmdStringOption(this.computerNumberParameters);
+		String computerSerialNumberParametersString = this.getCmdStringOption(this.computerSerialNumberParameters);
 		String isAdminString = this.getCmdStringOption(this.isAdmin);
 		String professorParametersString = this.getCmdStringOption(this.teacherParameters);
 		boolean helpParam = this.commandLine.hasOption(this.helpParameter.getOpt())|| this.commandLine.hasOption(this.helpParameter.getLongOpt());
@@ -109,7 +115,7 @@ public class ParametersParser
 		Configuration configuration = new Configuration();
 
 		// If the option is not null or is not empty, that have anything
-
+				
 		// Checking classRoomParameters
 		this.checkingClassRoom(classRoomParametersString, configuration);
 
@@ -121,6 +127,9 @@ public class ParametersParser
 				
 		// Checking computerNumbers
 		this.checkingComputerNumber(computerNumberParametersString, configuration);
+		
+		// Checking computerSerialNumberParameters
+		this.checkingComputerSerialNumber(computerSerialNumberParametersString, configuration);
 
 		// Checking isAdmin
 		this.checkingAdmin(isAdminString, configuration);
@@ -134,6 +143,26 @@ public class ParametersParser
 		return configuration;
 	}
 
+	/**
+	 * Method checkingComputerSerialNumber
+	 * @param computerSerialNumberParametersString
+	 * @param configuration
+	 */
+	private void checkingComputerSerialNumber(String computerSerialNumberParametersString, Configuration configuration)
+	{
+		if (computerSerialNumberParametersString != null && !computerSerialNumberParametersString.isEmpty())
+		{
+			// Set the parameter
+			configuration.setComputerSerialNumber(computerSerialNumberParametersString);
+		}
+		
+	}
+
+	/**
+	 * Method checkingComputerNumber
+	 * @param computerNumberParametersString
+	 * @param configuration
+	 */
 	private void checkingComputerNumber(String computerNumberParametersString, Configuration configuration)
 	{
 		if (computerNumberParametersString != null && !computerNumberParametersString.isEmpty())
@@ -144,6 +173,11 @@ public class ParametersParser
 		
 	}
 
+	/**
+	 * Method checkingAndalucia
+	 * @param andaluciaIdParametersString
+	 * @param configuration
+	 */
 	private void checkingAndalucia(String andaluciaIdParametersString, Configuration configuration)
 	{
 		if (andaluciaIdParametersString != null && !andaluciaIdParametersString.isEmpty())

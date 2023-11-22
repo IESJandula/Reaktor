@@ -107,7 +107,7 @@ public final class WindowsMotherboard
     {
         Motherboard motherboard = new Motherboard();
 
-        motherboard.setSerialNumber(this.getHardwareUUID());
+        motherboard.setMotherBoardSerialNumber(this.getHardwareUUID());
         motherboard.setModel(this.getModel());
         motherboard.setLastConnection(this.getLastConnection());
         motherboard.setLastUpdateComputerOn(this.getLastUpdateComputerOn(motherboard));
@@ -118,7 +118,6 @@ public final class WindowsMotherboard
         return motherboard;
     }
 
-//-------------------------------------CAMBIO---------------------------------------------------------------------------------------------------------------
     /**
      * - Method -
      * This method is used to set the location and the teacher name
@@ -126,13 +125,13 @@ public final class WindowsMotherboard
     private void setLocationAndProfessorName(Motherboard motherboard)
     {
         motherboard.setTeacher(this.configuration.getTeacher());
+        motherboard.setComputerSerialNumber(this.configuration.getComputerSerialNumber());
         motherboard.setClassroom(this.configuration.getClassroom());
         motherboard.setTrolley(this.configuration.getTrolley());
         motherboard.setIsAdmin(this.configuration.getIsAdmin());
         motherboard.setAndaluciaId(this.configuration.getAndaluciaId());
         motherboard.setComputerNumber(this.configuration.getComputerNumber());
     }
-//-------------------------------------CAMBIO---------------------------------------------------------------------------------------------------------------
 
     /**
      * - Method -
@@ -144,7 +143,7 @@ public final class WindowsMotherboard
     {
         try
         {
-            this.httpCommunicationSender.sendPost(this.httpCommunicationSender.createHttpPostWithHeader(this.reaktorServerUrl + "/computer-on", "serialNumber", motherboard.getSerialNumber()));
+            this.httpCommunicationSender.sendPost(this.httpCommunicationSender.createHttpPostWithHeader(this.reaktorServerUrl + "/computer-on", "motherBoardSerialNumber", motherboard.getMotherBoardSerialNumber()));
         }
         catch (ReaktorClientException reaktorClientException)
         {

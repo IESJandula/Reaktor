@@ -41,6 +41,7 @@ public final class Constants
     public static final String TROLLEY_PARAMETERS /*...........*/ = "t";
     public static final String ANDALUCIA_ID_PARAMETERS /*...........*/ = "aid";
     public static final String COMPUTER_NUMBER_PARAMETERS /*...........*/ = "cn";
+    public static final String COMPUTER_SERIAL_NUMBER_PARAMETERS /*...........*/ = "sn";
     public static final String PROFESSOR_PARAMETERS /*...........*/ = "p";
     public static final String IS_ADMIN_PARAMETERS /*............*/ = "ad";
     
@@ -54,6 +55,7 @@ public final class Constants
     public static final String TROLLEY_PARAMETERS_LONG /*...........*/ = "trolley";
     public static final String ANDALUCIA_ID_PARAMETERS_LONG /*...........*/ = "andalucia";
     public static final String COMPUTER_NUMBER_PARAMETERS_LONG /*...........*/ = "computer";
+    public static final String COMPUTER_SERIAL_NUMBER_PARAMETERS_LONG /*...........*/ = "serial";
     public static final String PROFESSOR_PARAMETERS_LONG /*...........*/ = "professor";
     public static final String IS_ADMIN_PARAMETERS_LONG /*............*/ = "admin";
 

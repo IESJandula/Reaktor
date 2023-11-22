@@ -68,9 +68,9 @@ public class ReaktorService
 
         for (Motherboard motherboard : motherboardList)
         {
-            Long malwareCount = this.iMotherboardMalwareRepository.countByMotherboardMalwareId_SerialNumber(motherboard.getSerialNumber());
+            Long malwareCount = this.iMotherboardMalwareRepository.countByMotherboardMalwareId_MotherBoardSerialNumber(motherboard.getMotherBoardSerialNumber());
 
-            simpleComputerDTOS.add(new SimpleComputerDTO(motherboard.getSerialNumber(), malwareCount, motherboard.getClassroom(), motherboard.getTeacher(), motherboard.getComputerOn(), motherboard.getIsAdmin()));
+            simpleComputerDTOS.add(new SimpleComputerDTO(motherboard.getMotherBoardSerialNumber(), malwareCount, motherboard.getClassroom(), motherboard.getTeacher(), motherboard.getComputerOn(), motherboard.getIsAdmin()));
         }
         return simpleComputerDTOS;
     }
@@ -82,36 +82,36 @@ public class ReaktorService
      */
     public ReaktorDTO getInformationReaktor(String idComputer)
     {
-        CpuDTO cpu = this.convertToCpuDTO(this.iCpuRepository.findCpuById_Motherboard_SerialNumber(idComputer));
+        CpuDTO cpu = this.convertToCpuDTO(this.iCpuRepository.findCpuById_Motherboard_MotherBoardSerialNumber(idComputer));
 
-        MotherboardDTO motherboard = this.convertToMotherboardDTO(this.iMotherboardRepository.findBySerialNumber(idComputer));
+        MotherboardDTO motherboard = this.convertToMotherboardDTO(this.iMotherboardRepository.findByMotherBoardSerialNumber(idComputer));
 
         List<GraphicCardDTO> graphicCardList = this.iGraphicCardRepository.findAll()
-                .stream().filter(graphicCard -> Objects.equals(graphicCard.getId().getMotherboard().getSerialNumber(), idComputer))
+                .stream().filter(graphicCard -> Objects.equals(graphicCard.getId().getMotherboard().getMotherBoardSerialNumber(), idComputer))
                 .map(this::convertToGraphicCardDTO).toList();
 
         List<HardDiskDTO> hardDiskList = this.iHardDiskRepository.findAll()
-                .stream().filter(hardDisk -> Objects.equals(hardDisk.getId().getMotherboard().getSerialNumber(), idComputer))
+                .stream().filter(hardDisk -> Objects.equals(hardDisk.getId().getMotherboard().getMotherBoardSerialNumber(), idComputer))
                 .map(this::convertToHardDiskDTO).toList();
 
         List<NetworkCardDTO> networkCardList = this.iNetworkCardRepository.findAll()
-                .stream().filter(networkCard -> Objects.equals(networkCard.getId().getMotherboard().getSerialNumber(), idComputer))
+                .stream().filter(networkCard -> Objects.equals(networkCard.getId().getMotherboard().getMotherBoardSerialNumber(), idComputer))
                 .map(this::convertToNetworkCardDTO).toList();
 
         List<RamDTO> ramList = this.iRamRepository.findAll()
-                .stream().filter(ram -> Objects.equals(ram.getId().getMotherboard().getSerialNumber(), idComputer))
+                .stream().filter(ram -> Objects.equals(ram.getId().getMotherboard().getMotherBoardSerialNumber(), idComputer))
                 .map(this::convertToRamDTO).toList();
 
         List<SoundCardDTO> soundCardList = this.iSoundCardRepository.findAll()
-                .stream().filter(soundCard -> Objects.equals(soundCard.getId().getMotherboard().getSerialNumber(), idComputer))
+                .stream().filter(soundCard -> Objects.equals(soundCard.getId().getMotherboard().getMotherBoardSerialNumber(), idComputer))
                 .map(this::convertToSoundCardDTO).toList();
 
         List<PartitionDTO> partitionList = this.iPartitionRepository.findAll()
-                .stream().filter(partition -> Objects.equals(partition.getId().getHardDisk().getId().getMotherboard().getSerialNumber(), idComputer))
+                .stream().filter(partition -> Objects.equals(partition.getId().getHardDisk().getId().getMotherboard().getMotherBoardSerialNumber(), idComputer))
                 .map(this::convertToPartitionDTO).toList();
 
         List<MalwareDTO> malwareList = this.iMotherboardMalwareRepository.findAll()
-                .stream().filter(motherboardMalware -> Objects.equals(motherboardMalware.getSerialNumber().getSerialNumber(), idComputer))
+                .stream().filter(motherboardMalware -> Objects.equals(motherboardMalware.getMotherBoardSerialNumber().getMotherBoardSerialNumber(), idComputer))
                 .map(MotherboardMalware::getName)
                 .map(this::convertToMalwareDTO).toList();
 
@@ -197,7 +197,7 @@ public class ReaktorService
      */
     private MotherboardDTO convertToMotherboardDTO(Motherboard motherboard)
     {
-       return new MotherboardDTO(motherboard.getSerialNumber(),motherboard.getModel(),motherboard.getClassroom(),motherboard.getTrolley(),motherboard.getAndaluciaId(),motherboard.getComputerNumber(),motherboard.getTeacher(),motherboard.getLastConnection(),motherboard.getLastUpdateComputerOn(),motherboard.getComputerOn());
+       return new MotherboardDTO(motherboard.getMotherBoardSerialNumber(),motherboard.getModel(),motherboard.getClassroom(),motherboard.getTrolley(),motherboard.getAndaluciaId(),motherboard.getComputerNumber(),motherboard.getTeacher(),motherboard.getComputerSerialNumber(),motherboard.getLastConnection(),motherboard.getLastUpdateComputerOn(),motherboard.getComputerOn());
     }
     
     /**
@@ -225,7 +225,7 @@ public class ReaktorService
 
         for (String id : motherboardMalwareIdList)
         {
-            Motherboard motherboard = this.iMotherboardRepository.findBySerialNumber(id);
+            Motherboard motherboard = this.iMotherboardRepository.findByMotherBoardSerialNumber(id);
             motherboard.getMalware().remove(new MotherboardMalware(new MotherboardMalwareId(idMalware, id), malwareRemove, motherboard));
         }
 

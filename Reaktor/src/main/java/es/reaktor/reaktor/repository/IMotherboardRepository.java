@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IMotherboardRepository extends JpaRepository<Motherboard, String>
 {
-    Motherboard findBySerialNumber(String serialNumber);
+    Motherboard findByMotherBoardSerialNumber(String motherBoardSerialNumber);
 
 
 }

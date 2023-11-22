@@ -83,6 +83,10 @@ public class ActionsArguments
         {
             configuration.setComputerNumber(Constants.UNKNOWN);
         }
+        if (configuration.getComputerSerialNumber() == null || configuration.getComputerSerialNumber().isEmpty())
+        {
+            configuration.setComputerSerialNumber(Constants.UNKNOWN);
+        }
 
         if (configuration.getIsAdmin() == null)
         {

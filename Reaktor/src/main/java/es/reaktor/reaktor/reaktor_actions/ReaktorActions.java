@@ -147,19 +147,19 @@ public class ReaktorActions
         this.iCpuRepository.saveAndFlush(cpu);
     }
 
-    public void removeMalwareFromMotherboard(String serialNumber)
+    public void removeMalwareFromMotherboard(String motherBoardSerialNumber)
     {
-        this.iMotherboardMalwareRepository.deleteByMotherboardMalwareId_SerialNumber(serialNumber);
+        this.iMotherboardMalwareRepository.deleteByMotherboardMalwareId_SerialNumber(motherBoardSerialNumber);
     }
 
-    public void insertMalwareMotherboard(String serialNumber, List<Malware> malwareList)
+    public void insertMalwareMotherboard(String motherBoardSerialNumber, List<Malware> malwareList)
     {
-        this.removeMalwareFromMotherboard(serialNumber);
-        Motherboard motherboard = this.iMotherboardRepository.findBySerialNumber(serialNumber);
+        this.removeMalwareFromMotherboard(motherBoardSerialNumber);
+        Motherboard motherboard = this.iMotherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber);
 
         for (Malware malware : malwareList)
         {
-            this.iMotherboardMalwareRepository.saveAndFlush(new MotherboardMalware(new MotherboardMalwareId(malware.getName(), serialNumber), malware, motherboard));
+            this.iMotherboardMalwareRepository.saveAndFlush(new MotherboardMalware(new MotherboardMalwareId(malware.getName(), motherBoardSerialNumber), malware, motherboard));
         }
     }
 

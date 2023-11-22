@@ -143,7 +143,7 @@ public class HttpCommunicationSender
         return httpPost;
     }
 
-    public HttpPost createHttpPostMalwareList(String urlDestino, String serialNumber, List<Malware> malwareList) throws ReaktorClientException
+    public HttpPost createHttpPostMalwareList(String urlDestino, String motherBoardSerialNumber, List<Malware> malwareList) throws ReaktorClientException
     {
         HttpPost httpPost = new HttpPost(urlDestino); // Create the HTTP POST request
 
@@ -151,7 +151,7 @@ public class HttpCommunicationSender
 
         entity.setContentType("application/json"); // Set the content type of the entity
         httpPost.setHeader("Content-type", "application/json"); // Set the content type of the POST request
-        httpPost.setHeader("serialNumber", serialNumber); // Set the Serial Number of the POST request
+        httpPost.setHeader("motherBoardSerialNumber", motherBoardSerialNumber); // Set the Serial Number of the POST request
         httpPost.setEntity(entity); // Set the entity of the POST request
 
         return httpPost;

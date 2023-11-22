@@ -36,6 +36,9 @@ public class Configuration
     
     /** Attribute computerNumber*/
     private String computerNumber;
+    
+    /** Attribute computerSerialNumber*/
+    private String computerSerialNumber;
 
     /**
      * - ATTRIBUTES -

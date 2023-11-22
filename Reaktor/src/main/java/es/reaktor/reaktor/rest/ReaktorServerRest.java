@@ -54,17 +54,17 @@ public class ReaktorServerRest
      */
     @RequestMapping(method = RequestMethod.POST, value = "/computer-on")
     public ResponseEntity<?> computerOn(
-            @RequestHeader String serialNumber
+            @RequestHeader String motherBoardSerialNumber
     )
     {
         // Comprobamos que existe la placa base en la base de datos
-        if (!this.iMotherboardRepository.existsById(serialNumber))
+        if (!this.iMotherboardRepository.existsById(motherBoardSerialNumber))
         {
-            return ResponseEntity.ok("Motherboard with serial number " + serialNumber + " does not exist");
+            return ResponseEntity.ok("Motherboard with serial number " + motherBoardSerialNumber + " does not exist");
         }
 
         // we get the motherboard
-        Motherboard motherboard = this.iMotherboardRepository.findBySerialNumber(serialNumber);
+        Motherboard motherboard = this.iMotherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber);
 
         // we set the computer on
         motherboard.setComputerOn(true);
@@ -75,7 +75,7 @@ public class ReaktorServerRest
         // we save the motherboard with the new status
         this.iMotherboardRepository.save(motherboard);
 
-        return ResponseEntity.ok("Computer with serial number " + serialNumber + " is on");
+        return ResponseEntity.ok("Computer with serial number " + motherBoardSerialNumber + " is on");
     }
 
 
@@ -134,14 +134,14 @@ public class ReaktorServerRest
     @Transactional
     @RequestMapping(method = RequestMethod.POST, value = "/report-malware")
     public ResponseEntity<?> reportMalware(
-            @RequestHeader String serialNumber,
+            @RequestHeader String motherBoardSerialNumber,
             @RequestBody List<Malware> malwareList
     )
     {
         try
         {
-            log.info("Reporting malware for motherboard {}", serialNumber);
-            this.reaktorActions.insertMalwareMotherboard(serialNumber, malwareList);
+            log.info("Reporting malware for motherboard {}", motherBoardSerialNumber);
+            this.reaktorActions.insertMalwareMotherboard(motherBoardSerialNumber, malwareList);
         }
         catch (Exception exception)
         {
