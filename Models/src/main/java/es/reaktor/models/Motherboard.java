@@ -28,7 +28,7 @@ public class Motherboard
      */
     @Id
     @Column(name = "serial_number")
-    private String serialNumber;
+    private String motherBoardSerialNumber;
 
     /**
      * Attribute - model of motherboard
@@ -43,16 +43,28 @@ public class Motherboard
     private String classroom;
 
     /**
-     * Attribute - description of motherboard
+     * Attribute - trolley of motherboard
      */
     @Column(nullable = false)
-    private String description;
+    private String trolley;
+    
+    /** Attribute andaluciaId*/
+    @Column(nullable = false)
+    private String andaluciaId;
+    
+    /** Attribute computerNumber*/
+    @Column(nullable = false)
+    private String computerNumber;
 
     /**
-     * Attribute - professor of motherboard
+     * Attribute - teacher of motherboard
      */
     @Column(nullable = false)
-    private String professor;
+    private String teacher;
+    
+    /** Attribute computerSerialNumber*/
+    @Column(nullable = false)
+    private String computerSerialNumber;
 
     /**
      * Attribute - last connection of motherboard
@@ -81,7 +93,7 @@ public class Motherboard
     /**
      * Attribute - Malware
      */
-    @OneToMany(mappedBy = "serialNumber", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "motherBoardSerialNumber", cascade = CascadeType.ALL)
     private Set<MotherboardMalware> malware;
 
 }

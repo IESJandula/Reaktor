@@ -20,18 +20,23 @@ import lombok.*;
 public class NetworkCard
 {
 
+    /** Attribute id*/
     @EmbeddedId
     private NetworkCardId id;
 
+    /** Attribute macAddress*/
     @Column(name = "mac_address")
     private String macAddress;
 
+    /** Attribute rj45IsConnected*/
     @Column(name = "rj45_is_connected")
     private Boolean rj45IsConnected;
 
+    /** Attribute model*/
     @Column(name = "model")
     private String model;
 
+    /** Attribute isWireless*/
     @Column(name = "is_wireless")
     private Boolean isWireless;
 

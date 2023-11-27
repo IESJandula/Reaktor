@@ -12,26 +12,39 @@ import java.util.List;
 @ToString
 public class Reaktor {
 
+    /** Attribute motherboard*/
     protected Motherboard motherboard;
 
+    /** Attribute malware*/
     protected List<Malware> malware;
 
+    /** Attribute cpu*/
     protected Cpu cpu;
 
+    /** Attribute graphicCard*/
     protected List<GraphicCard> graphicCard;
 
+    /** Attribute hardDisk*/
     protected List<HardDisk> hardDisk;
 
+    /** Attribute internetConnection*/
     private InternetConnection internetConnection;
 
+    /** Attribute networkCard*/
     protected List<NetworkCard> networkCard;
 
+    /** Attribute partition*/
     protected List<Partition> partition;
 
+    /** Attribute ram*/
     protected List<Ram> ram;
 
+    /** Attribute soundCard*/
     protected List<SoundCard> soundCard;
 
+    /**
+     * Constructor for create new Reaktor
+     */
     public Reaktor()
     {
 

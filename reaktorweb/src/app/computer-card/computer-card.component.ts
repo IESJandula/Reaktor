@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import {Motherboard} from '../computer-dto';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,6 +15,7 @@ export class ComputerCardComponent {
   @Input() location: string = '';
   @Input() responsable: string = '';
   @Input() computerOn: boolean = false;
+  @Input() computerNumber: string = '';
 
   constructor(private router: Router) { }
 

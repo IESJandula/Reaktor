@@ -12,7 +12,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class MotherboardDTO
 {
-    private String serialNumber;
+    /** Attribute motherBoardSerialNumber*/
+    private String motherBoardSerialNumber;
 
     /**
      * Attribute - model of motherboard
@@ -25,15 +26,22 @@ public class MotherboardDTO
     private String classroom;
 
     /**
-     * Attribute - description of motherboard
+     * Attribute - trolley of motherboard
      */
-    private String description;
+    private String trolley;
+    
+    /** Attribute andaluciaId*/
+    private String andaluciaId;
+    
+    /** Attribute computerNumber*/
+    private String computerNumber;
 
-    /**
-     * Attribute - professor of motherboard
-     */
-    private String professor;
+    /** Attribute teacher*/
+    private String teacher;
 
+    /** Attribute computerSerialNumber*/
+    private String computerSerialNumber;
+    
     /**
      * Attribute - last connection of motherboard
      */

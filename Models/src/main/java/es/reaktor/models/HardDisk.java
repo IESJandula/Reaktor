@@ -17,15 +17,21 @@ import lombok.Setter;
 public class HardDisk
 {
 
+    /** Attribute id*/
     @EmbeddedId
     private HardDiskId id;
 
+    /** Attribute size*/
     @Column(name = "size")
     private Long size;
 
+    /** Attribute model*/
     @Column(name = "model")
     private String model;
 
+    /**
+     * Constructor for create new HardDisk
+     */
     public HardDisk()
     {
     }

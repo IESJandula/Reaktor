@@ -29,7 +29,7 @@ public class ComputerOnReport
     {
         try
         {
-            this.httpCommunicationSender.sendPost(this.httpCommunicationSender.createHttpPostWithHeader(this.reaktorServerUrl + "/computer-on", "serialNumber", this.windowsMotherboard.getHardwareUUID()));
+            this.httpCommunicationSender.sendPost(this.httpCommunicationSender.createHttpPostWithHeader(this.reaktorServerUrl + "/computer-on", "motherBoardSerialNumber", this.windowsMotherboard.getHardwareUUID()));
             log.info("Computer on report sent");
         }
         catch (ReaktorClientException reaktorClientException)

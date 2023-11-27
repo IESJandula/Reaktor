@@ -9,12 +9,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CpuDTO
 {
+    /** Attribute id*/
     private String id;
 
+    /** Attribute cores*/
     private Integer cores;
 
+    /** Attribute frequency*/
     private Long frequency;
 
+    /** Attribute threads*/
     private Integer threads;
 
 }

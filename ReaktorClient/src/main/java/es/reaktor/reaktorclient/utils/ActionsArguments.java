@@ -52,7 +52,7 @@ public class ActionsArguments
         //Getting the configuration values and transform to JSON
         this.writeFiles.escribirResultadoJson(configuration);
     }
-
+    
     /**
      * Method checkConfiguration
      * @param configuration
@@ -66,14 +66,26 @@ public class ActionsArguments
             configuration.setClassroom(Constants.UNKNOWN);
         }
 
-        if (configuration.getProfessor() == null || configuration.getProfessor().isEmpty())
+        if (configuration.getTeacher() == null || configuration.getTeacher().isEmpty())
         {
-            configuration.setProfessor(Constants.UNKNOWN);
+            configuration.setTeacher(Constants.UNKNOWN);
         }
 
-        if (configuration.getDescription() == null || configuration.getDescription().isEmpty())
+        if (configuration.getTrolley() == null || configuration.getTrolley().isEmpty())
         {
-            configuration.setDescription(Constants.UNKNOWN);
+            configuration.setTrolley(Constants.UNKNOWN);
+        }
+        if (configuration.getAndaluciaId() == null || configuration.getAndaluciaId().isEmpty())
+        {
+            configuration.setAndaluciaId(Constants.UNKNOWN);
+        }
+        if (configuration.getComputerNumber() == null || configuration.getComputerNumber().isEmpty())
+        {
+            configuration.setComputerNumber(Constants.UNKNOWN);
+        }
+        if (configuration.getComputerSerialNumber() == null || configuration.getComputerSerialNumber().isEmpty())
+        {
+            configuration.setComputerSerialNumber(Constants.UNKNOWN);
         }
 
         if (configuration.getIsAdmin() == null)

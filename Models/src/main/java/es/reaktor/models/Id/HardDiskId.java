@@ -21,11 +21,14 @@ import java.io.Serializable;
 public class HardDiskId implements Serializable
 {
 
+    /** Attribute serialVersionUID*/
     @Serial
     private static final long serialVersionUID = -5976371824092890181L;
 
+    /** Attribute serialNumberHardDisk*/
     private String serialNumberHardDisk;
 
+    /** Attribute motherboard*/
     @OneToOne
     @JoinColumn(name = "serial_number_motherboard")
     private Motherboard motherboard;

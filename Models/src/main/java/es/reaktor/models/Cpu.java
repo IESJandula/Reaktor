@@ -20,18 +20,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class Cpu
 {
+    /** Attribute id*/
     @EmbeddedId
     private CpuId id;
 
+    /** Attribute cores*/
     @Column(name = "cores")
     private Integer cores;
 
+    /** Attribute frequency*/
     @Column(name = "frequency")
     private Long frequency;
 
+    /** Attribute threads*/
     @Column(name = "threads")
     private Integer threads;
 
+    /**
+     * Constructor for create new Cpu
+     * @param id
+     * @param cores
+     * @param frequency
+     * @param threads
+     */
     public Cpu(CpuId id, Integer cores, Long frequency, Integer threads) {
         this.id = id;
         this.cores = cores;
