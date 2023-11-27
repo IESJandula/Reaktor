@@ -6,6 +6,7 @@ export interface SimpleComputerDTO
   responsable: string;
   computerOn: boolean;
   isAdmin: boolean;
+  computerNumber: string;
 }
 
 export interface ComputerDTO

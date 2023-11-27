@@ -28,4 +28,7 @@ public class SimpleComputerDTO
 
     /** Attribute isAdmin*/
     private Boolean isAdmin;
+    
+    /** Attribute computerNumber*/
+    private String computerNumber;
 }

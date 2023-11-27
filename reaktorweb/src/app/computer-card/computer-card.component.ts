@@ -15,6 +15,7 @@ export class ComputerCardComponent {
   @Input() location: string = '';
   @Input() responsable: string = '';
   @Input() computerOn: boolean = false;
+  @Input() computerNumber: string = '';
 
   constructor(private router: Router) { }
 
