@@ -2,10 +2,12 @@ package es.reaktor.reaktor.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import es.reaktor.models.CommandLine;
 
 /**
  * @author David Martinez
@@ -21,7 +23,8 @@ public class ReaktorAdministrationRest
 			@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
 			@RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) Integer plant)
+			@RequestHeader(required = false) Integer plant,
+			@RequestBody(required = true) CommandLine commandLine)
 	{
 		try
 		{
