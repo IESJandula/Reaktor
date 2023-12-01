@@ -1,5 +1,7 @@
 package es.reaktor.models;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,12 +45,12 @@ public class Computer
      * - ATTRIBUTES -
      * This attributes have a array of hardware components
      */
-	private HardwareComponent[] hardwareList;
+	private List<HardwareComponent> hardwareList;
 	/**
      * - ATTRIBUTES -
      * This attributes have a array of softwares
      */
-	private Software[] softwareList;
+	private List<Software> softwareList;
 	/**
      * - ATTRIBUTES -
      * This attributes have the command lines
