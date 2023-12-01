@@ -1,12 +1,35 @@
 package es.reaktor.reaktor.reaktor_actions;
 
-import es.reaktor.models.*;
-import es.reaktor.models.Id.MotherboardMalwareId;
-import es.reaktor.reaktor.repository.*;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import es.reaktor.models.Cpu;
+import es.reaktor.models.GraphicCard;
+import es.reaktor.models.HardDisk;
+import es.reaktor.models.InternetConnection;
+import es.reaktor.models.Malware;
+import es.reaktor.models.Motherboard;
+import es.reaktor.models.MotherboardMalware;
+import es.reaktor.models.NetworkCard;
+import es.reaktor.models.Partition;
+import es.reaktor.models.Ram;
+import es.reaktor.models.Reaktor;
+import es.reaktor.models.SoundCard;
+import es.reaktor.models.Id.MotherboardMalwareId;
+import es.reaktor.reaktor.repository.ICpuRepository;
+import es.reaktor.reaktor.repository.IGraphicCardRepository;
+import es.reaktor.reaktor.repository.IHardDiskRepository;
+import es.reaktor.reaktor.repository.IMalwareRepository;
+import es.reaktor.reaktor.repository.IMotherboardMalwareRepository;
+import es.reaktor.reaktor.repository.IMotherboardRepository;
+import es.reaktor.reaktor.repository.INetworkCardRepository;
+import es.reaktor.reaktor.repository.IPartitionRepository;
+import es.reaktor.reaktor.repository.IRamRepository;
+import es.reaktor.reaktor.repository.ISoundCardRepository;
+import es.reaktor.reaktor.repository.IinternetConnectionNetworkCardRepository;
+import es.reaktor.reaktor.repository.IinternetConnectionRepository;
 
 @Component
 public class ReaktorActions
@@ -162,6 +185,4 @@ public class ReaktorActions
             this.iMotherboardMalwareRepository.saveAndFlush(new MotherboardMalware(new MotherboardMalwareId(malware.getName(), motherBoardSerialNumber), malware, motherboard));
         }
     }
-
-
 }

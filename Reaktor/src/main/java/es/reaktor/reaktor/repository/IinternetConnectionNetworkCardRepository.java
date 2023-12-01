@@ -1,8 +1,9 @@
 package es.reaktor.reaktor.repository;
 
-import es.reaktor.models.Id.InternetConnectionNetworkCardId;
-import es.reaktor.models.InternetConnectionNetworkCard;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import es.reaktor.models.InternetConnectionNetworkCard;
+import es.reaktor.models.Id.InternetConnectionNetworkCardId;
 
 public interface IinternetConnectionNetworkCardRepository extends JpaRepository<InternetConnectionNetworkCard, InternetConnectionNetworkCardId>
 {

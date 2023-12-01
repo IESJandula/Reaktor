@@ -1,15 +1,15 @@
 package es.reaktor.reaktor.scheduled_task;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 import es.reaktor.models.Motherboard;
 import es.reaktor.reaktor.repository.IMotherboardRepository;
 import es.reaktor.reaktor.utils.AppConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.introspector.Property;
-
-import java.util.List;
 
 /**
  * - Class -

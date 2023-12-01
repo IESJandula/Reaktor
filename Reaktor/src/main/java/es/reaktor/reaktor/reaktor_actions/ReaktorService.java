@@ -1,15 +1,45 @@
 package es.reaktor.reaktor.reaktor_actions;
 
-import es.reaktor.models.*;
-import es.reaktor.models.DTO.*;
-import es.reaktor.models.Id.MotherboardMalwareId;
-import es.reaktor.reaktor.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import es.reaktor.models.Cpu;
+import es.reaktor.models.GraphicCard;
+import es.reaktor.models.HardDisk;
+import es.reaktor.models.Malware;
+import es.reaktor.models.Motherboard;
+import es.reaktor.models.MotherboardMalware;
+import es.reaktor.models.NetworkCard;
+import es.reaktor.models.Partition;
+import es.reaktor.models.Ram;
+import es.reaktor.models.SoundCard;
+import es.reaktor.models.DTO.CpuDTO;
+import es.reaktor.models.DTO.GraphicCardDTO;
+import es.reaktor.models.DTO.HardDiskDTO;
+import es.reaktor.models.DTO.MalwareDTO;
+import es.reaktor.models.DTO.MalwareDTOWeb;
+import es.reaktor.models.DTO.MotherboardDTO;
+import es.reaktor.models.DTO.NetworkCardDTO;
+import es.reaktor.models.DTO.PartitionDTO;
+import es.reaktor.models.DTO.RamDTO;
+import es.reaktor.models.DTO.ReaktorDTO;
+import es.reaktor.models.DTO.SimpleComputerDTO;
+import es.reaktor.models.DTO.SoundCardDTO;
+import es.reaktor.models.Id.MotherboardMalwareId;
+import es.reaktor.reaktor.repository.ICpuRepository;
+import es.reaktor.reaktor.repository.IGraphicCardRepository;
+import es.reaktor.reaktor.repository.IHardDiskRepository;
+import es.reaktor.reaktor.repository.IMalwareRepository;
+import es.reaktor.reaktor.repository.IMotherboardMalwareRepository;
+import es.reaktor.reaktor.repository.IMotherboardRepository;
+import es.reaktor.reaktor.repository.INetworkCardRepository;
+import es.reaktor.reaktor.repository.IPartitionRepository;
+import es.reaktor.reaktor.repository.IRamRepository;
+import es.reaktor.reaktor.repository.ISoundCardRepository;
 
 @Service
 public class ReaktorService
