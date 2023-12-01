@@ -3,6 +3,9 @@ package es.reaktor.reaktor.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Alejandro Cazalla Pérez
+ */
 public class ComputerError extends Exception
 {
 	/**

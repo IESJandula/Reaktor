@@ -13,6 +13,9 @@ import es.reaktor.reaktor.exceptions.ComputerError;
 @RequestMapping(value = "/computers", produces = {"application/json"})
 @RestController
 
+/**
+ * @author Alejandro Cazalla Pérez
+ */
 public class RestHandlerMonitoring
 {
 	/**
