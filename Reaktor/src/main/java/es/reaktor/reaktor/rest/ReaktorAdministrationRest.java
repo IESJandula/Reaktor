@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import es.reaktor.models.CommandLine;
 import es.reaktor.models.Computer;
+import es.reaktor.models.HardwareComponent;
 import es.reaktor.models.Location;
+import es.reaktor.models.MonitorizationLog;
+import es.reaktor.models.Software;
 
 /**
  * @author David Martinez
@@ -25,7 +28,11 @@ import es.reaktor.models.Location;
 public class ReaktorAdministrationRest
 {
 	private List<Computer>computerList = new ArrayList<Computer>(List.of(
-			//new Computer("sn123","ad123","cn123","windows","Paco",new Location(),new String[0],new String[0],"CommandLine","Monitorization")
+      new Computer("sn123","and123","cn123","windows","paco",new Location("0.5",0,"trolley1"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
+      new Computer("sn1234","and1234","cn12344","windows","paco",new Location("0.5",0,"trolley1"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
+      new Computer("sn123","and12355","cn123455","windows","paco",new Location("0.7",0,"trolley2"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
+      new Computer("sn123556","and123556","cn1234556","windows","paco",new Location("0.7",0,"trolley2"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
+      new Computer("sn123777","and123777","cn1234777","windows","paco",new Location("0.9",0,"trolley3"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog())
 			
 	));
 	
@@ -40,6 +47,7 @@ public class ReaktorAdministrationRest
 	{
 		try
 		{
+			// --- GETTING THE COMMAND BLOCK ----
 			List<String> commandBlock = new ArrayList<String>(Arrays.asList(commandLine.getCommands()));
 			
 			if (serialNumber != null || classroom != null || trolley != null || plant != null)
@@ -47,8 +55,16 @@ public class ReaktorAdministrationRest
 				if(serialNumber!=null) 
 				{
 					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY serialNumber
-
-					return ResponseEntity.ok("CommandLine send OK serialNumber");
+					for(Computer computer : computerList) 
+					{
+						if(computer.getSerialNumber().equalsIgnoreCase(serialNumber)) 
+						{
+							computer.setCommandLine(new CommandLine(/*LISTA AQUI*/));
+							computerList.remove(computer);
+							computerList.add(computer);
+						}
+					}
+					return ResponseEntity.ok("CommandLine send OK serialNumber "+computerList);
 				}
 				else if(trolley!=null) 
 				{
@@ -80,7 +96,5 @@ public class ReaktorAdministrationRest
 		{
 			return ResponseEntity.status(500).body("ERROR 500");
 		}
-
 	}
-
 }
