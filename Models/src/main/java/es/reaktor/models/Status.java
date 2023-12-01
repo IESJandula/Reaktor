@@ -23,7 +23,7 @@ public class Status {
 	
 	/**
      * - ATTRIBUTES -
-     * This attributes have theerror
+     * This attributes have the error
      */
 	private ComputerError error;
 }
