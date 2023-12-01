@@ -16,48 +16,48 @@ public class Computer
 	private String serialNumber;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have the andalucia id
      */
 	private String andaluciaID;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have the computer number
      */
 	private String computerNumber;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have the operative system
      */
 	private String operativeSystem;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have the professor
      */
 	private String professor;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have the location
      */
-	private String location;
+	private Location location;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have a array of hardware components
      */
-	private String[] hardwareList;
+	private HardwareComponent[] hardwareList;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have a array of softwares
      */
-	private String[] softwareList;
+	private Software[] softwareList;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have the command lines
      */
-	private String commandLine;
+	private CommandLine commandLine;
 	/**
      * - ATTRIBUTES -
-     * This attributes have the serial number
+     * This attributes have the monitorization log
      */
-	private String motorizationLog;
+	private MonitorizationLog motorizationLog;
 	
 }
