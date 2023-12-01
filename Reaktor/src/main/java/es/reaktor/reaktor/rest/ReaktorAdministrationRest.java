@@ -28,11 +28,11 @@ import es.reaktor.models.Software;
 public class ReaktorAdministrationRest
 {
 	private List<Computer>computerList = new ArrayList<Computer>(List.of(
-      new Computer("sn123","and123","cn123","windows","paco",new Location("0.5",0,"trolley1"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
-      new Computer("sn1234","and1234","cn12344","windows","paco",new Location("0.5",0,"trolley1"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
-      new Computer("sn123","and12355","cn123455","windows","paco",new Location("0.7",0,"trolley2"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
-      new Computer("sn123556","and123556","cn1234556","windows","paco",new Location("0.7",0,"trolley2"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog()),
-      new Computer("sn123777","and123777","cn1234777","windows","paco",new Location("0.9",0,"trolley3"),new HardwareComponent[0],new Software[0],new CommandLine(),new MonitorizationLog())
+      new Computer("sn123","and123","cn123","windows","paco",new Location("0.5",0,"trolley1"),new ArrayList<HardwareComponent>(),new ArrayList<Software>(),new CommandLine(),new MonitorizationLog()),
+      new Computer("sn1234","and1234","cn12344","windows","paco",new Location("0.5",0,"trolley1"),new ArrayList<HardwareComponent>(),new ArrayList<Software>(),new CommandLine(),new MonitorizationLog()),
+      new Computer("sn123","and12355","cn123455","windows","paco",new Location("0.7",0,"trolley2"),new ArrayList<HardwareComponent>(),new ArrayList<Software>(),new CommandLine(),new MonitorizationLog()),
+      new Computer("sn123556","and123556","cn1234556","windows","paco",new Location("0.7",0,"trolley2"),new ArrayList<HardwareComponent>(),new ArrayList<Software>(),new CommandLine(),new MonitorizationLog()),
+      new Computer("sn123777","and123777","cn1234777","windows","paco",new Location("0.9",0,"trolley3"),new ArrayList<HardwareComponent>(),new ArrayList<Software>(),new CommandLine(),new MonitorizationLog())
 			
 	));
 	
@@ -48,53 +48,95 @@ public class ReaktorAdministrationRest
 		try
 		{
 			// --- GETTING THE COMMAND BLOCK ----
-			List<String> commandBlock = new ArrayList<String>(Arrays.asList(commandLine.getCommands()));
+			List<String> commands = new ArrayList<String>(commandLine.getCommands());
 			
 			if (serialNumber != null || classroom != null || trolley != null || plant != null)
 			{
 				if(serialNumber!=null) 
 				{
-					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY serialNumber
-					for(Computer computer : computerList) 
+					//ALL COMMANDS ON SPECIFIC COMPUTER BY serialNumber
+					
+					for(int i = 0;i<computerList.size();i++) 
 					{
+						Computer computer = computerList.get(i);
 						if(computer.getSerialNumber().equalsIgnoreCase(serialNumber)) 
 						{
-							computer.setCommandLine(new CommandLine(/*LISTA AQUI*/));
+							computer.setCommandLine(new CommandLine(commands));
+							int index = computerList.indexOf(computer);
 							computerList.remove(computer);
-							computerList.add(computer);
+							computerList.add(index,computer);
 						}
 					}
+					
 					return ResponseEntity.ok("CommandLine send OK serialNumber "+computerList);
 				}
 				else if(trolley!=null) 
 				{
-					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY trolley
-					return ResponseEntity.ok("CommandLine send OK trolley");
+					//ALL COMMANDS ON SPECIFIC COMPUTER BY trolley
+					for(int i = 0;i<computerList.size();i++) 
+					{
+						Computer computer = computerList.get(i);
+						if(computer.getLocation().getTrolley().equalsIgnoreCase(trolley)) 
+						{
+							computer.setCommandLine(new CommandLine(commands));
+							int index = computerList.indexOf(computer);
+							computerList.remove(computer);
+							computerList.add(index,computer);
+						}
+					}
+					return ResponseEntity.ok("CommandLine send OK trolley"+computerList);
 				}
 				else if(classroom!=null) 
 				{
-					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY classroom
-					return ResponseEntity.ok("CommandLine send OK classroom");
+					//ALL COMMANDS ON SPECIFIC COMPUTER BY classroom
+					for(int i = 0;i<computerList.size();i++) 
+					{
+						Computer computer = computerList.get(i);
+						if(computer.getLocation().getClassroom().equalsIgnoreCase(classroom)) 
+						{
+							computer.setCommandLine(new CommandLine(commands));
+							int index = computerList.indexOf(computer);
+							computerList.remove(computer);
+							computerList.add(index,computer);
+						}
+					}
+					return ResponseEntity.ok("CommandLine send OK classroom"+computerList);
 				}
-				else if(plant!=null) 
+				else
 				{
-					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY plant
-					return ResponseEntity.ok("CommandLine send OK plant");
-				}
-				else 
-				{
-					return ResponseEntity.status(490).body("ERROR 490");
+					// plant!=null  (The last Possible)
+					//ALL COMMANDS ON SPECIFIC COMPUTER BY plant
+					for(int i = 0;i<computerList.size();i++) 
+					{
+						Computer computer = computerList.get(i);
+						if(computer.getLocation().getPlant()==plant) 
+						{
+							computer.setCommandLine(new CommandLine(commands));
+							int index = computerList.indexOf(computer);
+							computerList.remove(computer);
+							computerList.add(index,computer);
+						}
+					}
+					return ResponseEntity.ok("CommandLine send OK plant"+computerList);
 				}
 			}
 			else
 			{
-				//TO-DO COMMANDS RUN ON ALL COMPUTERS
-				return ResponseEntity.ok("CommandLine send OK ALL COMPUTERS");
+				//COMMANDS RUN ON ALL COMPUTERS
+				for(int i = 0;i<computerList.size();i++) 
+				{
+					Computer computer = computerList.get(i);
+					computer.setCommandLine(new CommandLine(commands));
+					int index = computerList.indexOf(computer);
+					computerList.remove(computer);
+					computerList.add(index,computer);
+				}
+				return ResponseEntity.ok("CommandLine send OK ALL COMPUTERS"+computerList);
 			}
 		}
 		catch (Exception exception)
 		{
-			return ResponseEntity.status(500).body("ERROR 500");
+			return ResponseEntity.status(500).body("ERROR 500"+exception);
 		}
 	}
 }
