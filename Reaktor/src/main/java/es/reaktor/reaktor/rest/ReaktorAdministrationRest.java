@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import es.reaktor.models.CommandLine;
+import es.reaktor.models.Computer;
+import es.reaktor.models.Location;
 
 /**
  * @author David Martinez
@@ -22,7 +24,13 @@ import es.reaktor.models.CommandLine;
 @RequestMapping("/computers")
 public class ReaktorAdministrationRest
 {
-	@RequestMapping(method = RequestMethod.GET, value = "/admin/commandLine",consumes = "application/json")
+	private List<Computer>computerList = new ArrayList<Computer>(List.of(
+			//new Computer("sn123","ad123","cn123","windows","Paco",new Location(),new String[0],new String[0],"CommandLine","Monitorization")
+			
+	));
+	
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/admin/commandLine",consumes = "application/json")
 	public ResponseEntity<?> sendInformation(
 			@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
@@ -32,30 +40,28 @@ public class ReaktorAdministrationRest
 	{
 		try
 		{
+			List<String> commandBlock = new ArrayList<String>(Arrays.asList(commandLine.getCommands()));
+			
 			if (serialNumber != null || classroom != null || trolley != null || plant != null)
 			{
 				if(serialNumber!=null) 
 				{
-					List<String> commandBlock = new ArrayList<String>(Arrays.asList(commandLine.getCommands()));
 					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY serialNumber
 
 					return ResponseEntity.ok("CommandLine send OK serialNumber");
 				}
 				else if(trolley!=null) 
 				{
-					List<String> commandBlock = new ArrayList<String>(Arrays.asList(commandLine.getCommands()));
 					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY trolley
 					return ResponseEntity.ok("CommandLine send OK trolley");
 				}
 				else if(classroom!=null) 
 				{
-					List<String> commandBlock = new ArrayList<String>(Arrays.asList(commandLine.getCommands()));
 					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY classroom
 					return ResponseEntity.ok("CommandLine send OK classroom");
 				}
 				else if(plant!=null) 
 				{
-					List<String> commandBlock = new ArrayList<String>(Arrays.asList(commandLine.getCommands()));
 					//TO-DO ALL COMMANDS ON SPECIFIC COMPUTER BY plant
 					return ResponseEntity.ok("CommandLine send OK plant");
 				}
@@ -66,7 +72,8 @@ public class ReaktorAdministrationRest
 			}
 			else
 			{
-				return ResponseEntity.status(404).body("ERROR 404");
+				//TO-DO COMMANDS RUN ON ALL COMPUTERS
+				return ResponseEntity.ok("CommandLine send OK ALL COMPUTERS");
 			}
 		}
 		catch (Exception exception)
