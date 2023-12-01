@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+/*
+ * @author Miguel Rios
+ */
 
 @Controller
 @RequestMapping("/web/screenshot")
