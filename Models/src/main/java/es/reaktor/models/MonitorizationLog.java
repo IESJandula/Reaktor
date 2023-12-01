@@ -19,7 +19,7 @@ public class MonitorizationLog {
      * - ATTRIBUTES -
      * This attributes have the lastCommandLine
      */
-	private String lastCommandLine;
+	private CommandLine lastCommandLine;
 	
 	/**
      * - ATTRIBUTES -
@@ -31,12 +31,12 @@ public class MonitorizationLog {
      * - ATTRIBUTES -
      * This attributes have the lastInstall
      */
-	private String lastInstall;
+	private Software lastInstall;
 	
 	/**
      * - ATTRIBUTES -
      * This attributes have the lastUnistall
      */
-	private String lastUnistall;
+	private Software lastUnistall;
 
 }
