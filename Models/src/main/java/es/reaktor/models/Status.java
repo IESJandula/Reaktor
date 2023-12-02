@@ -1,5 +1,6 @@
 package es.reaktor.models;
 
+import es.reaktor.exceptions.ComputerError;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
