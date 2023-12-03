@@ -48,7 +48,7 @@ public class ReaktorMonitoringRest
 					new MonitorizationLog())
 
 	));
-	@RequestMapping(method = RequestMethod.GET, value = "/computer/get/status")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/status")
 	public ResponseEntity<?> getCommandLine(@RequestHeader(required=true) String serialNumber)
 	{
 		try
