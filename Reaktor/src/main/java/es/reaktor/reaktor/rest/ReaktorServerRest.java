@@ -3,8 +3,10 @@ package es.reaktor.reaktor.rest;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
+import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
+import es.reaktor.models.Peripheral;
 import es.reaktor.models.Reaktor;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
@@ -162,5 +164,44 @@ public class ReaktorServerRest
     public ResponseEntity<ReaktorDTO> getReaktor(@PathVariable String idComputer )
     {
         return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/peripheral", consumes = {"application/json"})
+    public ResponseEntity<?> peripheralInfo(
+            @RequestHeader(required=false) String Classroom,
+            @RequestHeader(required=false) String Trolley,
+            @RequestBody Peripheral peripheralInstance[]
+    )
+    {
+        try
+        {
+            testPeripheral(peripheralInstance);
+        }
+        catch (ComputerError computerError)
+        {
+        	return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage());
+        	
+        }
+        try 
+        {
+        	//TO DO
+        }
+        catch(Exception e) 
+        {
+        	return ResponseEntity.status(500).body(e.getMessage());
+       }
+
+        return ResponseEntity.ok().build();
+    }
+    
+    public void testPeripheral(Peripheral peripheralInstance[])throws ComputerError
+    {
+    	if(peripheralInstance == null) 
+    	{
+    		ComputerError computerError = new ComputerError(400,"No hay perifericos");
+    		
+    		throw computerError;
+    		
+    	}
     }
 }
