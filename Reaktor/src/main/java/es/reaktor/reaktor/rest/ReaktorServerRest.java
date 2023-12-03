@@ -3,6 +3,8 @@ package es.reaktor.reaktor.rest;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
+import es.fmbc.psp.ud2.sumador_enteros_positivos.exception.JugadorError;
+import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
@@ -162,5 +164,37 @@ public class ReaktorServerRest
     public ResponseEntity<ReaktorDTO> getReaktor(@PathVariable String idComputer )
     {
         return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/computer/admin/screenshot")
+    public ResponseEntity<?> sendScreenshotOrder(
+    		 @RequestHeader String classroom,
+    		 @RequestHeader String trolley
+    		 )
+    {
+    	try 
+    	{
+    		controlScreenShot(classroom, trolley);
+    		return ResponseEntity.ok().build();
+    	}
+    	catch (ComputerError computerError) 
+    	{
+    		return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+		}
+		catch (Exception e )
+		{
+			
+			return ResponseEntity.status(500).body(e.getMessage()) ;
+		} 
+    }
+    
+    
+    public void controlScreenShot(String classroom, String trolley) throws ComputerError
+    {
+    	if(classroom.isEmpty() && trolley.isEmpty()) 
+    	{
+    		
+    		throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");
+    	}
     }
 }
