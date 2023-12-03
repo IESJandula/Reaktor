@@ -68,7 +68,7 @@ public class ReaktorAdministrationRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/commandLine", consumes = "application/json")
-	public ResponseEntity<?> sendInformation(
+	public ResponseEntity<?> postComputerCommandLine(
 			@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
 			@RequestHeader(required = false) String trolley,
@@ -147,7 +147,7 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/shutdown")
-	public ResponseEntity<?> shutdownComputers(
+	public ResponseEntity<?> putComputerShutdown(
 			@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
 			@RequestHeader(required = false) String trolley,
@@ -211,7 +211,7 @@ public class ReaktorAdministrationRest
 				}
 				if (plant != null)
 				{
-					// SHUTDOWN ON SPECIFIC COMPUTER BY plant
+					// SHUTDOWN SPECIFIC COMPUTER BY plant
 					for(int i = 0;i<computerList.size();i++) 
 					{
 						Computer computer = computerList.get(i);
@@ -246,7 +246,113 @@ public class ReaktorAdministrationRest
 		}
 	}
 	
-	
+	/**
+	 * Method shutdownComputers
+	 * @param serialNumber
+	 * @param classroom
+	 * @param trolley
+	 * @param plant
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart")
+	public ResponseEntity<?> putComputerRestart(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, 
+			@RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) Integer plant)
+	{
+		try
+		{
+			Set<Computer> restartComputerListDistint = new HashSet<Computer>();
+			
+			// --- IF ANY OF THE PARAMETERS IS NOT NULL ---
+			if (serialNumber != null || classroom != null || trolley != null || plant != null)
+			{
+				String methodsUsed = "";
+
+				// --- CHECKING IF ANY PARAMETER IS BLANK OR EMPTY ---
+				if (this.checkBlanksOrEmptys(serialNumber, classroom, trolley))
+				{
+					String error = "Any Paramater Is Empty or Blank";
+					ComputerError computerError = new ComputerError(404, error, null);
+					return ResponseEntity.status(404).body(computerError.toMap());
+				}
+
+				if (serialNumber != null)
+				{
+					// RESTART SPECIFIC COMPUTER BY serialNumber
+					for(int i = 0;i<computerList.size();i++) 
+					{
+						Computer computer = computerList.get(i);
+						if(computer.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							restartComputerListDistint.add(computer);
+						}
+					}
+					methodsUsed += "serialNumber,";
+				}
+				if (trolley != null)
+				{
+					// RESTART SPECIFIC COMPUTER BY trolley
+					for(int i = 0;i<computerList.size();i++) 
+					{
+						Computer computer = computerList.get(i);
+						if(computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
+						{
+							restartComputerListDistint.add(computer);
+						}
+					}
+					methodsUsed += "trolley,";
+				}
+				if (classroom != null)
+				{
+					// RESTART SPECIFIC COMPUTER BY classroom
+					for(int i = 0;i<computerList.size();i++) 
+					{
+						Computer computer = computerList.get(i);
+						if(computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
+						{
+							restartComputerListDistint.add(computer);
+						}
+					}
+					methodsUsed += "classroom,";
+				}
+				if (plant != null)
+				{
+					// RESTART SPECIFIC COMPUTER BY plant
+					for(int i = 0;i<computerList.size();i++) 
+					{
+						Computer computer = computerList.get(i);
+						if(computer.getLocation().getPlant()==plant)
+						{
+							restartComputerListDistint.add(computer);
+						}
+					}
+					methodsUsed += "plant,";
+				}
+				log.info("Parameters Used: " + methodsUsed);
+				// --- RETURN OK RESPONSE --- 
+				return ResponseEntity.ok(this.shutdownComputerListDistintToMap(restartComputerListDistint));
+			}
+			else
+			{
+				// RESTART ALL COMPUTERS
+				for(int i = 0;i<computerList.size();i++) 
+				{
+					Computer computer = computerList.get(i);
+					restartComputerListDistint.add(computer);
+				}
+				log.info("By all Computers");
+				return ResponseEntity.ok(this.restartComputerListDistintToMap(restartComputerListDistint));
+			}
+		}
+		catch (Exception exception)
+		{
+			log.error(exception.getMessage());
+			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
+			return ResponseEntity.status(500).body(computerError.toMap());
+		}
+	}
 
 	/**
 	 * Method checkBlanksOrEmptys
@@ -406,6 +512,18 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	private Map<String, List<Computer>> shutdownComputerListDistintToMap(Collection shutdownComputerList)
+	{
+		Map<String, List<Computer>> computerListMap = new HashMap<>();
+		computerListMap.put("computers", new ArrayList<Computer>(shutdownComputerList));
+		return computerListMap;
+	}
+	
+	/**
+	 * Method shutdownComputerListDistintToMap
+	 * @param shutdownComputerList
+	 * @return
+	 */
+	private Map<String, List<Computer>> restartComputerListDistintToMap(Collection shutdownComputerList)
 	{
 		Map<String, List<Computer>> computerListMap = new HashMap<>();
 		computerListMap.put("computers", new ArrayList<Computer>(shutdownComputerList));
