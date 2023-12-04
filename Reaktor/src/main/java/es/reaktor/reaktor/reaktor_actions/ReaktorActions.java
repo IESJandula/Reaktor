@@ -4,7 +4,10 @@ import es.reaktor.models.*;
 import es.reaktor.models.Id.MotherboardMalwareId;
 import es.reaktor.reaktor.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -152,10 +155,13 @@ public class ReaktorActions
         this.motherboardMalwareRepository.deleteByMotherboardMalwareId_SerialNumber(motherBoardSerialNumber);
     }
 
+    @Transactional
     public void insertMalwareMotherboard(String motherBoardSerialNumber, List<Malware> malwareList)
     {
         this.removeMalwareFromMotherboard(motherBoardSerialNumber);
-        Motherboard motherboard = this.motherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber);
+        Motherboard motherboard = this.motherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Motherboard with serial number " + motherBoardSerialNumber + " does not exist")
+        );
 
         for (Malware malware : malwareList)
         {

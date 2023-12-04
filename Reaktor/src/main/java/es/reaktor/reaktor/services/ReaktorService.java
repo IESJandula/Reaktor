@@ -1,10 +1,9 @@
-package es.reaktor.reaktor.reaktor_actions;
+package es.reaktor.reaktor.services;
 
 import es.reaktor.models.*;
 import es.reaktor.models.DTO.*;
 import es.reaktor.models.Id.MotherboardMalwareId;
 import es.reaktor.reaktor.repository.*;
-import es.reaktor.reaktor.services.MotherboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -116,7 +115,11 @@ public class ReaktorService
     {
         CpuDTO cpu = this.convertToCpuDTO(this.cpuRepository.findCpuById_Motherboard_MotherBoardSerialNumber(idComputer));
 
-        MotherboardDTO motherboard = this.convertToMotherboardDTO(this.motherboardRepository.findByMotherBoardSerialNumber(idComputer));
+        MotherboardDTO motherboard = this.convertToMotherboardDTO(this.motherboardRepository.findByMotherBoardSerialNumber(idComputer).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Motherboard with serial number " + idComputer + " does not exist"
+                )
+        ));
 
         List<GraphicCardDTO> graphicCardList = this.graphicCardRepository.findAll().stream().filter(graphicCard -> Objects.equals(graphicCard.getId().getMotherboard().getMotherBoardSerialNumber(), idComputer)).map(this::convertToGraphicCardDTO).toList();
 
@@ -250,7 +253,9 @@ public class ReaktorService
 
         for (String id : motherboardMalwareIdList)
         {
-            Motherboard motherboard = this.motherboardRepository.findByMotherBoardSerialNumber(id);
+            Motherboard motherboard = this.motherboardRepository.findByMotherBoardSerialNumber(id).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Motherboard with serial number " + id + " does not exist")
+            );
             motherboard.getMalware().remove(new MotherboardMalware(new MotherboardMalwareId(idMalware, id), malwareRemove, motherboard));
         }
 

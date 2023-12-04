@@ -1,4 +1,4 @@
-package es.reaktor.reaktor.scheduled_task;
+package es.reaktor.reaktor.schedule;
 
 import es.reaktor.models.Motherboard;
 import es.reaktor.reaktor.repository.MotherboardRepository;
@@ -28,7 +28,7 @@ public class ScheduledTask
     @Scheduled(fixedDelayString = "${reaktor.cronComputerOn}", initialDelay = 2000)
     public void checkComputerOn()
     {
-        log.info("Checking if the computer is on");
+        log.debug("Checking if the computer is on");
 
         List<Motherboard> motherboards = this.motherboardRepository.findAll();
 

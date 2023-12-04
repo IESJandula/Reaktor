@@ -7,14 +7,16 @@ import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
-import es.reaktor.reaktor.reaktor_actions.ReaktorService;
+import es.reaktor.reaktor.services.ReaktorService;
 import es.reaktor.reaktor.repository.MalwareRepository;
 import es.reaktor.reaktor.repository.MotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -64,7 +66,10 @@ public class ReaktorController
         }
 
         // we get the motherboard
-        Motherboard motherboard = this.motherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber);
+        Motherboard motherboard = this.motherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Motherboard with serial number " + motherBoardSerialNumber + " does not exist")
+        );
 
         // we set the computer on
         motherboard.setComputerOn(true);
@@ -76,80 +81,6 @@ public class ReaktorController
         this.motherboardRepository.save(motherboard);
 
         return ResponseEntity.ok("Computer with serial number " + motherBoardSerialNumber + " is on");
-    }
-
-
-    /**
-     * This Method is used to obtain the malware list
-     * @return the malware list
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/malware")
-    public List<Malware> getMalware()
-    {
-        return this.malwareRepository.findAll();
-    }
-
-    /**
-     * This Method is used to obtain the malware list for Web
-     * @return the malware list for Web
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/malware-web")
-    public List<MalwareDTOWeb> getMalwareWeb()
-    {
-        return this.reaktorService.getMalwareWeb();
-    }
-
-    /**
-     * This Method is used to create a malware
-     * @return Ok if the malware is created
-     */
-    @RequestMapping(method = RequestMethod.POST, value = "/malware")
-    public ResponseEntity<?> createMalware(
-            @RequestBody Malware newMalware
-    )
-    {
-        log.info("Creating malware {}", newMalware);
-        return ResponseEntity.ok().body(this.malwareRepository.save(newMalware));
-    }
-
-
-    /**
-     * This Method is used to create a malware
-     * @param name malware name
-     * @return Ok if the malware is created
-     */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/malware/{name}")
-    public ResponseEntity<?> deleteMalware(
-            @PathVariable String name
-    )
-    {
-        this.reaktorService.deleteMalware(name);
-        return ResponseEntity.ok("Malware has been deleted");
-    }
-
-    /**
-     * This Method is used to report a malware for a motherboard
-     * @return Ok if the malware is reported
-     */
-    @Transactional
-    @RequestMapping(method = RequestMethod.POST, value = "/report-malware")
-    public ResponseEntity<?> reportMalware(
-            @RequestHeader String motherBoardSerialNumber,
-            @RequestBody List<Malware> malwareList
-    )
-    {
-        try
-        {
-            log.info("Reporting malware for motherboard {}", motherBoardSerialNumber);
-            this.reaktorActions.insertMalwareMotherboard(motherBoardSerialNumber, malwareList);
-        }
-        catch (Exception exception)
-        {
-            log.warn("Malware not reported", exception);
-            return ResponseEntity.ok("Malware not reported");
-        }
-
-        return ResponseEntity.ok("Malware reported");
     }
 
     @GetMapping("/computer")
