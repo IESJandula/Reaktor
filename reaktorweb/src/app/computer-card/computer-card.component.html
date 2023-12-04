@@ -6,12 +6,18 @@
   <div class="card-body">
     <div class="card-title">
       <h5>Malware count: {{ simpleComputer.malwareCount }}</h5>
-      <h5 *ngIf="simpleComputer.isAdmin"> SOY ADMINISTRADOR </h5>
+      <h5 *ngIf="simpleComputer.isAdmin">ADMINISTRADOR</h5>
     </div>
     <div class="card-text">
-      <p>Location: {{ simpleComputer.location }}</p>
-      <p>Responsable: {{ simpleComputer.responsable }}</p>
-      <p>Responsable: {{ simpleComputer.computerNumber }}</p>
+      <h5 *ngIf="!simpleComputer.isAdmin">
+        <p>Location: {{ simpleComputer.location }}</p>
+        <p>Computer Number: {{ simpleComputer.computerNumber }}</p>
+      </h5>
+      <h5 *ngIf="simpleComputer.isAdmin">
+        <p>Location: {{ simpleComputer.location }}</p>
+        <p>Teacher: {{ simpleComputer.responsable }}</p>
+        <p>Computer Number: {{ simpleComputer.computerNumber }}</p>
+      </h5>
     </div>
   </div>
 </div>

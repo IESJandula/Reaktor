@@ -1,9 +1,9 @@
 {
-  "classroom" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
-  "teacher" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
-  "trolley" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
-  "andaluciaId" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
-  "computerNumber" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
-  "computerSerialNumber" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
+  "classroom" : "Unknown",
+  "teacher" : "Unknown",
+  "trolley" : "Unknown",
+  "andaluciaId" : "Unknown",
+  "computerNumber" : "Unknown",
+  "computerSerialNumber" : "Unknown",
   "isAdmin" : false
 }
