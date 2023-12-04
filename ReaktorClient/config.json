@@ -1,9 +1,9 @@
 {
-  "classroom" : "2-DAM",
-  "teacher" : "Profesor",
-  "trolley" : "Carrito test",
-  "andaluciaId" : "AND-55DVX",
-  "computerNumber" : "5D",
-  "computerSerialNumber" : "serialNumber2323",
-  "isAdmin" : true
+  "classroom" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
+  "teacher" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
+  "trolley" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
+  "andaluciaId" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
+  "computerNumber" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
+  "computerSerialNumber" : "Unknown\\a04763fe-9e38-455e-a67f-315f3a640924",
+  "isAdmin" : false
 }

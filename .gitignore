@@ -1,0 +1,29 @@
+# Reaktor Server ignore
+Reaktor/.idea
+Reaktor/target
+Reaktor/.settings
+Reaktor/.project
+
+# Reaktor Client ignore
+ReaktorClient/.idea
+ReaktorClient/target
+ReaktorClient/.settings
+ReaktorClient/.project
+
+# Model ignore
+Models/.idea
+Models/target
+Models/.settings
+Models/.classpath
+Models/.project
+
+# web ignore
+reaktorweb/node_modules
+reaktorweb/.angular
+
+# Project ignore
+target
+.idea
+
+# Parent ignore
+Parent/.project

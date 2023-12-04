@@ -13,40 +13,40 @@ public class ReaktorActions
 {
 
     @Autowired
-    private ICpuRepository iCpuRepository;
+    private CpuRepository cpuRepository;
 
     @Autowired
-    private IGraphicCardRepository iGraphicCardRepository;
+    private GraphicCardRepository graphicCardRepository;
 
     @Autowired
-    private IHardDiskRepository iHardDiskRepository;
+    private HardDiskRepository hardDiskRepository;
 
     @Autowired
-    private IinternetConnectionNetworkCardRepository iinternetConnectionNetworkCardRepository;
+    private InternetConnectionNetworkCardRepository internetConnectionNetworkCardRepository;
 
     @Autowired
-    private IinternetConnectionRepository iinternetConnectionRepository;
+    private InternetConnectionRepository internetConnectionRepository;
 
     @Autowired
-    private IMalwareRepository iMalwareRepository;
+    private MalwareRepository malwareRepository;
 
     @Autowired
-    private IMotherboardMalwareRepository iMotherboardMalwareRepository;
+    private MotherboardMalwareRepository motherboardMalwareRepository;
 
     @Autowired
-    private IMotherboardRepository iMotherboardRepository;
+    private MotherboardRepository motherboardRepository;
 
     @Autowired
-    private INetworkCardRepository iNetworkCardRepository;
+    private NetworkCardRepository networkCardRepository;
 
     @Autowired
-    private IPartitionRepository iPartitionRepository;
+    private PartitionRepository partitionRepository;
 
     @Autowired
-    private IRamRepository iRamRepository;
+    private RamRepository ramRepository;
 
     @Autowired
-    private ISoundCardRepository iSoundCardRepository;
+    private SoundCardRepository soundCardRepository;
 
     /**
      * This method is used to save the Pc information
@@ -104,62 +104,62 @@ public class ReaktorActions
 
     private void savePartition(List<Partition> partition)
     {
-        this.iPartitionRepository.saveAllAndFlush(partition);
+        this.partitionRepository.saveAllAndFlush(partition);
     }
 
     private void saveNetworkCard(List<NetworkCard> networkCard)
     {
-        this.iNetworkCardRepository.saveAllAndFlush(networkCard);
+        this.networkCardRepository.saveAllAndFlush(networkCard);
     }
 
     private void saveSoundCard(List<SoundCard> soundCard)
     {
-        this.iSoundCardRepository.saveAllAndFlush(soundCard);
+        this.soundCardRepository.saveAllAndFlush(soundCard);
     }
 
     private void saveRam(List<Ram> ram)
     {
-        this.iRamRepository.saveAllAndFlush(ram);
+        this.ramRepository.saveAllAndFlush(ram);
     }
 
     private void saveInternetConnection(InternetConnection internetConnection)
     {
-        this.iinternetConnectionRepository.saveAndFlush(internetConnection);
+        this.internetConnectionRepository.saveAndFlush(internetConnection);
     }
 
     private void saveHardDisk(List<HardDisk> hardDisk)
     {
-        this.iHardDiskRepository.saveAllAndFlush(hardDisk);
+        this.hardDiskRepository.saveAllAndFlush(hardDisk);
     }
 
     private void saveGraphicCard(List<GraphicCard> graphicCard)
     {
-        this.iGraphicCardRepository.saveAllAndFlush(graphicCard);
+        this.graphicCardRepository.saveAllAndFlush(graphicCard);
     }
 
     private void saveMotherboard(Motherboard motherboard)
     {
-        this.iMotherboardRepository.saveAndFlush(motherboard);
+        this.motherboardRepository.saveAndFlush(motherboard);
     }
 
     private void saveCpu(Cpu cpu)
     {
-        this.iCpuRepository.saveAndFlush(cpu);
+        this.cpuRepository.saveAndFlush(cpu);
     }
 
     public void removeMalwareFromMotherboard(String motherBoardSerialNumber)
     {
-        this.iMotherboardMalwareRepository.deleteByMotherboardMalwareId_SerialNumber(motherBoardSerialNumber);
+        this.motherboardMalwareRepository.deleteByMotherboardMalwareId_SerialNumber(motherBoardSerialNumber);
     }
 
     public void insertMalwareMotherboard(String motherBoardSerialNumber, List<Malware> malwareList)
     {
         this.removeMalwareFromMotherboard(motherBoardSerialNumber);
-        Motherboard motherboard = this.iMotherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber);
+        Motherboard motherboard = this.motherboardRepository.findByMotherBoardSerialNumber(motherBoardSerialNumber);
 
         for (Malware malware : malwareList)
         {
-            this.iMotherboardMalwareRepository.saveAndFlush(new MotherboardMalware(new MotherboardMalwareId(malware.getName(), motherBoardSerialNumber), malware, motherboard));
+            this.motherboardMalwareRepository.saveAndFlush(new MotherboardMalware(new MotherboardMalwareId(malware.getName(), motherBoardSerialNumber), malware, motherboard));
         }
     }
 

@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {SimpleComputerDTO} from '../computer-dto';
 import {interval, Subscription} from "rxjs";
 import {URL_SERVER} from "../constants";
 
@@ -10,7 +9,8 @@ import {URL_SERVER} from "../constants";
   styleUrls: ['./principal.component.css']
 })
 export class PrincipalComponent implements OnInit {
-  computers?: SimpleComputerDTO[];
+  public  computerIds: string[] = [];
+
   subscription: Subscription | undefined;
 
   constructor(private http: HttpClient) { }
@@ -22,8 +22,8 @@ export class PrincipalComponent implements OnInit {
   }
 
   private getComputers() {
-    this.http.get<SimpleComputerDTO[]>(URL_SERVER + '/computer').subscribe(data => {
-      this.computers = data;
+    this.http.get<string[]>(URL_SERVER + '/computer').subscribe(data => {
+      this.computerIds = data;
     });
   }
 }

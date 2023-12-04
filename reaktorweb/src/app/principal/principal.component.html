@@ -4,7 +4,7 @@
 </div>
 
 <div class="computer-cards-container">
-  <div class="computer-card" *ngFor="let computer of computers">
-    <app-computer-card [malwareCount]="computer.malwareCount" [location]="computer.location" [responsable]="computer.responsable" [id]="computer.id" [computerOn]="computer.computerOn" [isAdmin]="computer.isAdmin"></app-computer-card>
+  <div class="computer-card" *ngFor="let computerId of computerIds">
+    <app-computer-card [computerId]="computerId"></app-computer-card>
   </div>
 </div>

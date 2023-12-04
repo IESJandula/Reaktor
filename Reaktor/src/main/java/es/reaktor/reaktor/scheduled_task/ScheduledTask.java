@@ -1,13 +1,12 @@
 package es.reaktor.reaktor.scheduled_task;
 
 import es.reaktor.models.Motherboard;
-import es.reaktor.reaktor.repository.IMotherboardRepository;
+import es.reaktor.reaktor.repository.MotherboardRepository;
 import es.reaktor.reaktor.utils.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.introspector.Property;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class ScheduledTask
 {
 
     @Autowired
-    private IMotherboardRepository iMotherboardRepository;
+    private MotherboardRepository motherboardRepository;
 
     @Autowired
     private AppConfig appConfig;
@@ -31,7 +30,7 @@ public class ScheduledTask
     {
         log.info("Checking if the computer is on");
 
-        List<Motherboard> motherboards = this.iMotherboardRepository.findAll();
+        List<Motherboard> motherboards = this.motherboardRepository.findAll();
 
         for (Motherboard motherboard : motherboards)
         {
@@ -40,7 +39,7 @@ public class ScheduledTask
                 if (System.currentTimeMillis() - motherboard.getLastUpdateComputerOn().getTime() > this.appConfig.getCronComputerOnDifference())
                 {
                     motherboard.setComputerOn(false);
-                    this.iMotherboardRepository.save(motherboard);
+                    this.motherboardRepository.save(motherboard);
                 }
             }
         }
