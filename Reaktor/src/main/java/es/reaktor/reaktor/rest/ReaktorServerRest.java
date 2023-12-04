@@ -176,7 +176,7 @@ public class ReaktorServerRest
     		
     		return ResponseEntity.ok().build();
     	}catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError));
+    		return ResponseEntity.status(400).body(computerError);
     	}catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
