@@ -28,8 +28,8 @@ public class RestHandlerMonitoring
 	
 	final static Logger logger = LogManager.getLogger();
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/screenshots")
-	public ResponseEntity<?> getScreenshots(@RequestHeader(value = "serialNumber", required = false)final String serialNumber)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/screenshots")
+	public ResponseEntity<?> getScreenshotsOrder(@RequestHeader(value = "serialNumber", required = false)final String serialNumber)
 	{
 		try
 		{

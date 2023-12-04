@@ -1,9 +1,9 @@
 {
   "classroom" : "2-DAM",
-  "teacher" : "Profesor",
+  "teacher" : "Paco Benitez",
   "trolley" : "Carrito test",
   "andaluciaId" : "AND-55DVX",
-  "computerNumber" : "5D",
-  "computerSerialNumber" : "serialNumber2323",
+  "computerNumber" : "4D",
+  "computerSerialNumber" : "serialNumber1234",
   "isAdmin" : true
 }
