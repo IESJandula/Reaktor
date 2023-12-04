@@ -29,3 +29,7 @@ target
 
 # Parent ignore
 Parent/.project
+
+# deploy jar ignore
+deploy/server/Reaktor-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+deploy/client/ReaktorClient-jar-with-dependencies.jar
