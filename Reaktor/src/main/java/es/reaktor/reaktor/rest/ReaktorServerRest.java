@@ -27,7 +27,6 @@ import java.util.List;
 @Slf4j
 public class ReaktorServerRest
 {
-
 	@Autowired
 	private ReaktorActions reaktorActions;
 
@@ -158,5 +157,23 @@ public class ReaktorServerRest
 	{
 		return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
 	}
-
+   @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/commandLine")
+   public ResponseEntity<?> postComputerCommandLine(
+    		@RequestHeader(required = false) String serialNumber,
+		    @RequestHeader(required = false) String classroom,
+		    @RequestHeader(required = false) String trolley,
+		    @RequestHeader(required = false) int plant,
+		    @RequestBody(required = true) CommandLine commandLineInstance)
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		log.error("Computer error", computerError);
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		log.error("Server error", e);
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+   }
 }
