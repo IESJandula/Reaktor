@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.iesjandula</groupId>
-	<artifactId>Horarios</artifactId>
+	<artifactId>Schedule</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Horarios</name>
-	<description>Project Horarios</description>
+	<name>Schedule</name>
+	<description>Project Schedule</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -25,6 +25,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.28</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>

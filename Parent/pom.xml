@@ -18,6 +18,9 @@
 		
 		<!-- Reaktor Client -->
 		<module>../ReaktorClient</module>
+
+		<!-- Schedule -->
+		<module>../Schedule</module>
 		
 	</modules>
 </project>
