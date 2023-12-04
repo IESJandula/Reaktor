@@ -1,5 +1,7 @@
 package es.reaktor.reaktor.rest;
 
+import java.io.FileOutputStream;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,6 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.File;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 
 import es.reaktor.exceptions.ComputerError;
 import es.reaktor.models.CommandLine;
@@ -548,4 +555,48 @@ public class ReaktorAdministrationRest
 		ComputerError computerError = new ComputerError(404, message, exception);
 		return ResponseEntity.status(404).body(computerError.toMap());
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/computer/admin/screenshot", produces = "application/zip")
+    public ResponseEntity<?> getComputer(@RequestHeader(required=false) String classroom,
+    									 @RequestHeader(required=false) String trolley)
+    {
+		try 
+		{
+			if(classroom.isEmpty()&&trolley.isEmpty()) 
+			{
+				this.checkParams(classroom, trolley);
+
+	            File zipFile = getZipFile(classroom, trolley);
+			}
+	        return ResponseEntity.ok("OK");
+		}catch (ComputerError error)
+        {
+            return ResponseEntity.status(400).body(error.getMessage());
+        }
+		catch (Exception error)
+        {
+            return ResponseEntity.status(500).body(error.getMessage());
+        }
+    }
+	
+	private void checkParams(String classroom,String trolley) throws ComputerError
+    {
+        if(classroom.isEmpty() && trolley.isEmpty())
+        {
+            throw new ComputerError(400,"Error",null);
+        }
+    }
+	
+	private File getZipFile(String classroom, String trolley) throws Exception
+    {
+
+        File zipFile = File.createTempFile("screenshots", ".zip");
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile)))
+        {
+            zipOutputStream.putNextEntry(new ZipEntry("screenshot.png"));
+            zipOutputStream.write("Contenido de la captura de pantalla".getBytes());
+            zipOutputStream.closeEntry();
+        }
+        return zipFile;
+    }
 }
