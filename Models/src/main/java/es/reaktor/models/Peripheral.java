@@ -1,5 +1,8 @@
 package es.reaktor.models;
 
+import lombok.NoArgsConstructor;
+@Data
+@NoArgsConstructor
 public class Peripheral extends HardwareComponent
 {
 	/** Attribute is open*/
