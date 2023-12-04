@@ -157,6 +157,7 @@ public class ReaktorServerRest
 	{
 		return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
 	}
+	
    @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/commandLine")
    public ResponseEntity<?> postComputerCommandLine(
     		@RequestHeader(required = false) String serialNumber,
@@ -167,6 +168,7 @@ public class ReaktorServerRest
     {
     	try {
     		
+    		checkPostComputerCommandLine(commandLineInstance);
     		return ResponseEntity.ok().build();
     	}catch (ComputerError computerError){
     		log.error("Computer error", computerError);
@@ -175,5 +177,13 @@ public class ReaktorServerRest
     		log.error("Server error", e);
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
+   }
+   
+   private void checkPostComputerCommandLine(CommandLine commandLineInstance) throws ComputerError
+   {
+	   if (commandLineInstance.getCommands().isEmpty())
+	   {
+		   throw new ComputerError(1, "Comandos vacios"); 
+	   }
    }
 }
