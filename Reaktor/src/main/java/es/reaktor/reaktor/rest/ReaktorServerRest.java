@@ -1,23 +1,31 @@
 package es.reaktor.reaktor.rest;
 
-import es.reaktor.models.DTO.MalwareDTOWeb;
-import es.reaktor.models.DTO.ReaktorDTO;
-import es.reaktor.models.DTO.SimpleComputerDTO;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
+import es.reaktor.models.DTO.MalwareDTOWeb;
+import es.reaktor.models.DTO.ReaktorDTO;
+import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
 import es.reaktor.reaktor.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -163,4 +171,39 @@ public class ReaktorServerRest
     {
         return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
     }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart", consumes = "application/json")
+    public ResponseEntity<?>   putComputerRestart(
+    		 @RequestHeader(required = false) String serialNumber,
+    		 @RequestHeader(required = false) String classroom,
+    		 @RequestHeader(required = false) String trolley,
+    		 @RequestHeader(required = false) int plant
+    		 )
+    {
+    	try 
+    	{
+    		controlComputerRestart(serialNumber,classroom, trolley, plant);
+    		return ResponseEntity.ok().build();
+    	}
+    	catch (ComputerError computerError) 
+    	{
+    		return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+		}
+		catch (Exception e )
+		{
+			
+			return ResponseEntity.status(500).body(e.getMessage()) ;
+		} 
+    	
+    }
+    
+    public void controlComputerRestart(String serialNumber, String classroom,String trolley, int plant) throws ComputerError
+    {
+    	if(serialNumber == null || classroom == null || trolley == null) 
+    	{
+    		
+    		throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");
+    	}
+    }
+    
 }
