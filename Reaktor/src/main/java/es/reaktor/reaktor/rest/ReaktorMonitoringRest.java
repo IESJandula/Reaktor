@@ -1,9 +1,7 @@
 package es.reaktor.reaktor.rest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +18,7 @@ import es.reaktor.models.Location;
 import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Software;
 /**
- * @author Javier Martínez
+ * @author Javier Martínez Megías
  *
  */
 @CrossOrigin(origins = "*")
@@ -48,14 +46,27 @@ public class ReaktorMonitoringRest
 					new MonitorizationLog())
 
 	));
+	
+	/**
+	 * Method getCommandLine get the full computer status
+	 * @param serialNumber the serial number of the computer
+	 * @return ResponseEntity
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/status")
 	public ResponseEntity<?> getCommandLine(@RequestHeader(required=true) String serialNumber)
 	{
 		try
 		{
-			if(serialNumber != null || isUsable(serialNumber))
+			if(serialNumber != null && isUsable(serialNumber))
 			{
-				return ResponseEntity.ok(chekIfSerialNumberExist(serialNumber));
+				Computer computer = chekIfSerialNumberExist(serialNumber);
+				if (computer == null)
+				{
+					String error = "Compuer not found";
+					ComputerError computerError = new ComputerError(404, error, null);
+					return ResponseEntity.status(404).body(computerError.toMap());
+				}
+				return ResponseEntity.ok(computer);
 			}
 			else
 			{
@@ -71,23 +82,33 @@ public class ReaktorMonitoringRest
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
 	}
-
+	
+	/**
+	 * this Method check if the serialNumber is blank or empty
+	 * @param  serialNumber, the serial Number of the computer
+	 * @return boolean 
+	 */
 	private boolean isUsable(String serialNumber)
 	{
 		boolean usable = false;
-		if( serialNumber.isBlank() || serialNumber.isEmpty())
+		if( !serialNumber.isBlank() || !serialNumber.isEmpty())
 		{
 			usable = true;
 		}
 		return usable;
 	}
 	
+	/**
+	 * this method check if a computer with this serialNumber exist 
+	 * @param serialNumber, the serial Number of the computer
+	 * @return Computer
+	 */
 	private Computer chekIfSerialNumberExist(String serialNumber)
 	{
 		Computer computer = null;	
 		for(Computer x : this.computerList)
 		{
-			if(x.getSerialNumber() == serialNumber)
+			if(x.getSerialNumber().equals(serialNumber) )
 			{
 				computer = x;
 			}			
