@@ -3,9 +3,11 @@ package es.reaktor.reaktor.rest;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
+import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
+import es.reaktor.models.Software;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
@@ -163,4 +165,45 @@ public class ReaktorServerRest
     {
         return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
     }
+    
+    @RequestMapping(method = RequestMethod.DELETE, value = "/computers/admin/software", consumes = {"application/json"})
+    public ResponseEntity<?> peripheralInfo(
+            @RequestHeader(required=false) String Classroom,
+            @RequestHeader(required=false) String Trolley,
+            @RequestHeader(required=false) String Professor,
+            @RequestBody Software softwareInstance []
+    )
+    {
+        try
+        {
+            testSoftware(softwareInstance);
+        }
+        catch (ComputerError computerError)
+        {
+        	return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage());
+        	
+        }
+        try 
+        {
+        	//TO DO
+        }
+        catch(Exception e) 
+        {
+        	return ResponseEntity.status(500).body(e.getMessage());
+       }
+        return ResponseEntity.ok().build();
+    }
+    
+    public void testSoftware(Software softwareInstance[])throws ComputerError
+    {
+    	if(softwareInstance == null) 
+    	{
+    		ComputerError computerError = new ComputerError(1,"No hay ninguna aplicacion");
+    		
+    		throw computerError;
+    		
+    	}
+    }
 }
+    
+
