@@ -8,6 +8,7 @@ import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
+import es.reaktor.models.Software;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
@@ -157,16 +158,15 @@ public class ReaktorServerRest
 	{
 		return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
 	}
-   @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/commandLine")
-   public ResponseEntity<?> postComputerCommandLine(
-    		@RequestHeader(required = false) String serialNumber,
+   @RequestMapping(method = RequestMethod.DELETE, value = "/computers/admin/software")
+   public ResponseEntity<?> unistallSoftware(
+    		@RequestHeader(required = false) String professor,
 		    @RequestHeader(required = false) String classroom,
 		    @RequestHeader(required = false) String trolley,
-		    @RequestHeader(required = false) int plant,
-		    @RequestBody(required = true) CommandLine commandLineInstance)
+		    @RequestBody(required = true) Software[] softwareInstance)
     {
     	try {
-    		
+    		checkUnistallSoftware(softwareInstance);
     		return ResponseEntity.ok().build();
     	}catch (ComputerError computerError){
     		log.error("Computer error", computerError);
@@ -175,5 +175,14 @@ public class ReaktorServerRest
     		log.error("Server error", e);
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
+   }
+   
+   private void checkUnistallSoftware(Software[] softwareInstance) throws ComputerError {
+	   
+	   if (softwareInstance[0] != null)
+	{
+		throw new ComputerError(1, "Softwares necesarios");
+	}
+	   
    }
 }
