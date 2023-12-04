@@ -157,16 +157,13 @@ public class ReaktorServerRest
 	{
 		return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
 	}
-   @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/commandLine")
-   public ResponseEntity<?> postComputerCommandLine(
+   @RequestMapping(method = RequestMethod.POST, value = "/computer/admin/screenshot")
+   public ResponseEntity<?> sendScreenshotOrder(
     		@RequestHeader(required = false) String serialNumber,
-		    @RequestHeader(required = false) String classroom,
-		    @RequestHeader(required = false) String trolley,
-		    @RequestHeader(required = false) int plant,
-		    @RequestBody(required = true) CommandLine commandLineInstance)
+		    @RequestHeader(required = false) String classroom)
     {
     	try {
-    		
+    		checkSendScreenshotOrder(serialNumber, classroom);
     		return ResponseEntity.ok().build();
     	}catch (ComputerError computerError){
     		log.error("Computer error", computerError);
@@ -176,4 +173,14 @@ public class ReaktorServerRest
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
    }
+   
+   private void checkSendScreenshotOrder(String serialNumber, String classroom) throws ComputerError {
+	   
+	   if (serialNumber != null || classroom != null)
+	{
+		throw new ComputerError(1, "serial number o classroom requerido");
+	}
+	   
+   }
+   
 }
