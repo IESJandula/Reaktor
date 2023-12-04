@@ -2,12 +2,14 @@
 Reaktor/.idea
 Reaktor/target
 Reaktor/.settings
+Reaktor/.classpath
 Reaktor/.project
 
 # Reaktor Client ignore
 ReaktorClient/.idea
 ReaktorClient/target
 ReaktorClient/.settings
+ReaktorClient/.classpath
 ReaktorClient/.project
 
 # Model ignore
