@@ -19,6 +19,15 @@ Models/.settings
 Models/.classpath
 Models/.project
 
+# Schedule ignore
+Schedule/.idea
+Schedule/target
+Schedule/.settings
+Schedule/.classpath
+Schedule/.project
+
+
+
 # web ignore
 reaktorweb/node_modules
 reaktorweb/.angular
