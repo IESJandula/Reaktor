@@ -4,6 +4,7 @@ import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.fmbc.psp.ud2.sumador_enteros_positivos.exception.JugadorError;
+import es.reaktor.models.CommandLine;
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
@@ -13,11 +14,14 @@ import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
 import es.reaktor.reaktor.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
+
+import org.aspectj.apache.bcel.classfile.Module.Require;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -165,7 +169,7 @@ public class ReaktorServerRest
     {
         return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
     }
-    
+    /**
     @RequestMapping(method = RequestMethod.POST, value = "/computer/admin/screenshot")
     public ResponseEntity<?> sendScreenshotOrder(
     		 @RequestHeader String classroom,
@@ -197,4 +201,112 @@ public class ReaktorServerRest
     		throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");
     	}
     }
+    
+**/
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/commandLine", consumes = "application/json")
+    public ResponseEntity<?> postComputerCommandLine(
+    		 @RequestHeader(required = false) String serialNumber,
+    		 @RequestHeader(required = false) String classroom,
+    		 @RequestHeader(required = false) String trolley,
+    		 @RequestHeader(required = false) int plant,
+    		 @RequestBody(required = true) 	ArrayList<CommandLine> commandLineInstance
+    		 )
+    {
+    	try 
+    	{
+    		controlCommandLine(serialNumber,classroom, trolley, plant, commandLineInstance);
+    		return ResponseEntity.ok().build();
+    	}
+    	catch (ComputerError computerError) 
+    	{
+    		return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+		}
+		catch (Exception e )
+		{
+			
+			return ResponseEntity.status(500).body(e.getMessage()) ;
+		} 
+    	
+    }
+    
+    public void controlCommandLine(String serialNumber, String classroom,String trolley, int plant,	ArrayList<CommandLine> commandLineInstance) throws ComputerError
+    {
+    	if(commandLineInstance == null || commandLineInstance.isEmpty()) 
+    	{
+    		
+    		throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");
+    	}
+    }
+    
+    /**
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/shutdown", consumes = "application/json")
+    public ResponseEntity<?>  putComputerShutdown(
+    		 @RequestHeader(required = false) String serialNumber,
+    		 @RequestHeader(required = false) String classroom,
+    		 @RequestHeader(required = false) String trolley,
+    		 @RequestHeader(required = false) int plant
+    		 )
+    {
+    	try 
+    	{
+    		controlShutdonw(serialNumber,classroom, trolley, plant);
+    		return ResponseEntity.ok().build();
+    	}
+    	catch (ComputerError computerError) 
+    	{
+    		return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+		}
+		catch (Exception e )
+		{
+			
+			return ResponseEntity.status(500).body(e.getMessage()) ;
+		} 
+    	
+    }
+    
+    public void controlShutdonw (String serialNumber, String classroom,String trolley, int plant) throws ComputerError
+    {
+    	if(serialNumber == null || classroom == null || trolley == null) 
+    	{
+    		
+    		throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");
+    	}
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart", consumes = "application/json")
+    public ResponseEntity<?>   putComputerRestart(
+    		 @RequestHeader(required = false) String serialNumber,
+    		 @RequestHeader(required = false) String classroom,
+    		 @RequestHeader(required = false) String trolley,
+    		 @RequestHeader(required = false) int plant
+    		 )
+    {
+    	try 
+    	{
+    		controlComputerRestart(serialNumber,classroom, trolley, plant);
+    		return ResponseEntity.ok().build();
+    	}
+    	catch (ComputerError computerError) 
+    	{
+    		return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+		}
+		catch (Exception e )
+		{
+			
+			return ResponseEntity.status(500).body(e.getMessage()) ;
+		} 
+    	
+    }
+    
+    public void controlComputerRestart(String serialNumber, String classroom,String trolley, int plant) throws ComputerError
+    {
+    	if(serialNumber == null || classroom == null || trolley == null) 
+    	{
+    		
+    		throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");
+    	}
+    }
+    */
 }
