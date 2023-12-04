@@ -1229,6 +1229,13 @@ public class ReaktorAdministrationRest
 		return ResponseEntity.status(404).body(computerError.toMap());
 	}
 	
+	/**
+	 * Method getComputer
+	 * @author Adrian
+	 * @param classroom
+	 * @param trolley
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/computer/admin/screenshot", produces = "application/zip")
     public ResponseEntity<?> getComputer(@RequestHeader(required=false) String classroom,
     									 @RequestHeader(required=false) String trolley)
@@ -1242,7 +1249,8 @@ public class ReaktorAdministrationRest
 	            File zipFile = getZipFile(classroom, trolley);
 			}
 	        return ResponseEntity.ok("OK");
-		}catch (ComputerError error)
+		}
+		catch (ComputerError error)
         {
             return ResponseEntity.status(400).body(error.getMessage());
         }
@@ -1252,6 +1260,13 @@ public class ReaktorAdministrationRest
         }
     }
 	
+	/**
+	 * Method checkParams
+	 * @author Adrian
+	 * @param classroom
+	 * @param trolley
+	 * @throws ComputerError
+	 */
 	private void checkParams(String classroom,String trolley) throws ComputerError
     {
         if(classroom.isEmpty() && trolley.isEmpty())
@@ -1260,6 +1275,14 @@ public class ReaktorAdministrationRest
         }
     }
 	
+	/**
+	 * Method getZipFile
+	 * @author Adrian
+	 * @param classroom
+	 * @param trolley
+	 * @return
+	 * @throws Exception
+	 */
 	private File getZipFile(String classroom, String trolley) throws Exception
     {
 
