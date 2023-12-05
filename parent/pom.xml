@@ -18,6 +18,9 @@
 		
 		<!-- Reaktor Client -->
 		<module>../ReaktorClient</module>
+
+		<!-- Microservice Carritos -->
+		<module>../microservice-carritos</module>
 		
 	</modules>
 </project>
