@@ -1,19 +1,21 @@
 package es.reaktor.reaktor.rest;
-
 import java.util.ArrayList;
-
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
+import org.springframework.web.bind.annotation.RestController;
 import es.reaktor.models.CommandLine;
 import es.reaktor.models.Computer;
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.Peripheral;
 import es.reaktor.models.Software;
-
+import lombok.extern.slf4j.Slf4j;
+@CrossOrigin(origins = "*")
+@RestController
+@Slf4j
 public class ReaktorAdministrationRest 
 {
 	/**Author Manuel Martín**/
