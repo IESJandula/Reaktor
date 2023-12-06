@@ -3,6 +3,7 @@ package es.reaktor.reaktor.rest;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
+import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
@@ -168,7 +169,24 @@ public class ReaktorServerRest
     		
     		return ResponseEntity.ok().build();
     	}catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);)
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart")
+	public ResponseEntity<?> postComputerRestart(
+    		@RequestHeader(required = false) String serialNumber,
+		    @RequestHeader(required = false) String classroom,
+		    @RequestHeader(required = false) String trolley,
+		    @RequestHeader(required = false) int plant
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
     	}catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}

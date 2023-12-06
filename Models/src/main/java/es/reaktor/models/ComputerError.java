@@ -1,6 +1,6 @@
 package es.reaktor.models;
 
-public class ComputerError 
+public class ComputerError extends Exception 
 {
 
 	
