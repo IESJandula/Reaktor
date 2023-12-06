@@ -172,8 +172,8 @@ public class ReaktorServerRest
     
     @RequestMapping(method = RequestMethod.POST, value = "/computer/admin/screenshot")
     public ResponseEntity<?> sendScreenshotOrder(
-    		 @RequestHeader String classroom,
-    		 @RequestHeader String trolley
+    		 @RequestHeader (required = false) String classroom,
+    		 @RequestHeader (required = false) String trolley
     		 )
     {
     	try 
