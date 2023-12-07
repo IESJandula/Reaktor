@@ -3,7 +3,10 @@ package es.reaktor.reaktor.rest;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
+<<<<<<< HEAD
 import es.reaktor.models.CommandLine;
+=======
+>>>>>>> REAK_A_203
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
@@ -169,7 +172,27 @@ public class ReaktorServerRest
     		
     		return ResponseEntity.ok().build();
     	}catch (ComputerError computerError){
+<<<<<<< HEAD
     		log.error("Computer error", computerError);
+=======
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart")
+	public ResponseEntity<?> postComputerRestart(
+    		@RequestHeader(required = false) String serialNumber,
+		    @RequestHeader(required = false) String classroom,
+		    @RequestHeader(required = false) String trolley,
+		    @RequestHeader(required = false) int plant
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+>>>>>>> REAK_A_203
     		return ResponseEntity.status(400).body(computerError);
     	}catch (Exception e) {
     		log.error("Server error", e);
