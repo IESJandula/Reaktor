@@ -5,7 +5,7 @@ import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
 
 import es.reaktor.models.CommandLine;
-
+import es.reaktor.models.Computer;
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
@@ -206,6 +206,24 @@ public class ReaktorServerRest
 		    @RequestHeader(required = false) String trolley,
 		    @RequestHeader(required = false) int plant,
 		    @RequestBody(required= true) File file
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/computer/edit")
+	public ResponseEntity<?> updateComputer(
+    		@RequestHeader(required = false) String serialNumber,
+		    @RequestHeader(required = false) String andaluciaId,
+		    @RequestHeader(required = false) String computerNumber,
+		    @RequestBody(required= true) Computer computerInstance
 		   )
     {
     	try {
