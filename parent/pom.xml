@@ -19,5 +19,8 @@
 		<!-- Reaktor Client -->
 		<module>../ReaktorClient</module>
 		
+		<!-- Reaktor Client -->
+        <module>../Horarios</module>
+		
 	</modules>
 </project>
