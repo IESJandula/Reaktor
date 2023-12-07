@@ -1,6 +1,8 @@
 package es.reaktor.reaktor.rest;
+
 import java.io.File;
 import java.io.FileOutputStream;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import es.reaktor.exceptions.ComputerError;
@@ -1226,7 +1229,7 @@ public class ReaktorAdministrationRest
 			@RequestHeader(required = false) String classroom, 
 			@RequestHeader(required = false) String trolley,
 			@RequestHeader(required = false) Integer plant,
-			@RequestBody(required = true) File execFile)
+			@RequestBody(required = true) MultipartFile execFile)
 	{
 		try
 		{
