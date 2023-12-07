@@ -1,5 +1,6 @@
 package es.reaktor.reaktor.rest;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -529,7 +530,174 @@ public class ReaktorAdministrationRest
 		computerListMap.put("computers", new ArrayList<Computer>(shutdownComputerList));
 		return computerListMap;
 	}
+	/**
+	 * Method sendInformation to send information of commands to computers
+	 * 
+	 * @param serialNumber the serial number of computer
+	 * @param classroom    the classroom
+	 * @param trolley      the trolley
+	 * @param plant        the plant
+	 * @param File the execFile
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/admin/file", consumes = "multipart/form-data")
+	public ResponseEntity<?> postComputerCommandLine(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, 
+			@RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) Integer plant,
+			@RequestBody(required = true) File execFile)
+	{
+		try
+		{
+			List<Computer> fileComputers = new ArrayList<Computer>();
+			if (serialNumber != null || classroom != null || trolley != null || plant != null)
+			{
+				// --- CHECKING IF ANY PARAMETER IS BLANK OR EMPTY ---
+				if (this.checkBlanksOrEmptys(serialNumber, classroom, trolley))
+				{
+					String error = "Any Paramater Is Empty or Blank";
+					ComputerError computerError = new ComputerError(404, error, null);
+					return ResponseEntity.status(404).body(computerError.toMap());
+				}
+
+				if (serialNumber != null)
+				{
+					// ALL FILE ON SPECIFIC COMPUTER BY serialNumber
+					this.fileToComputerBySerialNumber(serialNumber, fileComputers);
+					
+				}
+				if (trolley != null)
+				{
+					// ALL FILE ON SPECIFIC COMPUTER BY trolley
+					this.fileToComputerByTrolley(trolley, fileComputers);
+					
+				}
+				if (classroom != null)
+				{
+					// ALL FILE ON SPECIFIC COMPUTER BY classroom
+					this.fileToComputerByClassroom(classroom, fileComputers);
+					
+				}
+				if (plant != null)
+				{
+					// ALL FILE ON SPECIFIC COMPUTER BY plant
+					this.fileToComputerByPlant(plant, fileComputers);
+					
+				}
+				
+				// --- RETURN OK RESPONSE ---
+				return ResponseEntity.ok(this.computerListToMap( fileComputers));
+			}
+			else
+			{
+				// COMMANDS RUN ON ALL COMPUTERS
+				this.fileToAllComputers(fileComputers);
+				return ResponseEntity.ok(this.computerListToMap(fileComputers));
+			}
+		}
+		catch (Exception exception)
+		{
+			log.error(exception.getMessage(),exception);
+			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
+			return ResponseEntity.status(500).body(computerError.toMap());
+		}
+		
+	}
 	
+	
+	/**
+	 * Method fileToAllComputers send to all classroom computers
+	 * 
+	 * @param file
+	 */
+	private void fileToAllComputers(List<Computer> fileComputers)
+	{
+		for (int i = 0; i < computerList.size(); i++)
+		{
+			Computer computer = computerList.get(i);
+			fileComputers.add(computer);
+		}
+	}
+	/**
+	 * Method fileToComputerByPlant send file by plant computers
+	 * 
+	 * @param file
+	 */
+	private void fileToComputerByPlant(Integer plant, List<Computer> fileComputers)
+	{
+		for (int i = 0; i < computerList.size(); i++)
+		{
+			Computer computer = computerList.get(i);
+			if (computer.getLocation().getPlant() == plant)
+			{								
+				fileComputers.add(computer);
+			}
+		}
+	}
+	
+	/**
+	 * Method fileToComputerByClassroom send file by classroom computers
+	 * 
+	 * @param file
+	 */
+	private void fileToComputerByClassroom(String classroom, List<Computer> fileComputers)
+	{
+		for (int i = 0; i < computerList.size(); i++)
+		{
+			Computer computer = computerList.get(i);
+			if (computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
+			{
+				fileComputers.add(computer);
+			}
+		}
+	}
+	
+	/**
+	 * Method fileToComputerByTrolley send file by trolley computers
+	 * 
+	 * @param file
+	 */
+	private void fileToComputerByTrolley(String trolley, List<Computer> fileComputers)
+	{
+		for (int i = 0; i < computerList.size(); i++)
+		{
+			Computer computer = computerList.get(i);
+			if (computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
+			{
+				fileComputers.add(computer);
+			}
+		}
+	}
+	/**
+	 * Method fileToComputerBySerialNumber send file by serial number computers
+	 * 
+	 * @param file
+	 */
+	private void fileToComputerBySerialNumber(String serialNumber, List<Computer> fileComputers)
+	{
+		for (int i = 0; i < computerList.size(); i++)
+		{
+			Computer computer = computerList.get(i);
+			if (computer.getSerialNumber().equalsIgnoreCase(serialNumber))
+			{
+				fileComputers.add(computer);
+			}
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param fileComputers change the list to a map
+	 * @return
+	 */
+	private Map<String, List<Computer>> computerListToMap(List<Computer> fileComputers)
+	{
+		Map<String, List<Computer>> computerListMap = new HashMap<>();
+		computerListMap.put("computers", fileComputers);
+		return computerListMap;
+	}
 	/**
 	 * Method handleTypeMismatch method for the spring interal input mismatch
 	 * parameter
