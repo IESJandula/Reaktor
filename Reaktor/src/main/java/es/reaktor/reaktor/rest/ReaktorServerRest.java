@@ -176,4 +176,26 @@ public class ReaktorServerRest
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
    }
+   
+   @RequestMapping(method = RequestMethod.POST, value = "/computers/web")
+	public ResponseEntity<?> getComputersByAny(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId,
+			@RequestHeader(required = false) String computerNumber,
+		    @RequestHeader(required = false) String classroom,
+		    @RequestHeader(required = false) String trolley,
+		    @RequestHeader(required = false) int plant,
+		    @RequestHeader(required = false) String professor,
+		    @RequestHeader(required = false) ArrayList<> hardwareList
+		   )
+   {
+   	try {
+   		
+   		return ResponseEntity.ok().build();
+   	}catch (ComputerError computerError){
+   		return ResponseEntity.status(400).body(computerError);
+   	}catch (Exception e) {
+   		return ResponseEntity.status(500).body(e.getMessage());
+		}
+   }
 }
