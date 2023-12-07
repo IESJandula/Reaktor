@@ -22,236 +22,99 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReaktorMonitorizationRest 
 {
-	 @RequestMapping(method = RequestMethod.GET, value = " /computers/get/status")
-	    public ResponseEntity<Computer> getCommandLine(
-	             @RequestHeader (required = false) String serialNumber
-	             )
-	    {
-	        try 
-	        {
-	        	Computer computer = new Computer();
-	            controlComputer(computer);
-	            return ResponseEntity.ok(computer);
-	        }
-	        catch (ComputerError computerError) 
-	        {
-	            return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
-	        }
-	        catch (Exception e )
-	        {
+	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/status")
+    public ResponseEntity<Object> getCommandLine(
+             @RequestHeader (required = false) String serialNumber
+             )
+    {
+        try 
+        {
+        	Computer computer = new Computer();
+            controlComputer(computer);
+            return ResponseEntity.ok(computer);
+        }
+        catch (ComputerError computerError) 
+        {
+            return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+        }
+        catch (Exception e )
+        {
 
-	            return ResponseEntity.status(500).body(e.getMessage()) ;
-	        } 
-	    }
-	 
-	 public void controlComputer(Computer computer)
+            return ResponseEntity.status(500).body(e.getMessage()) ;
+        } 
+    }
+ 
+ public void controlComputer(Computer computer) throws ComputerError
+ {
+ 
+	 if(computer == null) 
 	 {
-		 
+		 throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");     
 	 }
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
+ }
+ 
+ @RequestMapping(method = RequestMethod.GET, value = "/computers/get/file", produces="multipart/from-data")
+    public ResponseEntity<Object> getAnyFile(
+             @RequestHeader (required = false) String serialNumber
+             )
+    {
+        try 
+        {
+        	String file = "";
+            controlFile(file);
+            return ResponseEntity.ok(file);
+        }
+        catch (ComputerError computerError) 
+        {
+            return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+        }
+        catch (Exception e )
+        {
+
+            return ResponseEntity.status(500).body(e.getMessage()) ;
+        } 
+    }
+ 
+ public void controlFile(String file) throws ComputerError
+ {
+ 
+	 if(file == null) 
+	 {
+		 throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");     
+	 }
+ }
+ 
+ @RequestMapping(method = RequestMethod.GET, value = "/computers/get/screenshot")
+    public ResponseEntity<?> getScreenshotOrder(
+             @RequestHeader (required = false) String serialNumber
+             )
+    {
+        try 
+        {
+        	
+            controlScreenShotOrder(serialNumber);
+            return ResponseEntity.ok().build();
+        }
+        catch (ComputerError computerError) 
+        {
+            return ResponseEntity.status(400).body(computerError.getBodyExceptionMessage()) ;
+        }
+        catch (Exception e )
+        {
+
+            return ResponseEntity.status(500).body(e.getMessage()) ;
+        } 
+    }
+ 
+ public void controlScreenShotOrder(String serialNumber) throws ComputerError
+ {
+ 
+	 if(serialNumber== null) 
+	 {
+		 throw new ComputerError(1, "Nose ha enviado ninguna clase o carrito");     
+	 }
+ }
+ 
 	 
 	 @RequestMapping(method = RequestMethod.POST, value = "/computers/send/screenshot", consumes = {"multipart/form-data"})
 	    public ResponseEntity<?> sendScreenshotOrder(
