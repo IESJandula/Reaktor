@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -198,4 +199,22 @@ public class ReaktorServerRest
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
    }
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file")
+	public ResponseEntity<?> postComputerExecFile(
+    		@RequestHeader(required = false) String serialNumber,
+		    @RequestHeader(required = false) String classroom,
+		    @RequestHeader(required = false) String trolley,
+		    @RequestHeader(required = false) int plant,
+		    @RequestBody(required= true) File file
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
 }
