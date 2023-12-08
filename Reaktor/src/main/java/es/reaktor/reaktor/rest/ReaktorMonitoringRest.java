@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -115,5 +116,138 @@ public class ReaktorMonitoringRest
 		}
 		return computer;	
 	}
+	
+
+	/**
+	 * Method sendFullComputer that method is used for send periodically computer Instance
+	 * @param serialNumber the serial number
+	 * @param andaluciaId the andalucia id
+	 * @param computerNumber the computer number
+	 * @param computerInstance the computer object instance
+	 * @return ResponseEntity response
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo")
+	public ResponseEntity<?> sendFullComputer(
+			@RequestHeader(required=false) String serialNumber,
+			@RequestHeader(required=false) String andaluciaId,
+			@RequestHeader(required=false) String computerNumber,
+			@RequestBody(required=true) Computer computerInstance)
+	{
+		
+		// --- ONLY ONE PARAMETER BECAUSE WHY ONLY SEND THE STATUS OF ONE COMPUTER AT THE SAME TIME (FOR SCHELUDED TASK ON CLIENT) ---
+		if(serialNumber!= null || andaluciaId!=null || computerNumber!=null) 
+		{
+			if(serialNumber!=null) 
+			{
+				if(this.checkIsBlankEmpty(serialNumber)) 
+				{
+					// --- BY SERIAL NUMBER ---
+					String error = "serialNumber is Empty or Blank";
+					ComputerError computerError = new ComputerError(404, error, null);
+					return ResponseEntity.status(404).body(computerError.toMap());
+				}
+				this.sendFullBySerialNumber(serialNumber, computerInstance);
+			}
+			else if(andaluciaId!=null) 
+			{
+				// --- BY ANDALUCIA ID ---
+				if(this.checkIsBlankEmpty(andaluciaId)) 
+				{
+					String error = "andaluciaId is Empty or Blank";
+					ComputerError computerError = new ComputerError(404, error, null);
+					return ResponseEntity.status(404).body(computerError.toMap());
+				}
+				this.sendFullByAndaluciaId(andaluciaId, computerInstance);
+			}
+			else if(computerNumber!=null) 
+			{
+				// --- BY COMPUTER NUMBER ---
+				if(this.checkIsBlankEmpty(computerNumber)) 
+				{
+					String error = "computerNumber is Empty or Blank";
+					ComputerError computerError = new ComputerError(404, error, null);
+					return ResponseEntity.status(404).body(computerError.toMap());
+				}
+				this.sendFullByComputerNumber(computerNumber, computerInstance);
+			}
+			
+			// --- RESPONSE WITH OK , BUT TEMPORALY RESPONSE WITH LIST TO SEE THE CHANGES ---
+			return ResponseEntity.ok(this.computerList);
+			
+		}
+		else 
+		{
+			// --- ON THIS CASE ALL PARAMETERS ARE BLANK OR EMPTY ---
+			String error = "All Paramaters Empty or Blank";
+			ComputerError computerError = new ComputerError(404, error, null);
+			return ResponseEntity.status(404).body(computerError.toMap());
+		}
+	}
+
+	/**
+	 * Method sendFullByComputerNumber
+	 * @param computerNumber
+	 * @param computerInstance
+	 */
+	private void sendFullByComputerNumber(String computerNumber, Computer computerInstance)
+	{
+		for(int i = 0 ; i<computerList.size();i++) 
+		{
+			Computer listedComputer = computerList.get(i);
+			if(listedComputer.getComputerNumber().equalsIgnoreCase(computerNumber)) 
+			{
+				computerList.set(i, computerInstance);
+			}
+		}
+	}
+
+	/**
+	 * Method sendFullByAndaluciaId
+	 * @param andaluciaId
+	 * @param computerInstance
+	 */
+	private void sendFullByAndaluciaId(String andaluciaId, Computer computerInstance)
+	{
+		for(int i = 0 ; i<computerList.size();i++) 
+		{
+			Computer listedComputer = computerList.get(i);
+			if(listedComputer.getAndaluciaID().equalsIgnoreCase(andaluciaId)) 
+			{
+				computerList.set(i, computerInstance);
+			}
+		}
+	}
+
+	/**
+	 * Method sendFullBySerialNumber
+	 * @param serialNumber
+	 * @param computerInstance
+	 */
+	private void sendFullBySerialNumber(String serialNumber, Computer computerInstance)
+	{
+		for(int i = 0 ; i<computerList.size();i++) 
+		{
+			Computer listedComputer = computerList.get(i);
+			if(listedComputer.getSerialNumber().equalsIgnoreCase(serialNumber)) 
+			{
+				computerList.set(i, computerInstance);
+			}
+		}
+	}
+
+	/**
+	 * Method checkNullEmpty
+	 * @param serialNumber
+	 * @return
+	 */
+	private boolean checkIsBlankEmpty(String strigParameter)
+	{
+		if(strigParameter.isBlank()||strigParameter.isEmpty()) 
+		{
+			return true;
+		}
+		return false;
+	}
+	
 }
 
