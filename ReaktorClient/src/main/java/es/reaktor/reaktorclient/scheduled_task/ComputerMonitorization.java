@@ -69,6 +69,7 @@ public class ComputerMonitorization
 			// DO THE HTTP POST WITH PARAMETERS
 			HttpPost request = new HttpPost("http://localhost:8084/computers/send/fullInfo");
 			request.setHeader("Content-Type", "application/json");
+			request.setHeader("serialNumber", "sn1234");
 			request.setEntity(computerStringEntity);
 
 			response = httpClient.execute(request);
