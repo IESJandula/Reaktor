@@ -35,13 +35,13 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ComputerMonitorization
 {
+	
 	/**
-	 * Method computerOnReport SCHELUDED TASK
-	 * 
+	 * Method sendFullComputerTask scheduled task
 	 * @throws ReaktorClientException
 	 */
 	@Scheduled(fixedDelayString = "5000", initialDelay = 2000)
-	public void computerOnReport() throws ReaktorClientException
+	public void sendFullComputerTask() throws ReaktorClientException
 	{
 		// THE COMPUTER FAKE FULL INFO STATUS
 		Computer computerInfoMob = new Computer("sn1234", "and123", "cn123", "windows", "paco",
@@ -71,6 +71,89 @@ public class ComputerMonitorization
 			request.setHeader("Content-Type", "application/json");
 			request.setHeader("serialNumber", "sn1234");
 			request.setEntity(computerStringEntity);
+
+			response = httpClient.execute(request);
+
+			String responseString = EntityUtils.toString(response.getEntity());
+			log.info(responseString);
+		}
+		catch (JsonProcessingException exception)
+		{
+			String error = "Error Json Processing Exception";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
+		}
+		catch (UnsupportedEncodingException exception)
+		{
+			String error = "Error Unsupported Encoding Exception";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
+		}
+		catch (ClientProtocolException exception)
+		{
+			String error = "Error Client Protocol Exception";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
+		}
+		catch (IOException exception)
+		{
+			String error = "Error In Out Exception";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
+		}
+		finally
+		{
+			if (httpClient != null)
+			{
+				try
+				{
+					httpClient.close();
+				}
+				catch (IOException exception)
+				{
+					String error = "Error In Out Exception";
+					log.error(error, exception);
+					throw new ReaktorClientException(exception);
+				}
+			}
+			if (response != null)
+			{
+				try
+				{
+					response.close();
+				}
+				catch (IOException exception)
+				{
+					String error = "Error In Out Exception";
+					log.error(error, exception);
+					throw new ReaktorClientException(exception);
+				}
+			}
+		}
+
+	}
+	
+	/**
+	 * Method sendStatusComputerTask scheduled task
+	 * @throws ReaktorClientException
+	 */
+	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
+	public void sendStatusComputerTask() throws ReaktorClientException
+	{
+		String serialNumber = "sn123556";
+
+		// --- CLOSEABLE HTTP ---
+		CloseableHttpClient httpClient = null;
+		CloseableHttpResponse response = null;
+
+		try
+		{
+			// GETTING HTTP CLIENT
+			httpClient = HttpClients.createDefault();
+
+			// DO THE HTTP POST WITH PARAMETERS
+			HttpPost request = new HttpPost("http://localhost:8084/computers/send/status");
+			request.setHeader("serialNumber", serialNumber);
 
 			response = httpClient.execute(request);
 

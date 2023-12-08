@@ -18,6 +18,8 @@ import es.reaktor.models.HardwareComponent;
 import es.reaktor.models.Location;
 import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Software;
+import es.reaktor.models.Status;
+
 /**
  * @author Javier Martínez Megías
  *
@@ -47,18 +49,81 @@ public class ReaktorMonitoringRest
 					new MonitorizationLog())
 
 	));
-	
+	/** Attribute shutDownComputerList */
+	private List<Computer> shutDownComputerList = new ArrayList<Computer>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(),
+			new ArrayList<Software>(), new CommandLine(), new MonitorizationLog())));
+	/** Attribute restartDownComputerList */
+	private List<Computer> restartDownComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(), new MonitorizationLog())));
+
+	/** Attribute execCommandsComputerList */
+	private List<Computer> execCommandsComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(), new MonitorizationLog())));
+
+	/** Attribute execCommandsComputerList */
+	private List<Computer> blockDispositiveComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("mkdir carpeta1")), new MonitorizationLog())));
+
+	/** Attribute openWebComputerList */
+	private List<Computer> openWebComputerList = new ArrayList<Computer>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(),
+			new ArrayList<Software>(), new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
+	/** Attribute installAppComputerList */
+	private List<Computer> installAppComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
+	/** Attribute unistallAppComputerList */
+	private List<Computer> unistallAppComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
+	/** Attribute configurationFileComputerList */
+	private List<Computer> configurationFileComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
+	/** Attribute updateAndaluciaComputerList */
+	private List<Computer> updateAndaluciaComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
+	/** Attribute updateSerialNumberComputerList */
+	private List<Computer> updateSerialNumberComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
+	/** Attribute updateComputerNumberComputerList */
+	private List<Computer> updateComputerNumberComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
 	/**
 	 * Method getCommandLine get the full computer status
+	 * 
 	 * @param serialNumber the serial number of the computer
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/status")
-	public ResponseEntity<?> getCommandLine(@RequestHeader(required=true) String serialNumber)
+	public ResponseEntity<?> getCommandLine(@RequestHeader(required = true) String serialNumber)
 	{
 		try
 		{
-			if(serialNumber != null && isUsable(serialNumber))
+			if (serialNumber != null && isUsable(serialNumber))
 			{
 				Computer computer = chekIfSerialNumberExist(serialNumber);
 				if (computer == null)
@@ -75,7 +140,7 @@ public class ReaktorMonitoringRest
 				ComputerError computerError = new ComputerError(404, error, null);
 				return ResponseEntity.status(404).body(computerError.toMap());
 			}
-		}	
+		}
 		catch (Exception exception)
 		{
 			log.error(exception.getMessage());
@@ -83,118 +148,293 @@ public class ReaktorMonitoringRest
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
 	}
-	
+
 	/**
 	 * this Method check if the serialNumber is blank or empty
-	 * @param  serialNumber, the serial Number of the computer
-	 * @return boolean 
+	 * 
+	 * @param serialNumber, the serial Number of the computer
+	 * @return boolean
 	 */
 	private boolean isUsable(String serialNumber)
 	{
 		boolean usable = false;
-		if( !serialNumber.isBlank() || !serialNumber.isEmpty())
+		if (!serialNumber.isBlank() || !serialNumber.isEmpty())
 		{
 			usable = true;
 		}
 		return usable;
 	}
-	
+
 	/**
-	 * this method check if a computer with this serialNumber exist 
+	 * this method check if a computer with this serialNumber exist
+	 * 
 	 * @param serialNumber, the serial Number of the computer
 	 * @return Computer
 	 */
 	private Computer chekIfSerialNumberExist(String serialNumber)
 	{
-		Computer computer = null;	
-		for(Computer x : this.computerList)
+		Computer computer = null;
+		for (Computer x : this.computerList)
 		{
-			if(x.getSerialNumber().equals(serialNumber) )
+			if (x.getSerialNumber().equals(serialNumber))
 			{
 				computer = x;
-			}			
+			}
 		}
-		return computer;	
+		return computer;
 	}
-	
 
 	/**
-	 * Method sendFullComputer that method is used for send periodically computer Instance
-	 * @param serialNumber the serial number
-	 * @param andaluciaId the andalucia id
-	 * @param computerNumber the computer number
+	 * Method sendFullComputer that method is used for send periodically computer
+	 * Instance
+	 * 
+	 * @param serialNumber     the serial number
+	 * @param andaluciaId      the andalucia id
+	 * @param computerNumber   the computer number
 	 * @param computerInstance the computer object instance
 	 * @return ResponseEntity response
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo",consumes="application/json")
-	public ResponseEntity<?> sendFullComputer(
-			@RequestHeader(required=false) String serialNumber,
-			@RequestHeader(required=false) String andaluciaId,
-			@RequestHeader(required=false) String computerNumber,
-			@RequestBody(required=true) Computer computerInstance)
+	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> sendFullComputer(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
+			@RequestBody(required = true) Computer computerInstance)
 	{
-		
-		// --- ONLY ONE PARAMETER BECAUSE WHY ONLY SEND THE STATUS OF ONE COMPUTER AT THE SAME TIME (FOR SCHELUDED TASK ON CLIENT) ---
-		if(serialNumber!= null || andaluciaId!=null || computerNumber!=null) 
+		try
 		{
-			if(serialNumber!=null) 
+			// --- ONLY ONE PARAMETER BECAUSE WHY ONLY SEND THE STATUS OF ONE COMPUTER AT
+			// THE SAME TIME (FOR SCHELUDED TASK ON CLIENT) ---
+			if (serialNumber != null || andaluciaId != null || computerNumber != null)
 			{
-				if(this.checkIsBlankEmpty(serialNumber)) 
+				if (serialNumber != null)
 				{
-					// --- BY SERIAL NUMBER ---
-					String error = "serialNumber is Empty or Blank";
-					ComputerError computerError = new ComputerError(404, error, null);
-					return ResponseEntity.status(404).body(computerError.toMap());
+					if (this.checkIsBlankEmpty(serialNumber))
+					{
+						// --- BY SERIAL NUMBER ---
+						String error = "serialNumber is Empty or Blank";
+						ComputerError computerError = new ComputerError(404, error, null);
+						return ResponseEntity.status(404).body(computerError.toMap());
+					}
+					this.sendFullBySerialNumber(serialNumber, computerInstance);
 				}
-				this.sendFullBySerialNumber(serialNumber, computerInstance);
+				else if (andaluciaId != null)
+				{
+					// --- BY ANDALUCIA ID ---
+					if (this.checkIsBlankEmpty(andaluciaId))
+					{
+						String error = "andaluciaId is Empty or Blank";
+						ComputerError computerError = new ComputerError(404, error, null);
+						return ResponseEntity.status(404).body(computerError.toMap());
+					}
+					this.sendFullByAndaluciaId(andaluciaId, computerInstance);
+				}
+				else if (computerNumber != null)
+				{
+					// --- BY COMPUTER NUMBER ---
+					if (this.checkIsBlankEmpty(computerNumber))
+					{
+						String error = "computerNumber is Empty or Blank";
+						ComputerError computerError = new ComputerError(404, error, null);
+						return ResponseEntity.status(404).body(computerError.toMap());
+					}
+					this.sendFullByComputerNumber(computerNumber, computerInstance);
+				}
+
+				// --- RESPONSE WITH OK , BUT TEMPORALY RESPONSE WITH LIST TO SEE THE CHANGES
+				// ---
+				return ResponseEntity.ok(this.computerList);
+
 			}
-			else if(andaluciaId!=null) 
+			else
 			{
-				// --- BY ANDALUCIA ID ---
-				if(this.checkIsBlankEmpty(andaluciaId)) 
-				{
-					String error = "andaluciaId is Empty or Blank";
-					ComputerError computerError = new ComputerError(404, error, null);
-					return ResponseEntity.status(404).body(computerError.toMap());
-				}
-				this.sendFullByAndaluciaId(andaluciaId, computerInstance);
+				// --- ON THIS CASE ALL PARAMETERS ARE BLANK OR EMPTY ---
+				String error = "All Paramaters Empty or Blank";
+				ComputerError computerError = new ComputerError(404, error, null);
+				return ResponseEntity.status(404).body(computerError.toMap());
 			}
-			else if(computerNumber!=null) 
-			{
-				// --- BY COMPUTER NUMBER ---
-				if(this.checkIsBlankEmpty(computerNumber)) 
-				{
-					String error = "computerNumber is Empty or Blank";
-					ComputerError computerError = new ComputerError(404, error, null);
-					return ResponseEntity.status(404).body(computerError.toMap());
-				}
-				this.sendFullByComputerNumber(computerNumber, computerInstance);
-			}
-			
-			// --- RESPONSE WITH OK , BUT TEMPORALY RESPONSE WITH LIST TO SEE THE CHANGES ---
-			return ResponseEntity.ok(this.computerList);
-			
 		}
-		else 
+		catch (Exception exception)
 		{
-			// --- ON THIS CASE ALL PARAMETERS ARE BLANK OR EMPTY ---
-			String error = "All Paramaters Empty or Blank";
-			ComputerError computerError = new ComputerError(404, error, null);
-			return ResponseEntity.status(404).body(computerError.toMap());
+			String error = "Server Error";
+			ComputerError computerError = new ComputerError(404, error, exception);
+			return ResponseEntity.status(500).body(computerError.toMap());
+		}
+	}
+
+
+	/**
+	 * Method sendStatusComputer metod to check and send status
+	 * @param serialNumber the serialNumber
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.POST, value="/send/status",produces = "application/json")
+	public ResponseEntity<?> sendStatusComputer(@RequestHeader(required = true) String serialNumber)
+	{
+		try
+		{
+			List<Status> statusList = new ArrayList<Status>();
+			// --- SEARCHING THE COMPUTER ---
+			if (serialNumber == null || serialNumber.isBlank() || serialNumber.isEmpty())
+			{
+				String error = "SerialNumber is Null, Empty or Blank";
+				ComputerError computerError = new ComputerError(404, error, null);
+				return ResponseEntity.status(404).body(computerError.toMap());
+			}
+			for (Computer computer : computerList)
+			{
+				// --- GETTING THE COMPUTER BY S/N ---
+				if (computer.getSerialNumber().equalsIgnoreCase(serialNumber))
+				{
+					// --- SCANNING TASKS ---
+					// --- SHUTDOWN ---
+					for (int i = 0; i < shutDownComputerList.size(); i++)
+					{
+						Computer cmp = shutDownComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO SHUTDOWN LOGIC-------------------------------
+							Status status = new Status("Shutdown computer " + serialNumber, true, null);
+							statusList.add(status);
+						}
+					}
+					// --- RESTART ---
+					for (int i = 0; i < restartDownComputerList.size(); i++)
+					{
+						Computer cmp = restartDownComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO RESTART LOGIC -------------------------------
+							Status status = new Status("restart computer " + serialNumber, true, null);
+							statusList.add(status);
+						}
+					}
+					// --- COMMAND EXECUTE ---
+					for (int i = 0; i < execCommandsComputerList.size(); i++)
+					{
+						Computer cmp = restartDownComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO COMMAND EXECUTE LOGIC-------------------------------
+							Status status = new Status("Execute Commands " + serialNumber, false,
+									new ComputerError(111, "error on execute command", null));
+							statusList.add(status);
+						}
+					}
+					// --- BLOCK DISPOSITIVE ---
+					for (int i = 0; i < blockDispositiveComputerList.size(); i++)
+					{
+						Computer cmp = blockDispositiveComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO BLOCK DISP. LOGIC-------------------------------
+							Status status = new Status("Block Dispositive " + serialNumber, false,
+									new ComputerError(222, "error on block disp.", null));
+							statusList.add(status);
+						}
+					}
+					// --- APERTURA REMOTA DE ENLACE WEB ---
+					for (int i = 0; i < openWebComputerList.size(); i++)
+					{
+						Computer cmp = openWebComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO Open Web LOGIC-------------------------------
+							Status status = new Status("Open Web " + serialNumber, true, null);
+							statusList.add(status);
+						}
+					}
+					// --- INSTALACION REMOTA DE APLICACIONES ---
+					for (int i = 0; i < installAppComputerList.size(); i++)
+					{
+						Computer cmp = installAppComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO Install App LOGIC-------------------------------
+							Status status = new Status("Install App " + serialNumber, true, null);
+							statusList.add(status);
+						}
+					}
+					// --- DESISNSTALACION REMOTA DE APP ---
+					for (int i = 0; i < unistallAppComputerList.size(); i++)
+					{
+						Computer cmp = unistallAppComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO DESISNSTALACION REMOTA DE APP LOGIC -------------------------------
+							Status status = new Status("Unistall App " + serialNumber, false,
+									new ComputerError(444, "eror on unistall", null));
+							statusList.add(status);
+						}
+					}
+					// --- EJECUCION DE CFG WIFI ---
+					for (int i = 0; i < configurationFileComputerList.size(); i++)
+					{
+						Computer cmp = configurationFileComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO EJECUCION DE CFG WIFI LOGIC-------------------------------
+							Status status = new Status("CFG Configuration " + serialNumber, true, null);
+							statusList.add(status);
+						}
+					}
+					// --- ACTUALIZACION DE JUNTA ANDALUCIA ---
+					for (int i = 0; i < updateAndaluciaComputerList.size(); i++)
+					{
+						Computer cmp = updateAndaluciaComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO ACTUALIZACION DE JUNTA ANDALUCIA LOGIC-------------------------------
+							Status status = new Status("Block Dispositive " + serialNumber, false,
+									new ComputerError(555, "error on block", null));
+							statusList.add(status);
+						}
+					}
+					// --- ACTUALIZACION DE NUMERO DE SERIE ---
+					for (int i = 0; i < updateSerialNumberComputerList.size(); i++)
+					{
+						Computer cmp = updateSerialNumberComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO ACTUALIZACION DE JUNTA ANDALUCIA LOGIC-------------------------------
+							Status status = new Status("Update Serial Number  " + serialNumber, false,
+									new ComputerError(666, "error on update", null));
+							statusList.add(status);
+						}
+					}
+					// --- ACTUALIZACION DE NUM DE CAJA ---
+					for (int i = 0; i < updateComputerNumberComputerList.size(); i++)
+					{
+						Computer cmp = updateComputerNumberComputerList.get(i);
+						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
+						{
+							// ------------------------- TO-DO BLOCK DISP. LOGIC------------------------------
+							Status status = new Status("Update Computer Number " + serialNumber, true, null);
+							statusList.add(status);
+						}
+					}
+				}
+			}
+			return ResponseEntity.ok().body(statusList);
+		}
+		catch (Exception exception)
+		{
+			String error = "Server Error";
+			ComputerError computerError = new ComputerError(404, error, exception);
+			return ResponseEntity.status(500).body(computerError.toMap());
 		}
 	}
 
 	/**
 	 * Method sendFullByComputerNumber
+	 * 
 	 * @param computerNumber
 	 * @param computerInstance
 	 */
 	private void sendFullByComputerNumber(String computerNumber, Computer computerInstance)
 	{
-		for(int i = 0 ; i<computerList.size();i++) 
+		for (int i = 0; i < computerList.size(); i++)
 		{
 			Computer listedComputer = computerList.get(i);
-			if(listedComputer.getComputerNumber().equalsIgnoreCase(computerNumber)) 
+			if (listedComputer.getComputerNumber().equalsIgnoreCase(computerNumber))
 			{
 				computerList.set(i, computerInstance);
 			}
@@ -203,15 +443,16 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendFullByAndaluciaId
+	 * 
 	 * @param andaluciaId
 	 * @param computerInstance
 	 */
 	private void sendFullByAndaluciaId(String andaluciaId, Computer computerInstance)
 	{
-		for(int i = 0 ; i<computerList.size();i++) 
+		for (int i = 0; i < computerList.size(); i++)
 		{
 			Computer listedComputer = computerList.get(i);
-			if(listedComputer.getAndaluciaID().equalsIgnoreCase(andaluciaId)) 
+			if (listedComputer.getAndaluciaID().equalsIgnoreCase(andaluciaId))
 			{
 				computerList.set(i, computerInstance);
 			}
@@ -220,15 +461,16 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendFullBySerialNumber
+	 * 
 	 * @param serialNumber
 	 * @param computerInstance
 	 */
 	private void sendFullBySerialNumber(String serialNumber, Computer computerInstance)
 	{
-		for(int i = 0 ; i<computerList.size();i++) 
+		for (int i = 0; i < computerList.size(); i++)
 		{
 			Computer listedComputer = computerList.get(i);
-			if(listedComputer.getSerialNumber().equalsIgnoreCase(serialNumber)) 
+			if (listedComputer.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				computerList.set(i, computerInstance);
 			}
@@ -237,17 +479,17 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method checkNullEmpty
+	 * 
 	 * @param serialNumber
 	 * @return
 	 */
 	private boolean checkIsBlankEmpty(String strigParameter)
 	{
-		if(strigParameter.isBlank()||strigParameter.isEmpty()) 
+		if (strigParameter.isBlank() || strigParameter.isEmpty())
 		{
 			return true;
 		}
 		return false;
 	}
-	
-}
 
+}
