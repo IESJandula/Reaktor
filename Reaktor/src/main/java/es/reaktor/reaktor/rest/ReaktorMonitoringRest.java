@@ -126,7 +126,7 @@ public class ReaktorMonitoringRest
 	 * @param computerInstance the computer object instance
 	 * @return ResponseEntity response
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo")
+	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo",consumes="application/json")
 	public ResponseEntity<?> sendFullComputer(
 			@RequestHeader(required=false) String serialNumber,
 			@RequestHeader(required=false) String andaluciaId,
