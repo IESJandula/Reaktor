@@ -186,7 +186,43 @@ public class ReaktorMonitoringRest
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
 	}
-
+	
+	/**
+	 * Getting the screenshot order , the compuer send the serialNumber to identify
+	 * @param serialNumber, the serial number of the computer
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/screenshot")
+	public ResponseEntity<?> getScreenshotOrder(@RequestHeader(required = true) String serialNumber)
+	{
+		try
+		{
+			if (serialNumber != null && isUsable(serialNumber))
+			{
+				// Check if the serial number Exist and return a computer
+				Computer computer = chekIfSerialNumberExist(serialNumber);
+				if (computer == null)
+				{
+					String error = "Compuer not found";
+					ComputerError computerError = new ComputerError(404, error, null);
+					return ResponseEntity.status(404).body(computerError.toMap());
+				}
+				return ResponseEntity.ok(computer);
+			}
+			else
+			{
+				String error = "Any Paramater Is Empty or Blank";
+				ComputerError computerError = new ComputerError(404, error, null);
+				return ResponseEntity.status(404).body(computerError.toMap());
+			}
+		}
+		catch (Exception exception)
+		{
+			log.error(exception.getMessage());
+			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
+			return ResponseEntity.status(500).body(computerError.toMap());
+		}
+	}
 	/**
 	 * this Method check if the serialNumber is blank or empty
 	 * 
