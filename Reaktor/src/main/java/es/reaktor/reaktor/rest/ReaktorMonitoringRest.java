@@ -63,18 +63,19 @@ public class ReaktorMonitoringRest
 	private List<Computer> execCommandsComputerList = new ArrayList<Computer>(
 			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
 					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
-					new CommandLine(), new MonitorizationLog())));
+					new CommandLine(List.of("mkdir .\\carpeta1David")), new MonitorizationLog())));
 
-	/** Attribute execCommandsComputerList */
+	/** Attribute blockDispositiveComputerList */
 	private List<Computer> blockDispositiveComputerList = new ArrayList<Computer>(
 			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
 					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
-					new CommandLine(List.of("mkdir carpeta1")), new MonitorizationLog())));
+					new CommandLine(), new MonitorizationLog())));
 
 	/** Attribute openWebComputerList */
-	private List<Computer> openWebComputerList = new ArrayList<Computer>(List.of(new Computer("sn123556", "and123556",
-			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(),
-			new ArrayList<Software>(), new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	private List<Computer> openWebComputerList = new ArrayList<Computer>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<HardwareComponent>(), new ArrayList<Software>(),
+					new CommandLine(List.of("start chrome www.iesjandula.es")), new MonitorizationLog())));
 
 	/** Attribute installAppComputerList */
 	private List<Computer> installAppComputerList = new ArrayList<Computer>(
@@ -196,7 +197,8 @@ public class ReaktorMonitoringRest
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> sendFullComputer(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
+			@RequestHeader(required = false) String andaluciaId, 
+			@RequestHeader(required = false) String computerNumber,
 			@RequestBody(required = true) Computer computerInstance)
 	{
 		try
@@ -260,13 +262,13 @@ public class ReaktorMonitoringRest
 		}
 	}
 
-
 	/**
 	 * Method sendStatusComputer metod to check and send status
+	 * 
 	 * @param serialNumber the serialNumber
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.POST, value="/send/status",produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/send/status", produces = "application/json")
 	public ResponseEntity<?> sendStatusComputer(@RequestHeader(required = true) String serialNumber)
 	{
 		try
@@ -291,9 +293,22 @@ public class ReaktorMonitoringRest
 						Computer cmp = shutDownComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO SHUTDOWN LOGIC-------------------------------
-							Status status = new Status("Shutdown computer " + serialNumber, true, null);
-							statusList.add(status);
+							// ------------------------- SHUTDOWN LOGIC-------------------------------
+							try
+							{
+								Runtime rt = Runtime.getRuntime();
+								Process pr = rt.exec("cmd.exe /c shutdown -s -t 61");
+
+								Status status = new Status("Shutdown computer " + serialNumber, true, null);
+								statusList.add(status);
+								shutDownComputerList.remove(cmp);
+							}
+							catch (Exception exception)
+							{
+								Status status = new Status("Shutdown computer "  + serialNumber, false,
+										new ComputerError(001, "error on Shutdown computer ", null));
+								statusList.add(status);
+							}
 						}
 					}
 					// --- RESTART ---
@@ -302,21 +317,51 @@ public class ReaktorMonitoringRest
 						Computer cmp = restartDownComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO RESTART LOGIC -------------------------------
-							Status status = new Status("restart computer " + serialNumber, true, null);
-							statusList.add(status);
+							// ------------------------- RESTART LOGIC -------------------------------
+							try
+							{
+								Runtime rt = Runtime.getRuntime();
+								Process pr = rt.exec("cmd.exe /c shutdown -r -t 61");
+
+								Status status = new Status("restart computer " + serialNumber, true, null);
+								statusList.add(status);
+								restartDownComputerList.remove(cmp);
+							}
+							catch (Exception exception)
+							{
+								Status status = new Status("Restart computer "  + serialNumber, false,
+										new ComputerError(002, "error on restart computer ", null));
+								statusList.add(status);
+							}
+							
 						}
 					}
 					// --- COMMAND EXECUTE ---
 					for (int i = 0; i < execCommandsComputerList.size(); i++)
 					{
-						Computer cmp = restartDownComputerList.get(i);
+						Computer cmp = execCommandsComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO COMMAND EXECUTE LOGIC-------------------------------
-							Status status = new Status("Execute Commands " + serialNumber, false,
-									new ComputerError(111, "error on execute command", null));
-							statusList.add(status);
+							// ------------------------- COMMAND EXECUTE LOGIC-------------------------------
+							try
+							{
+								for (String command : cmp.getCommandLine().getCommands())
+								{
+									// --- GETTING COMMAND TO EXEC ---
+									log.info("cmd.exe /c "+command);
+									Runtime rt = Runtime.getRuntime();
+									Process pr = rt.exec("cmd.exe /c "+command);
+								}
+								Status status = new Status("Execute Commands " + serialNumber, true,null);
+								statusList.add(status);
+								execCommandsComputerList.remove(cmp);
+							}
+							catch (Exception exception)
+							{
+								Status status = new Status("Execute Commands " + serialNumber, false,
+										new ComputerError(111, "error on execute command", null));
+								statusList.add(status);
+							}
 						}
 					}
 					// --- BLOCK DISPOSITIVE ---
@@ -325,21 +370,39 @@ public class ReaktorMonitoringRest
 						Computer cmp = blockDispositiveComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO BLOCK DISP. LOGIC-------------------------------
-							Status status = new Status("Block Dispositive " + serialNumber, false,
-									new ComputerError(222, "error on block disp.", null));
+							// ------------------------- TO-DO BLOCK DISP.LOGIC-------------------------------
+							Status status = new Status("Block Dispositive " + serialNumber, true,null);
 							statusList.add(status);
 						}
 					}
 					// --- APERTURA REMOTA DE ENLACE WEB ---
 					for (int i = 0; i < openWebComputerList.size(); i++)
 					{
+						// ------------------------- OPEN WEB -------------------------------
 						Computer cmp = openWebComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO Open Web LOGIC-------------------------------
-							Status status = new Status("Open Web " + serialNumber, true, null);
-							statusList.add(status);
+							try
+							{
+								for (String command : cmp.getCommandLine().getCommands())
+								{
+									if(command.contains("start chrome")) 
+									{
+										log.info("cmd.exe /c "+command);
+										Runtime rt = Runtime.getRuntime();
+										Process pr = rt.exec("cmd.exe /c "+command);
+									}
+								}
+								Status status = new Status("Execute Web Commands " + serialNumber, true,null);
+								statusList.add(status);
+								openWebComputerList.remove(cmp);
+							}
+							catch (Exception exception)
+							{
+								Status status = new Status("Execute Commands " + serialNumber, false,
+										new ComputerError(333, "error on execute web command", null));
+								statusList.add(status);
+							}
 						}
 					}
 					// --- INSTALACION REMOTA DE APLICACIONES ---
@@ -348,7 +411,7 @@ public class ReaktorMonitoringRest
 						Computer cmp = installAppComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO Install App LOGIC-------------------------------
+							// ------------------------- TO-DO Install AppLOGIC-------------------------------
 							Status status = new Status("Install App " + serialNumber, true, null);
 							statusList.add(status);
 						}
@@ -359,9 +422,8 @@ public class ReaktorMonitoringRest
 						Computer cmp = unistallAppComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO DESISNSTALACION REMOTA DE APP LOGIC -------------------------------
-							Status status = new Status("Unistall App " + serialNumber, false,
-									new ComputerError(444, "eror on unistall", null));
+							// ------------------------- TO-DO DESISNSTALACION REMOTA DE APP LOGIC------------
+							Status status = new Status("Unistall App " + serialNumber,true, null);
 							statusList.add(status);
 						}
 					}
@@ -371,7 +433,7 @@ public class ReaktorMonitoringRest
 						Computer cmp = configurationFileComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO EJECUCION DE CFG WIFI LOGIC-------------------------------
+							// ------------------------- TO-DO EJECUCION DE CFG WIFILOGIC--------------------
 							Status status = new Status("CFG Configuration " + serialNumber, true, null);
 							statusList.add(status);
 						}
@@ -382,9 +444,8 @@ public class ReaktorMonitoringRest
 						Computer cmp = updateAndaluciaComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO ACTUALIZACION DE JUNTA ANDALUCIA LOGIC-------------------------------
-							Status status = new Status("Block Dispositive " + serialNumber, false,
-									new ComputerError(555, "error on block", null));
+							// ------------------------- TO-DO ACTUALIZACION DE JUNTA ANDALUCIALOGIC---------
+							Status status = new Status("Block Dispositive " + serialNumber,true, null);
 							statusList.add(status);
 						}
 					}
@@ -394,9 +455,8 @@ public class ReaktorMonitoringRest
 						Computer cmp = updateSerialNumberComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO ACTUALIZACION DE JUNTA ANDALUCIA LOGIC-------------------------------
-							Status status = new Status("Update Serial Number  " + serialNumber, false,
-									new ComputerError(666, "error on update", null));
+							// ------------------------- TO-DO ACTUALIZACION DE JUNTA ANDALUCIALOGIC---------
+							Status status = new Status("Update Serial Number  " + serialNumber,true, null);
 							statusList.add(status);
 						}
 					}
@@ -406,7 +466,7 @@ public class ReaktorMonitoringRest
 						Computer cmp = updateComputerNumberComputerList.get(i);
 						if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
-							// ------------------------- TO-DO BLOCK DISP. LOGIC------------------------------
+							// ------------------------- TO-DO ACTUALIZACION DE NUM DE CAJA ------------------------------
 							Status status = new Status("Update Computer Number " + serialNumber, true, null);
 							statusList.add(status);
 						}
