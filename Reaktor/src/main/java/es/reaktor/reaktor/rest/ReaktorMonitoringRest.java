@@ -157,7 +157,7 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber, the serial number of the computer
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/file", produces = "multipart/form-data")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/file")
 	public ResponseEntity<?> getAnyFile(@RequestHeader(required = true) String serialNumber)
 	{
 		try
