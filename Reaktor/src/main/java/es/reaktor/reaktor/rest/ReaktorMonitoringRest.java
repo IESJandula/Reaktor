@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
+
 import es.reaktor.exceptions.ComputerError;
 import es.reaktor.models.CommandLine;
 import es.reaktor.models.Computer;
@@ -19,6 +20,7 @@ import es.reaktor.models.Location;
 import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Software;
 import es.reaktor.models.Status;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Javier Martínez Megías
@@ -215,6 +217,37 @@ public class ReaktorMonitoringRest
 				ComputerError computerError = new ComputerError(404, error, null);
 				return ResponseEntity.status(404).body(computerError.toMap());
 			}
+		}
+		catch (Exception exception)
+		{
+			log.error(exception.getMessage());
+			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
+			return ResponseEntity.status(500).body(computerError.toMap());
+		}
+	}
+	
+	/**
+	 * Getting the files , the computer send the serialNumber to identify
+	 * @param serialNumber, the serial number of the computer
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/send/screenshot", consumes = "multipart/form-data")
+	public ResponseEntity<?> sendScreenshot(@RequestBody(required = true) MultipartFile screenshot)
+	{
+		try
+		{
+			if (screenshot != null)
+			{
+				// Check if the serial number Exist
+				return ResponseEntity.ok("OK");	
+			}
+			else
+			{
+				String error = "The parameter is null";
+				ComputerError computerError = new ComputerError(404, error, null);
+				return ResponseEntity.status(404).body(computerError.toMap());
+			}
+			
 		}
 		catch (Exception exception)
 		{
