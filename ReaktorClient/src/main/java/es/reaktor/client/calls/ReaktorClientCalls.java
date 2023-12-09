@@ -23,14 +23,22 @@ public class ReaktorClientCalls
 		String url = "https://localhost:8084/computers/get/status";
 		HttpGet request = new HttpGet(url);
 		request.addHeader("serialNumber", serialNumber);
+		
+		String urlFile = "https://localhost:8084/computers/get/file";
+		HttpGet request2 = new HttpGet(urlFile);
+		request2.addHeader("serialNumber", serialNumber);
 
 		CloseableHttpResponse response = null;
+		CloseableHttpResponse response2 = null;
 		try 
 		{
 			response = httpClient.execute(request);
 			String responseBody = EntityUtils.toString(response.getEntity());
 			System.out.println("Respuesta a: " + responseBody);
-
+			
+			response2 = httpClient.execute(request2);
+			String responseBody2 = EntityUtils.toString(response2.getEntity());
+			System.out.println("Respuesta a: " + responseBody2);
 		}
 		catch(ClientProtocolException clientProtocolException)
 		{
@@ -41,7 +49,6 @@ public class ReaktorClientCalls
 		{
 			String error ="Error de entrada salida";
 			logger.error(error, ioException);
-			
 		}
 		finally 
 		{
@@ -66,6 +73,9 @@ public class ReaktorClientCalls
 				logger.error(error, ioException);
 			}
 		}
+		
+		
+		
 	}
 
 }
