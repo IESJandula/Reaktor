@@ -1,23 +1,20 @@
 package es.reaktor.horarios.models;
 
-import java.util.List;
-
 import lombok.Data;
+
 @Data
 public class ObjetoCsv {
-	private String nombre;
+    private String nombre;
     private String apellidos;
     private String correo;
-    private List<String> roles;
+    private String rol;
 
-    public ObjetoCsv(String nombre, String apellidos, String correo, List<String> roles) {
+    public ObjetoCsv(String nombre, String apellidos, String correo, String rol) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.correo = correo;
-        this.roles = roles;
+        this.rol = rol;
     }
-
-    
 
     @Override
     public String toString() {
@@ -25,7 +22,7 @@ public class ObjetoCsv {
                 "nombre='" + nombre + '\'' +
                 ", apellidos='" + apellidos + '\'' +
                 ", correo='" + correo + '\'' +
-                ", roles=" + roles +
+                ", rol='" + rol + '\'' +
                 '}';
     }
 }
