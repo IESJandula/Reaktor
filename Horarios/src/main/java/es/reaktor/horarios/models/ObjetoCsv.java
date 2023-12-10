@@ -2,6 +2,8 @@ package es.reaktor.horarios.models;
 
 import java.util.List;
 
+import lombok.Data;
+@Data
 public class ObjetoCsv {
 	private String nombre;
     private String apellidos;
@@ -15,7 +17,7 @@ public class ObjetoCsv {
         this.roles = roles;
     }
 
-    // Agrega getters y setters según sea necesario
+    
 
     @Override
     public String toString() {

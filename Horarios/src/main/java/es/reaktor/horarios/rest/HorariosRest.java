@@ -1,65 +1,44 @@
 package es.reaktor.horarios.rest;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-
 import es.reaktor.horarios.models.ObjetoCsv;
 
-public class HorariosRest 
-{
-	public void procesarArchivoCSV(String nombreArchivo) 
-	{
-        FileReader fileReader = null;
-        BufferedReader br = null;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+@RestController
+public class HorariosRest {
 
-        try 
-        {
-            fileReader = new FileReader(nombreArchivo);
-            br = new BufferedReader(fileReader);
+    @PostMapping("/procesar-archivo")
+    public List<ObjetoCsv> procesarArchivoCSV(@RequestParam("archivo.csv") MultipartFile archivo) {
+        List<ObjetoCsv> objetosCsv = new ArrayList<>();
 
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) {
             String line;
-            while ((line = br.readLine()) != null) 
-            {
-                
+            while ((line = br.readLine()) != null) {
                 ObjetoCsv objeto = parsearLineaCSV(line);
-                //Imprimir el objeto de ejemplo
-                System.out.println(objeto);
+                if (objeto != null) {
+                    objetosCsv.add(objeto);
+                }
             }
-        } catch (IOException e) 
-        {
-            // Manejar excepciones de lectura de archivos
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally 
-        {
-            // Cerrar FileReader y BufferedReader en el bloque finally
-            try 
-            {
-                if (br != null) 
-                {
-                    br.close();
-                }
-                if (fileReader != null) 
-                {
-                    fileReader.close();
-                }
-            } catch (IOException e) 
-            {
-                e.printStackTrace();
-            }
         }
+
+        return objetosCsv;
     }
 
-    private ObjetoCsv parsearLineaCSV(String linea) 
-    {
-       
+    private ObjetoCsv parsearLineaCSV(String linea) {
         String[] campos = linea.split(",");
         ObjetoCsv objeto = null;
-        try
-        {
-        	if (campos.length >= 4) 
-            {
+
+        try {
+            if (campos.length >= 4) {
                 String nombre = campos[0].trim();
                 String apellidos = campos[1].trim();
                 String correo = campos[2].trim();
@@ -68,13 +47,11 @@ public class HorariosRest
 
                 objeto = new ObjetoCsv(nombre, apellidos, correo, roles);
             }
-        }catch(IllegalArgumentException illegalArgumentException)
-        {
-        	String error = "Datos de CSV incompletos o incorrectos: " + linea;
-        	
-        	System.out.println(error);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            String error = "Datos de CSV incompletos o incorrectos: " + linea;
+            System.out.println(error);
         }
+
         return objeto;
     }
 }
-
