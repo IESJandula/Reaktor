@@ -1,4 +1,4 @@
-package es.iesjandula.horarios;
+package es.reaktor.horarios;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,9 +12,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EntityScan(basePackages = "es.reaktor.horarios")
-public class HorariosApplication {
+public class HorariosApplication
+{
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		SpringApplication.run(HorariosApplication.class, args);
 	}
 
