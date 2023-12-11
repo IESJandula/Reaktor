@@ -201,6 +201,11 @@ paths:
           description: time slot
           required: true
           type: string
+        - name: day
+          in: header
+          description: day 
+          required: true
+          type: string
       responses:
         200:
           description: classroom sent
@@ -338,7 +343,7 @@ paths:
         200:
           description: Submitted successfully
           schema:
-            $ref: '#/definitions/Teachername'
+            $ref: '#/definitions/Teacher'
         400: 
           description: teacher not found
           schema:
@@ -367,7 +372,7 @@ paths:
         200:
           description: student sent
           schema:
-            $ref: '#/definitions/TeacherInfo'
+            $ref: '#/definitions/Teacher'
         400: 
           description: student not found
           schema:
@@ -403,7 +408,7 @@ paths:
         200:
           description: student sent
           schema:
-            $ref: '#/definitions/TeacherInfo'
+            $ref: '#/definitions/Teacher'
         400: 
           description: student not found
           schema:
@@ -750,16 +755,7 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/Rol"
-#----------teacher name-------------------
-  Teachername:
-    type: object
-    properties:
-      name:
-        type: string
-        description: name of the teacher
-      lastname:
-        type: string
-        description: lastname of the teacher
+      
         
 #----------course------------------- 
   Course:
@@ -770,28 +766,18 @@ definitions:
         description: name of the course
       Classroom:
         $ref: "#/definitions/Classroom"
-#----------teacherInfo-------------------      
-  TeacherInfo:
-    type: object
-    properties:
-      Classroom:
-        $ref: '#/definitions/Classroom'
-      telephoneTutor:
-        type: string
-        description: teacher's phone number
-      emailTutor:
-        type: string  
-        description: email of the teacher
+
 #----------teacherMoment------------------- 
   TeacherMoment:      
     type: object
     properties:
-      nameteacher:
-        type: string
-        description: name of the teacher
+      teacher:
+        $ref: '#/definitions/Teacher'
       subject:
         type: string
         description: subject taught at the moment
+      classroom:
+        $ref: "#/definitions/Classroom"
         
 #----------Classroom-------------------
   Classroom:
@@ -805,14 +791,6 @@ definitions:
           type: integer
           format: int32
           
-#----------teacherClassroom-------------------       
-  TeacherClassroom:       
-    type: object
-    properties:
-      teacher:
-        $ref: "#/definitions/Teacher"
-      classroom:
-        $ref: "#/definitions/Classroom"
 #----------student------------------- 
   Student:
     type: object
