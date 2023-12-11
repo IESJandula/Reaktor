@@ -145,7 +145,7 @@ public class ReaktorMonitoringRest
 		}
 		catch (Exception exception)
 		{
-			ReaktorMonitoringRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -182,7 +182,7 @@ public class ReaktorMonitoringRest
 		}
 		catch (Exception exception)
 		{
-			ReaktorMonitoringRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -219,7 +219,7 @@ public class ReaktorMonitoringRest
 		}
 		catch (Exception exception)
 		{
-			ReaktorMonitoringRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -250,7 +250,7 @@ public class ReaktorMonitoringRest
 		}
 		catch (Exception exception)
 		{
-			ReaktorMonitoringRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -604,7 +604,7 @@ public class ReaktorMonitoringRest
 					{
 						if(command.contains("start chrome"))
 						{
-							ReaktorMonitoringRest.log.info("cmd.exe /c "+command);
+							log.info("cmd.exe /c "+command);
 							Runtime rt = Runtime.getRuntime();
 							Process pr = rt.exec("cmd.exe /c "+command);
 						}
@@ -681,7 +681,7 @@ public class ReaktorMonitoringRest
 					for (String command : cmp.getCommandLine().getCommands())
 					{
 						// --- GETTING COMMAND TO EXEC ---
-						ReaktorMonitoringRest.log.info("cmd.exe /c "+command);
+						log.info("cmd.exe /c "+command);
 						Runtime rt = Runtime.getRuntime();
 						Process pr = rt.exec("cmd.exe /c "+command);
 					}
