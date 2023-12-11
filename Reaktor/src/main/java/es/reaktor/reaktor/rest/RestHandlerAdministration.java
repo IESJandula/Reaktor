@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.reaktor.reaktor.exceptions.HorarioError;
-import es.reaktor.reaktor.models.Alumno;
+import es.reaktor.reaktor.models.Profesor;
 import es.reaktor.reaktor.models.RolReaktor;
 
 @RequestMapping(value = "/computers", produces =
@@ -68,15 +68,15 @@ public class RestHandlerAdministration
 		}
 	}
 
-	public List<Alumno> parseFile() throws HorarioError
+	public List<Profesor> parseFile() throws HorarioError
 	{
 		FileInputStream fileInputStream = null;
 		BufferedReader reader = null;
-		List<Alumno> alumno = new ArrayList<Alumno>();
+		List<Profesor> profesores = new ArrayList<Profesor>();
 		int iteracion = 0;
 		try
 		{
-			fileInputStream = new FileInputStream(".\\src\\main\\resources\\Alumno.csv");
+			fileInputStream = new FileInputStream(".\\src\\main\\resources\\Profesores.csv");
 			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
 			reader = new BufferedReader(inputStreamReader);
 
@@ -91,7 +91,7 @@ public class RestHandlerAdministration
 				String cuentaDeCorreo = parts[3];
 				List<RolReaktor> listaDeRoles = getRoles(parts[4]);
 
-				alumno.add(new Alumno(nombre, apellidos, cuentaDeCorreo, listaDeRoles));
+				profesores.add(new Profesor(nombre, apellidos, cuentaDeCorreo, listaDeRoles));
 				iteracion++;
 
 				line = reader.readLine();
@@ -121,7 +121,7 @@ public class RestHandlerAdministration
 			}
 		}
 
-		return alumno;
+		return profesores;
 	}
 
 	private List<RolReaktor> getRoles(String part)
