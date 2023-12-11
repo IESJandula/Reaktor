@@ -198,7 +198,6 @@ public class RestHandlerAdministration
 	public ResponseEntity<?> addByBody(@RequestHeader(value = "classroom", required = false) final String classroom,
 			@RequestHeader(value = "trolley", required = false) final String trolley,
 			@RequestBody(required = true) Peripheral[] peripherals)
-	// TUDU...
 	{
 		try
 		{
