@@ -63,7 +63,7 @@ public class HorariosRest
 {
 	/**
 	 * Method sendXmlToObjects
-	 * 
+	 *
 	 * @param xmlFile
 	 * @return ResponseEntity
 	 */
@@ -110,9 +110,9 @@ public class HorariosRest
 				// GETTING THE LIST OF ASIGNATURA
 				NodeList asignaturasNodeList = asignaturasElemet.getElementsByTagName("ASIGNATURA");
 
-				List<Asignatura> asignaturasList = new ArrayList<Asignatura>();
+				List<Asignatura> asignaturasList = new ArrayList<>();
 				// GETTING VALUES OF EACH ASIGNATURA
-				gettingValuesOfAsignatura(asignaturasNodeList, asignaturasList);
+				this.gettingValuesOfAsignatura(asignaturasNodeList, asignaturasList);
 				log.info(asignaturasList.toString());
 				asignaturas.setAsignatura(asignaturasList);
 				log.info(asignaturas.toString());
@@ -132,9 +132,9 @@ public class HorariosRest
 				// GETTING THE LIST OF GRUPO
 				NodeList gruposNodeList = gruposElement.getElementsByTagName("GRUPO");
 
-				List<Grupo> gruposList = new ArrayList<Grupo>();
+				List<Grupo> gruposList = new ArrayList<>();
 				// GETTING VALUES OF EACH GRUPO
-				gettingValuesOfGrupo(gruposNodeList, gruposList);
+				this.gettingValuesOfGrupo(gruposNodeList, gruposList);
 				log.info(gruposList.toString());
 				grupos.setGrupo(gruposList);
 				log.info(grupos.toString());
@@ -154,9 +154,9 @@ public class HorariosRest
 				// GETTING THE LIST OF AULA
 				NodeList aulasNodeList = aulasElement.getElementsByTagName("AULA");
 
-				List<Aula> aulasList = new ArrayList<Aula>();
+				List<Aula> aulasList = new ArrayList<>();
 				// GETTING VALUES OF EACH AULA
-				gettingValuesOfAula(aulasNodeList, aulasList);
+				this.gettingValuesOfAula(aulasNodeList, aulasList);
 				log.info(aulasList.toString());
 				aulas.setAula(aulasList);
 				log.info(aulas.toString());
@@ -176,9 +176,9 @@ public class HorariosRest
 				// GETTING THE LIST OF PROFESOR
 				NodeList profesoresNodeList = profesoresElement.getElementsByTagName("PROFESOR");
 
-				List<Profesor> profesoresList = new ArrayList<Profesor>();
+				List<Profesor> profesoresList = new ArrayList<>();
 				// GETTING VALUES OF EACH PROFESOR
-				gettingValuesOfProfesor(profesoresNodeList, profesoresList);
+				this.gettingValuesOfProfesor(profesoresNodeList, profesoresList);
 				log.info(profesoresList.toString());
 				profesores.setProfesor(profesoresList);
 				log.info(profesores.toString());
@@ -199,9 +199,9 @@ public class HorariosRest
 				// GETTING THE LIST OF TRAMO
 				NodeList tramosHorariosNodeList = tramosHorariosElement.getElementsByTagName("TRAMO");
 
-				List<Tramo> tramosList = new ArrayList<Tramo>();
+				List<Tramo> tramosList = new ArrayList<>();
 				// GETTING VALUES OF EACH TRAMO
-				gettingValuesOfTramo(tramosHorariosNodeList, tramosList);
+				this.gettingValuesOfTramo(tramosHorariosNodeList, tramosList);
 				log.info(tramosList.toString());
 				tramosHorarios.setTramo(tramosList);
 				log.info(tramosHorarios.toString());
@@ -232,8 +232,8 @@ public class HorariosRest
 				NodeList horarioAsigNodeList = horariosAsignaturasElement.getElementsByTagName("HORARIO_ASIG");
 
 				// EACH HORARIOS_ASIG
-				List<HorarioAsig> horarioAsigList = new ArrayList<HorarioAsig>();
-				gettingValuesOfHorarioAsig(horarioAsigNodeList, horarioAsigList);
+				List<HorarioAsig> horarioAsigList = new ArrayList<>();
+				this.gettingValuesOfHorarioAsig(horarioAsigNodeList, horarioAsigList);
 				log.info(horarioAsigList.toString());
 				horariosAsignaturas.setHorarioAsig(horarioAsigList);
 				horarios.setHorariosAsignaturas(horariosAsignaturas);
@@ -250,8 +250,8 @@ public class HorariosRest
 				NodeList horarioGrupNodeList = horariosGruposElement.getElementsByTagName("HORARIO_GRUP");
 
 				// EACH HORARIO_GRUP
-				List<HorarioGrup> horarioGrupList = new ArrayList<HorarioGrup>();
-				gettingValuesOfHorarioGrup(horarioGrupNodeList, horarioGrupList);
+				List<HorarioGrup> horarioGrupList = new ArrayList<>();
+				this.gettingValuesOfHorarioGrup(horarioGrupNodeList, horarioGrupList);
 				// log.info(horarioAsigList);
 				horariosGrupos.setHorarioGrup(horarioGrupList);
 				horarios.setHorariosGrupos(horariosGrupos);
@@ -267,8 +267,8 @@ public class HorariosRest
 				NodeList horarioAulaNodeList = horariosAulasElement.getElementsByTagName("HORARIO_AULA");
 
 				// EACH HORARIO_AULA
-				List<HorarioAula> horarioAulaList = new ArrayList<HorarioAula>();
-				gettingValuesOfHorarioAula(horarioAulaNodeList, horarioAulaList);
+				List<HorarioAula> horarioAulaList = new ArrayList<>();
+				this.gettingValuesOfHorarioAula(horarioAulaNodeList, horarioAulaList);
 				// log.info(horarioAulaList);
 				horariosAulas.setHorarioAula(horarioAulaList);
 				horarios.setHorariosAulas(horariosAulas);
@@ -285,8 +285,8 @@ public class HorariosRest
 				NodeList horarioProfNodeList = horariosProfesoresElement.getElementsByTagName("HORARIO_PROF");
 
 				// EACH HORARIO_PROF
-				List<HorarioProf> horarioProfList = new ArrayList<HorarioProf>();
-				gettingValuesOfHorarioProf(horarioProfNodeList, horarioProfList);
+				List<HorarioProf> horarioProfList = new ArrayList<>();
+				this.gettingValuesOfHorarioProf(horarioProfNodeList, horarioProfList);
 				log.info(horarioAulaList.toString());
 				horariosProfesores.setHorarioProf(horarioProfList);
 				horarios.setHorariosProfesores(horariosProfesores);
@@ -301,7 +301,7 @@ public class HorariosRest
 				log.error(error,exception);
 				HorariosException horariosException = new HorariosException(404,exception.getLocalizedMessage(),exception);
 				return ResponseEntity.status(404).body(horariosException.toMap());
-				
+
 			}
 			catch (SAXException exception)
 			{
@@ -333,7 +333,7 @@ public class HorariosRest
 			return ResponseEntity.status(404).body(horariosException.toMap());
 		}
 		}
-		catch(Exception except) 
+		catch(Exception except)
 		{
 			// SERVER ERROR
 			String error = "Server Error";
@@ -363,7 +363,7 @@ public class HorariosRest
 			NodeList actividadNodeList = horarioProfElement.getElementsByTagName("ACTIVIDAD");
 
 			// --- ACTIVIDAD LIST ---
-			List<Actividad> actividadList = new ArrayList<Actividad>();
+			List<Actividad> actividadList = new ArrayList<>();
 			for (int j = 0; j < actividadNodeList.getLength(); j++)
 			{
 				Actividad newActividad = new Actividad();
@@ -380,7 +380,7 @@ public class HorariosRest
 				// --- IF THE ELEMENT GRUPOS_ACTIVIDAD HAS 1 , 2, 3 , 4 OR 5 ATTRIBUTES---
 				NamedNodeMap gruposActividadNodeMap = ((Element) actividadNodeList.item(j))
 						.getElementsByTagName("GRUPOS_ACTIVIDAD").item(0).getAttributes();
-				gettingValuesOfGruposActividadAttrs(actividadList, newActividad, gruposActividad,
+				this.gettingValuesOfGruposActividadAttrs(actividadList, newActividad, gruposActividad,
 						gruposActividadNodeMap);
 			}
 			// --- ADD ACTIVIDAD LIST TO HORARIO_AULA
@@ -412,7 +412,7 @@ public class HorariosRest
 			NodeList actividadNodeList = horarioAulaElement.getElementsByTagName("ACTIVIDAD");
 
 			// --- ACTIVIDAD LIST ---
-			List<Actividad> actividadList = new ArrayList<Actividad>();
+			List<Actividad> actividadList = new ArrayList<>();
 			for (int j = 0; j < actividadNodeList.getLength(); j++)
 			{
 				Actividad newActividad = new Actividad();
@@ -429,7 +429,7 @@ public class HorariosRest
 				// --- IF THE ELEMENT GRUPOS_ACTIVIDAD HAS 1 , 2, 3 , 4 OR 5 ATTRIBUTES---
 				NamedNodeMap gruposActividadNodeMap = ((Element) actividadNodeList.item(j))
 						.getElementsByTagName("GRUPOS_ACTIVIDAD").item(0).getAttributes();
-				gettingValuesOfGruposActividadAttrs(actividadList, newActividad, gruposActividad,
+				this.gettingValuesOfGruposActividadAttrs(actividadList, newActividad, gruposActividad,
 						gruposActividadNodeMap);
 			}
 			// --- ADD ACTIVIDAD LIST TO HORARIO_AULA
@@ -461,7 +461,7 @@ public class HorariosRest
 			NodeList actividadNodeList = horarioGrupElement.getElementsByTagName("ACTIVIDAD");
 
 			// --- ACTIVIDAD LIST ---
-			List<Actividad> actividadList = new ArrayList<Actividad>();
+			List<Actividad> actividadList = new ArrayList<>();
 			for (int j = 0; j < actividadNodeList.getLength(); j++)
 			{
 				Actividad newActividad = new Actividad();
@@ -503,8 +503,8 @@ public class HorariosRest
 			NodeList actividadNodeList = horarioAsigElement.getElementsByTagName("ACTIVIDAD");
 
 			// --- ACTIVIDAD LIST ---
-			List<Actividad> actividadList = new ArrayList<Actividad>();
-			gettingValuesOfActividad(actividadNodeList, actividadList);
+			List<Actividad> actividadList = new ArrayList<>();
+			this.gettingValuesOfActividad(actividadNodeList, actividadList);
 			// --- ADD ACTIVIDAD LIST TO HORARIO_ASIG
 			newHorarioAsig.setActividad(actividadList);
 			log.info(actividadList.toString());
@@ -537,7 +537,7 @@ public class HorariosRest
 			// --- IF THE ELEMENT GRUPOS_ACTIVIDAD HAS 1 , 2, 3 , 4 OR 5 ATTRIBUTES---
 			NamedNodeMap gruposActividadNodeMap = ((Element) actividadNodeList.item(j))
 					.getElementsByTagName("GRUPOS_ACTIVIDAD").item(0).getAttributes();
-			gettingValuesOfGruposActividadAttrs(actividadList, newActividad, gruposActividad,
+			this.gettingValuesOfGruposActividadAttrs(actividadList, newActividad, gruposActividad,
 					gruposActividadNodeMap);
 		}
 	}
@@ -556,7 +556,7 @@ public class HorariosRest
 		{
 			// 1 ATTR CASE
 			Node node = gruposActividadNodeMap.item(0);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, node);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, node);
 
 		}
 		if (gruposActividadNodeMap.getLength() == 2)
@@ -565,8 +565,8 @@ public class HorariosRest
 			Node nodeOne = gruposActividadNodeMap.item(0);
 			Node nodeTwo = gruposActividadNodeMap.item(1);
 
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeOne);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeOne);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
 
 		}
 		if (gruposActividadNodeMap.getLength() == 3)
@@ -576,9 +576,9 @@ public class HorariosRest
 			Node nodeTwo = gruposActividadNodeMap.item(1);
 			Node nodeThree = gruposActividadNodeMap.item(2);
 
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeOne);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeThree);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeOne);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeThree);
 
 		}
 		if (gruposActividadNodeMap.getLength() == 4)
@@ -589,10 +589,10 @@ public class HorariosRest
 			Node nodeThree = gruposActividadNodeMap.item(2);
 			Node nodeFour = gruposActividadNodeMap.item(3);
 
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeOne);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeThree);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeFour);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeOne);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeThree);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeFour);
 
 		}
 		if (gruposActividadNodeMap.getLength() == 5)
@@ -604,11 +604,11 @@ public class HorariosRest
 			Node nodeFour = gruposActividadNodeMap.item(3);
 			Node nodeFive = gruposActividadNodeMap.item(4);
 
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeOne);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeThree);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeFour);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeFive);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeOne);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeThree);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeFour);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeFive);
 
 		}
 		if (gruposActividadNodeMap.getLength() == 6)
@@ -620,12 +620,12 @@ public class HorariosRest
 			Node nodeFour = gruposActividadNodeMap.item(3);
 			Node nodeFive = gruposActividadNodeMap.item(4);
 			Node nodeSix = gruposActividadNodeMap.item(5);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeOne);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeThree);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeFour);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeFive);
-			gruposActividad = getGruposActividadAttributeTexts(gruposActividad, nodeSix);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeOne);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeTwo);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeThree);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeFour);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeFive);
+			gruposActividad = this.getGruposActividadAttributeTexts(gruposActividad, nodeSix);
 		}
 		newActividad.setGruposActividad(gruposActividad);
 		log.info(gruposActividad.toString());
@@ -663,18 +663,18 @@ public class HorariosRest
 			Profesor newProfesor = new Profesor();
 			newProfesor.setAbreviatura(profesoresNodeList.item(i).getAttributes().item(0).getTextContent());
 			newProfesor.setNumIntPR(profesoresNodeList.item(i).getAttributes().item(2).getTextContent());
-			
+
 			// --- GETTING FULL NAME ---
 			String nombreCompleto = profesoresNodeList.item(i).getAttributes().item(1).getTextContent();
 			String[] nombreCompletoSpit = nombreCompleto.split(",");
 			// --- GETING LASTNAME ---
 			String[] apellidosSplit = nombreCompletoSpit[0].split(" ");
-			
+
 			/// --- SETTING VALUES ---
 			newProfesor.setNombre(nombreCompletoSpit[nombreCompletoSpit.length-1]);
 			newProfesor.setPrimerApellido(apellidosSplit[0]);
 			newProfesor.setSegundoApellido(apellidosSplit[1]);
-			
+
 			profesoresList.add(newProfesor);
 		}
 	}
@@ -735,7 +735,7 @@ public class HorariosRest
 
 	/**
 	 * Method extracted
-	 * 
+	 *
 	 * @param gruposActividad
 	 * @param node
 	 */
