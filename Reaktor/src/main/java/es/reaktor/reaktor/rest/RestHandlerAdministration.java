@@ -107,7 +107,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamComputerShutdown(serialNumber, classroom, trolley, plant);
+			this.checkParamsComputerShutdown(serialNumber, classroom, trolley, plant);
 			return ResponseEntity.ok().body("OK") ;
 		}
 		catch (ComputerError exception)
@@ -124,7 +124,7 @@ public class RestHandlerAdministration
 		}
 	}
 	
-	public void checkParamComputerShutdown(String serialNumber, String classroom, String trolley, Integer plant) throws ComputerError
+	public void checkParamsComputerShutdown(String serialNumber, String classroom, String trolley, Integer plant) throws ComputerError
 	{
 		if(serialNumber.isEmpty())
 		{
@@ -155,7 +155,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParam(serialNumber, classroom, trolley, plant);
+			this.checkParamsPutComputerRestart(serialNumber, classroom, trolley, plant);
 			return ResponseEntity.ok().body("OK") ;
 		}
 		catch (ComputerError exception)
@@ -172,7 +172,7 @@ public class RestHandlerAdministration
 		}
 	}
 	
-	public void checkParam(String serialNumber, String classroom, String trolley, Integer plant) throws ComputerError
+	public void checkParamsPutComputerRestart(String serialNumber, String classroom, String trolley, Integer plant) throws ComputerError
 	{
 		if(serialNumber.isEmpty())
 		{
@@ -253,7 +253,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParams(serialNumber, classroom, trolley, plant, execFile);
+			this.checkParamsPostComputerExeFile(serialNumber, classroom, trolley, plant, execFile);
 			//TODO: Cuando se implante la bbdd llamar al ordenador ye incluirlo en softaware
 			return ResponseEntity.ok().body("Computer update success");
 		}
@@ -269,7 +269,7 @@ public class RestHandlerAdministration
 		}
 	}
 	
-	private void checkParams(String serialNumber,String classroom,String trolley,Integer plant,File execFile) throws ComputerError
+	private void checkParamsPostComputerExeFile(String serialNumber,String classroom,String trolley,Integer plant,File execFile) throws ComputerError
 	{
 		if(serialNumber.isEmpty() && classroom.isEmpty() && trolley.isEmpty() && plant==null)
 		{
@@ -296,7 +296,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamSendSoftware(classroom, trolley, professor, softwareInstance);
+			this.checkParamsSendSoftware(classroom, trolley, professor, softwareInstance);
 			return ResponseEntity.ok().body("OK") ;
 		}
 		catch (ComputerError exception)
@@ -313,7 +313,7 @@ public class RestHandlerAdministration
 		}
 	}
 	
-	public void checkParamSendSoftware(String classroom, String trolley, String professor, Software[] softwareInstance) throws ComputerError
+	public void checkParamsSendSoftware(String classroom, String trolley, String professor, Software[] softwareInstance) throws ComputerError
 	{
 		if(classroom.isEmpty())
 		{
@@ -344,7 +344,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParam(classroom, trolley, professor, softwareInstance);
+			this.checkParamsUninstallSoftware(classroom, trolley, professor, softwareInstance);
 			return ResponseEntity.ok().body("OK") ;
 		}
 		catch (ComputerError exception)
@@ -361,7 +361,7 @@ public class RestHandlerAdministration
 		}
 	}
 	
-	public void checkParam(String classroom, String trolley, String professor, Software[] softwareInstance) throws ComputerError
+	public void checkParamsUninstallSoftware(String classroom, String trolley, String professor, Software[] softwareInstance) throws ComputerError
 	{
 		if(classroom.isEmpty())
 		{
@@ -381,7 +381,9 @@ public class RestHandlerAdministration
 		}
 	}
 
+	/************************************************************************************************************************************************/
 	/*******************************************************************REAK 109A *******************************************************************/
+	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.PUT, value = "/edit")
 	public ResponseEntity updateComputer (
 			@RequestHeader(value = "serialNumber",required = false) final String serialNumber,
@@ -392,7 +394,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParams(serialNumber, andaluciaId, computerNumber, computer);
+			this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer);
 			//TODO: Obtener datos del ordenador desde la bbdd editarlo y subirlo
 			return ResponseEntity.ok().body("OK");
 		}
@@ -410,7 +412,7 @@ public class RestHandlerAdministration
 		
 	}
 	
-	private void checkParams(String serialNumber,String andaluciaId, String computerNumber, Computer computer) throws ComputerError
+	private void checkParamsUpdatecomputer(String serialNumber,String andaluciaId, String computerNumber, Computer computer) throws ComputerError
 	{
 		if(serialNumber.isEmpty() && andaluciaId.isEmpty() && computerNumber.isEmpty())
 		{
