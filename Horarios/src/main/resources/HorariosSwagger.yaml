@@ -152,7 +152,7 @@ paths:
           schema:
             $ref: '#/definitions/HorarioError'
             
-  /teacher/get/Classroom:
+  /teacher/get/classroom:
     get:
       operationId: getClassroomTeacher
       description: Get a teacher's current classroom
@@ -628,7 +628,7 @@ paths:
           schema:
             $ref: '#/definitions/HorarioError'
           
-  /get/hourrio/teacher/pdf:
+  /get/horario/teacher/pdf:
     get:
       operationId: getSchedulePdf
       description: Generate PDF schedule for a teacher
@@ -661,7 +661,7 @@ paths:
           schema:
             $ref: '#/definitions/HorarioError'
           
-  /get/teacheres/pdf:
+  /get/teachers/pdf:
     get:
       operationId: getTeachersSchedule
       description: Generate PDF schedules for all teachers
@@ -797,9 +797,14 @@ definitions:
   Classroom:
     type: object
     properties:
-        Classroom:
-          type: string
+        number:
+          type: integer
+          format: int32
           description: location of classroom
+        floor:
+          type: integer
+          format: int32
+          
 #----------teacherClassroom-------------------       
   TeacherClassroom:       
     type: object
