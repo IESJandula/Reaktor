@@ -18,12 +18,16 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import es.reaktor.exceptions.ComputerError;
 import es.reaktor.models.CommandLine;
 import es.reaktor.models.Computer;
 import es.reaktor.models.HardwareComponent;
 import es.reaktor.models.Location;
 import es.reaktor.models.MonitorizationLog;
+import es.reaktor.models.Peripheral;
 import es.reaktor.models.Software;
+import es.reaktor.models.Status;
+import es.reaktor.models.monitoring.Actions;
 import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,9 +39,10 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ComputerMonitorization
 {
-	
+
 	/**
 	 * Method sendFullComputerTask scheduled task
+	 * 
 	 * @throws ReaktorClientException
 	 */
 	@Scheduled(fixedDelayString = "5000", initialDelay = 2000)
@@ -130,16 +135,17 @@ public class ComputerMonitorization
 				}
 			}
 		}
-
 	}
-	
+
 	/**
 	 * Method sendStatusComputerTask scheduled task
+	 * 
 	 * @throws ReaktorClientException
 	 */
 	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
 	public void sendStatusComputerTask() throws ReaktorClientException
 	{
+		List<Status> statusList = new ArrayList<>();
 		String serialNumber = "sn123556";
 
 		// --- CLOSEABLE HTTP ---
@@ -159,6 +165,37 @@ public class ComputerMonitorization
 
 			String responseString = EntityUtils.toString(response.getEntity());
 			log.info(responseString);
+
+			Actions actionsToDo = new ObjectMapper().readValue(responseString, Actions.class);
+
+			// --- SHUTDOWN ---
+			this.actionsShutdown(statusList, serialNumber, actionsToDo);
+			// --- RESTART ---
+			this.actionsRestart(statusList, serialNumber, actionsToDo);
+			// --- EXECUTE COMMANDS ---
+			this.actionsCommands(statusList, serialNumber, actionsToDo);
+			// --- BLOCK DISP ---
+			this.actionsBlockDisp(statusList, serialNumber, actionsToDo);
+			// --- OPEN WEBS ---
+			this.actionsOpenWeb(statusList, serialNumber, actionsToDo);
+
+			// --- UPDATE ACTIONS ---
+			if (actionsToDo.getUpdateAndaluciaId() != null && !actionsToDo.getUpdateAndaluciaId().isEmpty())
+			{
+				log.info("UPDATE ANDALUCIA ID TO - " + actionsToDo.getUpdateAndaluciaId());
+			}
+			if (actionsToDo.getUpdateComputerNumber() != null && !actionsToDo.getUpdateComputerNumber().isEmpty())
+			{
+				log.info("UPDATE COMPUTER NUMBER TO - " + actionsToDo.getUpdateComputerNumber());
+			}
+			if (actionsToDo.getUpdateSerialNumber() != null && !actionsToDo.getUpdateSerialNumber().isEmpty())
+			{
+				log.info("UPDATE SERIAL NUMBER TO - " + actionsToDo.getUpdateSerialNumber());
+			}
+
+			// --- TO-DO NEW ENDPOINT TO SEND STATUS TO SERVER ---
+			log.info(statusList.toString());
+
 		}
 		catch (JsonProcessingException exception)
 		{
@@ -214,5 +251,160 @@ public class ComputerMonitorization
 			}
 		}
 
+	}
+
+	/**
+	 * Method actionsOpenWeb
+	 * 
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsOpenWeb(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		if (actionsToDo.getOpenWebs() != null && !actionsToDo.getOpenWebs().isEmpty())
+		{
+			try
+			{
+				for (String commandOpenWeb : actionsToDo.getOpenWebs())
+				{
+					log.info("cmd.exe /c " + commandOpenWeb);
+					Runtime rt = Runtime.getRuntime();
+					Process pr = rt.exec("cmd.exe /c " + commandOpenWeb);
+
+				}
+				Status status = new Status("Execute Web Commands " + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Execute Commands " + serialNumber, false,
+						new ComputerError(333, "error on execute web command", null));
+				statusList.add(status);
+			}
+		}
+	}
+
+	/**
+	 * Method actionsBlockDisp
+	 * 
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsBlockDisp(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		if (actionsToDo.getBlockDispositives() != null && !actionsToDo.getBlockDispositives().isEmpty())
+		{
+			try
+			{
+				List<Peripheral> blockDispositives = new ArrayList<Peripheral>();
+				for (int i = 0; i < actionsToDo.getBlockDispositives().size(); i++)
+				{
+					Peripheral peri = actionsToDo.getBlockDispositives().get(i);
+					peri.setOpen(false);
+					blockDispositives.add(peri);
+				}
+				log.info("DISPOSITIVES TO BLOCK : " + blockDispositives);
+
+				Status status = new Status("Dispotisive blocked " + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Dispotisive blocked error " + serialNumber, false,
+						new ComputerError(121, "error on block", null));
+				statusList.add(status);
+			}
+		}
+	}
+
+	/**
+	 * Method actionsCommands
+	 * 
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsCommands(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		if (actionsToDo.getCommands() != null && !actionsToDo.getCommands().isEmpty())
+		{
+			try
+			{
+				for (String command : actionsToDo.getCommands())
+				{
+					// --- GETTING COMMAND TO EXEC ---
+					log.info("cmd.exe /c " + command);
+					Runtime rt = Runtime.getRuntime();
+					Process pr = rt.exec("cmd.exe /c " + command);
+				}
+				Status status = new Status("Execute Commands " + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Execute Commands " + serialNumber, false,
+						new ComputerError(111, "error on execute command", null));
+				statusList.add(status);
+			}
+		}
+	}
+
+	/**
+	 * Method actionsRestart
+	 * 
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsRestart(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		if (actionsToDo.isRestart())
+		{
+			try
+			{
+				Runtime rt = Runtime.getRuntime();
+				Process pr = rt.exec("cmd.exe /c shutdown -r -t 61");
+
+				Status status = new Status("restart computer " + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Restart computer " + serialNumber, false,
+						new ComputerError(002, "error on restart computer ", null));
+				statusList.add(status);
+			}
+		}
+	}
+
+	/**
+	 * Method actionsShutdown
+	 * 
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsShutdown(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		if (actionsToDo.isShutdown())
+		{
+			try
+			{
+				Runtime rt = Runtime.getRuntime();
+				Process pr = rt.exec("cmd.exe /c shutdown -s -t 61");
+
+				Status status = new Status("Shutdown computer " + serialNumber, true, null);
+				statusList.add(status);
+
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Shutdown computer " + serialNumber, false,
+						new ComputerError(001, "error on Shutdown computer ", null));
+				statusList.add(status);
+			}
+		}
 	}
 }

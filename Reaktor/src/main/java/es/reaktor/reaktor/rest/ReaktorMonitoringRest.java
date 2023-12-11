@@ -19,6 +19,7 @@ import es.reaktor.models.Location;
 import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Peripheral;
 import es.reaktor.models.Status;
+import es.reaktor.models.monitoring.Actions;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -378,6 +379,7 @@ public class ReaktorMonitoringRest
 	{
 		try
 		{
+			Actions actionsToDo = new Actions();
 			List<Status> statusList = new ArrayList<>();
 			// --- SEARCHING THE COMPUTER ---
 			if ((serialNumber == null) || serialNumber.isBlank() || serialNumber.isEmpty())
@@ -393,30 +395,36 @@ public class ReaktorMonitoringRest
 				{
 					// --- SCANNING TASKS ---
 					// --- SHUTDOWN ---
-					this.sendStatusComputerShutdown(serialNumber, statusList);
+					this.sendStatusComputerShutdown(serialNumber, statusList,actionsToDo);
 					// --- RESTART ---
-					this.sendStatusComputerRestart(serialNumber, statusList);
+					this.sendStatusComputerRestart(serialNumber, statusList,actionsToDo);
 					// --- COMMAND EXECUTE ---
-					this.sendStatusComputerCommandExecute(serialNumber, statusList);
+					this.sendStatusComputerCommandExecute(serialNumber, statusList,actionsToDo);
 					// --- BLOCK DISPOSITIVE ---
-					this.sendStatusComputerBlockDisp(serialNumber, statusList, computer);
+					this.sendStatusComputerBlockDisp(serialNumber, statusList, computer,actionsToDo);
 					// --- APERTURA REMOTA DE ENLACE WEB ---
-					this.sendStatusComputerOpenWeb(serialNumber, statusList);
+					this.sendStatusComputerOpenWeb(serialNumber, statusList,actionsToDo);
+					
 					// --- INSTALACION REMOTA DE APLICACIONES ---
+					/*
 					this.sendStatusComputerInstallApp(serialNumber, statusList);
+					
 					// --- DESISNSTALACION REMOTA DE APP ---
 					this.sendStatusComputerUnistallApp(serialNumber, statusList);
+					
 					// --- EJECUCION DE CFG WIFI ---
 					this.sendStatusComputerCfgWifi(serialNumber, statusList);
+					*/
+					
 					// --- ACTUALIZACION DE JUNTA ANDALUCIA ---
-					this.sendStatusComputerUpdateAndalucia(serialNumber, statusList, computer);
+					this.sendStatusComputerUpdateAndalucia(serialNumber, statusList, computer,actionsToDo);
 					// --- ACTUALIZACION DE NUMERO DE SERIE ---
-					this.sendStatusComputerUpdateSn(serialNumber, statusList, computer);
+					this.sendStatusComputerUpdateSn(serialNumber, statusList, computer,actionsToDo);
 					// --- ACTUALIZACION DE NUM DE CAJA ---
-					this.sendStatusComputerUpdateCn(serialNumber, statusList, computer);
+					this.sendStatusComputerUpdateCn(serialNumber, statusList, computer,actionsToDo);
 				}
 			}
-			return ResponseEntity.ok().body(statusList);
+			return ResponseEntity.ok().body(actionsToDo);
 		}
 		catch (Exception exception)
 		{
@@ -432,7 +440,7 @@ public class ReaktorMonitoringRest
 	 * @param statusList
 	 * @param computer
 	 */
-	private void sendStatusComputerUpdateCn(String serialNumber, List<Status> statusList, Computer computer)
+	private Actions sendStatusComputerUpdateCn(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
 	{
 		for (int i = 0; i < this.updateComputerNumberComputerList.size(); i++)
 		{
@@ -440,24 +448,27 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// -------------------------  ACTUALIZACION DE NUM DE CAJA LOGIC---------
-				try
-				{
-					//  --- UPDATE FULL LIST WITH THE CMP FROM UPDATE TASKS  ---
-					this.computerList.remove(computer);
-					this.computerList.add(cmp);
-
-					Status status = new Status("Update computer number " + serialNumber, true,null);
-					statusList.add(status);
-					this.updateComputerNumberComputerList.remove(cmp);
-				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Update Andalucia Id " + serialNumber, false,
-							new ComputerError(121, "error on Update computer number", null));
-					statusList.add(status);
-				}
+//				try
+//				{
+//					//  --- UPDATE FULL LIST WITH THE CMP FROM UPDATE TASKS  ---
+//					this.computerList.remove(computer);
+//					this.computerList.add(cmp);
+//
+//					Status status = new Status("Update computer number " + serialNumber, true,null);
+//					statusList.add(status);
+//					this.updateComputerNumberComputerList.remove(cmp);
+//				}
+//				catch (Exception exception)
+//				{
+//					Status status = new Status("Update Andalucia Id " + serialNumber, false,
+//							new ComputerError(121, "error on Update computer number", null));
+//					statusList.add(status);
+//				}
+				actionsToDo.setUpdateComputerNumber("cn123456566");
+				this.updateComputerNumberComputerList.remove(cmp);
 			}
 		}
+		return actionsToDo;
 	}
 
 	/**
@@ -466,7 +477,7 @@ public class ReaktorMonitoringRest
 	 * @param statusList
 	 * @param computer
 	 */
-	private void sendStatusComputerUpdateSn(String serialNumber, List<Status> statusList, Computer computer)
+	private Actions sendStatusComputerUpdateSn(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
 	{
 		for (int i = 0; i < this.updateSerialNumberComputerList.size(); i++)
 		{
@@ -474,24 +485,27 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// ------------------------- ACTUALIZACION DE NUMERO DE SERIE LOGIC---------
-				try
-				{
-					//  --- UPDATE FULL LIST WITH THE CMP FROM UPDATE TASKS  ---
-					this.computerList.remove(computer);
-					this.computerList.add(cmp);
-
-					Status status = new Status("Update serial number " + serialNumber, true,null);
-					statusList.add(status);
-					this.updateSerialNumberComputerList.remove(cmp);
-				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Update serial number " + serialNumber, false,
-							new ComputerError(121, "error on Update serial number", null));
-					statusList.add(status);
-				}
+//				try
+//				{
+//					//  --- UPDATE FULL LIST WITH THE CMP FROM UPDATE TASKS  ---
+//					this.computerList.remove(computer);
+//					this.computerList.add(cmp);
+//
+//					Status status = new Status("Update serial number " + serialNumber, true,null);
+//					statusList.add(status);
+//					this.updateSerialNumberComputerList.remove(cmp);
+//				}
+//				catch (Exception exception)
+//				{
+//					Status status = new Status("Update serial number " + serialNumber, false,
+//							new ComputerError(121, "error on Update serial number", null));
+//					statusList.add(status);
+//				}
+				actionsToDo.setUpdateSerialNumber(serialNumber);
+				this.updateSerialNumberComputerList.remove(cmp);
 			}
 		}
+		return actionsToDo;
 	}
 
 	/**
@@ -500,7 +514,7 @@ public class ReaktorMonitoringRest
 	 * @param statusList
 	 * @param computer
 	 */
-	private void sendStatusComputerUpdateAndalucia(String serialNumber, List<Status> statusList, Computer computer)
+	private Actions sendStatusComputerUpdateAndalucia(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
 	{
 		for (int i = 0; i < this.updateAndaluciaComputerList.size(); i++)
 		{
@@ -508,24 +522,27 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// ------------------------- ACTUALIZACION DE JUNTA ANDALUCIA LOGIC---------
-				try
-				{
-					//  --- UPDATE FULL LIST WITH THE CMP FROM UPDATE TASKS  ---
-					this.computerList.remove(computer);
-					this.computerList.add(cmp);
-
-					Status status = new Status("Update Andalucia Id " + serialNumber, true,null);
-					statusList.add(status);
-					this.updateAndaluciaComputerList.remove(cmp);
-				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Update Andalucia Id " + serialNumber, false,
-							new ComputerError(121, "error on Update Andalucia Id", null));
-					statusList.add(status);
-				}
+//				try
+//				{
+//					//  --- UPDATE FULL LIST WITH THE CMP FROM UPDATE TASKS  ---
+//					this.computerList.remove(computer);
+//					this.computerList.add(cmp);
+//
+//					Status status = new Status("Update Andalucia Id " + serialNumber, true,null);
+//					statusList.add(status);
+//					this.updateAndaluciaComputerList.remove(cmp);
+//				}
+//				catch (Exception exception)
+//				{
+//					Status status = new Status("Update Andalucia Id " + serialNumber, false,
+//							new ComputerError(121, "error on Update Andalucia Id", null));
+//					statusList.add(status);
+//				}
+				actionsToDo.setUpdateAndaluciaId("andaluciaIdUpdate");
+				this.updateAndaluciaComputerList.remove(cmp);
 			}
 		}
+		return actionsToDo;
 	}
 
 	/**
@@ -590,7 +607,7 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerOpenWeb(String serialNumber, List<Status> statusList)
+	private void sendStatusComputerOpenWeb(String serialNumber, List<Status> statusList,Actions actionsToDo)
 	{
 		for (int i = 0; i < this.openWebComputerList.size(); i++)
 		{
@@ -598,27 +615,16 @@ public class ReaktorMonitoringRest
 			Computer cmp = this.openWebComputerList.get(i);
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				try
+				List<String> webCommands = new ArrayList<String>();
+				for (String command : cmp.getCommandLine().getCommands())
 				{
-					for (String command : cmp.getCommandLine().getCommands())
+					if(command.contains("start chrome"))
 					{
-						if(command.contains("start chrome"))
-						{
-							log.info("cmd.exe /c "+command);
-							Runtime rt = Runtime.getRuntime();
-							Process pr = rt.exec("cmd.exe /c "+command);
-						}
+						webCommands.add(command);
 					}
-					Status status = new Status("Execute Web Commands " + serialNumber, true,null);
-					statusList.add(status);
-					this.openWebComputerList.remove(cmp);
 				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Execute Commands " + serialNumber, false,
-							new ComputerError(333, "error on execute web command", null));
-					statusList.add(status);
-				}
+				actionsToDo.setOpenWebs(webCommands);
+				this.openWebComputerList.remove(cmp);
 			}
 		}
 	}
@@ -629,7 +635,7 @@ public class ReaktorMonitoringRest
 	 * @param statusList
 	 * @param computer
 	 */
-	private void sendStatusComputerBlockDisp(String serialNumber, List<Status> statusList, Computer computer)
+	private void sendStatusComputerBlockDisp(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
 	{
 		for (int i = 0; i < this.blockDispositiveComputerList.size(); i++)
 		{
@@ -637,28 +643,11 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// ------------------------- BLOCK DISP.LOGIC-------------------------------
-				try
-				{
-					// --- GETTING ON FULL LIST ---
-
-					Peripheral peripheral = (Peripheral) cmp.getHardwareList().get(0);
-					peripheral.setOpen(false);
-					cmp.getHardwareList().set(0, peripheral);
-
-					//  --- UPDATE FULL LIST ---
-					this.computerList.remove(computer);
-					this.computerList.add(cmp);
-
-					Status status = new Status("Dispotisive blocked " + serialNumber, true,null);
-					statusList.add(status);
-					this.blockDispositiveComputerList.remove(cmp);
-				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Dispotisive blocked error " + serialNumber, false,
-							new ComputerError(121, "error on block", null));
-					statusList.add(status);
-				}
+				List<Peripheral> peripheralList = new ArrayList<Peripheral>();
+				Peripheral peripheral = (Peripheral) cmp.getHardwareList().get(0);
+				peripheralList.add(peripheral);
+				actionsToDo.setBlockDispositives(peripheralList);
+				this.blockDispositiveComputerList.remove(cmp);
 			}
 		}
 	}
@@ -668,7 +657,7 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerCommandExecute(String serialNumber, List<Status> statusList)
+	private void sendStatusComputerCommandExecute(String serialNumber, List<Status> statusList,Actions actionsToDo)
 	{
 		for (int i = 0; i < this.execCommandsComputerList.size(); i++)
 		{
@@ -676,25 +665,8 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// ------------------------- COMMAND EXECUTE LOGIC-------------------------------
-				try
-				{
-					for (String command : cmp.getCommandLine().getCommands())
-					{
-						// --- GETTING COMMAND TO EXEC ---
-						log.info("cmd.exe /c "+command);
-						Runtime rt = Runtime.getRuntime();
-						Process pr = rt.exec("cmd.exe /c "+command);
-					}
-					Status status = new Status("Execute Commands " + serialNumber, true,null);
-					statusList.add(status);
-					this.execCommandsComputerList.remove(cmp);
-				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Execute Commands " + serialNumber, false,
-							new ComputerError(111, "error on execute command", null));
-					statusList.add(status);
-				}
+				actionsToDo.setCommands(cmp.getCommandLine().getCommands());
+				this.execCommandsComputerList.remove(cmp);
 			}
 		}
 	}
@@ -704,7 +676,7 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerRestart(String serialNumber, List<Status> statusList)
+	private void sendStatusComputerRestart(String serialNumber, List<Status> statusList, Actions actionsToDo)
 	{
 		for (int i = 0; i < this.restartDownComputerList.size(); i++)
 		{
@@ -712,22 +684,8 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// ------------------------- RESTART LOGIC -------------------------------
-				try
-				{
-					Runtime rt = Runtime.getRuntime();
-					Process pr = rt.exec("cmd.exe /c shutdown -r -t 61");
-
-					Status status = new Status("restart computer " + serialNumber, true, null);
-					statusList.add(status);
-					this.restartDownComputerList.remove(cmp);
-				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Restart computer "  + serialNumber, false,
-							new ComputerError(002, "error on restart computer ", null));
-					statusList.add(status);
-				}
-
+				actionsToDo.setRestart(true);
+				this.restartDownComputerList.remove(cmp);
 			}
 		}
 	}
@@ -737,7 +695,7 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerShutdown(String serialNumber, List<Status> statusList)
+	private void sendStatusComputerShutdown(String serialNumber, List<Status> statusList, Actions actionsToDo)
 	{
 		for (int i = 0; i < this.shutDownComputerList.size(); i++)
 		{
@@ -745,22 +703,10 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// ------------------------- SHUTDOWN LOGIC-------------------------------
-				try
-				{
-					Runtime rt = Runtime.getRuntime();
-					Process pr = rt.exec("cmd.exe /c shutdown -s -t 61");
-
-					Status status = new Status("Shutdown computer " + serialNumber, true, null);
-					statusList.add(status);
-					this.shutDownComputerList.remove(cmp);
-				}
-				catch (Exception exception)
-				{
-					Status status = new Status("Shutdown computer "  + serialNumber, false,
-							new ComputerError(001, "error on Shutdown computer ", null));
-					statusList.add(status);
-				}
+				actionsToDo.setShutdown(true);
+				this.shutDownComputerList.remove(cmp);
 			}
+			
 		}
 	}
 
