@@ -2,8 +2,6 @@ package es.reaktor.reaktor.checker;
 
 import java.io.File;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.CommandLine;
 import es.reaktor.reaktor.models.Computer;
@@ -18,8 +16,7 @@ import es.reaktor.reaktor.models.Software;
 public class Checkers 
 {
 	
-	private void checkCommands(String serialNumber, String classroom, String trolley, Integer plant,
-			CommandLine commandLine) throws ComputerError
+	public void checkCommands(String serialNumber, String classroom, String trolley, Integer plant,CommandLine commandLine) throws ComputerError
 	{
 		if (commandLine == null)
 		{
@@ -30,8 +27,7 @@ public class Checkers
 		}
 	}
 	
-	public void checkParamsComputerShutdown(String serialNumber, String classroom, String trolley, Integer plant)
-			throws ComputerError
+	public void checkParamsComputerShutdown(String serialNumber, String classroom, String trolley, Integer plant)throws ComputerError
 	{
 		if (serialNumber.isEmpty())
 		{
@@ -48,8 +44,7 @@ public class Checkers
 		}
 	}
 	
-	public void checkParamsPutComputerRestart(String serialNumber, String classroom, String trolley, Integer plant)
-			throws ComputerError
+	public void checkParamsPutComputerRestart(String serialNumber, String classroom, String trolley, Integer plant)throws ComputerError
 	{
 		if (serialNumber.isEmpty())
 		{
@@ -66,7 +61,7 @@ public class Checkers
 		}
 	}
 	
-	private void checkParamsAddByBody(String classroom, String trolley, Peripheral[] peripheral) throws ComputerError
+	public void checkParamsAddByBody(String classroom, String trolley, Peripheral[] peripheral) throws ComputerError
 	{
 		if (classroom.isEmpty() && trolley.isEmpty())
 		{
@@ -77,7 +72,7 @@ public class Checkers
 		}
 	}
 	
-	private void checkParamsSendScreenshotOrder(String classroom, String trolley) throws ComputerError
+	public void checkParamsSendScreenshotOrder(String classroom, String trolley) throws ComputerError
 	{
 		if (classroom == null || classroom.isEmpty() || trolley == null || trolley.isEmpty())
 		{
@@ -90,7 +85,7 @@ public class Checkers
 		}
 	}
 	
-	private void checkParamsGetScreenshots(String classroom,String trolley) throws ComputerError
+	public void checkParamsGetScreenshots(String classroom,String trolley) throws ComputerError
 	{
 		if(classroom.isEmpty() && trolley.isEmpty())
 		{
@@ -98,8 +93,7 @@ public class Checkers
 		}
 	}
 	
-	private void checkParamsPostComputerExeFile(String serialNumber, String classroom, String trolley, Integer plant,
-			File execFile) throws ComputerError
+	public void checkParamsPostComputerExeFile(String serialNumber, String classroom, String trolley, Integer plant,File execFile) throws ComputerError
 	{
 		if (serialNumber.isEmpty() && classroom.isEmpty() && trolley.isEmpty() && plant == null)
 		{
@@ -114,8 +108,7 @@ public class Checkers
 		}
 	}
 	
-	public void checkParamsSendSoftware(String classroom, String trolley, String professor, Software[] softwareInstance)
-			throws ComputerError
+	public void checkParamsSendSoftware(String classroom, String trolley, String professor, Software[] softwareInstance)throws ComputerError
 	{
 		if (classroom.isEmpty())
 		{
@@ -132,8 +125,7 @@ public class Checkers
 		}
 	}
 	
-	public void checkParamsUninstallSoftware(String classroom, String trolley, String professor,
-			Software[] softwareInstance) throws ComputerError
+	public void checkParamsUninstallSoftware(String classroom, String trolley, String professor,Software[] softwareInstance) throws ComputerError
 	{
 		if (classroom.isEmpty())
 		{
@@ -150,7 +142,7 @@ public class Checkers
 		}
 	}
 	
-	private void checkParamsUpdatecomputer(String serialNumber, String andaluciaId, String computerNumber, Computer computer) throws ComputerError
+	public void checkParamsUpdatecomputer(String serialNumber, String andaluciaId, String computerNumber, Computer computer) throws ComputerError
 	{
 		if (serialNumber.isEmpty() && andaluciaId.isEmpty() && computerNumber.isEmpty())
 		{

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.reaktor.reaktor.checker.Checkers;
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.CommandLine;
 import es.reaktor.reaktor.models.Computer;
@@ -29,6 +30,7 @@ public class RestHandlerAdministration
 {
 	/** Class logger */
 	private static Logger log = LogManager.getLogger();
+	private Checkers check = new Checkers();
 
 	/**
 	 * Default constructor
@@ -53,7 +55,8 @@ public class RestHandlerAdministration
 		try
 		{
 			String[] commands = new String[0];
-			this.checkCommands(serialNumber, classroom, trolley, plant, commandLine);
+			
+			check.checkCommands(serialNumber, classroom, trolley, plant, commandLine);
 			if (!serialNumber.isEmpty())
 			{
 				commands = Arrays.copyOf(commands, commands.length + 1);
@@ -88,18 +91,6 @@ public class RestHandlerAdministration
 		}
 	}
 
-	private void checkCommands(String serialNumber, String classroom, String trolley, Integer plant,
-			CommandLine commandLine) throws ComputerError
-	{
-		if (commandLine == null)
-		{
-			throw new ComputerError(1, "Command line can't be null");
-		} else if (serialNumber.isEmpty() && classroom.isEmpty() && trolley.isEmpty() && plant == null)
-		{
-			throw new ComputerError(2, "All params can't be null");
-		}
-	}
-
 	/************************************************************************************************************************************************/
 	/********************************************************************REAK 101A*******************************************************************/
 	/************************************************************************************************************************************************/
@@ -112,7 +103,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamsComputerShutdown(serialNumber, classroom, trolley, plant);
+			check.checkParamsComputerShutdown(serialNumber, classroom, trolley, plant);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -124,24 +115,6 @@ public class RestHandlerAdministration
 			String message = "Server Error";
 			log.error(message, exception);
 			return ResponseEntity.status(500).body(exception.getMessage());
-		}
-	}
-
-	public void checkParamsComputerShutdown(String serialNumber, String classroom, String trolley, Integer plant)
-			throws ComputerError
-	{
-		if (serialNumber.isEmpty())
-		{
-			throw new ComputerError(1, "Serial Number is null");
-		} else if (classroom.isEmpty())
-		{
-			throw new ComputerError(2, "Classroom is null");
-		} else if (trolley.isEmpty())
-		{
-			throw new ComputerError(3, "Trolley is null");
-		} else if (plant == null)
-		{
-			throw new ComputerError(4, "Plant is null");
 		}
 	}
 
@@ -157,7 +130,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamsPutComputerRestart(serialNumber, classroom, trolley, plant);
+			check.checkParamsPutComputerRestart(serialNumber, classroom, trolley, plant);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -172,36 +145,17 @@ public class RestHandlerAdministration
 		}
 	}
 
-	public void checkParamsPutComputerRestart(String serialNumber, String classroom, String trolley, Integer plant)
-			throws ComputerError
-	{
-		if (serialNumber.isEmpty())
-		{
-			throw new ComputerError(1, "Serial Number is null");
-		} else if (classroom.isEmpty())
-		{
-			throw new ComputerError(2, "Classroom is null");
-		} else if (trolley.isEmpty())
-		{
-			throw new ComputerError(3, "Trolley is null");
-		} else if (plant == null)
-		{
-			throw new ComputerError(4, "Plant is null");
-		}
-	}
-
 	/************************************************************************************************************************************************/
 	/********************************************************************REAK 103A*******************************************************************/
 	/************************************************************************************************************************************************/
-	@RequestMapping(method = RequestMethod.POST, value = "/by_body/", consumes =
-	{ "application/json" })
+	@RequestMapping(method = RequestMethod.POST, value = "/by_body/", consumes = { "application/json" })
 	public ResponseEntity<?> addByBody(@RequestHeader(value = "classroom", required = false) final String classroom,
 			@RequestHeader(value = "trolley", required = false) final String trolley,
 			@RequestBody(required = true) Peripheral[] peripherals)
 	{
 		try
 		{
-			this.checkParamsAddByBody(classroom, trolley, peripherals);
+			check.checkParamsAddByBody(classroom, trolley, peripherals);
 			return ResponseEntity.ok().body("All OK");
 		} catch (ComputerError ce)
 		{
@@ -209,17 +163,6 @@ public class RestHandlerAdministration
 		} catch (Exception e)
 		{
 			return ResponseEntity.status(500).body(e.getMessage());
-		}
-	}
-
-	private void checkParamsAddByBody(String classroom, String trolley, Peripheral[] peripheral) throws ComputerError
-	{
-		if (classroom.isEmpty() && trolley.isEmpty())
-		{
-			throw new ComputerError(2, "All params can't be null");
-		} else if (peripheral == null)
-		{
-			throw new ComputerError(5, "The Pheriferal can't be null");
 		}
 	}
 
@@ -232,7 +175,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			checkParamsSendScreenshotOrder(classroom, trolley);
+			check.checkParamsSendScreenshotOrder(classroom, trolley);
 			return ResponseEntity.ok().body("Screenshot send successfully");
 		} catch (ComputerError ex)
 		{
@@ -242,19 +185,6 @@ public class RestHandlerAdministration
 		{
 			log.error("Server error", ex);
 			return ResponseEntity.status(500).body(new ComputerError(500, "Server error"));
-		}
-	}
-
-	private void checkParamsSendScreenshotOrder(String classroom, String trolley) throws ComputerError
-	{
-		if (classroom == null || classroom.isEmpty() || trolley == null || trolley.isEmpty())
-		{
-			throw new ComputerError(1, "Classroom and trolley cannot be null or empty");
-		}
-
-		if (!classroom.matches("[A-Za-z0-9]+"))
-		{
-			throw new ComputerError(2, "Classroom must contain only alphanumeric characters");
 		}
 	}
 
@@ -269,7 +199,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamsGetScreenshots(classroom, trolley);
+			check.checkParamsGetScreenshots(classroom, trolley);
 			File zipFile = new File("screenshots.zip");
 			//TODO: Cuando se implante la bbdd llamar al ordenador ye incluirlo en softaware
 			return ResponseEntity.ok().body(zipFile);
@@ -286,14 +216,6 @@ public class RestHandlerAdministration
 		}
 	}
 	
-	private void checkParamsGetScreenshots(String classroom,String trolley) throws ComputerError
-	{
-		if(classroom.isEmpty() && trolley.isEmpty())
-		{
-			throw new ComputerError(1,"All params can't be null");
-		}
-	}
-	
 	/************************************************************************************************************************************************/
 	/********************************************************************REAK 106A*******************************************************************/
 	/************************************************************************************************************************************************/
@@ -307,7 +229,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamsPostComputerExeFile(serialNumber, classroom, trolley, plant, execFile);
+			check.checkParamsPostComputerExeFile(serialNumber, classroom, trolley, plant, execFile);
 			// TODO: Cuando se implante la bbdd llamar al ordenador ye incluirlo en
 			// softaware
 			return ResponseEntity.ok().body("Computer update success");
@@ -322,22 +244,6 @@ public class RestHandlerAdministration
 		}
 	}
 
-	private void checkParamsPostComputerExeFile(String serialNumber, String classroom, String trolley, Integer plant,
-			File execFile) throws ComputerError
-	{
-		if (serialNumber.isEmpty() && classroom.isEmpty() && trolley.isEmpty() && plant == null)
-		{
-			throw new ComputerError(1, "All params can't be null");
-		} else if (execFile == null)
-		{
-			throw new ComputerError(3, "The file can't be null");
-		} else if (execFile.getName().endsWith(".exe") || execFile.getName().endsWith(".cfg")
-				|| execFile.getName().endsWith(".exec"))
-		{
-			throw new ComputerError(4, "The file extensiojn its wrong");
-		}
-	}
-
 	/************************************************************************************************************************************************/
 	/********************************************************************REAK 107A*******************************************************************/
 	/************************************************************************************************************************************************/
@@ -349,7 +255,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamsSendSoftware(classroom, trolley, professor, softwareInstance);
+			check.checkParamsSendSoftware(classroom, trolley, professor, softwareInstance);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -361,24 +267,6 @@ public class RestHandlerAdministration
 			String message = "Server Error";
 			log.error(message, exception);
 			return ResponseEntity.status(500).body(exception.getMessage());
-		}
-	}
-
-	public void checkParamsSendSoftware(String classroom, String trolley, String professor, Software[] softwareInstance)
-			throws ComputerError
-	{
-		if (classroom.isEmpty())
-		{
-			throw new ComputerError(1, "Classroom is null");
-		} else if (trolley.isEmpty())
-		{
-			throw new ComputerError(2, "Trolley is null");
-		} else if (professor.isEmpty())
-		{
-			throw new ComputerError(3, "Professor is null");
-		} else if (softwareInstance == null)
-		{
-			throw new ComputerError(4, "SoftwareInstance is null");
 		}
 	}
 
@@ -394,7 +282,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamsUninstallSoftware(classroom, trolley, professor, softwareInstance);
+			check.checkParamsUninstallSoftware(classroom, trolley, professor, softwareInstance);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -406,24 +294,6 @@ public class RestHandlerAdministration
 			String message = "Server Error";
 			log.error(message, exception);
 			return ResponseEntity.status(500).body(exception.getMessage());
-		}
-	}
-
-	public void checkParamsUninstallSoftware(String classroom, String trolley, String professor,
-			Software[] softwareInstance) throws ComputerError
-	{
-		if (classroom.isEmpty())
-		{
-			throw new ComputerError(1, "Classroom is null");
-		} else if (trolley.isEmpty())
-		{
-			throw new ComputerError(2, "Trolley is null");
-		} else if (professor.isEmpty())
-		{
-			throw new ComputerError(3, "Professor is null");
-		} else if (softwareInstance == null)
-		{
-			throw new ComputerError(4, "SoftwareInstance is null");
 		}
 	}
 
@@ -439,7 +309,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer);
+			check.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer);
 			// TODO: Obtener datos del ordenador desde la bbdd editarlo y subirlo
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError ex)
@@ -452,18 +322,6 @@ public class RestHandlerAdministration
 			return ResponseEntity.status(500).body("Server error");
 		}
 
-	}
-
-	private void checkParamsUpdatecomputer(String serialNumber, String andaluciaId, String computerNumber,
-			Computer computer) throws ComputerError
-	{
-		if (serialNumber.isEmpty() && andaluciaId.isEmpty() && computerNumber.isEmpty())
-		{
-			throw new ComputerError(1, "All params can't be null");
-		} else if (computer == null)
-		{
-			throw new ComputerError(6, "Computer can't be null");
-		}
 	}
 
 }
