@@ -1,10 +1,8 @@
 package es.reaktor.models;
 
-<<<<<<< HEAD
+
 public class ComputerError extends Exception
-=======
-public class ComputerError extends Exception 
->>>>>>> REAK_A_203
+
 {
 
 	
