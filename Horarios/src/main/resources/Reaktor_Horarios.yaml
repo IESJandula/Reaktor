@@ -1,0 +1,118 @@
+swagger: "2.0"
+basePath: "/horario"
+host: reaktor
+info:
+  title: Reaktor Horarios
+  version: 1.0.0
+  contact:
+    name: Pablo Ruiz Canovas
+    email: pruican1312@g.educaand.es
+
+schemes:
+  - http
+  - https
+produces:
+  - application/json
+paths:
+  /horarioXML:
+    post:
+      operationId: postXML
+      description: Se pasa un fichero xml con todos los horarios definidos, se parsea internamente, no devuelve nada
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: fichero
+          type: file
+          in: formData
+          description: Fichero xml con los horarios establecidos
+      responses:
+        200:
+          description: "Informacion parseada con exito"
+        404:
+          description: "Error, la estructura del fichero es incorrecta"
+        500:
+          description: "Error de servidor"
+  /rolesCSV:
+    post:
+      operationId: postCSV
+      description: Se pasa un fichero CSV con todos los ROLES definidos, se parsea internamente, no devuelve nada
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: fichero
+          type: file
+          in: formData
+          description: Fichero csv con los horarios establecidos
+      responses:
+        200:
+          description: "Informacion parseada con exito"
+        404:
+          description: "Error, la estructura del fichero es incorrecta"
+        500:
+          description: "Error de servidor"    
+  /listado-cursos-aulas:
+    get:
+      operationId: getCursoAula
+      description: Se obtiene una lista con cursos organizados
+      responses:
+        200:
+          description: "Cursos obtenidos"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Curso"
+        500:
+          description: "Error de servidor"
+  /listaRoles:
+    get:
+      operationId: getRoles
+      description: Mediante un correo se obtiene el rol de ese correo
+      parameters:
+        - name: email
+          type: string
+          in: header
+          description: Email de la persona con el rol establecido
+          required: true
+      responses:
+        200:
+          description: "Roles obtenidos correctamente"
+          schema:
+            type: array
+            items: 
+              type: string
+        404:
+          description: "El email no existe"
+        500:
+          description: "Error de servidor"
+  
+
+definitions:
+  Curso:
+    type: object
+    description: Objeto curso que guarda la informacion de un aula y un nombre de curso
+    properties: 
+      nombre:
+        type: string
+        description: Nombre del curso
+      aula:
+        type: number
+        format: float
+        description: Aula a la que pertenece el curso
+  Profesor:
+    type: object
+    description: Objeto profesor al que se le asigna un curso y un nombre
+    properties: 
+      nombre:
+        type: string
+        description: nombre del profesor
+  HorarioError:
+    type: object
+    properties: 
+      codigo:
+        type: integer
+        format: int32
+        description: Codigo que genera el error
+      mensaje:
+        type: string
+        description: Mensaje breve sobre la informacion del error
+  
