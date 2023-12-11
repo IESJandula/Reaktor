@@ -13,6 +13,18 @@ public class Peripheral extends HardwareComponent
 	 * - ATTRIBUTES - This attributes say if a peripheral is open
 	 */
 	private boolean isOpen;
+	
+	/**
+	 * Constructor for create new Peripheral
+	 * @param component
+	 * @param cuantity
+	 * @param isOpen
+	 */
+	public Peripheral(String component, int cuantity, boolean isOpen)
+	{
+		super(component, cuantity);
+		this.isOpen = isOpen;
+	}
 
 	/**
 	 * Method equals custom configuration
@@ -32,4 +44,6 @@ public class Peripheral extends HardwareComponent
 		}
 		return false;
 	}
+
+
 }
