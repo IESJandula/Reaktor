@@ -65,10 +65,10 @@ public class Checkers
 	{
 		if (classroom.isEmpty() && trolley.isEmpty())
 		{
-			throw new ComputerError(2, "All params can't be null");
+			throw new ComputerError(1, "All params can't be null");
 		} else if (peripheral == null)
 		{
-			throw new ComputerError(5, "The Pheriferal can't be null");
+			throw new ComputerError(2, "The Pheriferal can't be null");
 		}
 	}
 	
@@ -100,9 +100,8 @@ public class Checkers
 			throw new ComputerError(1, "All params can't be null");
 		} else if (execFile == null)
 		{
-			throw new ComputerError(3, "The file can't be null");
-		} else if (execFile.getName().endsWith(".exe") || execFile.getName().endsWith(".cfg")
-				|| execFile.getName().endsWith(".exec"))
+			throw new ComputerError(2, "The file can't be null");
+		} else if (execFile.getName().endsWith(".exe") || execFile.getName().endsWith(".cfg")|| execFile.getName().endsWith(".exec"))
 		{
 			throw new ComputerError(4, "The file extensiojn its wrong");
 		}
@@ -149,7 +148,7 @@ public class Checkers
 			throw new ComputerError(1, "All params can't be null");
 		} else if (computer == null)
 		{
-			throw new ComputerError(6, "Computer can't be null");
+			throw new ComputerError(2, "Computer can't be null");
 		}
 	}
 }
