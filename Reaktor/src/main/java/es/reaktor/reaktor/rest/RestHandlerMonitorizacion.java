@@ -2,6 +2,8 @@ package es.reaktor.reaktor.rest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.Computer;
+import es.reaktor.reaktor.models.Status;
 
 /**
  * 
@@ -28,13 +32,15 @@ public class RestHandlerMonitorizacion
 	/**Class logger */
 	private Logger log = LogManager.getLogger();
 	
-	/** */
+	/**Status solo instalacion */
+	private List <Status> status;
 	/**
 	 * Default constructor
 	 */
 	public RestHandlerMonitorizacion()
 	{
 		//Public constructor
+		this.status = new LinkedList<Status>();
 	}
 	/**
 	 * *****************************************************************************
@@ -161,11 +167,12 @@ public class RestHandlerMonitorizacion
 	@RequestMapping(method = RequestMethod.POST, value = "/install/app", consumes = "application/json")
 	public ResponseEntity<?> installApp(
 			@RequestHeader( value = "serialNumber",required = true) final String serialNumber,
-			@RequestHeader( value = "app",required = true) final String app
+			@RequestHeader( value = "app",required = true) final MultipartFile app
 			) 
 	{
 		try
 		{
+			String nameApp = app.getName();
 			//Se comprueba que el ordenador exista
 			if(serialNumber.isEmpty())
 			{
@@ -173,30 +180,15 @@ public class RestHandlerMonitorizacion
 				return ResponseEntity.status(404).body("PC not found, the serial number doesn't exists");
 			}
 			//Se comprueba que la app sea msi o exe
-			else if(!app.endsWith(".msi") && !app.endsWith(".exe"))
+			else if(!nameApp.endsWith(".msi") && !nameApp.endsWith(".exe"))
 			{
 				log.error("App not found");
 				return ResponseEntity.status(404).body("The app to install doesn't exists");
 			}
-			//Si es msi ejecuta un comando de instalacion silenciosa
-			else if(app.endsWith(".msi"))
-			{
-				Runtime rt = Runtime.getRuntime();
-				Process pr = rt.exec("cmd.exe msiexec /i "+app+" /qb! /l*v install.log");
-				return ResponseEntity.ok().body("App installed succesfully");
-			}
-			//En caso contrario ejecutaria el exe
-			else
-			{
-				Runtime rt = Runtime.getRuntime();
-				Process pr = rt.exec("cmd.exe "+app+" /S");
-				return ResponseEntity.ok().body("App installed succesfully");
-			}
-		}
-		catch(IOException ex)
-		{
-			log.error("The system couldn't find the app",ex);
-			return ResponseEntity.status(404).body("The app "+app+" couldn't be installed because doesn't exists or is deprecated");
+			this.status.add(new Status("install",false));
+			
+			return ResponseEntity.ok().body("File download succesfully");
+			
 		}
 		catch(Exception ex)
 		{
@@ -205,11 +197,25 @@ public class RestHandlerMonitorizacion
 		}
 	}
 	
-	private void checkParam(String serialNumber) throws ComputerError
+	/**
+	 * Metodo que instala un .exe o un .msi se ejecuta cuando se comprueba el status de un ordenador
+	 * @param serialNumber
+	 * @param app
+	 */
+	private void install(String serialNumber,MultipartFile app) throws IOException
 	{
-		if(serialNumber.isEmpty())
+		String fileName = app.getName();
+		//Si es msi ejecuta un comando de instalacion silenciosa
+		if(fileName.endsWith(".msi"))
 		{
-			throw new ComputerError(1,"Serial number can't be null");
+			Runtime rt = Runtime.getRuntime();
+			Process pr = rt.exec("cmd.exe msiexec /i "+app+" /qb! /l*v install.log");
+		}
+		//En caso contrario ejecutaria el exe
+		else
+		{
+			Runtime rt = Runtime.getRuntime();
+			Process pr = rt.exec("cmd.exe "+app+" /S");
 		}
 	}
 	
