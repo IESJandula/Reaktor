@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -12,8 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.reaktor.models.Computer;
 import lombok.extern.slf4j.Slf4j;
@@ -29,37 +28,45 @@ public class ComputerMonitorization
 	 * Method sendFullComputerTask scheduled task
 	 * 
 	 */
-	@Scheduled(fixedDelayString = "5000", initialDelay = 2000)
 	final static Logger logger = LogManager.getLogger();
-	public void sendFullComputerTask()
+	
+	/**
+	 * Method sendStatusComputerTask scheduled task
+	 * 
+	 * @throws ReaktorClientException
+	 */
+	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
+	public void sendStatusComputerTask() throws ReaktorClientException
 	{
-		// THE COMPUTER FAKE FULL INFO STATUS
-		Computer computerInfoMob = new Computer("sn1234", "and123", "cn123", "windows", "paco");
+		List<Status> statusList = new ArrayList<>();
+		String serialNumber = "sn123556";
+
 		// --- CLOSEABLE HTTP ---
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
-		
-		try 
+
+		try
 		{
-			// --- GETTING THE COMPUTER AS STRING ---
-			String computerString = mapper.writeValueAsString(computerInfoMob);
-		    // GETTING COMPUTER AS STRING ENTITY
-			StringEntity computerStringEntity = new StringEntity(computerString);
 			// GETTING HTTP CLIENT
 			httpClient = HttpClients.createDefault();
+
 			// DO THE HTTP POST WITH PARAMETERS
-			HttpPost request = new HttpPost("http://localhost:8084/computers/send/fullInfo");
-			request.setHeader("Content-Type", "application/json");
-			request.setHeader("serialNumber", "sn1234");
-			request.setEntity(computerStringEntity);
+			HttpPost request = new HttpPost("http://localhost:8084/computers/send/status");
+			request.setHeader("serialNumber", serialNumber);
 
 			response = httpClient.execute(request);
 
 			String responseString = EntityUtils.toString(response.getEntity());
-			log.info(responseString);
-			
+			logger.info(responseString);
+
+			Actions actionsToDo = new ObjectMapper().readValue(responseString, Actions.class);
+
+			this.actionsCommands(statusList, serialNumber, actionsToDo);
+		
+			logger.info(statusList.toString());
 
 		}
+	
 		catch(ClientProtocolException clientProtocolException)
 		{
 			String error ="Error de cliente protocal Exception";
