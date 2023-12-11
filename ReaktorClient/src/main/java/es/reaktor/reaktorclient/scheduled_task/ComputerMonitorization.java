@@ -1,106 +1,45 @@
 package es.reaktor.reaktorclient.scheduled_task;
 
-import java.io.IOException;
+import es.reaktor.reaktorclient.utils.HttpCommunicationSender;
+import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
+import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
+import es.reaktor.reaktorclient.windows.WindowsMotherboard;
+import lombok.extern.slf4j.Slf4j;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import es.reaktor.models.Computer;
-import lombok.extern.slf4j.Slf4j;
 /**
  * @author Manuel Martín Murillo
  *
  */
-@Slf4j
 @Component
-public class ComputerMonitorization 
+@Slf4j
+public class ComputerMonitorization
 {
-	/**
-	 * Method sendFullComputerTask scheduled task
-	 * 
-	 */
 	final static Logger logger = LogManager.getLogger();
-	
-	/**
-	 * Method sendStatusComputerTask scheduled task
-	 * 
-	 * @throws ReaktorClientException
-	 */
-	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
-	public void sendStatusComputerTask() throws ReaktorClientException
-	{
-		List<Status> statusList = new ArrayList<>();
-		String serialNumber = "sn123556";
+    @Autowired
+    private HttpCommunicationSender httpCommunicationSender;
 
-		// --- CLOSEABLE HTTP ---
-		CloseableHttpClient httpClient = null;
-		CloseableHttpResponse response = null;
+    @Value("${reaktor.server.url}")
+    private String reaktorServerUrl;
 
-		try
-		{
-			// GETTING HTTP CLIENT
-			httpClient = HttpClients.createDefault();
-
-			// DO THE HTTP POST WITH PARAMETERS
-			HttpPost request = new HttpPost("http://localhost:8084/computers/send/status");
-			request.setHeader("serialNumber", serialNumber);
-
-			response = httpClient.execute(request);
-
-			String responseString = EntityUtils.toString(response.getEntity());
-			logger.info(responseString);
-
-			Actions actionsToDo = new ObjectMapper().readValue(responseString, Actions.class);
-
-			this.actionsCommands(statusList, serialNumber, actionsToDo);
-		
-			logger.info(statusList.toString());
-
-		}
-	
-		catch(ClientProtocolException clientProtocolException)
-		{
-			String error ="Error de cliente protocal Exception";
-			logger.error(error, clientProtocolException);
-		}
-		catch (IOException ioException) 
-		{
-			String error ="Error de entrada salida";
-			logger.error(error, ioException);
-			
-		}
-		finally 
-		{
-			try 
-			{
-				response.close();
-				
-			} 
-			catch (IOException ioException) 
-			{
-				String error ="Error de entrada salida";
-				logger.error(error, ioException);
-			}
-			try 
-			{
-				httpClient.close();
-			} 
-			catch (IOException ioException) 
-			{
-				
-				String error ="Error de entrada salida";
-				logger.error(error, ioException);
-			}
-		}
-	}
-
+    @Scheduled(fixedDelayString = "${reaktor.computerOnReport}", initialDelay = 2000)
+    public void computerOnReport()
+    {
+        try
+        {
+            
+        }
+        catch (ReaktorClientException reaktorClientException)
+        {
+        	logger.warn(reaktorClientException.getMessage());
+            logger.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, reaktorClientException);
+            reaktorClientException.printStackTrace();
+        }
+    }
 }
