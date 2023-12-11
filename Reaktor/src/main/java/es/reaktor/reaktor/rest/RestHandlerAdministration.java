@@ -18,6 +18,11 @@ import es.reaktor.reaktor.models.Computer;
 import es.reaktor.reaktor.models.Peripheral;
 import es.reaktor.reaktor.models.Software;
 
+/**
+ * 
+ * @author Pablo Ruiz, Miguel Rios, Alejandro Cazalla
+ *
+ */
 @RequestMapping(value = "/computers")
 @RestController
 public class RestHandlerAdministration 
