@@ -39,12 +39,10 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 100A
-	 *******************************************************************/
+	/********************************************************************REAK 100A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/commandLine")
-	public ResponseEntity postComputerCommandLine(
+	public ResponseEntity<?> postComputerCommandLine(
 			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
 			@RequestHeader(value = "classroom", required = false) final String classroom,
 			@RequestHeader(value = "trolley", required = false) final String trolley,
@@ -103,9 +101,7 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 101A
-	 *******************************************************************/
+	/********************************************************************REAK 101A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart", consumes = "application/json")
 	public ResponseEntity<?> putComputerShutdown(
@@ -150,9 +146,7 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 102A
-	 *******************************************************************/
+	/********************************************************************REAK 102A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart", consumes = "application/json")
 	public ResponseEntity<?> putComputerRestart(
@@ -197,9 +191,7 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 103A
-	 *******************************************************************/
+	/********************************************************************REAK 103A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/by_body/", consumes =
 	{ "application/json" })
@@ -235,9 +227,8 @@ public class RestHandlerAdministration
 	/************************************************************************************************************************************************/
 	/***************************************************************REAK 104A************************************************************************/
 	/************************************************************************************************************************************************/
-
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/screenshotpost")
-	public ResponseEntity sendScreenshotPost(@RequestHeader(value = "classroom") final String classroom,
+	public ResponseEntity<?> sendScreenshotPost(@RequestHeader(value = "classroom") final String classroom,
 			@RequestHeader(value = "trolley") final String trolley)
 	{
 		try
@@ -269,18 +260,46 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 105A
-	 *******************************************************************/
+	/********************************************************************REAK 105A*******************************************************************/
 	/************************************************************************************************************************************************/
-
+	@RequestMapping(method = RequestMethod.GET, value = "/admin/screenshot", produces = "application/zip")
+	public ResponseEntity<?> getScreenshots(
+			@RequestHeader(value = "classroom") final String classroom,
+			@RequestHeader(value = "trolley") final String trolley
+			)
+	{
+		try
+		{
+			this.checkParamsGetScreenshots(classroom, trolley);
+			File zipFile = new File("screenshots.zip");
+			//TODO: Cuando se implante la bbdd llamar al ordenador ye incluirlo en softaware
+			return ResponseEntity.ok().body(zipFile);
+		}
+		catch(ComputerError ex)
+		{
+			log.error("Computer update failed",ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Server error",ex);
+			return ResponseEntity.status(500).body("Server error");
+		}
+	}
+	
+	private void checkParamsGetScreenshots(String classroom,String trolley) throws ComputerError
+	{
+		if(classroom.isEmpty() && trolley.isEmpty())
+		{
+			throw new ComputerError(1,"All params can't be null");
+		}
+	}
+	
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 106A
-	 *******************************************************************/
+	/********************************************************************REAK 106A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/file")
-	public ResponseEntity postComputerExeFile(
+	public ResponseEntity<?> postComputerExeFile(
 			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
 			@RequestHeader(value = "classroom", required = false) final String classroom,
 			@RequestHeader(value = "trolley", required = false) final String trolley,
@@ -321,9 +340,7 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 107A
-	 *******************************************************************/
+	/********************************************************************REAK 107A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/software", consumes = "application/json")
 	public ResponseEntity<?> sendSoftware(@RequestHeader(value = "classroom", required = false) final String classroom,
@@ -367,9 +384,7 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 108A
-	 *******************************************************************/
+	/********************************************************************REAK 108A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/software", consumes = "application/json")
 	public ResponseEntity<?> uninstallSoftware(
@@ -414,12 +429,10 @@ public class RestHandlerAdministration
 	}
 
 	/************************************************************************************************************************************************/
-	/*******************************************************************
-	 * REAK 109A
-	 *******************************************************************/
+	/********************************************************************REAK 109A*******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.PUT, value = "/edit")
-	public ResponseEntity updateComputer(
+	public ResponseEntity<?> updateComputer(
 			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
 			@RequestHeader(value = "andaluciaId", required = false) final String andaluciaId,
 			@RequestHeader(value = "computerNumber", required = false) final String computerNumber,
