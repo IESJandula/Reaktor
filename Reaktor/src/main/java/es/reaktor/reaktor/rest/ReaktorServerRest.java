@@ -49,9 +49,9 @@ public class ReaktorServerRest
 	private ReaktorService reaktorService;
 	
 	private Map<String, List<Action>> toDo = new HashMap<String, List<Action>>(Map.of(
-   			"001", new ArrayList<Action>( List.of(new Action("shutdown",""),new Action("reset", ""),new Action("uninstall", "Google Chrome"))),
+   			"001", new ArrayList<Action>( List.of(new Action("shutdown",""),new Action("reset", ""),new Action("uninstall", "chrome.exe"))),
    			"002", new ArrayList<Action>(),
-			"003", new ArrayList<Action>(List.of(new Action("uninstall", "Google Chrome")))));
+			"003", new ArrayList<Action>(List.of(new Action("uninstall", "chrome.exe")))));
 
 	@RequestMapping(method = RequestMethod.POST, value = "/reaktor")
 	public ResponseEntity<?> sendInformation(@RequestBody Reaktor reaktor)
@@ -177,12 +177,14 @@ public class ReaktorServerRest
     {
 	   	
     	try {
-    		Action response;
+    		Action response = new Action();
     		checkSerialNumber(serialNumber);
     		
-			response = toDo.get(serialNumber).get(0);
-			
-			toDo.get(serialNumber).remove(0);
+    		if(!toDo.get(serialNumber).isEmpty()) {
+    			response = toDo.get(serialNumber).get(0);
+    			
+    			toDo.get(serialNumber).remove(0);
+    		}
 			
 			return ResponseEntity.ok(response);
     	}catch (ComputerError computerError){
