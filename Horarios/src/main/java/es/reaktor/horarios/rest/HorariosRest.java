@@ -1023,4 +1023,48 @@ public class HorariosRest
 		}
 
 	}
+	@RequestMapping(method = RequestMethod.GET, value = "/get/courses")
+	public ResponseEntity<?> getListCourse(HttpSession session)
+	{
+		List<Course> listaCurso = new ArrayList<Course>();
+		Course curso;
+		Classroom classroom;
+		List<Aula> listaAula = new ArrayList<Aula>();
+    	if(session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
+    	{
+    		Centro centro = (Centro) session.getAttribute("storedCentro");
+    		listaAula = centro.getDatos().getAulas().getAula();
+    	}
+    	
+		try
+		{
+			for(int i = 1 ; i < listaAula.size() ; i++)
+			{
+				String nombreAula = listaAula.get(i).getNombre();			
+				
+				String[] plantaAula = listaAula.get(i).getAbreviatura().split(".");
+				int[] plantaYNumero = new int[plantaAula.length];
+				for (int j = 0; j < plantaAula.length; j++) {
+		            try {
+		                plantaYNumero[j] = Integer.parseInt(plantaAula[j]);
+		            } catch (NumberFormatException e) {
+		                // Manejar la excepción si el String no es un número válido
+		                System.out.println("Error en la conversión en el índice " + i + ": " + e.getMessage());
+		            }
+		        }
+				classroom = new Classroom(plantaYNumero[0], plantaYNumero[1]);
+				curso = new Course(nombreAula, classroom);
+				listaCurso.add(curso);
+			}
+		}
+		catch(Exception exception)
+		{
+			// -- CATCH ANY ERROR ---
+				String error = "Server Error";
+				HorariosError horariosError = new HorariosError(500, error,exception);
+
+				return ResponseEntity.status(500).body(horariosError);
+		}
+		return ResponseEntity.ok().body(listaCurso);
+	}
 }
