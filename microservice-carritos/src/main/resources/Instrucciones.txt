@@ -1,0 +1,21 @@
+Para comenzar con este programa deberas introducir en la base de datos "reservas" las siguientes sentencias:
+
+Insert into aula_informatica Values (1, 11, 2);
+Insert into aula_informatica Values (2, 13, 2);
+
+Insert into carrito_pc Values (1, 30, 1, "windows");
+Insert into carrito_pc Values (2, 31, 1, "Ubuntu");
+Insert into carrito_pc Values (3, 28, 2, "windows");
+Insert into carrito_pc Values (4, 29, 2, "Ubuntu");
+
+Insert into carrito_tablets Values (1, 30, 1);
+Insert into carrito_tablets Values (2, 28, 2);
+
+Insert into profesor Values (1, "Aljarilla Castro", "Alejandro");
+Insert into profesor Values (2, "Guerrero Gonzalez", "Jesus");
+
+Con esto seria suficiente en cuanto a montar el inicio de los datos de la base de datos,
+ya estaria lista para empezar hacer reservas de carritos, aulas, etc...
+
+(Me he dado cuenta que al subir el proyecto al github y guardar, las tabulaciones de las llaves se comprimen
+ y se ponen como si no hubiese tabulado el proyecto, para tenerlo en cuenta)
