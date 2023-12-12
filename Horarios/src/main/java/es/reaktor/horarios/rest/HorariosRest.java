@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -13,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -25,30 +27,35 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import es.reaktor.horarios.exceptions.HorariosException;
-import es.reaktor.horarios.models.Actividad;
-import es.reaktor.horarios.models.Asignatura;
-import es.reaktor.horarios.models.Asignaturas;
-import es.reaktor.horarios.models.Aula;
-import es.reaktor.horarios.models.Aulas;
-import es.reaktor.horarios.models.Centro;
-import es.reaktor.horarios.models.Datos;
-import es.reaktor.horarios.models.Grupo;
-import es.reaktor.horarios.models.Grupos;
-import es.reaktor.horarios.models.GruposActividad;
-import es.reaktor.horarios.models.HorarioAsig;
-import es.reaktor.horarios.models.HorarioAula;
-import es.reaktor.horarios.models.HorarioGrup;
-import es.reaktor.horarios.models.HorarioProf;
-import es.reaktor.horarios.models.Horarios;
-import es.reaktor.horarios.models.HorariosAsignaturas;
-import es.reaktor.horarios.models.HorariosAulas;
-import es.reaktor.horarios.models.HorariosGrupos;
-import es.reaktor.horarios.models.HorariosProfesores;
-import es.reaktor.horarios.models.Profesor;
-import es.reaktor.horarios.models.Profesores;
-import es.reaktor.horarios.models.Tramo;
-import es.reaktor.horarios.models.TramosHorarios;
+import es.reaktor.horarios.exceptions.HorariosError;
+import es.reaktor.horarios.models.Classroom;
+import es.reaktor.horarios.models.Course;
+import es.reaktor.horarios.models.Rol;
+import es.reaktor.horarios.models.Student;
+import es.reaktor.horarios.models.Teacher;
+import es.reaktor.horarios.models.parse.Actividad;
+import es.reaktor.horarios.models.parse.Asignatura;
+import es.reaktor.horarios.models.parse.Asignaturas;
+import es.reaktor.horarios.models.parse.Aula;
+import es.reaktor.horarios.models.parse.Aulas;
+import es.reaktor.horarios.models.parse.Centro;
+import es.reaktor.horarios.models.parse.Datos;
+import es.reaktor.horarios.models.parse.Grupo;
+import es.reaktor.horarios.models.parse.Grupos;
+import es.reaktor.horarios.models.parse.GruposActividad;
+import es.reaktor.horarios.models.parse.HorarioAsig;
+import es.reaktor.horarios.models.parse.HorarioAula;
+import es.reaktor.horarios.models.parse.HorarioGrup;
+import es.reaktor.horarios.models.parse.HorarioProf;
+import es.reaktor.horarios.models.parse.Horarios;
+import es.reaktor.horarios.models.parse.HorariosAsignaturas;
+import es.reaktor.horarios.models.parse.HorariosAulas;
+import es.reaktor.horarios.models.parse.HorariosGrupos;
+import es.reaktor.horarios.models.parse.HorariosProfesores;
+import es.reaktor.horarios.models.parse.Profesor;
+import es.reaktor.horarios.models.parse.Profesores;
+import es.reaktor.horarios.models.parse.Tramo;
+import es.reaktor.horarios.models.parse.TramosHorarios;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,279 +77,377 @@ public class HorariosRest
 	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> sendXmlToObjects(@RequestPart MultipartFile xmlFile, HttpSession session)
 	{
-		try {
-		File xml = new File(xmlFile.getOriginalFilename());
-		log.info("FILE NAME: " + xml.getName());
-		if (xml.getName().endsWith(".xml"))
+		try
 		{
-			// ES UN XML
-			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder documentBuilder;
-			// -- OBJECT CENTRO ---
-			Centro centro = new Centro();
-			try
+			File xml = new File(xmlFile.getOriginalFilename());
+			log.info("FILE NAME: " + xml.getName());
+			if (xml.getName().endsWith(".xml"))
 			{
-				InputStream is = xmlFile.getInputStream();
-				documentBuilder = builderFactory.newDocumentBuilder();
-				Document document = documentBuilder.parse(is);
-
-				// --- ELEMENTO ROOT CENTRO ------
-				Element rootCenterElement = document.getDocumentElement();
-				// --- ELEMENT CENTRO ATTRIBUTES ---
-				centro.setNombreCentro(rootCenterElement.getAttribute("nombre_centro"));
-				centro.setAutor(rootCenterElement.getAttribute("autor"));
-				centro.setFecha(rootCenterElement.getAttribute("fecha"));
-				// --------------------------------------------------------------------------------------------------
-				// --- OBJECT DATOS ---
-				Datos datos = new Datos();
-				// --------------------------------------------------------------------------------------------------
-
-				// --- OBJECT ASIGNATURAS ---
-				Asignaturas asignaturas = new Asignaturas();
-				NodeList nodeAsignaturas = rootCenterElement.getElementsByTagName("ASIGNATURAS");
-
-				// --- tot_as ATTRIBUTE VALOR ---
-				asignaturas.setTotAs(nodeAsignaturas.item(0).getAttributes().item(0).getTextContent());
-
-				// GETTING ASIGNATURAS (ONLY ONE)
-				Element asignaturasElemet = (Element) rootCenterElement.getElementsByTagName("ASIGNATURAS").item(0);
-
-				// GETTING THE LIST OF ASIGNATURA
-				NodeList asignaturasNodeList = asignaturasElemet.getElementsByTagName("ASIGNATURA");
-
-				List<Asignatura> asignaturasList = new ArrayList<>();
-				// GETTING VALUES OF EACH ASIGNATURA
-				this.gettingValuesOfAsignatura(asignaturasNodeList, asignaturasList);
-				log.info(asignaturasList.toString());
-				asignaturas.setAsignatura(asignaturasList);
-				log.info(asignaturas.toString());
-				datos.setAsignaturas(asignaturas);
-				// --------------------------------------------------------------------------------------------------
-
-				// --- OBJECT GRUPOS ---
-				Grupos grupos = new Grupos();
-				NodeList nodeGrupos = rootCenterElement.getElementsByTagName("GRUPOS");
-
-				// --- tot_gr ATTRIBUTE VALOR ---
-				grupos.setTotGr(nodeGrupos.item(0).getAttributes().item(0).getTextContent());
-
-				// GETTING GRUPOS (ONLY ONE)
-				Element gruposElement = (Element) rootCenterElement.getElementsByTagName("GRUPOS").item(0);
-
-				// GETTING THE LIST OF GRUPO
-				NodeList gruposNodeList = gruposElement.getElementsByTagName("GRUPO");
-
-				List<Grupo> gruposList = new ArrayList<>();
-				// GETTING VALUES OF EACH GRUPO
-				this.gettingValuesOfGrupo(gruposNodeList, gruposList);
-				log.info(gruposList.toString());
-				grupos.setGrupo(gruposList);
-				log.info(grupos.toString());
-				datos.setGrupos(grupos);
-				// --------------------------------------------------------------------------------------------------
-
-				// --- OBJECT AULAS ---
-				Aulas aulas = new Aulas();
-				NodeList nodeAulas = rootCenterElement.getElementsByTagName("AULAS");
-
-				// --- tot_au ATTRIBUTE VALOR ---
-				aulas.setTotAu(nodeAulas.item(0).getAttributes().item(0).getTextContent());
-
-				// GETTING AULAS (ONLY ONE)
-				Element aulasElement = (Element) rootCenterElement.getElementsByTagName("AULAS").item(0);
-
-				// GETTING THE LIST OF AULA
-				NodeList aulasNodeList = aulasElement.getElementsByTagName("AULA");
-
-				List<Aula> aulasList = new ArrayList<>();
-				// GETTING VALUES OF EACH AULA
-				this.gettingValuesOfAula(aulasNodeList, aulasList);
-				log.info(aulasList.toString());
-				aulas.setAula(aulasList);
-				log.info(aulas.toString());
-				datos.setAulas(aulas);
-				// --------------------------------------------------------------------------------------------------
-
-				// --- OBJECT PROFESORES ---
-				Profesores profesores = new Profesores();
-				NodeList nodeProfesores = rootCenterElement.getElementsByTagName("PROFESORES");
-
-				// --- tot_pr ATTRIBUTE VALOR ---
-				profesores.setTotPR(nodeProfesores.item(0).getAttributes().item(0).getTextContent());
-
-				// GETTING PROFESORES (ONLY ONE)
-				Element profesoresElement = (Element) rootCenterElement.getElementsByTagName("PROFESORES").item(0);
-
-				// GETTING THE LIST OF PROFESOR
-				NodeList profesoresNodeList = profesoresElement.getElementsByTagName("PROFESOR");
-
-				List<Profesor> profesoresList = new ArrayList<>();
-				// GETTING VALUES OF EACH PROFESOR
-				this.gettingValuesOfProfesor(profesoresNodeList, profesoresList);
-				log.info(profesoresList.toString());
-				profesores.setProfesor(profesoresList);
-				log.info(profesores.toString());
-				datos.setProfesores(profesores);
-				// --------------------------------------------------------------------------------------------------
-
-				// --- OBJECT TramosHorarios ---
-				TramosHorarios tramosHorarios = new TramosHorarios();
-				NodeList nodeTramosHorarios = rootCenterElement.getElementsByTagName("TRAMOS_HORARIOS");
-
-				// --- tot_tr ATTRIBUTE VALOR ---
-				tramosHorarios.setTotTr(nodeTramosHorarios.item(0).getAttributes().item(0).getTextContent());
-
-				// GETTING TRAMOS_HORARIOS (ONLY ONE)
-				Element tramosHorariosElement = (Element) rootCenterElement.getElementsByTagName("TRAMOS_HORARIOS")
-						.item(0);
-
-				// GETTING THE LIST OF TRAMO
-				NodeList tramosHorariosNodeList = tramosHorariosElement.getElementsByTagName("TRAMO");
-
-				List<Tramo> tramosList = new ArrayList<>();
-				// GETTING VALUES OF EACH TRAMO
-				this.gettingValuesOfTramo(tramosHorariosNodeList, tramosList);
-				log.info(tramosList.toString());
-				tramosHorarios.setTramo(tramosList);
-				log.info(tramosHorarios.toString());
-				// --------------------------------------------------------------------------------------------------
-				datos.setTramosHorarios(tramosHorarios);
-				// --------------------------------------------------------------------------------------------------
-
-				// ---- END OF DATOS ---
-				centro.setDatos(datos);
-
-				// --- HORARIOS ---
-				Horarios horarios = new Horarios();
-
-				// --------------------------------------------------------------------------------------------------
-				// --- HORARIOS ELEMENT ---
-				Element horariosElement = (Element) rootCenterElement.getElementsByTagName("HORARIOS").item(0);
-
-				// --------------------------------------------------------------------------------------------------
-
-				// --- HORARIOS ASIGNATURAS ONLY ONE ---
-				HorariosAsignaturas horariosAsignaturas = new HorariosAsignaturas();
-
-				// --- HORARIOS ASIGNATURAS ELEMENT ---
-				Element horariosAsignaturasElement = (Element) horariosElement
-						.getElementsByTagName("HORARIOS_ASIGNATURAS").item(0);
-
-				// NODELIST HORAIO_ASIG
-				NodeList horarioAsigNodeList = horariosAsignaturasElement.getElementsByTagName("HORARIO_ASIG");
-
-				// EACH HORARIOS_ASIG
-				List<HorarioAsig> horarioAsigList = new ArrayList<>();
-				this.gettingValuesOfHorarioAsig(horarioAsigNodeList, horarioAsigList);
-				log.info(horarioAsigList.toString());
-				horariosAsignaturas.setHorarioAsig(horarioAsigList);
-				horarios.setHorariosAsignaturas(horariosAsignaturas);
-				// --------------------------------------------------------------------------------------------------
-
-				// --- HORARIOS_GRUPOS ONLY ONE ---
-				HorariosGrupos horariosGrupos = new HorariosGrupos();
-
-				// --- HORARIO_GRUP ELEMENT ---
-				Element horariosGruposElement = (Element) horariosElement.getElementsByTagName("HORARIOS_GRUPOS")
-						.item(0);
-
-				// NODELIST HORARIO_GRUP
-				NodeList horarioGrupNodeList = horariosGruposElement.getElementsByTagName("HORARIO_GRUP");
-
-				// EACH HORARIO_GRUP
-				List<HorarioGrup> horarioGrupList = new ArrayList<>();
-				this.gettingValuesOfHorarioGrup(horarioGrupNodeList, horarioGrupList);
-				// log.info(horarioAsigList);
-				horariosGrupos.setHorarioGrup(horarioGrupList);
-				horarios.setHorariosGrupos(horariosGrupos);
-				// --------------------------------------------------------------------------------------------------
-
-				// --- HORARIOS HORARIOS_AULAS ONLY ONE ---
-				HorariosAulas horariosAulas = new HorariosAulas();
-
-				// --- HORARIOS HORARIOS_AULAS ELEMENT ---
-				Element horariosAulasElement = (Element) horariosElement.getElementsByTagName("HORARIOS_AULAS").item(0);
-
-				// NODELIST HORARIO_AULA
-				NodeList horarioAulaNodeList = horariosAulasElement.getElementsByTagName("HORARIO_AULA");
-
-				// EACH HORARIO_AULA
-				List<HorarioAula> horarioAulaList = new ArrayList<>();
-				this.gettingValuesOfHorarioAula(horarioAulaNodeList, horarioAulaList);
-				// log.info(horarioAulaList);
-				horariosAulas.setHorarioAula(horarioAulaList);
-				horarios.setHorariosAulas(horariosAulas);
-				// --------------------------------------------------------------------------------------------------
-
-				// --- HORARIOS HORARIOS_PROFESORES ONLY ONE ---
-				HorariosProfesores horariosProfesores = new HorariosProfesores();
-
-				// --- HORARIOS HORARIOS_AULAS ELEMENT ---
-				Element horariosProfesoresElement = (Element) horariosElement
-						.getElementsByTagName("HORARIOS_PROFESORES").item(0);
-
-				// NODELIST HORARIO_AULA
-				NodeList horarioProfNodeList = horariosProfesoresElement.getElementsByTagName("HORARIO_PROF");
-
-				// EACH HORARIO_PROF
-				List<HorarioProf> horarioProfList = new ArrayList<>();
-				this.gettingValuesOfHorarioProf(horarioProfNodeList, horarioProfList);
-				log.info(horarioAulaList.toString());
-				horariosProfesores.setHorarioProf(horarioProfList);
-				horarios.setHorariosProfesores(horariosProfesores);
-				// -------------------------------------------------------------------------------------------------------------------------------------------------
-				centro.setHorarios(horarios);
-				// -------------------------------------------------------------------------------------------------------------------------------------------------
-				log.info("File :"+xmlFile.getName()+" load-Done");
+				// ES UN XML
+				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder documentBuilder;
+				// -- OBJECT CENTRO ---
+				Centro centro = new Centro();
+				try
+				{
+					InputStream is = xmlFile.getInputStream();
+					documentBuilder = builderFactory.newDocumentBuilder();
+					Document document = documentBuilder.parse(is);
+	
+					// --- ELEMENTO ROOT CENTRO ------
+					Element rootCenterElement = document.getDocumentElement();
+					// --- ELEMENT CENTRO ATTRIBUTES ---
+					centro.setNombreCentro(rootCenterElement.getAttribute("nombre_centro"));
+					centro.setAutor(rootCenterElement.getAttribute("autor"));
+					centro.setFecha(rootCenterElement.getAttribute("fecha"));
+					// --------------------------------------------------------------------------------------------------
+					// --- OBJECT DATOS ---
+					Datos datos = new Datos();
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- OBJECT ASIGNATURAS ---
+					Asignaturas asignaturas = new Asignaturas();
+					NodeList nodeAsignaturas = rootCenterElement.getElementsByTagName("ASIGNATURAS");
+	
+					// --- tot_as ATTRIBUTE VALOR ---
+					asignaturas.setTotAs(nodeAsignaturas.item(0).getAttributes().item(0).getTextContent());
+	
+					// GETTING ASIGNATURAS (ONLY ONE)
+					Element asignaturasElemet = (Element) rootCenterElement.getElementsByTagName("ASIGNATURAS").item(0);
+	
+					// GETTING THE LIST OF ASIGNATURA
+					NodeList asignaturasNodeList = asignaturasElemet.getElementsByTagName("ASIGNATURA");
+	
+					List<Asignatura> asignaturasList = new ArrayList<>();
+					// GETTING VALUES OF EACH ASIGNATURA
+					this.gettingValuesOfAsignatura(asignaturasNodeList, asignaturasList);
+					log.info(asignaturasList.toString());
+					asignaturas.setAsignatura(asignaturasList);
+					log.info(asignaturas.toString());
+					datos.setAsignaturas(asignaturas);
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- OBJECT GRUPOS ---
+					Grupos grupos = new Grupos();
+					NodeList nodeGrupos = rootCenterElement.getElementsByTagName("GRUPOS");
+	
+					// --- tot_gr ATTRIBUTE VALOR ---
+					grupos.setTotGr(nodeGrupos.item(0).getAttributes().item(0).getTextContent());
+	
+					// GETTING GRUPOS (ONLY ONE)
+					Element gruposElement = (Element) rootCenterElement.getElementsByTagName("GRUPOS").item(0);
+	
+					// GETTING THE LIST OF GRUPO
+					NodeList gruposNodeList = gruposElement.getElementsByTagName("GRUPO");
+	
+					List<Grupo> gruposList = new ArrayList<>();
+					// GETTING VALUES OF EACH GRUPO
+					this.gettingValuesOfGrupo(gruposNodeList, gruposList);
+					log.info(gruposList.toString());
+					grupos.setGrupo(gruposList);
+					log.info(grupos.toString());
+					datos.setGrupos(grupos);
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- OBJECT AULAS ---
+					Aulas aulas = new Aulas();
+					NodeList nodeAulas = rootCenterElement.getElementsByTagName("AULAS");
+	
+					// --- tot_au ATTRIBUTE VALOR ---
+					aulas.setTotAu(nodeAulas.item(0).getAttributes().item(0).getTextContent());
+	
+					// GETTING AULAS (ONLY ONE)
+					Element aulasElement = (Element) rootCenterElement.getElementsByTagName("AULAS").item(0);
+	
+					// GETTING THE LIST OF AULA
+					NodeList aulasNodeList = aulasElement.getElementsByTagName("AULA");
+	
+					List<Aula> aulasList = new ArrayList<>();
+					// GETTING VALUES OF EACH AULA
+					this.gettingValuesOfAula(aulasNodeList, aulasList);
+					log.info(aulasList.toString());
+					aulas.setAula(aulasList);
+					log.info(aulas.toString());
+					datos.setAulas(aulas);
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- OBJECT PROFESORES ---
+					Profesores profesores = new Profesores();
+					NodeList nodeProfesores = rootCenterElement.getElementsByTagName("PROFESORES");
+	
+					// --- tot_pr ATTRIBUTE VALOR ---
+					profesores.setTotPR(nodeProfesores.item(0).getAttributes().item(0).getTextContent());
+	
+					// GETTING PROFESORES (ONLY ONE)
+					Element profesoresElement = (Element) rootCenterElement.getElementsByTagName("PROFESORES").item(0);
+	
+					// GETTING THE LIST OF PROFESOR
+					NodeList profesoresNodeList = profesoresElement.getElementsByTagName("PROFESOR");
+	
+					List<Profesor> profesoresList = new ArrayList<>();
+					// GETTING VALUES OF EACH PROFESOR
+					this.gettingValuesOfProfesor(profesoresNodeList, profesoresList);
+					log.info(profesoresList.toString());
+					profesores.setProfesor(profesoresList);
+					log.info(profesores.toString());
+					datos.setProfesores(profesores);
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- OBJECT TramosHorarios ---
+					TramosHorarios tramosHorarios = new TramosHorarios();
+					NodeList nodeTramosHorarios = rootCenterElement.getElementsByTagName("TRAMOS_HORARIOS");
+	
+					// --- tot_tr ATTRIBUTE VALOR ---
+					tramosHorarios.setTotTr(nodeTramosHorarios.item(0).getAttributes().item(0).getTextContent());
+	
+					// GETTING TRAMOS_HORARIOS (ONLY ONE)
+					Element tramosHorariosElement = (Element) rootCenterElement.getElementsByTagName("TRAMOS_HORARIOS")
+							.item(0);
+	
+					// GETTING THE LIST OF TRAMO
+					NodeList tramosHorariosNodeList = tramosHorariosElement.getElementsByTagName("TRAMO");
+	
+					List<Tramo> tramosList = new ArrayList<>();
+					// GETTING VALUES OF EACH TRAMO
+					this.gettingValuesOfTramo(tramosHorariosNodeList, tramosList);
+					log.info(tramosList.toString());
+					tramosHorarios.setTramo(tramosList);
+					log.info(tramosHorarios.toString());
+					// --------------------------------------------------------------------------------------------------
+					datos.setTramosHorarios(tramosHorarios);
+					// --------------------------------------------------------------------------------------------------
+	
+					// ---- END OF DATOS ---
+					centro.setDatos(datos);
+	
+					// --- HORARIOS ---
+					Horarios horarios = new Horarios();
+	
+					// --------------------------------------------------------------------------------------------------
+					// --- HORARIOS ELEMENT ---
+					Element horariosElement = (Element) rootCenterElement.getElementsByTagName("HORARIOS").item(0);
+	
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- HORARIOS ASIGNATURAS ONLY ONE ---
+					HorariosAsignaturas horariosAsignaturas = new HorariosAsignaturas();
+	
+					// --- HORARIOS ASIGNATURAS ELEMENT ---
+					Element horariosAsignaturasElement = (Element) horariosElement
+							.getElementsByTagName("HORARIOS_ASIGNATURAS").item(0);
+	
+					// NODELIST HORAIO_ASIG
+					NodeList horarioAsigNodeList = horariosAsignaturasElement.getElementsByTagName("HORARIO_ASIG");
+	
+					// EACH HORARIOS_ASIG
+					List<HorarioAsig> horarioAsigList = new ArrayList<>();
+					this.gettingValuesOfHorarioAsig(horarioAsigNodeList, horarioAsigList);
+					log.info(horarioAsigList.toString());
+					horariosAsignaturas.setHorarioAsig(horarioAsigList);
+					horarios.setHorariosAsignaturas(horariosAsignaturas);
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- HORARIOS_GRUPOS ONLY ONE ---
+					HorariosGrupos horariosGrupos = new HorariosGrupos();
+	
+					// --- HORARIO_GRUP ELEMENT ---
+					Element horariosGruposElement = (Element) horariosElement.getElementsByTagName("HORARIOS_GRUPOS")
+							.item(0);
+	
+					// NODELIST HORARIO_GRUP
+					NodeList horarioGrupNodeList = horariosGruposElement.getElementsByTagName("HORARIO_GRUP");
+	
+					// EACH HORARIO_GRUP
+					List<HorarioGrup> horarioGrupList = new ArrayList<>();
+					this.gettingValuesOfHorarioGrup(horarioGrupNodeList, horarioGrupList);
+					// log.info(horarioAsigList);
+					horariosGrupos.setHorarioGrup(horarioGrupList);
+					horarios.setHorariosGrupos(horariosGrupos);
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- HORARIOS HORARIOS_AULAS ONLY ONE ---
+					HorariosAulas horariosAulas = new HorariosAulas();
+	
+					// --- HORARIOS HORARIOS_AULAS ELEMENT ---
+					Element horariosAulasElement = (Element) horariosElement.getElementsByTagName("HORARIOS_AULAS").item(0);
+	
+					// NODELIST HORARIO_AULA
+					NodeList horarioAulaNodeList = horariosAulasElement.getElementsByTagName("HORARIO_AULA");
+	
+					// EACH HORARIO_AULA
+					List<HorarioAula> horarioAulaList = new ArrayList<>();
+					this.gettingValuesOfHorarioAula(horarioAulaNodeList, horarioAulaList);
+					// log.info(horarioAulaList);
+					horariosAulas.setHorarioAula(horarioAulaList);
+					horarios.setHorariosAulas(horariosAulas);
+					// --------------------------------------------------------------------------------------------------
+	
+					// --- HORARIOS HORARIOS_PROFESORES ONLY ONE ---
+					HorariosProfesores horariosProfesores = new HorariosProfesores();
+	
+					// --- HORARIOS HORARIOS_AULAS ELEMENT ---
+					Element horariosProfesoresElement = (Element) horariosElement
+							.getElementsByTagName("HORARIOS_PROFESORES").item(0);
+	
+					// NODELIST HORARIO_AULA
+					NodeList horarioProfNodeList = horariosProfesoresElement.getElementsByTagName("HORARIO_PROF");
+	
+					// EACH HORARIO_PROF
+					List<HorarioProf> horarioProfList = new ArrayList<>();
+					this.gettingValuesOfHorarioProf(horarioProfNodeList, horarioProfList);
+					log.info(horarioAulaList.toString());
+					horariosProfesores.setHorarioProf(horarioProfList);
+					horarios.setHorariosProfesores(horariosProfesores);
+					// -------------------------------------------------------------------------------------------------------------------------------------------------
+					centro.setHorarios(horarios);
+					// -------------------------------------------------------------------------------------------------------------------------------------------------
+					log.info("File :"+xmlFile.getName()+" load-Done");
+				}
+				catch (ParserConfigurationException exception)
+				{
+					String error = "Parser Configuration Exception";
+					log.error(error,exception);
+					HorariosError horariosException = new HorariosError(404,exception.getLocalizedMessage(),exception);
+					return ResponseEntity.status(404).body(horariosException.toMap());
+	
+				}
+				catch (SAXException exception)
+				{
+					String error = "SAX Exception";
+					log.error(error,exception);
+					HorariosError horariosException = new HorariosError(404,exception.getLocalizedMessage(),exception);
+					return ResponseEntity.status(404).body(horariosException.toMap());
+				}
+				catch (IOException exception)
+				{
+					String error = "In Out Exception";
+					log.error(error,exception);
+					HorariosError horariosException = new HorariosError(404,exception.getLocalizedMessage(),exception);
+					return ResponseEntity.status(404).body(horariosException.toMap());
+				}
+	
+				// --- SESSION ---------
+				session.setAttribute("storedCentro", centro);
+				log.info("UserVisits: " + centro);
+				// --- SESSION RESPONSE_ENTITY ---------
+				return ResponseEntity.ok(session.getAttribute("storedCentro"));
 			}
-			catch (ParserConfigurationException exception)
+			else
 			{
-				String error = "Parser Configuration Exception";
-				log.error(error,exception);
-				HorariosException horariosException = new HorariosException(404,exception.getLocalizedMessage(),exception);
+				// NO ES UN XML
+				String error = "The file is not a XML file";
+				log.error(error);
+				HorariosError horariosException = new HorariosError(500,error,new Exception());
 				return ResponseEntity.status(404).body(horariosException.toMap());
-
 			}
-			catch (SAXException exception)
-			{
-				String error = "SAX Exception";
-				log.error(error,exception);
-				HorariosException horariosException = new HorariosException(404,exception.getLocalizedMessage(),exception);
-				return ResponseEntity.status(404).body(horariosException.toMap());
-			}
-			catch (IOException exception)
-			{
-				String error = "In Out Exception";
-				log.error(error,exception);
-				HorariosException horariosException = new HorariosException(404,exception.getLocalizedMessage(),exception);
-				return ResponseEntity.status(404).body(horariosException.toMap());
-			}
-
-			// --- SESSION ---------
-			session.setAttribute("storedCentro", centro);
-			log.info("UserVisits: " + centro);
-			// --- SESSION RESPONSE_ENTITY ---------
-			return ResponseEntity.ok(session.getAttribute("storedCentro"));
-		}
-		else
-		{
-			// NO ES UN XML
-			String error = "The file is not a XML file";
-			log.error(error);
-			HorariosException horariosException = new HorariosException(500,error,new Exception());
-			return ResponseEntity.status(404).body(horariosException.toMap());
-		}
 		}
 		catch(Exception except)
 		{
 			// SERVER ERROR
 			String error = "Server Error";
 			log.error(error,except);
-			HorariosException horariosException = new HorariosException(500,except.getLocalizedMessage(),except);
+			HorariosError horariosException = new HorariosError(500,except.getLocalizedMessage(),except);
 			return ResponseEntity.status(500).body(horariosException.toMap());
 		}
 	}
 
+	
+	/**
+	 * Method getRoles , returns ResponseEntity with the teacher roles
+	 * @param email
+	 * @param session
+	 * @return ResponseEntity
+	 */ 
+	@RequestMapping(method= RequestMethod.GET ,value = "/get/roles" ,produces="application/json")
+	public ResponseEntity<?> getRoles(@RequestHeader(required=true) String email,HttpSession session)
+	{
+		try 
+		{
+			// --- VALIDATING CENTRO ---
+			if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+			{
+				// --- GETTING CENTRO FROM SESSION ---
+				Centro centro = (Centro) session.getAttribute("storedCentro");
+				if(!email.trim().isEmpty()) 
+				{
+					List<Teacher> teacherList = new ArrayList<Teacher>();
+					
+					// --- PARSING PROFESORES TO TEACHERS ---
+					// NEED CHANGE IT FOR GET THE CSV TEACHERS (CARLOS_ENDPO_2)
+					for(Profesor profesor : centro.getDatos().getProfesores().getProfesor()) 
+					{
+						Teacher newTeacherInstance = new Teacher();
+						newTeacherInstance.setName(profesor.getNombre().trim());
+						newTeacherInstance.setLastName((profesor.getPrimerApellido()+","+profesor.getSegundoApellido()).trim());
+						// --- GENERATING RANDOM EMAILS ---
+						newTeacherInstance.setEmail("exampleEmail@example.com"+newTeacherInstance.getName().charAt(0)+""+newTeacherInstance.getLastName().charAt(0));
+						newTeacherInstance.setRoles(List.of(Rol.administrador,Rol.conserje,Rol.docente));
+						teacherList.add(newTeacherInstance);
+						log.info(newTeacherInstance.toString());
+					}
+					
+					// --- GETTING THE TEACHER WITH THE SPECIFIC EMAIL ---
+					for(Teacher teacher:teacherList) 
+					{
+						if(teacher.getEmail().equals(email)) 
+						{
+							return ResponseEntity.ok().body(teacher);
+						}
+					}
+				}
+				else 
+				{
+					// --- EMAIL NOT VALID ---
+					String error = "Email is not valid";
+					HorariosError horariosError = new HorariosError(400, error,null);
+					return ResponseEntity.status(400).body(horariosError);
+				}
+			}
+	
+			String error = "XML data is not loadaed or not found";
+			HorariosError horariosError = new HorariosError(400, error,null);
+			return ResponseEntity.status(400).body(horariosError);
+		}
+		catch(Exception exception)
+		{
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+			return ResponseEntity.status(500).body(horariosError);	
+		}
+	}
+	
+	/**
+	 * Method getListStudentsAlphabetically
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/get/sortstudents",produces = "application/json")
+	public ResponseEntity<?> getListStudentsAlphabetically()
+	{
+		try 
+		{
+			// --- CREATING FAKE STUDEN LIST ---
+			List<Student> studentList = new ArrayList<Student>();
+			for(int i = 100 ; i>studentList.size();i--) 
+			{
+				Student student = new Student();
+				student.setCourse(new Course("Course"+i,new Classroom(i,i)));
+				student.setName("Alumno1"+(int)(Math.random()*100+1));
+				student.setLastName("PrimerApp"+(int)(Math.random()*100+1));
+				studentList.add(student);
+			}
+			// -- IF ALL ITS DONE , RETURN THE LIST SORTED ---
+			Collections.sort(studentList);
+			return ResponseEntity.ok().body(studentList);
+		}
+		catch(Exception exception) 
+		{
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
 	/**
 	 * Method gettingValuesOfHorarioProf
 	 * @param horarioProfNodeList
@@ -671,9 +776,9 @@ public class HorariosRest
 			String[] apellidosSplit = nombreCompletoSpit[0].split(" ");
 
 			/// --- SETTING VALUES ---
-			newProfesor.setNombre(nombreCompletoSpit[nombreCompletoSpit.length-1]);
-			newProfesor.setPrimerApellido(apellidosSplit[0]);
-			newProfesor.setSegundoApellido(apellidosSplit[1]);
+			newProfesor.setNombre(nombreCompletoSpit[nombreCompletoSpit.length-1].trim());
+			newProfesor.setPrimerApellido(apellidosSplit[0].trim());
+			newProfesor.setSegundoApellido(apellidosSplit[1].trim());
 
 			profesoresList.add(newProfesor);
 		}

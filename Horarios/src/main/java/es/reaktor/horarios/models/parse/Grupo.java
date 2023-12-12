@@ -1,4 +1,4 @@
-package es.reaktor.horarios.models;
+package es.reaktor.horarios.models.parse;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,20 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Profesor
+public class Grupo
 {
-	/** Attribute numIntPR*/
-	private String numIntPR;
+	/** Attribute numIntGr*/
+	private String numIntGr;
 	
 	/** Attribute abreviatura*/
 	private String abreviatura;
 	
 	/** Attribute nombre*/
 	private String nombre;
-	
-	/** Attribute primerApellido*/
-	private String primerApellido;
-	
-	/** Attribute segundoApellido*/
-	private String segundoApellido;
 }

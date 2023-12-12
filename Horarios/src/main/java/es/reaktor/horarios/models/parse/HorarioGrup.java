@@ -1,10 +1,11 @@
-package es.reaktor.horarios.models;
+package es.reaktor.horarios.models.parse;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * @author David Martinez
  *
@@ -12,17 +13,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HorarioAula
+public class HorarioGrup
 {
 	/** Attribute actividad*/
 	private List<Actividad> actividad;
 	
-	/** Attribute horNumIntAu*/
-	private String horNumIntAu;
+	/** Attribute horNumIntGr*/
+	private String horNumIntGr;
 	
 	/** Attribute totUn*/
 	private String totUn;
 	
 	/** Attribute totAC*/
 	private String totAC;
+
 }

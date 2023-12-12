@@ -1,4 +1,4 @@
-package es.reaktor.horarios.models;
+package es.reaktor.horarios.models.parse;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Aulas
+public class TramosHorarios
 {
-	/** Attribute aula*/
-	private List<Aula> aula;
+	/** Attribute tramo*/
+	private List<Tramo> tramo;
 	
-	/** Attribute totAu*/
-	private String totAu;
+	/** Attribute totTr*/
+	private String totTr;
 }

@@ -1,7 +1,5 @@
 package es.reaktor.horarios.models;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TramosHorarios
+public class Course
 {
-	/** Attribute tramo*/
-	private List<Tramo> tramo;
+	/** Attribute name*/
+	private String name;
 	
-	/** Attribute totTr*/
-	private String totTr;
+	/** Attribute classroom*/
+	private Classroom classroom;
 }

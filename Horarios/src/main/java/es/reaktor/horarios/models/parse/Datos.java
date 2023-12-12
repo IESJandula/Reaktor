@@ -1,4 +1,4 @@
-package es.reaktor.horarios.models;
+package es.reaktor.horarios.models.parse;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

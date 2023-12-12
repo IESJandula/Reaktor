@@ -1,8 +1,11 @@
-package es.reaktor.horarios.models;
+package es.reaktor.horarios.models.parse;
+
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 /**
  * @author David Martinez
@@ -11,26 +14,27 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Actividad
+public class HorarioGrupActividad
 {
-	/** Attribute gruposActividad */
+	/** Attribute gruposActividad*/
 	private GruposActividad gruposActividad;
-
-	/** Attribute numAct */
+	
+	/** Attribute numAct*/
 	private String numAct;
-
-	/** Attribute numUn */
+	
+	/** Attribute numUn*/
 	private String numUn;
-
-	/** Attribute tramo */
+	
+	/** Attribute tramo*/
 	private String tramo;
-
-	/** Attribute aula */
+	
+	/** Attribute aula*/
 	private String aula;
-
-	/** Attribute profesor */
+	
+	/** Attribute profesor*/
 	private String profesor;
-
-	/** Attribute asignatura */
+	
+	/** Attribute asignatura*/
 	private String asignatura;
+
 }
