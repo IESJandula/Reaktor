@@ -43,7 +43,10 @@ public class RestHandlerHorarios
 			new Student("Manuel", "Martin Murillo", new Course("2DAM", new Classroom(3, 1))),
 			new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)))
 		));
-
+	private List<Profesor> listaProfesores = new ArrayList<Profesor>(List.of(
+    		new Profesor("Juan","Pérez","juan.perez@example.com", new ArrayList<RolReaktor>(List.of(RolReaktor.administrador))),
+    		new Profesor("Juana","Rodriguez","jrodgar@example.com",new ArrayList<RolReaktor>(List.of(RolReaktor.conserje)))));
+	
 	/**
 	 * Public constructor
 	 */
@@ -92,30 +95,14 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(500).body(exception.getMessage());
 		}
 	}
-	
-	Profesor profesor1 = null;
-    Profesor profesor2 = null;
-    List<Profesor> listaProfesores = null;
-	List<RolReaktor> listaRoles = null;
+    
 	@RequestMapping(method= RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
     public ResponseEntity<?> getTeachers() 
     {
-		
-	    
         try 
         {
-			this.listaProfesores = new ArrayList<Profesor>();
-			  
-		    profesor1  = new Profesor("Juan","Pérez","juan.perez@example.com","123456789",listaRoles);
-		    profesor2  = new Profesor("Juana","Rodriguez","jrodgar@example.com","987654",listaRoles);
-		   
-		    // Añadir profesores a la lista
-		    this.listaProfesores.add(profesor1);
-		    this.listaProfesores.add(profesor2);
-		
 		    return ResponseEntity.ok().body(this.listaProfesores);
         } 
-
         catch (Exception exception)
 		{
 			String message = "Server Error";
@@ -123,5 +110,4 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(500).body(exception.getMessage());
 		}
      }
-
 }
