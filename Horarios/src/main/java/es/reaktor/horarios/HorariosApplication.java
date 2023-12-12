@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EntityScan(basePackages = "es.reaktor.horarios")
 public class HorariosApplication
 {
-
 	/**
 	 * Method main to run spring app
 	 * @param args main arguments

@@ -382,6 +382,7 @@ public class HorariosRest
 						// --- GENERATING RANDOM EMAILS ---
 						newTeacherInstance.setEmail("exampleEmail@example.com"+newTeacherInstance.getName().charAt(0)+""+newTeacherInstance.getLastName().charAt(0));
 						newTeacherInstance.setRoles(List.of(Rol.administrador,Rol.conserje,Rol.docente));
+						newTeacherInstance.setTelephoneNumber("+"+(int)(Math.random()*99+1)+" "+(int)(Math.random()*1000000000+1));
 						teacherList.add(newTeacherInstance);
 						log.info(newTeacherInstance.toString());
 					}
