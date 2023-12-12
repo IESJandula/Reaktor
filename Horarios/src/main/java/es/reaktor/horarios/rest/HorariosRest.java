@@ -964,4 +964,38 @@ public class HorariosRest
         
         return teacher;
     }
+    
+    
+    @RequestMapping(method= RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
+	public ResponseEntity<?> getTeachers(HttpSession session) 
+	{
+		try 
+		{
+			List<Teacher> teacherList = new ArrayList<Teacher>();
+			 
+	        if(session.getAttribute("csvInfo")!= null) 
+	        {
+	        	teacherList = (List<Teacher>) session.getAttribute("csvInfo");
+	        	return ResponseEntity.ok().body(teacherList);
+	        }
+	        else 
+	        {
+	        	String error = "no csv info";
+				HorariosError horariosError = new HorariosError(400, error,null);
+				log.error(error,horariosError);
+				return ResponseEntity.status(500).body(horariosError);
+	        }
+	        
+			
+		}
+		catch(Exception exception) 
+		{
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+			log.error(error,exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+		
+	
+	}
 }
