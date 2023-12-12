@@ -18,6 +18,7 @@ import es.iesjandula.Horarios.exceptions.HorarioError;
 import es.iesjandula.Horarios.models.Classroom;
 import es.iesjandula.Horarios.models.Course;
 import es.iesjandula.Horarios.models.Profesor;
+import es.iesjandula.Horarios.models.RolReaktor;
 import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.utils.HorariosCheckers;
 import es.iesjandula.Horarios.utils.HorariosUtils;
@@ -91,4 +92,36 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(500).body(exception.getMessage());
 		}
 	}
+	
+	Profesor profesor1 = null;
+    Profesor profesor2 = null;
+    List<Profesor> listaProfesores = null;
+	List<RolReaktor> listaRoles = null;
+	@RequestMapping(method= RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
+    public ResponseEntity<?> getTeachers() 
+    {
+		
+	    
+        try 
+        {
+			this.listaProfesores = new ArrayList<Profesor>();
+			  
+		    profesor1  = new Profesor("Juan","Pérez","juan.perez@example.com","123456789",listaRoles);
+		    profesor2  = new Profesor("Juana","Rodriguez","jrodgar@example.com","987654",listaRoles);
+		   
+		    // Añadir profesores a la lista
+		    this.listaProfesores.add(profesor1);
+		    this.listaProfesores.add(profesor2);
+		
+		    return ResponseEntity.ok().body(this.listaProfesores);
+        } 
+
+        catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+     }
+
 }
