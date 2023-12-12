@@ -1,10 +1,8 @@
 package es.iesjandula.Horarios.rest;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.iesjandula.Horarios.exceptions.HorarioError;
-import es.iesjandula.Horarios.models.Profesor;
-import es.iesjandula.Horarios.models.RolReaktor;
+import es.iesjandula.Horarios.models.Classroom;
+import es.iesjandula.Horarios.models.Course;
+import es.iesjandula.Horarios.models.Student;
+import es.iesjandula.Horarios.utils.HorariosCheckers;
+import es.iesjandula.Horarios.utils.HorariosUtils;
 
 
 @RequestMapping(value = "/horarios", produces = { "application/json" })
@@ -29,6 +30,11 @@ import es.iesjandula.Horarios.models.RolReaktor;
  */
 public class RestHandlerHorarios
 {
+	final static Logger logger = LogManager.getLogger();
+	
+	private HorariosCheckers check = new HorariosCheckers();
+	private HorariosUtils horariosUtils = new HorariosUtils();
+
 	/**
 	 * Public constructor
 	 */
@@ -37,122 +43,60 @@ public class RestHandlerHorarios
 		// Empty constructor
 	}
 
-	final static Logger logger = LogManager.getLogger();
-
 	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
 	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "csvFile", required = true) final MultipartFile csvFile)
 	{
 		try
 		{
-			this.checkFile(csvFile);
-			this.parseFile();
+			check.checkFile(csvFile);
+			horariosUtils.parseFile();
 			return ResponseEntity.ok().build();
-		} catch (HorarioError exception)
+		}
+		catch (HorarioError exception)
 		{
-			String message = "Computer error getting";
+			String message = "Request not found";
 			logger.error(message, exception);
 			return ResponseEntity.status(400).body(exception.getBodyExceptionMessage());
-		} catch (Exception exception)
+		} 
+		catch (Exception exception)
 		{
 			String message = "Server Error";
 			logger.error(message, exception);
 			return ResponseEntity.status(500).body(exception.getMessage());
 		}
 	}
-
-	public void checkFile(MultipartFile file) throws HorarioError
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/sortstudents")
+	public ResponseEntity<?> getListStudentsAlphabetically()
 	{
-		if (file == null)
-		{
-			throw new HorarioError(1, "Error with the file");
-		}
-	}
-
-	public List<Profesor> parseFile() throws HorarioError, IOException
-	{
-		FileInputStream fileInputStream = null;
-		BufferedReader reader = null;
-		List<Profesor> profesores = new ArrayList<Profesor>();
-		int iteracion = 0;
 		try
 		{
-			fileInputStream = new FileInputStream(".\\src\\main\\resources\\Profesores.csv");
-			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-			reader = new BufferedReader(inputStreamReader);
-
-			String line = reader.readLine();
-
-			while ((line != null))
-			{
-				String[] parts = line.split(";");
-
-				String nombre = parts[1];
-				String apellidos = parts[2];
-				String cuentaDeCorreo = parts[3];
-				List<RolReaktor> listaDeRoles = getRoles(parts[4]);
-
-				profesores.add(new Profesor(nombre, apellidos, cuentaDeCorreo, listaDeRoles));
-				iteracion++;
-
-				line = reader.readLine();
-			}
-		} catch (IOException e)
+			Student student1 = new Student("Alejandro", "Cazalla Perez", new Course("2DAM", new Classroom(3, 1)));
+			Student student2 = new Student("Juan", "Sutil Mesa", new Course("2DAM", new Classroom(3, 1)));
+			Student student3 = new Student("Manuel", "Martin Murillo", new Course("2DAM", new Classroom(3, 1)));
+			Student student4 = new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)));
+			
+			List<Student> listaEstudiantes = new ArrayList<Student>();
+			listaEstudiantes.add(student1);
+			listaEstudiantes.add(student2);
+			listaEstudiantes.add(student3);
+			listaEstudiantes.add(student4);
+			
+			Collections.sort(listaEstudiantes);
+			
+			return ResponseEntity.ok().body(listaEstudiantes);
+		} 
+		catch (IndexOutOfBoundsException exception)
 		{
-			String error = "Error en la lectura del fichero";
-			logger.error(error, e);
-			throw e;
-		} catch (Exception e)
+			String message = "List not found";
+			logger.error(message, exception);
+			return ResponseEntity.status(400).body(exception.getMessage());
+		} 
+		catch (Exception exception)
 		{
-			String error = "Error";
-			logger.error(error, e);
-			throw new HorarioError(1, error);
-		} finally
-		{
-			try
-			{
-				if (fileInputStream != null)
-				{
-					fileInputStream.close();
-				}
-				if (reader != null)
-				{
-					reader.close();
-				}
-			} catch (IOException e)
-			{
-				String error = "Error en la lectura del fichero";
-				logger.error(error, e);
-				throw e;
-			}
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
 		}
-
-		return profesores;
-	}
-
-	private List<RolReaktor> getRoles(String part)
-	{
-		List<RolReaktor> lista = new ArrayList<RolReaktor>();
-
-		String[] roles = part.split(",");
-
-		for (String string : roles)
-		{
-			switch (string)
-			{
-			case "docente":
-				lista.add(RolReaktor.docente);
-				break;
-			case "administrador":
-				lista.add(RolReaktor.administrador);
-				break;
-			case "conserje":
-				lista.add(RolReaktor.conserje);
-				break;
-			default:
-				break;
-			}
-		}
-
-		return lista;
 	}
 }

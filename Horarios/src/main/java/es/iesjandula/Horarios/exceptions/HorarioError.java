@@ -3,6 +3,9 @@ package es.iesjandula.Horarios.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Alejandro Cazalla Pérez
+ */
 public class HorarioError extends Exception
 {
 

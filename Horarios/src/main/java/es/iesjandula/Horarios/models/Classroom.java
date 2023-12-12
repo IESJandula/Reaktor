@@ -1,7 +1,5 @@
 package es.iesjandula.Horarios.models;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,13 +10,9 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alejandro Cazalla Pérez
  */
-public class Profesor
+public class Classroom
 {
-	private String nombre;
+	private int number;
 	
-	private String apellidos;
-	
-	private String cuentaDeCorreo;
-	
-	private List<RolReaktor> listaRoles;
+	private int floor;
 }
