@@ -1,8 +1,10 @@
 package es.reaktor.horarios.rest;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -877,4 +879,89 @@ public class HorariosRest
 		}
 		return gruposActividad;
 	}
+	/**
+	 * method sendCsvTo
+	 * @param archivo
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> sendCsvTo(@RequestPart MultipartFile archivo, HttpSession session) 
+	{
+        try
+        {
+        	List<Teacher> teachers = new ArrayList<Teacher>();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) 
+            {
+                String line;
+                br.readLine();
+                while ((line = br.readLine()) != null) 
+                {
+                    Teacher teacher = parsearLineaCSV(line);
+                    if (teacher != null) 
+                    {
+                        log.info("Teacher was create");
+                        teachers.add(teacher);
+                    }
+                }
+            } catch (IOException exception) {
+            	String error = "In/Out exception";
+				HorariosError horariosError = new HorariosError(400, error,exception);
+				log.error(error,horariosError);
+				return ResponseEntity.status(400).body(horariosError);
+            }
+            session.setAttribute("csvInfo", teachers);
+            return ResponseEntity.ok().body(teachers);
+        }catch(Exception exception)
+		{
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+
+			return ResponseEntity.status(500).body(horariosError);	
+		}
+		
+    }
+	/**
+	 * method parseaLineaCSV
+	 * @param linea
+	 * @return
+	 */
+    private Teacher parsearLineaCSV(String linea) {
+        Teacher teacher = null;
+        try {
+        	 	 String[] campos = linea.split(",");
+                 String nombre = campos[0].trim();
+                 String apellido = campos[1].trim();
+                 String correo = campos[2].trim();
+                 String telefono = campos[3].trim();
+                 String[] temporalArray = linea.split("\\[");
+                 String stringTemporal = temporalArray[temporalArray.length-1];
+                 stringTemporal = stringTemporal.replace("]", "");
+                 String[] rolesArray = stringTemporal.split(",");
+                 List<Rol> listaRoles = new ArrayList<Rol>();
+                 for(String rol : rolesArray)
+                 {
+                	 switch(rol.toLowerCase().trim())
+                	 {
+                	 case "administrador" ->
+                	 {
+                		listaRoles.add(Rol.administrador); 
+                	 }
+                	 case "docente" ->
+                	 {
+                		listaRoles.add(Rol.docente); 
+                	 }
+                	 case "conserje" ->
+                	 {
+                		listaRoles.add(Rol.conserje); 
+                	 }
+                	 }
+                 }
+                 teacher = new Teacher(nombre, apellido, correo, telefono, listaRoles);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Datos de CSV incompletos o incorrectos: " + linea);
+        }
+        
+        return teacher;
+    }
 }
