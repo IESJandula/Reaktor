@@ -1,6 +1,6 @@
 package es.iesjandula.Horarios.rest;
 
-import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.iesjandula.Horarios.exceptions.HorarioError;
 import es.iesjandula.Horarios.models.Classroom;
 import es.iesjandula.Horarios.models.Course;
+import es.iesjandula.Horarios.models.Profesor;
 import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.utils.HorariosCheckers;
 import es.iesjandula.Horarios.utils.HorariosUtils;
@@ -34,6 +35,13 @@ public class RestHandlerHorarios
 	
 	private HorariosCheckers check = new HorariosCheckers();
 	private HorariosUtils horariosUtils = new HorariosUtils();
+	
+	private List<Student> listaEstudiantes = new ArrayList<Student>(List.of(
+			new Student("Alejandro", "Cazalla Perez", new Course("2DAM", new Classroom(3, 1))),
+			new Student("Juan", "Sutil Mesa", new Course("2DAM", new Classroom(3, 1))),
+			new Student("Manuel", "Martin Murillo", new Course("2DAM", new Classroom(3, 1))),
+			new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)))
+		));
 
 	/**
 	 * Public constructor
@@ -49,12 +57,13 @@ public class RestHandlerHorarios
 		try
 		{
 			check.checkFile(csvFile);
-			horariosUtils.parseFile();
+			List<Profesor> lista = horariosUtils.parseFile(csvFile);
+			System.out.println(lista);
 			return ResponseEntity.ok().build();
 		}
 		catch (HorarioError exception)
 		{
-			String message = "Request not found";
+			String message = "Client error";
 			logger.error(message, exception);
 			return ResponseEntity.status(400).body(exception.getBodyExceptionMessage());
 		} 
@@ -71,26 +80,9 @@ public class RestHandlerHorarios
 	{
 		try
 		{
-			Student student1 = new Student("Alejandro", "Cazalla Perez", new Course("2DAM", new Classroom(3, 1)));
-			Student student2 = new Student("Juan", "Sutil Mesa", new Course("2DAM", new Classroom(3, 1)));
-			Student student3 = new Student("Manuel", "Martin Murillo", new Course("2DAM", new Classroom(3, 1)));
-			Student student4 = new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)));
+			Collections.sort(this.listaEstudiantes);
 			
-			List<Student> listaEstudiantes = new ArrayList<Student>();
-			listaEstudiantes.add(student1);
-			listaEstudiantes.add(student2);
-			listaEstudiantes.add(student3);
-			listaEstudiantes.add(student4);
-			
-			Collections.sort(listaEstudiantes);
-			
-			return ResponseEntity.ok().body(listaEstudiantes);
-		} 
-		catch (IndexOutOfBoundsException exception)
-		{
-			String message = "List not found";
-			logger.error(message, exception);
-			return ResponseEntity.status(400).body(exception.getMessage());
+			return ResponseEntity.ok().body(this.listaEstudiantes);
 		} 
 		catch (Exception exception)
 		{

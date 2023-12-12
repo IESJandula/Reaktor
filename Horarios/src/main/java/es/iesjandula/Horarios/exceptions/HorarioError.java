@@ -25,8 +25,9 @@ public class HorarioError extends Exception
 	 * @param code    with the code
 	 * @param message with the message
 	 */
-	public HorarioError(int code, String message)
+	public HorarioError(int code, String message, Exception exception)
 	{
+		super(message, exception);
 		this.code = code;
 		this.message = message;
 	}

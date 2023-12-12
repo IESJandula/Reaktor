@@ -22,7 +22,7 @@ public class HorariosCheckers
 	{
 		if (file == null)
 		{
-			throw new HorarioError(1, "Error with the file");
+			throw new HorarioError(1, "Error with the file", null);
 		}
 	}
 }
