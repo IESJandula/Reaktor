@@ -945,10 +945,20 @@ public class HorariosRest
 			String apellido = campos[1].trim();
 			String correo = campos[2].trim();
 			String telefono = campos[3].trim();
+			
+			// --- SPLIT BY [ FOR THE ROL LIST ---
 			String[] temporalArray = linea.split("\\[");
+			
+			// --- GETTING THE PART OF ROL LIST ---
 			String stringTemporal = temporalArray[temporalArray.length - 1];
+			
+			// --- DELETE THE CHAR "]" FOR THE LAST VALUE OF ROL ---
 			stringTemporal = stringTemporal.replace("]", "");
+			
+			// -- SPLIT BY "," THE CLEAN ROL STRING ---
 			String[] rolesArray = stringTemporal.split(",");
+			
+			// --- GETTING EACH VALUE OF STRING AND PARSE TO ROL ---
 			List<Rol> listaRoles = new ArrayList<Rol>();
 			for (String rol : rolesArray)
 			{
