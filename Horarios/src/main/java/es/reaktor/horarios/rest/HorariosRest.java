@@ -336,8 +336,8 @@ public class HorariosRest
 			{
 				// NO ES UN XML
 				String error = "The file is not a XML file";
-				log.error(error);
 				HorariosError horariosException = new HorariosError(500,error,new Exception());
+				log.error(error,horariosException);
 				return ResponseEntity.status(404).body(horariosException.toMap());
 			}
 		}
@@ -345,8 +345,8 @@ public class HorariosRest
 		{
 			// SERVER ERROR
 			String error = "Server Error";
-			log.error(error,except);
 			HorariosError horariosException = new HorariosError(500,except.getLocalizedMessage(),except);
+			log.error(error,horariosException);
 			return ResponseEntity.status(500).body(horariosException.toMap());
 		}
 	}
@@ -401,12 +401,14 @@ public class HorariosRest
 					// --- EMAIL NOT VALID ---
 					String error = "Email is not valid";
 					HorariosError horariosError = new HorariosError(400, error,null);
+					log.error(error,horariosError);
 					return ResponseEntity.status(400).body(horariosError);
 				}
 			}
 	
 			String error = "XML data is not loadaed or not found";
 			HorariosError horariosError = new HorariosError(400, error,null);
+			log.error(error,horariosError);
 			return ResponseEntity.status(400).body(horariosError);
 		}
 		catch(Exception exception)
@@ -414,6 +416,7 @@ public class HorariosRest
 			// -- CATCH ANY ERROR ---
 			String error = "Server Error";
 			HorariosError horariosError = new HorariosError(500, error,exception);
+			log.error(error,exception);
 			return ResponseEntity.status(500).body(horariosError);	
 		}
 	}
@@ -446,6 +449,7 @@ public class HorariosRest
 			// -- CATCH ANY ERROR ---
 			String error = "Server Error";
 			HorariosError horariosError = new HorariosError(500, error,exception);
+			log.error(error,exception);
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
