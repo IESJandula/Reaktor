@@ -95,7 +95,7 @@ public class HorariosRest
 					InputStream is = xmlFile.getInputStream();
 					documentBuilder = builderFactory.newDocumentBuilder();
 					Document document = documentBuilder.parse(is);
-	
+
 					// --- ELEMENTO ROOT CENTRO ------
 					Element rootCenterElement = document.getDocumentElement();
 					// --- ELEMENT CENTRO ATTRIBUTES ---
@@ -106,20 +106,20 @@ public class HorariosRest
 					// --- OBJECT DATOS ---
 					Datos datos = new Datos();
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- OBJECT ASIGNATURAS ---
 					Asignaturas asignaturas = new Asignaturas();
 					NodeList nodeAsignaturas = rootCenterElement.getElementsByTagName("ASIGNATURAS");
-	
+
 					// --- tot_as ATTRIBUTE VALOR ---
 					asignaturas.setTotAs(nodeAsignaturas.item(0).getAttributes().item(0).getTextContent());
-	
+
 					// GETTING ASIGNATURAS (ONLY ONE)
 					Element asignaturasElemet = (Element) rootCenterElement.getElementsByTagName("ASIGNATURAS").item(0);
-	
+
 					// GETTING THE LIST OF ASIGNATURA
 					NodeList asignaturasNodeList = asignaturasElemet.getElementsByTagName("ASIGNATURA");
-	
+
 					List<Asignatura> asignaturasList = new ArrayList<>();
 					// GETTING VALUES OF EACH ASIGNATURA
 					this.gettingValuesOfAsignatura(asignaturasNodeList, asignaturasList);
@@ -128,20 +128,20 @@ public class HorariosRest
 					log.info(asignaturas.toString());
 					datos.setAsignaturas(asignaturas);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- OBJECT GRUPOS ---
 					Grupos grupos = new Grupos();
 					NodeList nodeGrupos = rootCenterElement.getElementsByTagName("GRUPOS");
-	
+
 					// --- tot_gr ATTRIBUTE VALOR ---
 					grupos.setTotGr(nodeGrupos.item(0).getAttributes().item(0).getTextContent());
-	
+
 					// GETTING GRUPOS (ONLY ONE)
 					Element gruposElement = (Element) rootCenterElement.getElementsByTagName("GRUPOS").item(0);
-	
+
 					// GETTING THE LIST OF GRUPO
 					NodeList gruposNodeList = gruposElement.getElementsByTagName("GRUPO");
-	
+
 					List<Grupo> gruposList = new ArrayList<>();
 					// GETTING VALUES OF EACH GRUPO
 					this.gettingValuesOfGrupo(gruposNodeList, gruposList);
@@ -150,20 +150,20 @@ public class HorariosRest
 					log.info(grupos.toString());
 					datos.setGrupos(grupos);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- OBJECT AULAS ---
 					Aulas aulas = new Aulas();
 					NodeList nodeAulas = rootCenterElement.getElementsByTagName("AULAS");
-	
+
 					// --- tot_au ATTRIBUTE VALOR ---
 					aulas.setTotAu(nodeAulas.item(0).getAttributes().item(0).getTextContent());
-	
+
 					// GETTING AULAS (ONLY ONE)
 					Element aulasElement = (Element) rootCenterElement.getElementsByTagName("AULAS").item(0);
-	
+
 					// GETTING THE LIST OF AULA
 					NodeList aulasNodeList = aulasElement.getElementsByTagName("AULA");
-	
+
 					List<Aula> aulasList = new ArrayList<>();
 					// GETTING VALUES OF EACH AULA
 					this.gettingValuesOfAula(aulasNodeList, aulasList);
@@ -172,20 +172,20 @@ public class HorariosRest
 					log.info(aulas.toString());
 					datos.setAulas(aulas);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- OBJECT PROFESORES ---
 					Profesores profesores = new Profesores();
 					NodeList nodeProfesores = rootCenterElement.getElementsByTagName("PROFESORES");
-	
+
 					// --- tot_pr ATTRIBUTE VALOR ---
 					profesores.setTotPR(nodeProfesores.item(0).getAttributes().item(0).getTextContent());
-	
+
 					// GETTING PROFESORES (ONLY ONE)
 					Element profesoresElement = (Element) rootCenterElement.getElementsByTagName("PROFESORES").item(0);
-	
+
 					// GETTING THE LIST OF PROFESOR
 					NodeList profesoresNodeList = profesoresElement.getElementsByTagName("PROFESOR");
-	
+
 					List<Profesor> profesoresList = new ArrayList<>();
 					// GETTING VALUES OF EACH PROFESOR
 					this.gettingValuesOfProfesor(profesoresNodeList, profesoresList);
@@ -194,21 +194,21 @@ public class HorariosRest
 					log.info(profesores.toString());
 					datos.setProfesores(profesores);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- OBJECT TramosHorarios ---
 					TramosHorarios tramosHorarios = new TramosHorarios();
 					NodeList nodeTramosHorarios = rootCenterElement.getElementsByTagName("TRAMOS_HORARIOS");
-	
+
 					// --- tot_tr ATTRIBUTE VALOR ---
 					tramosHorarios.setTotTr(nodeTramosHorarios.item(0).getAttributes().item(0).getTextContent());
-	
+
 					// GETTING TRAMOS_HORARIOS (ONLY ONE)
 					Element tramosHorariosElement = (Element) rootCenterElement.getElementsByTagName("TRAMOS_HORARIOS")
 							.item(0);
-	
+
 					// GETTING THE LIST OF TRAMO
 					NodeList tramosHorariosNodeList = tramosHorariosElement.getElementsByTagName("TRAMO");
-	
+
 					List<Tramo> tramosList = new ArrayList<>();
 					// GETTING VALUES OF EACH TRAMO
 					this.gettingValuesOfTramo(tramosHorariosNodeList, tramosList);
@@ -218,29 +218,29 @@ public class HorariosRest
 					// --------------------------------------------------------------------------------------------------
 					datos.setTramosHorarios(tramosHorarios);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// ---- END OF DATOS ---
 					centro.setDatos(datos);
-	
+
 					// --- HORARIOS ---
 					Horarios horarios = new Horarios();
-	
+
 					// --------------------------------------------------------------------------------------------------
 					// --- HORARIOS ELEMENT ---
 					Element horariosElement = (Element) rootCenterElement.getElementsByTagName("HORARIOS").item(0);
-	
+
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- HORARIOS ASIGNATURAS ONLY ONE ---
 					HorariosAsignaturas horariosAsignaturas = new HorariosAsignaturas();
-	
+
 					// --- HORARIOS ASIGNATURAS ELEMENT ---
 					Element horariosAsignaturasElement = (Element) horariosElement
 							.getElementsByTagName("HORARIOS_ASIGNATURAS").item(0);
-	
+
 					// NODELIST HORAIO_ASIG
 					NodeList horarioAsigNodeList = horariosAsignaturasElement.getElementsByTagName("HORARIO_ASIG");
-	
+
 					// EACH HORARIOS_ASIG
 					List<HorarioAsig> horarioAsigList = new ArrayList<>();
 					this.gettingValuesOfHorarioAsig(horarioAsigNodeList, horarioAsigList);
@@ -248,17 +248,17 @@ public class HorariosRest
 					horariosAsignaturas.setHorarioAsig(horarioAsigList);
 					horarios.setHorariosAsignaturas(horariosAsignaturas);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- HORARIOS_GRUPOS ONLY ONE ---
 					HorariosGrupos horariosGrupos = new HorariosGrupos();
-	
+
 					// --- HORARIO_GRUP ELEMENT ---
 					Element horariosGruposElement = (Element) horariosElement.getElementsByTagName("HORARIOS_GRUPOS")
 							.item(0);
-	
+
 					// NODELIST HORARIO_GRUP
 					NodeList horarioGrupNodeList = horariosGruposElement.getElementsByTagName("HORARIO_GRUP");
-	
+
 					// EACH HORARIO_GRUP
 					List<HorarioGrup> horarioGrupList = new ArrayList<>();
 					this.gettingValuesOfHorarioGrup(horarioGrupNodeList, horarioGrupList);
@@ -266,16 +266,17 @@ public class HorariosRest
 					horariosGrupos.setHorarioGrup(horarioGrupList);
 					horarios.setHorariosGrupos(horariosGrupos);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- HORARIOS HORARIOS_AULAS ONLY ONE ---
 					HorariosAulas horariosAulas = new HorariosAulas();
-	
+
 					// --- HORARIOS HORARIOS_AULAS ELEMENT ---
-					Element horariosAulasElement = (Element) horariosElement.getElementsByTagName("HORARIOS_AULAS").item(0);
-	
+					Element horariosAulasElement = (Element) horariosElement.getElementsByTagName("HORARIOS_AULAS")
+							.item(0);
+
 					// NODELIST HORARIO_AULA
 					NodeList horarioAulaNodeList = horariosAulasElement.getElementsByTagName("HORARIO_AULA");
-	
+
 					// EACH HORARIO_AULA
 					List<HorarioAula> horarioAulaList = new ArrayList<>();
 					this.gettingValuesOfHorarioAula(horarioAulaNodeList, horarioAulaList);
@@ -283,17 +284,17 @@ public class HorariosRest
 					horariosAulas.setHorarioAula(horarioAulaList);
 					horarios.setHorariosAulas(horariosAulas);
 					// --------------------------------------------------------------------------------------------------
-	
+
 					// --- HORARIOS HORARIOS_PROFESORES ONLY ONE ---
 					HorariosProfesores horariosProfesores = new HorariosProfesores();
-	
+
 					// --- HORARIOS HORARIOS_AULAS ELEMENT ---
 					Element horariosProfesoresElement = (Element) horariosElement
 							.getElementsByTagName("HORARIOS_PROFESORES").item(0);
-	
+
 					// NODELIST HORARIO_AULA
 					NodeList horarioProfNodeList = horariosProfesoresElement.getElementsByTagName("HORARIO_PROF");
-	
+
 					// EACH HORARIO_PROF
 					List<HorarioProf> horarioProfList = new ArrayList<>();
 					this.gettingValuesOfHorarioProf(horarioProfNodeList, horarioProfList);
@@ -303,31 +304,34 @@ public class HorariosRest
 					// -------------------------------------------------------------------------------------------------------------------------------------------------
 					centro.setHorarios(horarios);
 					// -------------------------------------------------------------------------------------------------------------------------------------------------
-					log.info("File :"+xmlFile.getName()+" load-Done");
+					log.info("File :" + xmlFile.getName() + " load-Done");
 				}
 				catch (ParserConfigurationException exception)
 				{
 					String error = "Parser Configuration Exception";
-					log.error(error,exception);
-					HorariosError horariosException = new HorariosError(400,exception.getLocalizedMessage(),exception);
+					log.error(error, exception);
+					HorariosError horariosException = new HorariosError(400, exception.getLocalizedMessage(),
+							exception);
 					return ResponseEntity.status(400).body(horariosException.toMap());
-	
+
 				}
 				catch (SAXException exception)
 				{
 					String error = "SAX Exception";
-					log.error(error,exception);
-					HorariosError horariosException = new HorariosError(400,exception.getLocalizedMessage(),exception);
+					log.error(error, exception);
+					HorariosError horariosException = new HorariosError(400, exception.getLocalizedMessage(),
+							exception);
 					return ResponseEntity.status(400).body(horariosException.toMap());
 				}
 				catch (IOException exception)
 				{
 					String error = "In Out Exception";
-					log.error(error,exception);
-					HorariosError horariosException = new HorariosError(400,exception.getLocalizedMessage(),exception);
+					log.error(error, exception);
+					HorariosError horariosException = new HorariosError(400, exception.getLocalizedMessage(),
+							exception);
 					return ResponseEntity.status(400).body(horariosException.toMap());
 				}
-	
+
 				// --- SESSION ---------
 				session.setAttribute("storedCentro", centro);
 				log.info("UserVisits: " + centro);
@@ -338,125 +342,113 @@ public class HorariosRest
 			{
 				// NO ES UN XML
 				String error = "The file is not a XML file";
-				HorariosError horariosException = new HorariosError(400,error,new Exception());
-				log.error(error,horariosException);
+				HorariosError horariosException = new HorariosError(400, error, new Exception());
+				log.error(error, horariosException);
 				return ResponseEntity.status(400).body(horariosException.toMap());
 			}
 		}
-		catch(Exception except)
+		catch (Exception except)
 		{
 			// SERVER ERROR
 			String error = "Server Error";
-			HorariosError horariosException = new HorariosError(500,except.getLocalizedMessage(),except);
-			log.error(error,horariosException);
+			HorariosError horariosException = new HorariosError(500, except.getLocalizedMessage(), except);
+			log.error(error, horariosException);
 			return ResponseEntity.status(500).body(horariosException.toMap());
 		}
 	}
 
-	
 	/**
 	 * Method getRoles , returns ResponseEntity with the teacher roles
+	 * 
 	 * @param email
 	 * @param session
 	 * @return ResponseEntity
-	 */ 
-	@RequestMapping(method= RequestMethod.GET ,value = "/get/roles" ,produces="application/json")
-	public ResponseEntity<?> getRoles(@RequestHeader(required=true) String email,HttpSession session)
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/roles", produces = "application/json")
+	public ResponseEntity<?> getRoles(@RequestHeader(required = true) String email, HttpSession session)
 	{
-		try 
+		try
 		{
-			// --- VALIDATING CENTRO ---
-			if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+			List<Teacher> teacherList = new ArrayList<Teacher>();
+			// --- VALIDATING CSV INFO (IN SESSION)---
+			if (session.getAttribute("csvInfo") != null && session.getAttribute("csvInfo") instanceof List)
 			{
-				// --- GETTING CENTRO FROM SESSION ---
-				Centro centro = (Centro) session.getAttribute("storedCentro");
-				if(!email.trim().isEmpty()) 
+				// --  GETTIN TEACHER LIST FROM CSV INFO --- (SESSION)
+				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
+
+				if (!email.trim().isEmpty())
 				{
-					List<Teacher> teacherList = new ArrayList<Teacher>();
-					
-					// --- PARSING PROFESORES TO TEACHERS ---
-					// NEED CHANGE IT FOR GET THE CSV TEACHERS (CARLOS_ENDPO_2)
-					for(Profesor profesor : centro.getDatos().getProfesores().getProfesor()) 
-					{
-						Teacher newTeacherInstance = new Teacher();
-						newTeacherInstance.setName(profesor.getNombre().trim());
-						newTeacherInstance.setLastName((profesor.getPrimerApellido()+","+profesor.getSegundoApellido()).trim());
-						// --- GENERATING RANDOM EMAILS ---
-						newTeacherInstance.setEmail("exampleEmail@example.com"+newTeacherInstance.getName().charAt(0)+""+newTeacherInstance.getLastName().charAt(0));
-						newTeacherInstance.setRoles(List.of(Rol.administrador,Rol.conserje,Rol.docente));
-						newTeacherInstance.setTelephoneNumber("+"+(int)(Math.random()*99+1)+" "+(int)(Math.random()*1000000000+1));
-						teacherList.add(newTeacherInstance);
-						log.info(newTeacherInstance.toString());
-					}
-					
 					// --- GETTING THE TEACHER WITH THE SPECIFIC EMAIL ---
-					for(Teacher teacher:teacherList) 
+					for (Teacher teacher : teacherList)
 					{
-						if(teacher.getEmail().equals(email)) 
+						if (teacher.getEmail().equals(email))
 						{
 							return ResponseEntity.ok().body(teacher);
 						}
 					}
 				}
-				else 
+				else
 				{
 					// --- EMAIL NOT VALID ---
 					String error = "Email is not valid";
-					HorariosError horariosError = new HorariosError(400, error,null);
-					log.error(error,horariosError);
+					HorariosError horariosError = new HorariosError(400, error, null);
+					log.error(error, horariosError);
 					return ResponseEntity.status(400).body(horariosError);
 				}
 			}
-	
-			String error = "XML data is not loadaed or not found";
-			HorariosError horariosError = new HorariosError(400, error,null);
-			log.error(error,horariosError);
+
+			String error = "CSV data is not loadaed Or not found for this email";
+			HorariosError horariosError = new HorariosError(400, error, null);
+			log.error(error, horariosError);
 			return ResponseEntity.status(400).body(horariosError);
 		}
-		catch(Exception exception)
+		catch (Exception exception)
 		{
 			// -- CATCH ANY ERROR ---
 			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error,exception);
-			log.error(error,exception);
-			return ResponseEntity.status(500).body(horariosError);	
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
-	
+
 	/**
 	 * Method getListStudentsAlphabetically
+	 * 
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET,value = "/get/sortstudents",produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/sortstudents", produces = "application/json")
 	public ResponseEntity<?> getListStudentsAlphabetically()
 	{
-		try 
+		try
 		{
 			// --- CREATING FAKE STUDEN LIST ---
 			List<Student> studentList = new ArrayList<Student>();
-			for(int i = 100 ; i>studentList.size();i--) 
+			for (int i = 100; i > studentList.size(); i--)
 			{
 				Student student = new Student();
-				student.setCourse(new Course("Course"+i,new Classroom(i,i)));
-				student.setName("Alumno1"+(int)(Math.random()*100+1));
-				student.setLastName("PrimerApp"+(int)(Math.random()*100+1));
+				student.setCourse(new Course("Course" + i, new Classroom(i, i)));
+				student.setName("Alumno1" + (int) (Math.random() * 100 + 1));
+				student.setLastName("PrimerApp" + (int) (Math.random() * 100 + 1));
 				studentList.add(student);
 			}
 			// -- IF ALL ITS DONE , RETURN THE LIST SORTED ---
 			Collections.sort(studentList);
 			return ResponseEntity.ok().body(studentList);
 		}
-		catch(Exception exception) 
+		catch (Exception exception)
 		{
 			// -- CATCH ANY ERROR ---
 			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error,exception);
-			log.error(error,exception);
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
+
 	/**
 	 * Method gettingValuesOfHorarioProf
+	 * 
 	 * @param horarioProfNodeList
 	 * @param horarioProfList
 	 */
@@ -506,6 +498,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfHorarioAula
+	 * 
 	 * @param horarioAulaNodeList
 	 * @param horarioAulaList
 	 */
@@ -555,6 +548,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfHorarioGrup
+	 * 
 	 * @param horarioGrupNodeList
 	 * @param horarioGrupList
 	 */
@@ -597,6 +591,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfHorarioAsig
+	 * 
 	 * @param horarioAsigNodeList
 	 * @param horarioAsigList
 	 */
@@ -628,6 +623,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfActividad
+	 * 
 	 * @param actividadNodeList
 	 * @param actividadList
 	 */
@@ -656,6 +652,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfGruposActividadAttrs
+	 * 
 	 * @param actividadList
 	 * @param newActividad
 	 * @param gruposActividad
@@ -746,6 +743,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfTramo
+	 * 
 	 * @param tramosHorariosNodeList
 	 * @param tramosList
 	 */
@@ -765,6 +763,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfProfesor
+	 * 
 	 * @param profesoresNodeList
 	 * @param profesoresList
 	 */
@@ -783,7 +782,7 @@ public class HorariosRest
 			String[] apellidosSplit = nombreCompletoSpit[0].split(" ");
 
 			/// --- SETTING VALUES ---
-			newProfesor.setNombre(nombreCompletoSpit[nombreCompletoSpit.length-1].trim());
+			newProfesor.setNombre(nombreCompletoSpit[nombreCompletoSpit.length - 1].trim());
 			newProfesor.setPrimerApellido(apellidosSplit[0].trim());
 			newProfesor.setSegundoApellido(apellidosSplit[1].trim());
 
@@ -793,6 +792,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfAula
+	 * 
 	 * @param aulasNodeList
 	 * @param aulasList
 	 */
@@ -811,6 +811,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfGrupo
+	 * 
 	 * @param gruposNodeList
 	 * @param gruposList
 	 */
@@ -829,6 +830,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfAsignatura
+	 * 
 	 * @param asignaturasNodeList
 	 * @param asignaturasList
 	 */
@@ -879,123 +881,136 @@ public class HorariosRest
 		}
 		return gruposActividad;
 	}
+
 	/**
 	 * method sendCsvTo
+	 * 
 	 * @param archivo
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> sendCsvTo(@RequestPart MultipartFile archivo, HttpSession session) 
+	public ResponseEntity<?> sendCsvTo(@RequestPart MultipartFile archivo, HttpSession session)
 	{
-        try
-        {
-        	List<Teacher> teachers = new ArrayList<Teacher>();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) 
-            {
-                String line;
-                br.readLine();
-                while ((line = br.readLine()) != null) 
-                {
-                    Teacher teacher = parsearLineaCSV(line);
-                    if (teacher != null) 
-                    {
-                        log.info("Teacher was create");
-                        teachers.add(teacher);
-                    }
-                }
-            } catch (IOException exception) {
-            	String error = "In/Out exception";
-				HorariosError horariosError = new HorariosError(400, error,exception);
-				log.error(error,horariosError);
+		try
+		{
+			List<Teacher> teachers = new ArrayList<Teacher>();
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(archivo.getInputStream())))
+			{
+				String line;
+				br.readLine();
+				while ((line = br.readLine()) != null)
+				{
+					Teacher teacher = parsearLineaCSV(line);
+					if (teacher != null)
+					{
+						log.info("Teacher was create");
+						teachers.add(teacher);
+					}
+				}
+			}
+			catch (IOException exception)
+			{
+				String error = "In/Out exception";
+				HorariosError horariosError = new HorariosError(400, error, exception);
+				log.error(error, horariosError);
 				return ResponseEntity.status(400).body(horariosError);
-            }
-            session.setAttribute("csvInfo", teachers);
-            return ResponseEntity.ok().body(teachers);
-        }catch(Exception exception)
+			}
+			session.setAttribute("csvInfo", teachers);
+			return ResponseEntity.ok().body(teachers);
+		}
+		catch (Exception exception)
 		{
 			// -- CATCH ANY ERROR ---
 			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error,exception);
+			HorariosError horariosError = new HorariosError(500, error, exception);
 
-			return ResponseEntity.status(500).body(horariosError);	
-		}
-		
-    }
-	/**
-	 * method parseaLineaCSV
-	 * @param linea
-	 * @return
-	 */
-    private Teacher parsearLineaCSV(String linea) {
-        Teacher teacher = null;
-        try {
-        	 	 String[] campos = linea.split(",");
-                 String nombre = campos[0].trim();
-                 String apellido = campos[1].trim();
-                 String correo = campos[2].trim();
-                 String telefono = campos[3].trim();
-                 String[] temporalArray = linea.split("\\[");
-                 String stringTemporal = temporalArray[temporalArray.length-1];
-                 stringTemporal = stringTemporal.replace("]", "");
-                 String[] rolesArray = stringTemporal.split(",");
-                 List<Rol> listaRoles = new ArrayList<Rol>();
-                 for(String rol : rolesArray)
-                 {
-                	 switch(rol.toLowerCase().trim())
-                	 {
-                	 case "administrador" ->
-                	 {
-                		listaRoles.add(Rol.administrador); 
-                	 }
-                	 case "docente" ->
-                	 {
-                		listaRoles.add(Rol.docente); 
-                	 }
-                	 case "conserje" ->
-                	 {
-                		listaRoles.add(Rol.conserje); 
-                	 }
-                	 }
-                 }
-                 teacher = new Teacher(nombre, apellido, correo, telefono, listaRoles);
-        } catch (IllegalArgumentException illegalArgumentException) {
-            System.out.println("Datos de CSV incompletos o incorrectos: " + linea);
-        }
-        
-        return teacher;
-    }
-    
-    
-    @RequestMapping(method= RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
-	public ResponseEntity<?> getTeachers(HttpSession session) 
-	{
-		try 
-		{
-			List<Teacher> teacherList = new ArrayList<Teacher>();
-			 
-	        if(session.getAttribute("csvInfo")!= null) 
-	        {
-	        	teacherList = (List<Teacher>) session.getAttribute("csvInfo");
-	        	return ResponseEntity.ok().body(teacherList);
-	        }
-	        else 
-	        {
-	        	String error = "no csv info";
-				HorariosError horariosError = new HorariosError(400, error,null);
-				log.error(error,horariosError);
-				return ResponseEntity.status(500).body(horariosError);
-	        }
-	        
-			
-		}
-		catch(Exception exception) 
-		{
-			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error,exception);
-			log.error(error,exception);
 			return ResponseEntity.status(500).body(horariosError);
 		}
-		
-	
+
+	}
+
+	/**
+	 * Method parsearLineaCSV
+	 * 
+	 * @param linea
+	 * @return Teacher
+	 */
+	private Teacher parsearLineaCSV(String linea)
+	{
+		Teacher teacher = null;
+		try
+		{
+			String[] campos = linea.split(",");
+			String nombre = campos[0].trim();
+			String apellido = campos[1].trim();
+			String correo = campos[2].trim();
+			String telefono = campos[3].trim();
+			String[] temporalArray = linea.split("\\[");
+			String stringTemporal = temporalArray[temporalArray.length - 1];
+			stringTemporal = stringTemporal.replace("]", "");
+			String[] rolesArray = stringTemporal.split(",");
+			List<Rol> listaRoles = new ArrayList<Rol>();
+			for (String rol : rolesArray)
+			{
+				switch (rol.toLowerCase().trim())
+				{
+					case "administrador" ->
+					{
+						listaRoles.add(Rol.administrador);
+					}
+					case "docente" ->
+					{
+						listaRoles.add(Rol.docente);
+					}
+					case "conserje" ->
+					{
+						listaRoles.add(Rol.conserje);
+					}
+				}
+			}
+			teacher = new Teacher(nombre, apellido, correo, telefono, listaRoles);
+		}
+		catch (IllegalArgumentException illegalArgumentException)
+		{
+			System.out.println("Datos de CSV incompletos o incorrectos: " + linea);
+		}
+
+		return teacher;
+	}
+
+	/**
+	 * Method getTeachers
+	 * 
+	 * @param session
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers", produces = "application/json")
+	public ResponseEntity<?> getTeachers(HttpSession session)
+	{
+		try
+		{
+			List<Teacher> teacherList = new ArrayList<Teacher>();
+
+			if (session.getAttribute("csvInfo") != null && session.getAttribute("csvInfo") instanceof List)
+			{
+				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
+				return ResponseEntity.ok().body(teacherList);
+			}
+			else
+			{
+				String error = "no csv info";
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.error(error, horariosError);
+				return ResponseEntity.status(500).body(horariosError);
+			}
+		}
+		catch (Exception exception)
+		{
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+
 	}
 }
