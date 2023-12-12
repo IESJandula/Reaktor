@@ -373,7 +373,7 @@ public class HorariosRest
 			// --- VALIDATING CSV INFO (IN SESSION)---
 			if (session.getAttribute("csvInfo") != null && session.getAttribute("csvInfo") instanceof List)
 			{
-				// --  GETTIN TEACHER LIST FROM CSV INFO --- (SESSION)
+				// -- GETTIN TEACHER LIST FROM CSV INFO --- (SESSION)
 				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
 
 				if (!email.trim().isEmpty())
@@ -427,7 +427,7 @@ public class HorariosRest
 			for (int i = 100; i > studentList.size(); i--)
 			{
 				Student student = new Student();
-				student.setCourse(new Course("Course" + i, new Classroom(i, i)));
+				student.setCourse(new Course("Course" + i, new Classroom(String.valueOf(i),String.valueOf(i))));
 				student.setName("Alumno1" + (int) (Math.random() * 100 + 1));
 				student.setLastName("PrimerApp" + (int) (Math.random() * 100 + 1));
 				studentList.add(student);
@@ -945,37 +945,37 @@ public class HorariosRest
 			String apellido = campos[1].trim();
 			String correo = campos[2].trim();
 			String telefono = campos[3].trim();
-			
+
 			// --- SPLIT BY [ FOR THE ROL LIST ---
 			String[] temporalArray = linea.split("\\[");
-			
+
 			// --- GETTING THE PART OF ROL LIST ---
 			String stringTemporal = temporalArray[temporalArray.length - 1];
-			
+
 			// --- DELETE THE CHAR "]" FOR THE LAST VALUE OF ROL ---
 			stringTemporal = stringTemporal.replace("]", "");
-			
+
 			// -- SPLIT BY "," THE CLEAN ROL STRING ---
 			String[] rolesArray = stringTemporal.split(",");
-			
+
 			// --- GETTING EACH VALUE OF STRING AND PARSE TO ROL ---
 			List<Rol> listaRoles = new ArrayList<Rol>();
 			for (String rol : rolesArray)
 			{
 				switch (rol.toLowerCase().trim())
 				{
-					case "administrador" ->
-					{
-						listaRoles.add(Rol.administrador);
-					}
-					case "docente" ->
-					{
-						listaRoles.add(Rol.docente);
-					}
-					case "conserje" ->
-					{
-						listaRoles.add(Rol.conserje);
-					}
+				case "administrador" ->
+				{
+					listaRoles.add(Rol.administrador);
+				}
+				case "docente" ->
+				{
+					listaRoles.add(Rol.docente);
+				}
+				case "conserje" ->
+				{
+					listaRoles.add(Rol.conserje);
+				}
 				}
 			}
 			teacher = new Teacher(nombre, apellido, correo, telefono, listaRoles);
@@ -1023,47 +1023,78 @@ public class HorariosRest
 		}
 
 	}
-	@RequestMapping(method = RequestMethod.GET, value = "/get/courses")
+
+	/**
+	 * Method getListCourse
+	 * 
+	 * @param session
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/courses", produces = "application/json")
 	public ResponseEntity<?> getListCourse(HttpSession session)
 	{
 		List<Course> listaCurso = new ArrayList<Course>();
 		Course curso;
 		Classroom classroom;
 		List<Aula> listaAula = new ArrayList<Aula>();
-    	if(session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
-    	{
-    		Centro centro = (Centro) session.getAttribute("storedCentro");
-    		listaAula = centro.getDatos().getAulas().getAula();
-    	}
-    	
 		try
 		{
-			for(int i = 1 ; i < listaAula.size() ; i++)
+			// --- GETTING STORED CENTRO ---
+			if (session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
 			{
-				String nombreAula = listaAula.get(i).getNombre();			
+				Centro centro = (Centro) session.getAttribute("storedCentro");
+				// -- GETTING LIST OF AULA IN CENTER ---
+				listaAula = centro.getDatos().getAulas().getAula();
 				
-				String[] plantaAula = listaAula.get(i).getAbreviatura().split(".");
-				int[] plantaYNumero = new int[plantaAula.length];
-				for (int j = 0; j < plantaAula.length; j++) {
-		            try {
-		                plantaYNumero[j] = Integer.parseInt(plantaAula[j]);
-		            } catch (NumberFormatException e) {
-		                // Manejar la excepción si el String no es un número válido
-		                System.out.println("Error en la conversión en el índice " + i + ": " + e.getMessage());
-		            }
-		        }
-				classroom = new Classroom(plantaYNumero[0], plantaYNumero[1]);
-				curso = new Course(nombreAula, classroom);
-				listaCurso.add(curso);
+				// -- FOR EAHC AULA IN listAula ---
+				for (int i = 0; i < listaAula.size(); i++)
+				{
+					if(listaAula.get(i).getAbreviatura().isEmpty() || listaAula.get(i).getAbreviatura()==null)
+					{
+						continue;
+					}
+					String nombreAula = listaAula.get(i).getNombre();
+
+					String[] plantaAula = listaAula.get(i).getAbreviatura().split("\\.");
+					
+					String plantaNumero = "";
+					String numeroAula = "";
+					// -- THE VALUES WITH CHARACTERS ONLY HAVE 1 POSITION ---
+					if(plantaAula.length>1) 
+					{
+						plantaNumero = plantaAula[0].trim();
+						numeroAula = plantaAula[1].trim();
+					}
+					else 
+					{
+						plantaNumero = plantaAula[0].trim();
+						numeroAula = plantaAula[0].trim();
+					}
+					
+					
+					// -- IMPORTANT , CLASSROOM PLANTANUMERO AND NUMEROAULA , CHANGED TO STRING BECAUSE SOME PARAMETERS CONTAINS CHARACTERS ---
+					classroom = new Classroom(plantaNumero, numeroAula);
+					curso = new Course(nombreAula, classroom);
+					listaCurso.add(curso);
+				}
 			}
+			else 
+			{
+				// -- ERROR NO CENTRO STORED OR EMPTY---
+				String error = "Error to read XML data centro or Empty";
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.info(error,horariosError);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+
 		}
-		catch(Exception exception)
+		catch (Exception exception)
 		{
 			// -- CATCH ANY ERROR ---
-				String error = "Server Error";
-				HorariosError horariosError = new HorariosError(500, error,exception);
-
-				return ResponseEntity.status(500).body(horariosError);
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.info(error,horariosError);
+			return ResponseEntity.status(500).body(horariosError);
 		}
 		return ResponseEntity.ok().body(listaCurso);
 	}

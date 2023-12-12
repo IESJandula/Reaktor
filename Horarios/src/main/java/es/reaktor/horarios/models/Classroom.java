@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class Classroom
 {
 	/** Attribute number*/
-	private Integer number;
+	private String number;
 	
 	/** Attribute floor*/
-	private Integer floor;
+	private String floor;
 }
