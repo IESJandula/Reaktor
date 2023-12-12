@@ -43,6 +43,11 @@ public class RestHandlerHorarios
 			new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)))
 		));
 
+	private List<Course> cursos = new ArrayList<Course>(List.of(
+			new Course("1 DAM", new Classroom(0, 1)),
+			new Course("2 DAM", new Classroom(0, 2)),
+			new Course("3 DAM", new Classroom(0, 3))));
+	
 	/**
 	 * Public constructor
 	 */
@@ -83,6 +88,21 @@ public class RestHandlerHorarios
 			Collections.sort(this.listaEstudiantes);
 			
 			return ResponseEntity.ok().body(this.listaEstudiantes);
+		} 
+		catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/courses")
+	public ResponseEntity<?> getListCourses()
+	{
+		try
+		{
+			return ResponseEntity.ok().body(this.cursos);
 		} 
 		catch (Exception exception)
 		{
