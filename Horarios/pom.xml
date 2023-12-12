@@ -32,6 +32,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+	        <groupId>es.reaktor</groupId>
+			<artifactId>Models</artifactId>
+			<version>1.0-SNAPSHOT</version> <!-- Ajusta esto según tu versión -->
+    	</dependency>
 	</dependencies>
 
 	<build>

@@ -1,7 +1,11 @@
 package es.iesjandula.exceptions;
 
 public class HorarioError extends Exception {
-    private int codigo;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4994392585697881401L;
+	private int codigo;
     private String mensaje;
 
     public HorarioError(int codigo, String mensaje) {
