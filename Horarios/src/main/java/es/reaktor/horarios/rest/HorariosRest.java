@@ -453,6 +453,10 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
+	
+	
+	
+	
 	/**
 	 * Method gettingValuesOfHorarioProf
 	 * @param horarioProfNodeList
