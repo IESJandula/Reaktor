@@ -1,4 +1,4 @@
-package es.reaktor.reaktor.exceptions;
+package es.iesjandula.Horarios.exceptions;
 
 import java.util.HashMap;
 import java.util.Map;

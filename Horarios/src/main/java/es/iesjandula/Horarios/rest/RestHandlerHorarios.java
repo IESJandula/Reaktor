@@ -1,7 +1,6 @@
-package es.reaktor.reaktor.rest;
+package es.iesjandula.Horarios.rest;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,38 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import es.reaktor.reaktor.exceptions.HorarioError;
-import es.reaktor.reaktor.models.Profesor;
-import es.reaktor.reaktor.models.RolReaktor;
+import es.iesjandula.Horarios.exceptions.HorarioError;
+import es.iesjandula.Horarios.models.Profesor;
+import es.iesjandula.Horarios.models.RolReaktor;
 
-@RequestMapping(value = "/computers", produces =
-{ "application/json" })
+
+@RequestMapping(value = "/horarios", produces = { "application/json" })
 @RestController
 
 /**
  * @author Alejandro Cazalla Pérez
  */
-public class RestHandlerAdministration
+public class RestHandlerHorarios
 {
 	/**
 	 * Public constructor
 	 */
-	public RestHandlerAdministration()
+	public RestHandlerHorarios()
 	{
 		// Empty constructor
 	}
 
 	final static Logger logger = LogManager.getLogger();
 
-	@RequestMapping(method = RequestMethod.POST, value = "/get/status", consumes = "multipart/form-data")
-	public ResponseEntity<?> sendFile(@RequestPart(value = "csvFile", required = true) final File csvFile)
+	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
+	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "csvFile", required = true) final MultipartFile csvFile)
 	{
 		try
 		{
 			this.checkFile(csvFile);
 			this.parseFile();
-			return ResponseEntity.ok().body("Getting success");
+			return ResponseEntity.ok().build();
 		} catch (HorarioError exception)
 		{
 			String message = "Computer error getting";
@@ -60,15 +60,15 @@ public class RestHandlerAdministration
 		}
 	}
 
-	public void checkFile(File File) throws HorarioError
+	public void checkFile(MultipartFile file) throws HorarioError
 	{
-		if (File == null)
+		if (file == null)
 		{
 			throw new HorarioError(1, "Error with the file");
 		}
 	}
 
-	public List<Profesor> parseFile() throws HorarioError
+	public List<Profesor> parseFile() throws HorarioError, IOException
 	{
 		FileInputStream fileInputStream = null;
 		BufferedReader reader = null;
@@ -100,6 +100,11 @@ public class RestHandlerAdministration
 		{
 			String error = "Error en la lectura del fichero";
 			logger.error(error, e);
+			throw e;
+		} catch (Exception e)
+		{
+			String error = "Error";
+			logger.error(error, e);
 			throw new HorarioError(1, error);
 		} finally
 		{
@@ -117,7 +122,7 @@ public class RestHandlerAdministration
 			{
 				String error = "Error en la lectura del fichero";
 				logger.error(error, e);
-				throw new HorarioError(2, error);
+				throw e;
 			}
 		}
 

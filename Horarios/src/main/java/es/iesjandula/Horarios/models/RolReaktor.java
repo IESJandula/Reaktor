@@ -1,4 +1,4 @@
-package es.reaktor.reaktor.models;
+package es.iesjandula.Horarios.models;
 
 public enum RolReaktor
 {
