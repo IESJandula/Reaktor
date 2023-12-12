@@ -896,11 +896,15 @@ public class HorariosRest
 			List<Teacher> teachers = new ArrayList<Teacher>();
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(archivo.getInputStream())))
 			{
+				// --- READEING LINES FROM CSV ---
 				String line;
-				br.readLine();
+				br.readLine(); // --- READ 1 MORE TIME FOR HEADERS ---
 				while ((line = br.readLine()) != null)
 				{
-					Teacher teacher = parsearLineaCSV(line);
+					// --- GETTING TEACHER ---
+					Teacher teacher = this.parsearLineaCSV(line);
+					
+					// --- IF TEACHER IS NOT NULL , ADD TO LIST ---
 					if (teacher != null)
 					{
 						log.info("Teacher was create");
@@ -915,6 +919,7 @@ public class HorariosRest
 				log.error(error, horariosError);
 				return ResponseEntity.status(400).body(horariosError);
 			}
+			// --- PUT CSV INFO ON SESSION ---
 			session.setAttribute("csvInfo", teachers);
 			return ResponseEntity.ok().body(teachers);
 		}
@@ -1001,13 +1006,16 @@ public class HorariosRest
 		{
 			List<Teacher> teacherList = new ArrayList<Teacher>();
 
+			// --- GETTING CSV FROM SESSION ---
 			if (session.getAttribute("csvInfo") != null && session.getAttribute("csvInfo") instanceof List)
 			{
+				// --- CASTING TEACHER LIST ---
 				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
 				return ResponseEntity.ok().body(teacherList);
 			}
 			else
 			{
+				// --- ERROR NO CSV INFO OR EMPTY ON SESSION ---
 				String error = "no csv info";
 				HorariosError horariosError = new HorariosError(400, error, null);
 				log.error(error, horariosError);
