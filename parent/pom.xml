@@ -19,7 +19,7 @@
 		<!-- Reaktor Client -->
 		<module>../ReaktorClient</module>
 		
-		<!-- Reaktor Client -->
+		<!-- Reaktor Horarios -->
         <module>../Horarios</module>
 		
 	</modules>
