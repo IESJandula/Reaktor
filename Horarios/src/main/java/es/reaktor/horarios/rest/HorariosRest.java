@@ -307,23 +307,23 @@ public class HorariosRest
 				{
 					String error = "Parser Configuration Exception";
 					log.error(error,exception);
-					HorariosError horariosException = new HorariosError(404,exception.getLocalizedMessage(),exception);
-					return ResponseEntity.status(404).body(horariosException.toMap());
+					HorariosError horariosException = new HorariosError(400,exception.getLocalizedMessage(),exception);
+					return ResponseEntity.status(400).body(horariosException.toMap());
 	
 				}
 				catch (SAXException exception)
 				{
 					String error = "SAX Exception";
 					log.error(error,exception);
-					HorariosError horariosException = new HorariosError(404,exception.getLocalizedMessage(),exception);
-					return ResponseEntity.status(404).body(horariosException.toMap());
+					HorariosError horariosException = new HorariosError(400,exception.getLocalizedMessage(),exception);
+					return ResponseEntity.status(400).body(horariosException.toMap());
 				}
 				catch (IOException exception)
 				{
 					String error = "In Out Exception";
 					log.error(error,exception);
-					HorariosError horariosException = new HorariosError(404,exception.getLocalizedMessage(),exception);
-					return ResponseEntity.status(404).body(horariosException.toMap());
+					HorariosError horariosException = new HorariosError(400,exception.getLocalizedMessage(),exception);
+					return ResponseEntity.status(400).body(horariosException.toMap());
 				}
 	
 				// --- SESSION ---------
@@ -336,9 +336,9 @@ public class HorariosRest
 			{
 				// NO ES UN XML
 				String error = "The file is not a XML file";
-				HorariosError horariosException = new HorariosError(500,error,new Exception());
+				HorariosError horariosException = new HorariosError(400,error,new Exception());
 				log.error(error,horariosException);
-				return ResponseEntity.status(404).body(horariosException.toMap());
+				return ResponseEntity.status(400).body(horariosException.toMap());
 			}
 		}
 		catch(Exception except)
