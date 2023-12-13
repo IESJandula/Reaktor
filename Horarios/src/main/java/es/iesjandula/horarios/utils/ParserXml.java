@@ -2,6 +2,10 @@ package es.iesjandula.horarios.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +50,7 @@ public interface ParserXml
 	 */
 	public default Centro parserFileToObject(MultipartFile xml) throws HorarioError 
 	{
-		File file = MultipartFileTransferToFile(xml);	
-
+		File file = MultipartFileTransferToFile(xml);			
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		
 		/** inicializamos los objetos **/
@@ -175,7 +178,7 @@ public interface ParserXml
 			/** Elemento horarios asignaturas **/
 			NodeList nodeListHorarios = rootCentro.getElementsByTagName("HORARIOS");
 			
-			/**------------------------------------------------ ASIGNATURAS -------------------------------------------------------------------------------**/
+			/**------------------------------------------------ HORARIO ASIGNATURAS -------------------------------------------------------------------------------**/
 			/** Lista de horarios asignaturas **/
 			NodeList nodeListHorariosAsignatura = nodeListHorarios.item(0).getChildNodes();
 			
@@ -239,7 +242,7 @@ public interface ParserXml
 				cont++;
 			}	
 			
-			/**----------------------------------------------------- GRUPOS -------------------------------------------------------------------------------**/
+			/**-----------------------------------------------------HORARIO GRUPOS -------------------------------------------------------------------------------**/
 			NodeList nodeListHorariosGrupos = nodeListHorarios.item(1).getChildNodes();
 			
 			cont = 0;
@@ -277,7 +280,7 @@ public interface ParserXml
 				cont++;
 			}	
 			
-			/** -------------------------------------------- AULAS -------------------------------------------------------------------------------**/
+			/** -------------------------------------------- HORARIO AULAS -------------------------------------------------------------------------------**/
 			NodeList nodeListHorariosAula = nodeListHorarios.item(2).getChildNodes();
 			
 			cont = 0;
@@ -340,7 +343,7 @@ public interface ParserXml
 				cont++;
 			}	
 			
-			/** ---------------------------------------------PROFESOR -------------------------------------------------------------------------------**/
+			/** --------------------------------------------- HORARIO PROFESOR -------------------------------------------------------------------------------**/
 			NodeList nodeListHorariosProfesor = nodeListHorarios.item(3).getChildNodes();
 			
 			cont = 0;
@@ -439,19 +442,10 @@ public interface ParserXml
 	 */
 	private File MultipartFileTransferToFile(MultipartFile xml) throws HorarioError
 	{
-		/** the route for the new File with the xml info **/
-		File file = new File("fichero.xml");
-		try
-		{
-			/** Move the information from a MultipartFile to a File**/
-			xml.transferTo(file);
-		} 
-		catch (IllegalStateException | IOException exception)
-		{
-			String error = "Error al trasferir el fichero";
-			log.error(error,exception);
-			throw new HorarioError(1,error);
-		}
-		return file;
+	    /** Move the information from a MultipartFile to a File**/
+		File file = new File(xml.getOriginalFilename());	
+		
+	    return file;
+		
 	}
 }

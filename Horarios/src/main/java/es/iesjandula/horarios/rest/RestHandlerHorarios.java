@@ -3,14 +3,13 @@ package es.iesjandula.horarios.rest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.iesjandula.horarios.exception.HorarioError;
-import es.iesjandula.horarios.models.xml.Datos;
 import es.iesjandula.horarios.utils.ParserXml;
 
 /**
@@ -35,7 +34,7 @@ public class RestHandlerHorarios implements ParserXml
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = "multipart/form-data")
     public ResponseEntity<?> parseXML(
-            @RequestBody MultipartFile xml)
+            @RequestPart MultipartFile xml)
     {
 		try
 		{
