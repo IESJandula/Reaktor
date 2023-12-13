@@ -1,8 +1,9 @@
 package es.iesjandula.horarios.models.xml;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 /**
  * @author Javier Martinez Megias
  */
@@ -11,16 +12,17 @@ import lombok.NoArgsConstructor;
 public class Datos
 {
 	/**Asignatura guardada*/
-	private Asignatura asignatura;
+	private List<Asignatura> asignatura;
 	/**Grupo guardado */
-	private Grupo grupo;
+	private List<Grupo> grupo;
 	/**Aula guardada */
-	private Aula aula;
+	private List<Aula> aula;
 	/**Profesor guardado */
-	private Profesor profesor;
+	private List<Profesor> profesor;
 	/**Tramo guardado */
-	private Tramo tramo;
-	
+	private List<Tramo> tramo;
+	/**Horarios guardado */
+	private Horarios horarios;
 	/**
 	 * Constructor por defecto para el rest API
 	 */
