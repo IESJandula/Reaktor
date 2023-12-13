@@ -1,6 +1,5 @@
 package es.iesjandula.Horarios.rest;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
