@@ -8,6 +8,7 @@ import es.reaktor.models.carritos.ReservaCarritoPcs;
 import es.reaktor.models.carritos.ReservaCarritoTablets;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -70,7 +71,17 @@ public class ReservasCarritosController
     @RequestMapping(method = RequestMethod.GET, value = "/allReservations")
     public ResponseEntity<TotalReservas> listaReservas()
     {
+        TotalReservas totalReservas = new TotalReservas();
 
+        List<ReservaAula> reservaAulas = allReservasService.listaReservaAula();
+        List<ReservaCarritoPcs> reservaCarritoPcs = allReservasService.listaReservaCarritoPc();
+        List<ReservaCarritoTablets> reservaCarritoTablets = allReservasService.listaReservaCarritoTablets();
+
+        totalReservas.setReservasAulas(reservaAulas);
+        totalReservas.setReservasCarritoPcs(reservaCarritoPcs);
+        totalReservas.setReservasCarritoTablets(reservaCarritoTablets);
+
+        return new ResponseEntity<TotalReservas>(totalReservas, HttpStatus.OK);
     }
 
 }
