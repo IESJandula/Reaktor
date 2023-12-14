@@ -1,6 +1,6 @@
 package com.microservice.carritos.service;
 
-import com.microservice.carritos.repository.IREservaCarritoPcsRepository;
+import com.microservice.carritos.repository.IReservaCarritoPcsRepository;
 import com.microservice.carritos.repository.IReservaAulaRepository;
 import com.microservice.carritos.repository.IReservaCarritoTabletsRepository;
 import es.reaktor.models.carritos.ReservaAula;
@@ -25,7 +25,7 @@ public class AllReservasService
     private IReservaAulaRepository iReservaAulaRepository;
 
     @Autowired
-    private IREservaCarritoPcsRepository irReservaCarritoPcsRepository;
+    private IReservaCarritoPcsRepository irReservaCarritoPcsRepository;
 
     @Autowired
     IReservaCarritoTabletsRepository iReservaCarritoTabletsRepository;

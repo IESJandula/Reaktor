@@ -1,0 +1,268 @@
+swagger: '2.0'
+host: localhost:8069
+basePath: /reservas
+info:
+  version: 1.0.0
+  title: IES Jándula Reserva Aulas
+  description: Reserva aulas, carritos de pc y tablets
+  contact:
+    name: Jesus Guerrero Gonzalez
+    email: jesusguerrerogonzalez2@gmail.com
+    url: https://github.com/jguegon966
+schemes:
+ - http
+ - https
+produces:
+ - application/json
+paths:
+  /allReservations:
+    get:
+      operationId: listaReservas
+      description: lista de todos los dias disponibles y reservados para reservar
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Returns info of days to reserve
+        404:
+          description: Error interno del sistema
+        500:
+          description: Error del servidor
+  /selectAula:
+    post:
+      operationId: selectAula
+      description: seleccionar aula para reservar
+      parameters:
+        - name: idProfesor
+          description: identificador del profesor
+          in: query
+          type: integer
+          required: true
+        - name: idAula
+          description: identificador del aula
+          in: query
+          type: integer
+          required: true
+        - name: fechaReservaAula
+          description: fecha de reserva del aula, junto con la hora
+          in: query
+          type: integer
+          format: int64
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Returns all of information of the reservation of the aula
+        404:
+          description: System was not found
+        407:
+          description: Error al introducir los parametros
+        500:
+          description: Server Error
+  /selectTablets:
+    post:
+      operationId: selectTablets
+      description: seleccionar carrito tablets para reservar
+      parameters:
+        - name: idProfesor
+          description: identificador del profesor
+          in: query
+          type: integer
+          required: true
+        - name: idCarritoTablets
+          description: identificador del carrito de tablets
+          in: query
+          type: integer
+          required: true
+        - name: ubicacionPrestamoTablets
+          description: ubicacion del prestamo de donde se dejó la ultima vez el carrito
+          in: query
+          type: string
+          required: false
+        - name: fechaReservaAula
+          description: fecha de reserva del aula, junto con la hora
+          in: query
+          type: integer
+          format: int64
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Returns all of information of the reseervation of the tablets
+        404:
+          description: System was not found
+        407:
+          description: Error al introducir los parametros
+        500:
+          description: Server Error
+  /selectPcs:
+    post:
+      operationId: selectPcs
+      description: seleccionar carrito pcs para reservar
+      parameters:
+        - name: idProfesor
+          description: identificador del profesor
+          in: query
+          type: integer
+          required: true
+        - name: idCarritoPcs
+          description: identificador del carrito de pcs
+          in: query
+          type: integer
+          required: true
+        - name: ubicacionPrestamoPcs
+          description: ubicacion del prestamo de donde se dejó la ultima vez el carrito
+          in: query
+          type: string
+          required: false
+        - name: fechaReservaAula
+          description: fecha de reserva del aula, junto con la hora
+          in: query
+          type: integer
+          format: int64
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Returns all of information of the reseervation of the pcs
+        404:
+          description: System was not found
+        407:
+          description: Error al introducir los parametros
+        500:
+          description: Server Error
+  /confirmarReservation:
+    post:
+      operationId: confirmarReserva
+      description: confirma la reserva
+      responses:
+        200:
+          description: Confirm the post of reservation
+        404:
+          description: System was not found
+        407:
+          description: Error al introducir los parametros
+        500:
+          description: Server Error
+  /cancelarSesiones:
+    post:
+      operationId: cancelarSesion
+      description: cancelar la sesion
+      responses:
+        200:
+          description: Cancel the sesion of reservations
+        404:
+          description: System was not found
+        500:
+          description: Server Error
+  /deleteReservaAula:
+    delete:
+      operationId: deleteReservaAula
+      description: delete a reservation of an aula
+      parameters:
+        - name: idProfesor
+          description: identificador del profesor
+          in: query
+          type: integer
+          required: true
+        - name: idAula
+          description: identificador del aula
+          in: query
+          type: integer
+          required: true
+        - name: fechaReservaAula
+          description: fecha de reserva del aula, junto con la hora
+          in: query
+          type: integer
+          format: int64
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Returns a String with information of the delete
+        404:
+          description: System was not found
+        407:
+          description: Error al introducir los parametros
+        500:
+          description: Server Error
+  /deleteReservaTablets:
+    delete:
+      operationId: deleteReservaTablets
+      description: delete a reservation of a cart
+      parameters:
+        - name: idProfesor
+          description: identificador del profesor
+          in: query
+          type: integer
+          required: true
+        - name: idCarritoTablets
+          description: identificador del carrito de tablets
+          in: query
+          type: integer
+          required: true
+        - name: ubicacionPrestamoTablets
+          description: ubicacion del prestamo de donde se dejó la ultima vez el carrito
+          in: query
+          type: string
+          required: false
+        - name: fechaReservaAula
+          description: fecha de reserva del aula, junto con la hora
+          in: query
+          type: integer
+          format: int64
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: returns a String with information of a delete
+        404:
+          description: System was not found
+        407:
+          description: Error al introducir los parametros
+        500:
+          description: Server Error
+  /deleteReservaPcs:
+    delete:
+      operationId: deleteReservaPcs
+      description: delete a reservation of cart
+      parameters:
+        - name: idProfesor
+          description: identificador del profesor
+          in: query
+          type: integer
+          required: true
+        - name: idCarritoPcs
+          description: identificador del carrito de pcs
+          in: query
+          type: integer
+          required: true
+        - name: ubicacionPrestamoPcs
+          description: ubicacion del prestamo de donde se dejó la ultima vez el carrito
+          in: query
+          type: string
+          required: false
+        - name: fechaReservaAula
+          description: fecha de reserva del aula, junto con la hora
+          in: query
+          type: integer
+          format: int64
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: returns a String with information of a resevation
+        404:
+          description: System was not found
+        407:
+          description: Error al introducir los parametros
+        500:
+          description: Server Error
+  
+    
