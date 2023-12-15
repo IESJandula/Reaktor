@@ -6,10 +6,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,7 +45,7 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 	 * @return ok si el fichero cumple las condiciones,404 si el formato o la estructura esta mal o 500 si hubo un error interno
 	 */
 	@RequestMapping(method = RequestMethod.POST,value = "/send/csv" ,consumes = "multipart/form-data")
-	public ResponseEntity<?> sendCsvTo(@RequestBody(required = true) final MultipartFile csvFile)
+	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "fichero",required = true) final MultipartFile csvFile)
 	{
 		try
 		{

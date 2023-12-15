@@ -2,6 +2,7 @@ package es.iesjandula.horarios.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,9 +31,9 @@ public interface ICSVParser
 	public default void checkCSVFile(MultipartFile csvFile) throws HorarioError
 	{
 		//Se obtiene el nombre del fichero
-		String fileName = csvFile.getName();
-		//Creamos el fichero de destino
-		File file = new File("src"+File.separator+"main"+File.separator+"resources"+File.separator+"fichero.csv");
+		String fileName = csvFile.getOriginalFilename();
+		//Creamos el fichero en el que se guardara el contenido
+		File file = null;
 		if(!fileName.endsWith(".csv") && !fileName.endsWith(".CSV"))
 		{
 			throw new HorarioError(2,"El fichero tiene que ser csv");
@@ -51,7 +52,9 @@ public interface ICSVParser
 				//Transferimos el contenido del multipart a un fichero csv creado en sesion
 				else
 				{
-					csvFile.transferTo(file);
+					//Escribimos el contenido en otro fichero
+					FileWriter fw = null;
+					file = this.writeContent(content, fw);
 					FileReader fr = null;
 					BufferedReader br = null;
 					//Comprobamos la estructura en otro metodo
@@ -96,7 +99,15 @@ public interface ICSVParser
 			else
 			{
 				check = true;
-			}		
+			}	
+			if(br!=null)
+			{
+				br.close();
+			}
+			if(fr!=null)
+			{
+				fr.close();
+			}
 		}
 		catch(IOException ex)
 		{
@@ -129,6 +140,46 @@ public interface ICSVParser
 		return check;
 	}
 	/**
+	 * Metodo que escribe el contenido leido en bytes en un fichero aparte
+	 * @param content contenido en bytes
+	 * @param fw FileWriter para escribir el contenido
+	 * @return el fichero creado para posteriormente leerlo
+	 * @throws HorarioError
+	 */
+	private File writeContent(String content,FileWriter fw)throws HorarioError
+	{
+		File file = null;
+		try
+		{
+			//Instanciamos el file writer y escribimos el contenido en otro fichero
+			fw = new FileWriter("src"+File.separator+"main"+File.separator+"resources"+File.separator+"datosCsv.dat");
+			fw.write(content);
+			fw.flush();
+			fw.close();
+			file = new File("src"+File.separator+"main"+File.separator+"resources"+File.separator+"datosCsv.dat");
+		}
+		catch(IOException ex)
+		{
+			log.error("Error al escribir los datos en el fichero");
+			throw new HorarioError(3,"Error, fichero corrupto, ilegible en bytes o vacio");
+		}
+		finally
+		{
+			try
+			{
+				if(fw!=null)
+				{
+					fw.close();
+				}
+			}
+			catch(IOException ex)
+			{
+				log.error("Error al cerrar el flujo de datos");
+			}
+		}
+		return file;
+	}
+	/**
 	 * Metodo que parsea el csv y guarda la informacion en una lista de objetos
 	 * @return una lista de modelos del csv
 	 */
@@ -137,7 +188,7 @@ public interface ICSVParser
 		List<ModelCSV> modelos = new LinkedList<ModelCSV>();
 		FileReader fr = null;
 		BufferedReader br = null;
-		File file = new File("src"+File.separator+"main"+File.separator+"resources"+File.separator+"fichero.csv");
+		File file = new File("src"+File.separator+"main"+File.separator+"resources"+File.separator+"datosCsv.dat");
 		try
 		{
 			fr = new FileReader(file);
@@ -169,16 +220,24 @@ public interface ICSVParser
 				//Si no juntamos todo para que en un string quede asi "rol1 rol2"
 				else
 				{
-					for(int i = 2;i<campos.length;i++)
+					for(int i = 3;i<campos.length;i++)
 					{
-						roles+=campos[i];
+						if(campos.length-1 == i)
+						{
+							roles+=campos[i];
+						}
+						else
+						{
+							roles+=campos[i]+=" ";
+						}
 					}
 					//Eliminamos las primeras y ultimas comillas y guardamos el valor
-					roles = roles.substring(0);
+					roles = roles.substring(1);
 					roles = roles.substring(0, roles.length()-1);
 					rolesArray = roles.split(" ");
 				}
-				modelos.add(new ModelCSV(nombre,apellidos,email,rolesArray));				
+				modelos.add(new ModelCSV(nombre,apellidos,email,rolesArray));
+				linea = br.readLine();
 			}
 		}
 		catch(IOException ex)
