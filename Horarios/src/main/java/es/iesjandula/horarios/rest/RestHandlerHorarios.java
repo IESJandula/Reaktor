@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import es.iesjandula.horarios.constants.Constantes;
 import es.iesjandula.horarios.exception.HorarioError;
+import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 import es.iesjandula.horarios.utils.ICSVParser;
 import es.iesjandula.horarios.utils.IChecker;
@@ -31,6 +33,8 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 	private static Logger log = LogManager.getLogger();
 	/**Modelos del csv para guardarlos en sesion */
 	private List <ModelCSV> modelos;
+	/**Lista de alumnos por ahora cargados en constantes */
+	private List<Alumno> alumnos;
 	/**
 	 * Constructor por defecto
 	 */
@@ -38,6 +42,7 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 	{
 		//public constructor
 		this.modelos = new LinkedList<ModelCSV>();
+		this.alumnos = new LinkedList<Alumno>();
 	}
 	/**
 	 * Endpoint que recibe un fichero csv y lo parsea internamente en sesion
@@ -93,5 +98,25 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 			return ResponseEntity.status(404).body("Error de servidor");
 		}
 	}
+	/**
+	 * Endpoint que devuelve una lista de alumnos ordenados
+	 * @return Lista de alumnos ordenados
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/sort-students")
+	public ResponseEntity<?> getListStudentsAlphabetically()
+	{
+		try
+		{
+			//Cargamos los alumnos con la lista de constantes
+			this.alumnos = Constantes.cargarAlumnos();
+			return ResponseEntity.ok().body(this.alumnos);
+		}
+		catch(Exception ex)
+		{
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex.getMessage());
+		}
+	}
+	
 		
 }
