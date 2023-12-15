@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Alumnos 
+public class Alumno 
 {
 	/**Nombre del estudiante */
 	private String nombre;
