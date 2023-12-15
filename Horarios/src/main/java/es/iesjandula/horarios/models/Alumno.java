@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Alumno 
+public class Alumno implements Comparable<Alumno>
 {
 	/**Nombre del estudiante */
 	private String nombre;
@@ -16,4 +16,11 @@ public class Alumno
 	private String apellido;
 	/**Curso en el que se encuentra el alumno */
 	private String curso;
+	
+	@Override
+	public int compareTo(Alumno otro) 
+	{
+		//Se compara por los apellidos del alumno
+		return this.apellido.compareTo(otro.apellido);
+	}
 }

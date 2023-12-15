@@ -1,6 +1,4 @@
 package es.iesjandula.horarios.constants;
-import java.util.LinkedList;
-import java.util.List;
 import es.iesjandula.horarios.models.Alumno;
 /**
  * @author Pablo Ruiz Canovas
@@ -8,17 +6,17 @@ import es.iesjandula.horarios.models.Alumno;
 public final class Constantes 
 {
 	/**CARGADO DE ALUMNOS*/
-	public static List<Alumno> cargarAlumnos()
+	public static Alumno [] cargarAlumnos()
 	{
-		List<Alumno> alumnos = new LinkedList<Alumno>();
-		alumnos.add(new Alumno("Pablo", "Ruiz Canovas","2DAM"));
-		alumnos.add(new Alumno("Javier", "Martinez Megias","2DAM"));
-		alumnos.add(new Alumno("Eduardo", "Moreno Algaba","2DAM"));
-		alumnos.add(new Alumno("Oliver", "Rufian Baudet","1BACH"));
-		alumnos.add(new Alumno("Alberto", "Soto Pascual","2BACH"));
-		alumnos.add(new Alumno("Lucia", "Diaz Gutierrez","4ESO"));
-		alumnos.add(new Alumno("Fernando", "Torres Arias","3ESO"));
-		alumnos.add(new Alumno("Maria", "Gomez Perez","1ESO"));
+		Alumno [] alumnos = new Alumno [8];
+		alumnos [0] = new Alumno("Pablo", "Ruiz Canovas","2DAM");
+		alumnos [1] = new Alumno("Javier", "Martinez Megias","2DAM");
+		alumnos [2] = new Alumno("Eduardo", "Moreno Algaba","2DAM");
+		alumnos [3] = new Alumno("Oliver", "Rufian Baudet","1BACH");
+		alumnos [4] = new Alumno("Alberto", "Soto Pascual","2BACH");
+		alumnos [5] = new Alumno("Lucia", "Diaz Gutierrez","4ESO");
+		alumnos [6] = new Alumno("Fernando", "Torres Arias","3ESO");
+		alumnos [7] = new Alumno("Maria", "Gomez Perez","1ESO");
 		return alumnos;
 	}
 }

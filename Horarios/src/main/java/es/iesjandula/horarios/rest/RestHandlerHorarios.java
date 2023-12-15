@@ -1,5 +1,6 @@
 package es.iesjandula.horarios.rest;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 	/**Modelos del csv para guardarlos en sesion */
 	private List <ModelCSV> modelos;
 	/**Lista de alumnos por ahora cargados en constantes */
-	private List<Alumno> alumnos;
+	private Alumno [] alumnos;
 	/**
 	 * Constructor por defecto
 	 */
@@ -42,7 +43,7 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 	{
 		//public constructor
 		this.modelos = new LinkedList<ModelCSV>();
-		this.alumnos = new LinkedList<Alumno>();
+		this.alumnos = new Alumno[0];
 	}
 	/**
 	 * Endpoint que recibe un fichero csv y lo parsea internamente en sesion
@@ -109,6 +110,8 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 		{
 			//Cargamos los alumnos con la lista de constantes
 			this.alumnos = Constantes.cargarAlumnos();
+			//Se ordena y se devuelven en fotmato json
+			Arrays.sort(this.alumnos);
 			return ResponseEntity.ok().body(this.alumnos);
 		}
 		catch(Exception ex)
