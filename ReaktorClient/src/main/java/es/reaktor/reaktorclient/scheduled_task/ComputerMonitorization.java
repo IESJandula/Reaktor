@@ -264,7 +264,7 @@ public class ComputerMonitorization
 	}
 
 	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
-	public void getAndSendScreenshot()
+	public void getAndSendScreenshot() throws ReaktorClientException
 	{
 		String serialNumber = "sn123556";
 		CloseableHttpClient httpClient = null;
@@ -291,21 +291,54 @@ public class ComputerMonitorization
 					ImageIO.write(image, "PNG", new File("./screen.png")); // your image will be saved at this path
 
 				}
-				catch (Exception e)
+				catch (Exception exception)
 				{
-					e.printStackTrace();
+					String error = "Error making the screenshot";
+					log.error(error, exception);
+					throw new ReaktorClientException(exception);
 				}
 			}
 		}
-		catch (ClientProtocolException e)
+		catch (ClientProtocolException exception)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String error = "Client protocol error";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
 		}
-		catch (IOException e)
+		catch (IOException exception)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String error = "Error In Out Exception";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
+		}
+		finally
+		{
+			if (httpClient != null)
+			{
+				try
+				{
+					httpClient.close();
+				}
+				catch (IOException exception)
+				{
+					String error = "Error In Out Exception";
+					log.error(error, exception);
+					throw new ReaktorClientException(exception);
+				}
+			}
+			if (response != null)
+			{
+				try
+				{
+					response.close();
+				}
+				catch (IOException exception)
+				{
+					String error = "Error In Out Exception";
+					log.error(error, exception);
+					throw new ReaktorClientException(exception);
+				}
+			}
 		}
 
 	}
