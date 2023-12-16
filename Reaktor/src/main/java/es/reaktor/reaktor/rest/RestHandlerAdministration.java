@@ -1,7 +1,8 @@
 package es.reaktor.reaktor.rest;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.reaktor.reaktor.checker.Checkers;
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.CommandLine;
 import es.reaktor.reaktor.models.Computer;
 import es.reaktor.reaktor.models.Peripheral;
 import es.reaktor.reaktor.models.Software;
+import es.reaktor.reaktor.models.Status;
+import es.reaktor.reaktor.utils.IChecker;
 
 /**
  * 
@@ -26,23 +28,31 @@ import es.reaktor.reaktor.models.Software;
  */
 @RequestMapping(value = "/computers")
 @RestController
-public class RestHandlerAdministration
+public class RestHandlerAdministration implements IChecker
 {
 	/** Class logger */
 	private static Logger log = LogManager.getLogger();
-	private Checkers check = new Checkers();
-
+	/**Mapa de status para identificar procesos a ejecutar */
+	private Map<String,Status> pcStatus;
 	/**
 	 * Default constructor
 	 */
 	public RestHandlerAdministration()
 	{
 		// Public constructor
+		this.pcStatus = new HashMap<String,Status>();
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************REAK 100A*******************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que manda comandos cmd para ejecutarlos en un respectivo ordenador 
+	 * @param serialNumber numero de serie del ordenador
+	 * @param classroom clase a la que pertenece el ordenador
+	 * @param trolley
+	 * @param plant
+	 * @param commandLine
+	 * @return OK si la configuracion es correcta, 404 si es incorrecta o 500 si hubo un error de servidor
+	 * @throws ComputerError
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/commandLine")
 	public ResponseEntity<?> postComputerCommandLine(
 			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
@@ -50,51 +60,60 @@ public class RestHandlerAdministration
 			@RequestHeader(value = "trolley", required = false) final String trolley,
 			@RequestHeader(value = "plant", required = false) final Integer plant,
 			@RequestHeader(value = "commandLineInstance", required = false) final CommandLine commandLine)
-			throws ComputerError
 	{
 		try
 		{
-			String[] commands = new String[0];
-			
-			check.checkCommands(serialNumber, classroom, trolley, plant, commandLine);
-			if (!serialNumber.isEmpty())
+			//Objeto status para mandarlo a ejecutar en cliente
+			Status status = null;
+			//Comprobamos que los atributos no esten vacios
+			this.checkParams(serialNumber, classroom, trolley, plant, commandLine);
+			if(!serialNumber.isEmpty())
 			{
-				commands = Arrays.copyOf(commands, commands.length + 1);
-				commands[commands.length - 1] = serialNumber;
+				status = new Status(String.valueOf(commandLine.getCommands()),false);
+				//Añadimos como clave el pc y como valor un objeto status con command line
+				this.pcStatus.put(serialNumber,status);
 			}
-			if (!classroom.isEmpty())
+			if(!classroom.isEmpty())
 			{
-				commands = Arrays.copyOf(commands, commands.length + 1);
-				commands[commands.length - 1] = classroom;
+				status = new Status(String.valueOf(commandLine.getCommands()),false);
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con command line
+				this.pcStatus.put(classroom,status);
 			}
-			if (!trolley.isEmpty())
+			if(!trolley.isEmpty())
 			{
-				commands = Arrays.copyOf(commands, commands.length + 1);
-				commands[commands.length - 1] = trolley;
+				status = new Status(String.valueOf(commandLine.getCommands()),false);
+				//Añadimos como clave el pc y como valor un objeto status con command line
+				this.pcStatus.put(trolley,status);
 			}
-			if (plant != null)
+			if(plant != null)
 			{
-				commands = Arrays.copyOf(commands, commands.length + 1);
-				commands[commands.length - 1] = String.valueOf(plant);
+				status = new Status(String.valueOf(commandLine.getCommands()),false);
+				//Añadimos como clave el pc y como valor un objeto status con command line
+				this.pcStatus.put(String.valueOf(plant),status);
 			}
-			commandLine.setCommands(commands);
-			// TODO: Mandarlo a la base de datos
-			return ResponseEntity.ok().body("OK");
-		} catch (ComputerError ex)
+			return ResponseEntity.ok().body("Comandos mandados a ejecutar");
+		} 
+		catch (ComputerError ex)
 		{
 			log.error("Administration error", ex);
 			return ResponseEntity.status(404).body(ex.getBodyMessageException());
-		} catch (Exception ex)
+		} 
+		catch (Exception ex)
 		{
 			log.error("Internal server error", ex);
 			return ResponseEntity.status(500).body("Server error");
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************REAK 101A*******************************************************************/
-	/************************************************************************************************************************************************/
-	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart", consumes = "application/json")
+	/**
+	 * Metodo que manda una peticion a un pc para reiniciarse
+	 * @param serialNumber
+	 * @param classroom
+	 * @param trolley
+	 * @param plant
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/admin/shut-down", consumes = "application/json")
 	public ResponseEntity<?> putComputerShutdown(
 			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
 			@RequestHeader(value = "classroom", required = false) final String classroom,
@@ -103,14 +122,42 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			check.checkParamsComputerShutdown(serialNumber, classroom, trolley, plant);
+			Status status = null;
+			//Se comprueba que los parametros no esten vacios
+			this.checkParams(serialNumber, classroom, trolley, plant);
+			if(!serialNumber.isEmpty())
+			{
+				status = new Status("apagado",false);
+				//Añadimos como clave el pc y como valor un objeto status con command line
+				this.pcStatus.put(serialNumber,status);
+			}
+			if(!classroom.isEmpty())
+			{
+				status = new Status("apagado",false);
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con command line
+				this.pcStatus.put(classroom,status);
+			}
+			if(!trolley.isEmpty())
+			{
+				status = new Status("apagado",false);
+				//Añadimos como clave el pc y como valor un objeto status con command line
+				this.pcStatus.put(trolley,status);
+			}
+			if(plant != null)
+			{
+				status = new Status("apagado",false);
+				//Añadimos como clave el pc y como valor un objeto status con command line
+				this.pcStatus.put(String.valueOf(plant),status);
+			}
 			return ResponseEntity.ok().body("OK");
-		} catch (ComputerError exception)
+		} 
+		catch (ComputerError exception)
 		{
 			String message = "Administration error";
 			log.error(message, exception);
 			return ResponseEntity.status(400).body(exception.getBodyMessageException());
-		} catch (Exception exception)
+		} 
+		catch (Exception exception)
 		{
 			String message = "Server Error";
 			log.error(message, exception);
@@ -130,7 +177,7 @@ public class RestHandlerAdministration
 	{
 		try
 		{
-			check.checkParamsPutComputerRestart(serialNumber, classroom, trolley, plant);
+			this.checkParamsPutComputerRestart(serialNumber, classroom, trolley, plant);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
