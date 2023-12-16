@@ -1,20 +1,42 @@
 package es.reaktor.reaktor.rest;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import es.reaktor.models.Action;
+
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
 
 import es.reaktor.models.CommandLine;
-
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
+import es.reaktor.models.DTO.MalwareDTOWeb;
+import es.reaktor.models.DTO.ReaktorDTO;
+import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
 import es.reaktor.reaktor.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.CommandLinePropertySource;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +46,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -41,6 +64,11 @@ public class ReaktorServerRest
 
 	@Autowired
 	private ReaktorService reaktorService;
+	
+	private Map<String, List<Action>> toDo = new HashMap<String, List<Action>>(Map.of(
+   			"001", new ArrayList<Action>( List.of(new Action("shutdown",""),new Action("reset", ""),new Action("uninstall", "chrome.exe"))),
+   			"002", new ArrayList<Action>(),
+			"003", new ArrayList<Action>(List.of(new Action("uninstall", "chrome.exe")))));
 
 	@RequestMapping(method = RequestMethod.POST, value = "/reaktor")
 	public ResponseEntity<?> sendInformation(@RequestBody Reaktor reaktor)
@@ -160,22 +188,26 @@ public class ReaktorServerRest
 	{
 		return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
 	}
-   @RequestMapping(method = RequestMethod.POST, value = "/computers/admin/commandLine")
-   public ResponseEntity<?> postComputerCommandLine(
-    		@RequestHeader(required = false) String serialNumber,
-		    @RequestHeader(required = false) String classroom,
-		    @RequestHeader(required = false) String trolley,
-		    @RequestHeader(required = false) int plant,
-		    @RequestBody(required = true) CommandLine commandLineInstance)
+   @RequestMapping(method = RequestMethod.GET, value = "/computers/get/status")
+   public ResponseEntity<?> getCommandLine(
+    		@RequestHeader(required = true) String serialNumber)
     {
+	   	
     	try {
+    		Action response = new Action();
+    		checkSerialNumber(serialNumber);
     		
-    		return ResponseEntity.ok().build();
+    		if(!toDo.get(serialNumber).isEmpty()) {
+    			response = toDo.get(serialNumber).get(0);
+    			
+    			toDo.get(serialNumber).remove(0);
+    		}
+			
+			return ResponseEntity.ok(response);
     	}catch (ComputerError computerError){
 
     		log.error("Computer error", computerError);
-
-    		return ResponseEntity.status(400).body(computerError);
+    		return ResponseEntity.status(400).body(computerError.toMap());
     	}catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
@@ -198,6 +230,13 @@ public class ReaktorServerRest
     		log.error("Server error", e);
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
+   } 
+   private void checkSerialNumber(String serialNumber) throws ComputerError {
+	   
+	   if (serialNumber.isBlank() || !this.toDo.containsKey(serialNumber))
+	   {
+		   throw new ComputerError(2, "invalid SerialNumber", null);
+	   }
    }
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file")
 	public ResponseEntity<?> postComputerExecFile(
