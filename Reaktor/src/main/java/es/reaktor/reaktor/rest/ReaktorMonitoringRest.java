@@ -40,7 +40,7 @@ public class ReaktorMonitoringRest
 			new Computer("sn1234", "and1234", "cn12344", "windows", "paco", new Location("0.5", 0, "trolley1"),
 					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
 					new MonitorizationLog()),
-			new Computer("sn123", "and12355", "cn123455", "windows", "paco", new Location("0.7", 0, "trolley2"),
+			new Computer("sn123434231423423", "and12355", "cn123455", "windows", "paco", new Location("0.7", 0, "trolley2"),
 					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
 					new MonitorizationLog()),
 			new Computer("sn123556", "and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"),
@@ -141,7 +141,10 @@ public class ReaktorMonitoringRest
 					ComputerError computerError = new ComputerError(404, error, null);
 					return ResponseEntity.status(404).body(computerError.toMap());
 				}
-				return ResponseEntity.ok(computer);
+				else
+				{
+					return ResponseEntity.ok(computer);
+				}
 			}
 			else
 			{
@@ -291,7 +294,7 @@ public class ReaktorMonitoringRest
 	private Computer chekIfSerialNumberExist(String serialNumber)
 	{
 		Computer computer = null;
-		for (Computer x : this.screenshotOrderComputerList)
+		for (Computer x : this.computerList)
 		{
 			if (x.getSerialNumber().equals(serialNumber))
 			{

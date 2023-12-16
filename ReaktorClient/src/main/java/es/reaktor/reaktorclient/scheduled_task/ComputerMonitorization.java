@@ -262,7 +262,11 @@ public class ComputerMonitorization
 		}
 
 	}
-
+	
+	/**
+	 * this method make a screenshot and send it 
+	 * @throws ReaktorClientException
+	 */
 	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
 	public void getAndSendScreenshot() throws ReaktorClientException
 	{
@@ -342,18 +346,94 @@ public class ComputerMonitorization
 		}
 
 	}
-
+	
 	/**
-	 * Capture screen with the input string as file name
-	 * 
-	 * @param fileName a given file name
-	 * @throws Exception if error occurs
-	 **/
-	public static void captureScreen(String fileName) throws Exception
+	 * this method actualice your computer info
+	 * @throws ReaktorClientException
+	 */
+	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
+	public void getAndChangeComputerInfo() throws ReaktorClientException
 	{
+		// fake computer info
+		Computer thisComputerInfo = new Computer("sn123", "and123", "cn123", "windows", "paco", new Location("0.5", 0, "trolley1"),
+				new ArrayList<>(), new ArrayList<>(), new CommandLine(),
+				new MonitorizationLog());
+		
+		String serialNumber = "sn123";
+		CloseableHttpClient httpClient = null;
+		CloseableHttpResponse response = null;
+
+		httpClient = HttpClients.createDefault();
+
+		HttpGet request = new HttpGet("http://localhost:8084/computers/get/status");
+		request.setHeader("serialNumber", serialNumber);
+
+		try
+		{
+			response = httpClient.execute(request);
+			String responseString = EntityUtils.toString(response.getEntity());
+			log.info("Objeto sel servidor:"+responseString);
+			
+			ObjectMapper objectMapper = new ObjectMapper();
+			Computer serverComputer = objectMapper.readValue(responseString, Computer.class);
+		
+			if(thisComputerInfo.equals(serverComputer))
+			{
+				log.info("No computer status updates");
+			}
+			else
+			{
+				thisComputerInfo = serverComputer;
+				log.info("The computer status was update");
+			}
+			
+			
+		}
+		catch (ClientProtocolException exception)
+		{
+			String error = "Client protocol error";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
+		}
+		catch (IOException exception)
+		{
+			String error = "Error In Out Exception";
+			log.error(error, exception);
+			throw new ReaktorClientException(exception);
+		}
+		finally
+		{
+			if (httpClient != null)
+			{
+				try
+				{
+					httpClient.close();
+				}
+				catch (IOException exception)
+				{
+					String error = "Error In Out Exception";
+					log.error(error, exception);
+					throw new ReaktorClientException(exception);
+				}
+			}
+			if (response != null)
+			{
+				try
+				{
+					response.close();
+				}
+				catch (IOException exception)
+				{
+					String error = "Error In Out Exception";
+					log.error(error, exception);
+					throw new ReaktorClientException(exception);
+				}
+			}
+		}
 
 	}
 
+	
 	/**
 	 * Method actionsOpenWeb
 	 * 
