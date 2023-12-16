@@ -18,6 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.reaktor.models.Action;
+
+import es.reaktor.models.DTO.MalwareDTOWeb;
+import es.reaktor.models.DTO.ReaktorDTO;
+import es.reaktor.models.DTO.SimpleComputerDTO;
+
+import es.reaktor.models.CommandLine;
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
@@ -30,6 +36,17 @@ import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
 import es.reaktor.reaktor.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.CommandLinePropertySource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -188,15 +205,32 @@ public class ReaktorServerRest
 			
 			return ResponseEntity.ok(response);
     	}catch (ComputerError computerError){
+
     		log.error("Computer error", computerError);
     		return ResponseEntity.status(400).body(computerError.toMap());
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart")
+	public ResponseEntity<?> postComputerRestart(
+    		@RequestHeader(required = false) String serialNumber,
+		    @RequestHeader(required = false) String classroom,
+		    @RequestHeader(required = false) String trolley,
+		    @RequestHeader(required = false) int plant
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+
+    		return ResponseEntity.status(400).body(computerError);
     	}catch (Exception e) {
     		log.error("Server error", e);
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
-   }
-   
-   
+   } 
    private void checkSerialNumber(String serialNumber) throws ComputerError {
 	   
 	   if (serialNumber.isBlank() || !this.toDo.containsKey(serialNumber))
@@ -204,4 +238,109 @@ public class ReaktorServerRest
 		   throw new ComputerError(2, "invalid SerialNumber", null);
 	   }
    }
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file")
+	public ResponseEntity<?> postComputerExecFile(
+    		@RequestHeader(required = false) String serialNumber,
+		    @RequestHeader(required = false) String classroom,
+		    @RequestHeader(required = false) String trolley,
+		    @RequestHeader(required = false) int plant,
+		    @RequestBody(required= true) File file
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/status")
+	public ResponseEntity<?> getCommandLine(
+    		@RequestHeader(required = false) String serialNumber
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/file" ,produces="multipart/form-data")
+	public ResponseEntity<?> getAnyFile(
+    		@RequestHeader(required = false) String serialNumber
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/screenshot")
+	public ResponseEntity<?> getScreenshotOrder(
+    		@RequestHeader(required = false) String serialNumber
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/screenshot")
+	public ResponseEntity<?> sendScreenshot(
+    		@RequestHeader(required = false) String screenshot
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/fullInfo")
+	public ResponseEntity<?> sendFullComputer(
+    		@RequestHeader(required = false) String serialNumber,
+    		@RequestHeader(required = false) String andaluciaId,
+    		@RequestHeader(required = false) String computerNumber
+		   )
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/status", consumes="application/json")
+	public ResponseEntity<?> sendFullComputer()
+    {
+    	try {
+    		
+    		return ResponseEntity.ok().build();
+    	}catch (ComputerError computerError){
+    		return ResponseEntity.status(400).body(computerError);
+    	}catch (Exception e) {
+    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+    }
 }
