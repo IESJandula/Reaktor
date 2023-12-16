@@ -114,6 +114,31 @@ public class PendingActions
 			}
 		}
 	}
+	
+	private void blockDevicesIO()
+	{
+
+		Scanner scanner = null;
+		try
+		{
+			log.info("inicio deshabilitación de USBs");
+			Process proceso = new ProcessBuilder("cmd.exe", "/c", "reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\UsbStor /v \"Start\" /t REG_DWORD /d \"4\" /f")
+					.start();
+			
+			int resultado = proceso.waitFor();
+			log.info("fin deshabilitación de USBs");
+			
+		} catch (IOException | InterruptedException e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (scanner != null)
+			{
+				scanner.close();
+			}
+		}
+	}
 
 	private void close(CloseableHttpClient httpClient, CloseableHttpResponse response)
 	{
