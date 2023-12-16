@@ -19,7 +19,7 @@ paths:
 #--------------------------ENDPOINT---------------------------------------------------------------
   /computers/get/status:
     #-----Get--------    
-    #--GET THE COMPUTER STATUS  --
+    #-- GET THE COMPUTER STATUS  --
     get:
       operationId: getCommandLine
       description: Get the full computer status , with that the computer can compare the server status with the computer status and make the necesary changes/orders , the computer send the serialNumber to indentify

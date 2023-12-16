@@ -114,6 +114,12 @@ public class ReaktorMonitoringRest
 			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
 					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
 					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	
+	/** Attribute screenshotOrderComputerList */
+	private List<Computer> screenshotOrderComputerList = new ArrayList<>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/**
 	 * Method getCommandLine get the full computer status
@@ -202,14 +208,14 @@ public class ReaktorMonitoringRest
 			if ((serialNumber != null) && this.isUsable(serialNumber))
 			{
 				// Check if the serial number Exist and return a computer
-				Computer computer = this.chekIfSerialNumberExist(serialNumber);
-				if (computer == null)
+				boolean order = this.chekOrder(serialNumber);
+				if (!order)
 				{
-					String error = "Compuer not found";
+					String error = "Computer without screenshot order";
 					ComputerError computerError = new ComputerError(404, error, null);
 					return ResponseEntity.status(404).body(computerError.toMap());
 				}
-				return ResponseEntity.ok(computer);
+				return ResponseEntity.ok("OK");
 			}
 			else
 			{
@@ -281,7 +287,7 @@ public class ReaktorMonitoringRest
 	private Computer chekIfSerialNumberExist(String serialNumber)
 	{
 		Computer computer = null;
-		for (Computer x : this.computerList)
+		for (Computer x : this.screenshotOrderComputerList)
 		{
 			if (x.getSerialNumber().equals(serialNumber))
 			{
@@ -289,6 +295,24 @@ public class ReaktorMonitoringRest
 			}
 		}
 		return computer;
+	}
+	
+	/**
+	 * this method check the order
+	 * @param serialNumber
+	 * @return boolean
+	 */
+	private boolean chekOrder(String serialNumber)
+	{
+		
+		for (Computer x : this.screenshotOrderComputerList)
+		{
+			if (x.getSerialNumber().equals(serialNumber))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
