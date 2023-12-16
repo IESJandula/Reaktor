@@ -215,7 +215,11 @@ public class ReaktorMonitoringRest
 					ComputerError computerError = new ComputerError(404, error, null);
 					return ResponseEntity.status(404).body(computerError.toMap());
 				}
-				return ResponseEntity.ok("OK");
+				else 
+				{
+					screenshotOrderComputerList.remove(this.chekIfSerialNumberExist(serialNumber));
+					return ResponseEntity.ok("OK");
+				}
 			}
 			else
 			{

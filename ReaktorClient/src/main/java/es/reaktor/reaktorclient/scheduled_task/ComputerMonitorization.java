@@ -1,14 +1,18 @@
 package es.reaktor.reaktorclient.scheduled_task;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
+
+import javax.imageio.ImageIO;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -87,34 +91,40 @@ public class ComputerMonitorization
 
 			String responseString = EntityUtils.toString(response.getEntity());
 			log.info(responseString);
-		} catch (JsonProcessingException exception)
+		}
+		catch (JsonProcessingException exception)
 		{
 			String error = "Error Json Processing Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} catch (UnsupportedEncodingException exception)
+		}
+		catch (UnsupportedEncodingException exception)
 		{
 			String error = "Error Unsupported Encoding Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} catch (ClientProtocolException exception)
+		}
+		catch (ClientProtocolException exception)
 		{
 			String error = "Error Client Protocol Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} catch (IOException exception)
+		}
+		catch (IOException exception)
 		{
 			String error = "Error In Out Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} finally
+		}
+		finally
 		{
 			if (httpClient != null)
 			{
 				try
 				{
 					httpClient.close();
-				} catch (IOException exception)
+				}
+				catch (IOException exception)
 				{
 					String error = "Error In Out Exception";
 					log.error(error, exception);
@@ -126,7 +136,8 @@ public class ComputerMonitorization
 				try
 				{
 					response.close();
-				} catch (IOException exception)
+				}
+				catch (IOException exception)
 				{
 					String error = "Error In Out Exception";
 					log.error(error, exception);
@@ -195,34 +206,40 @@ public class ComputerMonitorization
 			// --- TO-DO NEW ENDPOINT TO SEND STATUS TO SERVER ---
 			log.info(statusList.toString());
 
-		} catch (JsonProcessingException exception)
+		}
+		catch (JsonProcessingException exception)
 		{
 			String error = "Error Json Processing Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} catch (UnsupportedEncodingException exception)
+		}
+		catch (UnsupportedEncodingException exception)
 		{
 			String error = "Error Unsupported Encoding Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} catch (ClientProtocolException exception)
+		}
+		catch (ClientProtocolException exception)
 		{
 			String error = "Error Client Protocol Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} catch (IOException exception)
+		}
+		catch (IOException exception)
 		{
 			String error = "Error In Out Exception";
 			log.error(error, exception);
 			throw new ReaktorClientException(exception);
-		} finally
+		}
+		finally
 		{
 			if (httpClient != null)
 			{
 				try
 				{
 					httpClient.close();
-				} catch (IOException exception)
+				}
+				catch (IOException exception)
 				{
 					String error = "Error In Out Exception";
 					log.error(error, exception);
@@ -234,7 +251,8 @@ public class ComputerMonitorization
 				try
 				{
 					response.close();
-				} catch (IOException exception)
+				}
+				catch (IOException exception)
 				{
 					String error = "Error In Out Exception";
 					log.error(error, exception);
@@ -267,31 +285,24 @@ public class ComputerMonitorization
 			{
 				try
 				{
-					try
-					{
-						System.setProperty("java.awt.headless", "false");
-						Robot robot = new Robot();
-						Rectangle rect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+					BufferedImage image = new Robot()
+							.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
 
-						BufferedImage screesnShot = robot.createScreenCapture(rect);
+					ImageIO.write(image, "PNG", new File("./screen.png")); // your image will be saved at this path
 
-						ImageIO.write(screesnShot, "JPG", new File(".\screenshot.jpg"));
-					} 
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-				} catch (Exception e)
+				}
+				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-		} catch (ClientProtocolException e)
+		}
+		catch (ClientProtocolException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -332,7 +343,8 @@ public class ComputerMonitorization
 				}
 				Status status = new Status("Execute Web Commands " + serialNumber, true, null);
 				statusList.add(status);
-			} catch (Exception exception)
+			}
+			catch (Exception exception)
 			{
 				Status status = new Status("Execute Commands " + serialNumber, false,
 						new ComputerError(333, "error on execute web command", null));
@@ -365,7 +377,8 @@ public class ComputerMonitorization
 
 				Status status = new Status("Dispotisive blocked " + serialNumber, true, null);
 				statusList.add(status);
-			} catch (Exception exception)
+			}
+			catch (Exception exception)
 			{
 				Status status = new Status("Dispotisive blocked error " + serialNumber, false,
 						new ComputerError(121, "error on block", null));
@@ -396,7 +409,8 @@ public class ComputerMonitorization
 				}
 				Status status = new Status("Execute Commands " + serialNumber, true, null);
 				statusList.add(status);
-			} catch (Exception exception)
+			}
+			catch (Exception exception)
 			{
 				Status status = new Status("Execute Commands " + serialNumber, false,
 						new ComputerError(111, "error on execute command", null));
@@ -423,7 +437,8 @@ public class ComputerMonitorization
 
 				Status status = new Status("restart computer " + serialNumber, true, null);
 				statusList.add(status);
-			} catch (Exception exception)
+			}
+			catch (Exception exception)
 			{
 				Status status = new Status("Restart computer " + serialNumber, false,
 						new ComputerError(002, "error on restart computer ", null));
@@ -451,7 +466,8 @@ public class ComputerMonitorization
 				Status status = new Status("Shutdown computer " + serialNumber, true, null);
 				statusList.add(status);
 
-			} catch (Exception exception)
+			}
+			catch (Exception exception)
 			{
 				Status status = new Status("Shutdown computer " + serialNumber, false,
 						new ComputerError(001, "error on Shutdown computer ", null));
