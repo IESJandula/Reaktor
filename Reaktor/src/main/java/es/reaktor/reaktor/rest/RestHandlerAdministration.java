@@ -106,14 +106,14 @@ public class RestHandlerAdministration implements IChecker
 	}
 
 	/**
-	 * Metodo que manda una peticion a un pc para reiniciarse
+	 * Metodo que manda una peticion a un pc para apagarse
 	 * @param serialNumber
 	 * @param classroom
 	 * @param trolley
 	 * @param plant
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/admin/shut-down", consumes = "application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/admin/shutdown", consumes = "application/json")
 	public ResponseEntity<?> putComputerShutdown(
 			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
 			@RequestHeader(value = "classroom", required = false) final String classroom,
@@ -128,25 +128,25 @@ public class RestHandlerAdministration implements IChecker
 			if(!serialNumber.isEmpty())
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave el pc y como valor un objeto status con command line
+				//Añadimos como clave el pc y como valor un objeto status con el estado "apagado"
 				this.pcStatus.put(serialNumber,status);
 			}
 			if(!classroom.isEmpty())
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con command line
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "apagado"
 				this.pcStatus.put(classroom,status);
 			}
 			if(!trolley.isEmpty())
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave el pc y como valor un objeto status con command line
+				//Añadimos como clave el pc y como valor un objeto status con el estado "apagado"
 				this.pcStatus.put(trolley,status);
 			}
 			if(plant != null)
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave el pc y como valor un objeto status con command line
+				//Añadimos como clave el pc y como valor un objeto status con el estado "apagado"
 				this.pcStatus.put(String.valueOf(plant),status);
 			}
 			return ResponseEntity.ok().body("OK");
@@ -168,6 +168,14 @@ public class RestHandlerAdministration implements IChecker
 	/************************************************************************************************************************************************/
 	/********************************************************************REAK 102A*******************************************************************/
 	/************************************************************************************************************************************************/
+	/**
+	 * Metodo que manda una petición a pc para reiniciarse
+	 * @param serialNumber
+	 * @param classroom
+	 * @param trolley
+	 * @param plant
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart", consumes = "application/json")
 	public ResponseEntity<?> putComputerRestart(
 			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
@@ -177,7 +185,32 @@ public class RestHandlerAdministration implements IChecker
 	{
 		try
 		{
+			Status status = null;
 			this.checkParamsPutComputerRestart(serialNumber, classroom, trolley, plant);
+			if(!serialNumber.isEmpty())
+			{
+				status = new Status("reiniciado",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "reiniciado"
+				this.pcStatus.put(serialNumber,status);
+			}
+			if(!classroom.isEmpty())
+			{
+				status = new Status("reiniciado",false);
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "reiniciado"
+				this.pcStatus.put(classroom,status);
+			}
+			if(!trolley.isEmpty())
+			{
+				status = new Status("reiniciado",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "reiniciado"
+				this.pcStatus.put(trolley,status);
+			}
+			if(plant != null)
+			{
+				status = new Status("reiniciado",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "reiniciado"
+				this.pcStatus.put(String.valueOf(plant),status);
+			}
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -195,14 +228,33 @@ public class RestHandlerAdministration implements IChecker
 	/************************************************************************************************************************************************/
 	/********************************************************************REAK 103A*******************************************************************/
 	/************************************************************************************************************************************************/
-	@RequestMapping(method = RequestMethod.POST, value = "/by_body/", consumes = { "application/json" })
-	public ResponseEntity<?> addByBody(@RequestHeader(value = "classroom", required = false) final String classroom,
+	@RequestMapping(method = RequestMethod.POST, value = "/admin/peripheral", consumes = { "application/json" })
+	public ResponseEntity<?> postPeripheral(@RequestHeader(value = "classroom", required = false) final String classroom,
 			@RequestHeader(value = "trolley", required = false) final String trolley,
 			@RequestBody(required = true) Peripheral[] peripherals)
 	{
 		try
 		{
-			check.checkParamsAddByBody(classroom, trolley, peripherals);
+			Status status = null;
+			this.checkParamsAddByBody(classroom, trolley, peripherals);
+			if(!classroom.isEmpty())
+			{
+				status = new Status("perifericos",false);
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "perifericos"
+				this.pcStatus.put(classroom,status);
+			}
+			if(!trolley.isEmpty())
+			{
+				status = new Status("perifericos",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "perifericos"
+				this.pcStatus.put(trolley,status);
+			}
+			if(peripherals != null)
+			{
+				status = new Status("perifericos",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "perifericos"
+				this.pcStatus.put(String.valueOf(peripherals),status);
+			}
 			return ResponseEntity.ok().body("All OK");
 		} catch (ComputerError ce)
 		{
@@ -216,13 +268,26 @@ public class RestHandlerAdministration implements IChecker
 	/************************************************************************************************************************************************/
 	/***************************************************************REAK 104A************************************************************************/
 	/************************************************************************************************************************************************/
-	@RequestMapping(method = RequestMethod.POST, value = "/admin/screenshotpost")
-	public ResponseEntity<?> sendScreenshotPost(@RequestHeader(value = "classroom") final String classroom,
+	@RequestMapping(method = RequestMethod.POST, value = "/admin/screenshot")
+	public ResponseEntity<?> sendScreenshotOrder(@RequestHeader(value = "classroom") final String classroom,
 			@RequestHeader(value = "trolley") final String trolley)
 	{
 		try
 		{
-			check.checkParamsSendScreenshotOrder(classroom, trolley);
+			Status status = null;
+			this.checkParamsSendScreenshotOrder(classroom, trolley);
+			if(!classroom.isEmpty())
+			{
+				status = new Status("capturas",false);
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "capturas"
+				this.pcStatus.put(classroom,status);
+			}
+			if(!trolley.isEmpty())
+			{
+				status = new Status("capturas",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "capturas"
+				this.pcStatus.put(trolley,status);
+			}
 			return ResponseEntity.ok().body("Screenshot send successfully");
 		} catch (ComputerError ex)
 		{
@@ -246,7 +311,20 @@ public class RestHandlerAdministration implements IChecker
 	{
 		try
 		{
-			check.checkParamsGetScreenshots(classroom, trolley);
+			Status status = null;
+			this.checkParamsGetScreenshots(classroom, trolley);
+			if(!classroom.isEmpty())
+			{
+				status = new Status("capturas",false);
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "capturas"
+				this.pcStatus.put(classroom,status);
+			}
+			if(!trolley.isEmpty())
+			{
+				status = new Status("capturas",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "capturas"
+				this.pcStatus.put(trolley,status);
+			}
 			File zipFile = new File("screenshots.zip");
 			//TODO: Cuando se implante la bbdd llamar al ordenador ye incluirlo en softaware
 			return ResponseEntity.ok().body(zipFile);
@@ -276,9 +354,38 @@ public class RestHandlerAdministration implements IChecker
 	{
 		try
 		{
-			check.checkParamsPostComputerExeFile(serialNumber, classroom, trolley, plant, execFile);
-			// TODO: Cuando se implante la bbdd llamar al ordenador ye incluirlo en
-			// softaware
+			Status status = null;
+			this.checkParamsPostComputerExeFile(serialNumber, classroom, trolley, plant, execFile);
+			if(!serialNumber.isEmpty())
+			{
+				status = new Status("ejecutable",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "ejecutable"
+				this.pcStatus.put(serialNumber,status);
+			}
+			if(!classroom.isEmpty())
+			{
+				status = new Status("ejecutable",false);
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "ejecutable"
+				this.pcStatus.put(classroom,status);
+			}
+			if(!trolley.isEmpty())
+			{
+				status = new Status("ejecutable",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "ejecutable"
+				this.pcStatus.put(trolley,status);
+			}
+			if(plant != null)
+			{
+				status = new Status("ejecutable",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "ejecutable"
+				this.pcStatus.put(String.valueOf(plant),status);
+			}
+			if(execFile != null)
+			{
+				status = new Status("ejecutable",false);
+				//Añadimos como clave el pc y como valor un objeto status con el estado "ejecutable"
+				this.pcStatus.put(String.valueOf(execFile),status);
+			}
 			return ResponseEntity.ok().body("Computer update success");
 		} catch (ComputerError ex)
 		{
@@ -302,7 +409,7 @@ public class RestHandlerAdministration implements IChecker
 	{
 		try
 		{
-			check.checkParamsSendSoftware(classroom, trolley, professor, softwareInstance);
+			this.checkParamsSendSoftware(classroom, trolley, professor, softwareInstance);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -329,7 +436,7 @@ public class RestHandlerAdministration implements IChecker
 	{
 		try
 		{
-			check.checkParamsUninstallSoftware(classroom, trolley, professor, softwareInstance);
+			this.checkParamsUninstallSoftware(classroom, trolley, professor, softwareInstance);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -356,7 +463,7 @@ public class RestHandlerAdministration implements IChecker
 	{
 		try
 		{
-			check.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer);
+			this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer);
 			// TODO: Obtener datos del ordenador desde la bbdd editarlo y subirlo
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError ex)
