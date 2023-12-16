@@ -22,30 +22,17 @@ import es.reaktor.models.Action;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
-
-import es.reaktor.models.CommandLine;
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.Malware;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
-import es.reaktor.models.DTO.MalwareDTOWeb;
-import es.reaktor.models.DTO.ReaktorDTO;
-import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
 import es.reaktor.reaktor.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.CommandLinePropertySource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.File;
-import java.util.Date;
-import java.util.List;
 
 
 @CrossOrigin(origins = "*")
@@ -223,10 +210,10 @@ public class ReaktorServerRest
     	try {
     		
     		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
+    	}/*catch (ComputerError computerError){
 
     		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
+    	}*/catch (Exception e) {
     		log.error("Server error", e);
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
@@ -250,24 +237,9 @@ public class ReaktorServerRest
     	try {
     		
     		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
+    	}/*catch (ComputerError computerError){
     		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
-		}
-    }
-	
-	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/status")
-	public ResponseEntity<?> getCommandLine(
-    		@RequestHeader(required = false) String serialNumber
-		   )
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
+    	}*/catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
     }
@@ -280,9 +252,9 @@ public class ReaktorServerRest
     	try {
     		
     		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
+    	}/*catch (ComputerError computerError){
     		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
+    	}*/catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
     }
@@ -294,9 +266,9 @@ public class ReaktorServerRest
     	try {
     		
     		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
+    	}/*catch (ComputerError computerError){
     		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
+    	}*/catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
     }
@@ -308,9 +280,9 @@ public class ReaktorServerRest
     	try {
     		
     		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
+    	}/*catch (ComputerError computerError){
     		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
+    	}*/catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
     }
@@ -324,9 +296,9 @@ public class ReaktorServerRest
     	try {
     		
     		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
+    	}/*catch (ComputerError computerError){
     		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
+    	}*/catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
     }
@@ -337,9 +309,9 @@ public class ReaktorServerRest
     	try {
     		
     		return ResponseEntity.ok().build();
-    	}catch (ComputerError computerError){
+    	}/*catch (ComputerError computerError){
     		return ResponseEntity.status(400).body(computerError);
-    	}catch (Exception e) {
+    	}*/catch (Exception e) {
     		return ResponseEntity.status(500).body(e.getMessage());
 		}
     }
