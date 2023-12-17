@@ -39,21 +39,68 @@ public interface IChecker
 		}
 	}
 	/**
-	 * Metodo que comprueba que los parametros generales no esten vacios
+	 * Metodo sobrecargado que comprueba que los parametros esten correctos y que encuentra la informacion solicitada
 	 * @param serialNumber
 	 * @param classroom
 	 * @param trolley
 	 * @param plant
 	 * @throws ComputerError
+	 * @see Metodo principal {@link #checkParams(String, String, String, Integer, CommandLine)}
 	 */
 	public default void checkParams(String serialNumber, String classroom, String trolley, Integer plant)throws ComputerError
 	{
+		//Se comprueba que los atributos no esten vacios
 		if (serialNumber.isEmpty() && classroom.isEmpty() && trolley.isEmpty() && plant == null)
 		{
 			throw new ComputerError(2, "Los parametros no pueden estar vacios");
 		}
 	}
-	
+	/**
+	 * Metodo sobrecargado que comprueba que los parametros esten correctos y que encuentra la información solicitada
+	 * @param classroom
+	 * @param trolley
+	 * @param peripherals
+	 * @throws ComputerError
+	 * @see Metodo principal {@link #checkParams(String, String, String, Integer, CommandLine)}
+	 */
+	public default void checkParams(String classroom,String trolley, Peripheral [] peripherals) throws ComputerError
+	{
+		//Se comprueba que los atributos no esten vacios
+		if(classroom.isEmpty() && trolley.isEmpty())
+		{
+			throw new ComputerError(2, "Los parametros no pueden estar vacios");
+		}
+		//Se comprueba que los perifericos no esten vacios
+		else if(peripherals.length == 0)
+		{
+			throw new ComputerError(3, "La lista de perifericos no puede estar vacia");
+		}
+		//Iteramos los perifericos para comprobar que tienen datos
+		int cont = 0;
+		while(cont<peripherals.length)
+		{
+			if(peripherals[cont].getComponent().isEmpty() || peripherals[cont].getCuantity()<1 )
+			{
+				throw new ComputerError(4,"La lista de perifericos tiene datos vacios o incongruentes");
+			}
+			cont++;
+		}
+	}
+	/**
+	 * Metodo sobrecargado que comprueba que los parametros esten correctos y que encuentra la informacion solicitada
+	 * @param classroom
+	 * @param trolley
+	 * @throws ComputerError
+	 * @see Metodo principal {@link #checkParams(String, String, String, Integer, CommandLine)}
+	 */
+	public default void checkParams(String classroom,String trolley) throws ComputerError
+	{
+		//Se comprueba que los parametros no esten vacios
+		if(classroom.isEmpty() && trolley.isEmpty())
+		{
+			throw new ComputerError(2,"Los parametros no pueden estar vacios");
+		}
+	}
 	
 	public default void checkParamsPutComputerRestart(String serialNumber, String classroom, String trolley, Integer plant)throws ComputerError
 	{
