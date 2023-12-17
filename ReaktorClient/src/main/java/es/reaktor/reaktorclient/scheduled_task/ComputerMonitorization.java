@@ -5,14 +5,18 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 
 import javax.imageio.ImageIO;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -24,6 +28,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -118,32 +125,7 @@ public class ComputerMonitorization
 		}
 		finally
 		{
-			if (httpClient != null)
-			{
-				try
-				{
-					httpClient.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
-			if (response != null)
-			{
-				try
-				{
-					response.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
+			closeHttpClientResponse(httpClient, response);
 		}
 	}
 
@@ -189,19 +171,31 @@ public class ComputerMonitorization
 			// --- OPEN WEBS ---
 			this.actionsOpenWeb(statusList, serialNumber, actionsToDo);
 
+			//---- UPDATE ANDALUCIA - S/N - COMPUTER NUMBER SNAKE YAML START -----
+			// -- GETING THE MONITORIZATION YML , WITH THE INFO ---
+	        InputStream inputStream = new FileInputStream(new File("./src/main/resources/monitorization.yml"));
+			Yaml yaml = new Yaml();
+			
+			// --- LOADING THE INFO INTO STRING OBJECT MAP ---
+	        Map<String, Object> yamlMap = yaml.load(inputStream);
+	        
+	        // --- GETTING THE INFO INTO STRING STRING MAP (CAST)---
+            Map<String, String> computerMonitorizationYml = (Map<String, String>) yamlMap.get("ComputerMonitorization");
+
+            // --- LOG THE INFO FROM THE MAP ---
+            log.info("andaluciaId: " + computerMonitorizationYml.get("andaluciaId"));
+            log.info("computerNumber: " + computerMonitorizationYml.get("computerNumber"));
+            log.info("serialNumber: " + computerMonitorizationYml.get("serialNumber"));
+            //---- UPDATE ANDALUCIA - S/N - COMPUTER NUMBER SNAKE YAML END -----
+            
+            
 			// --- UPDATE ACTIONS ---
-			if (actionsToDo.getUpdateAndaluciaId() != null && !actionsToDo.getUpdateAndaluciaId().isEmpty())
-			{
-				log.info("UPDATE ANDALUCIA ID TO - " + actionsToDo.getUpdateAndaluciaId());
-			}
-			if (actionsToDo.getUpdateComputerNumber() != null && !actionsToDo.getUpdateComputerNumber().isEmpty())
-			{
-				log.info("UPDATE COMPUTER NUMBER TO - " + actionsToDo.getUpdateComputerNumber());
-			}
-			if (actionsToDo.getUpdateSerialNumber() != null && !actionsToDo.getUpdateSerialNumber().isEmpty())
-			{
-				log.info("UPDATE SERIAL NUMBER TO - " + actionsToDo.getUpdateSerialNumber());
-			}
+			this.updateAndaluciaId(statusList, serialNumber, actionsToDo, computerMonitorizationYml);
+			this.updateComputerNumber(statusList, serialNumber, actionsToDo, computerMonitorizationYml);
+			this.updateSerialNumber(statusList, serialNumber, actionsToDo, computerMonitorizationYml);
+			
+			// -- SAVING ALL MAP INFO INTO MONITORIZATION.YML ---
+			this.savingMonitorizationYmlCfg(computerMonitorizationYml);
 
 			// --- TO-DO NEW ENDPOINT TO SEND STATUS TO SERVER ---
 			log.info(statusList.toString());
@@ -233,34 +227,161 @@ public class ComputerMonitorization
 		}
 		finally
 		{
-			if (httpClient != null)
-			{
-				try
-				{
-					httpClient.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
-			if (response != null)
-			{
-				try
-				{
-					response.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
+			this.closeHttpClientResponse(httpClient, response);
 		}
 
+	}
+
+	/**
+	 * Method closeHttpClientResponse
+	 * @param httpClient
+	 * @param response
+	 * @throws ReaktorClientException
+	 */
+	private void closeHttpClientResponse(CloseableHttpClient httpClient, CloseableHttpResponse response)
+			throws ReaktorClientException
+	{
+		if (httpClient != null)
+		{
+			try
+			{
+				httpClient.close();
+			}
+			catch (IOException exception)
+			{
+				String error = "Error In Out Exception";
+				log.error(error, exception);
+				throw new ReaktorClientException(exception);
+			}
+		}
+		if (response != null)
+		{
+			try
+			{
+				response.close();
+			}
+			catch (IOException exception)
+			{
+				String error = "Error In Out Exception";
+				log.error(error, exception);
+				throw new ReaktorClientException(exception);
+			}
+		}
+	}
+
+	/**
+	 * Method savingMonitorizationYmlCfg
+	 * @param computerMonitorizationYml
+	 * @throws IOException
+	 */
+	private void savingMonitorizationYmlCfg(Map<String, String> computerMonitorizationYml) throws IOException
+	{
+		if(computerMonitorizationYml!=null) 
+		{
+			// --- OPCION RAW , NUEVO YML CON LA INFO ---
+			PrintWriter printWriter = new PrintWriter(new FileWriter("./src/main/resources/monitorization.yml"));
+			printWriter.print(
+						"ComputerMonitorization:\n"
+					+ "  andaluciaId: \""+computerMonitorizationYml.get("andaluciaId")+"\"\n"
+					+ "  computerNumber: \""+computerMonitorizationYml.get("computerNumber")+"\"\n"
+					+ "  serialNumber: \"sn12345577\"");
+			printWriter.flush();
+			printWriter.close();
+		}
+	}
+
+	/**
+	 * Method updateSerialNumber
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 * @param computerMonitorizationYml
+	 */
+	private void updateSerialNumber(List<Status> statusList, String serialNumber, Actions actionsToDo,
+			Map<String, String> computerMonitorizationYml)
+	{
+		if (actionsToDo.getUpdateSerialNumber() != null && !actionsToDo.getUpdateSerialNumber().isEmpty())
+		{
+			try
+			{
+				log.info("UPDATE SERIAL NUMBER TO - " + actionsToDo.getUpdateSerialNumber());
+				if(computerMonitorizationYml!=null) 
+				{
+					computerMonitorizationYml.put("serialNumber", actionsToDo.getUpdateSerialNumber());
+				}
+				Status status = new Status("Update serialNumber" + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Update serialNumber " + serialNumber, false,
+						new ComputerError(024, "error Update serialNumber ", null));
+				statusList.add(status);
+			}
+		}
+	}
+
+	/**
+	 * Method updateComputerNumber
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 * @param computerMonitorizationYml
+	 */
+	private void updateComputerNumber(List<Status> statusList, String serialNumber, Actions actionsToDo,
+			Map<String, String> computerMonitorizationYml)
+	{
+		if (actionsToDo.getUpdateComputerNumber() != null && !actionsToDo.getUpdateComputerNumber().isEmpty())
+		{
+			try
+			{
+				log.info("UPDATE COMPUTER NUMBER TO - " + actionsToDo.getUpdateComputerNumber());
+				if(computerMonitorizationYml!=null) 
+				{
+					computerMonitorizationYml.put("computerNumber", actionsToDo.getUpdateComputerNumber());
+				}
+				Status status = new Status("Update computerNumber" + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Update computerNumber " + serialNumber, false,
+						new ComputerError(023, "error Update computerNumber ", null));
+				statusList.add(status);
+			}
+		}
+	}
+
+	/**
+	 * Method updateAndaluciaId
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 * @param computerMonitorizationYml
+	 */
+	private void updateAndaluciaId(List<Status> statusList, String serialNumber, Actions actionsToDo,
+			Map<String, String> computerMonitorizationYml)
+	{
+		if (actionsToDo.getUpdateAndaluciaId() != null && !actionsToDo.getUpdateAndaluciaId().isEmpty())
+		{
+			try
+			{
+				log.info("UPDATE ANDALUCIA ID TO - " + actionsToDo.getUpdateAndaluciaId());
+				if(computerMonitorizationYml!=null) 
+				{
+					computerMonitorizationYml.put("andaluciaId", actionsToDo.getUpdateAndaluciaId());
+				}
+				Status status = new Status("Update andaluciaId" + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Update andaluciaId " + serialNumber, false,
+						new ComputerError(022, "error Update andaluciaId ", null));
+				statusList.add(status);
+			}
+			
+		}
 	}
 	
 	/**
@@ -317,32 +438,7 @@ public class ComputerMonitorization
 		}
 		finally
 		{
-			if (httpClient != null)
-			{
-				try
-				{
-					httpClient.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
-			if (response != null)
-			{
-				try
-				{
-					response.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
+			closeHttpClientResponse(httpClient, response);
 		}
 
 	}
@@ -403,32 +499,7 @@ public class ComputerMonitorization
 		}
 		finally
 		{
-			if (httpClient != null)
-			{
-				try
-				{
-					httpClient.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
-			if (response != null)
-			{
-				try
-				{
-					response.close();
-				}
-				catch (IOException exception)
-				{
-					String error = "Error In Out Exception";
-					log.error(error, exception);
-					throw new ReaktorClientException(exception);
-				}
-			}
+			closeHttpClientResponse(httpClient, response);
 		}
 
 	}
