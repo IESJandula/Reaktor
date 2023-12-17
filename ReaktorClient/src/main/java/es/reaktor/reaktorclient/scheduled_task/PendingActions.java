@@ -118,6 +118,25 @@ public class PendingActions
 		
 	}
 	
+	private void configWifi(String nombreRed) throws ComputerError
+	{
+		try {
+			Process processBuilder = new ProcessBuilder("netsh", "wlan", "connect", "name=" + nombreRed).start();
+			processBuilder.waitFor();
+		} catch (IOException e) {
+			String error="El comando introducido tiene problemas de sintaxis :"+e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1,error, e);
+		} catch (InterruptedException e) {
+			String error="Ha ocurrido un error al ejecutar el comando en este pc : "+e.getMessage();
+			log.warn(e.getMessage());
+			e.printStackTrace();
+			throw new ComputerError(1, error, e);
+		}
+
+	}
+	
 	private void uninstallApp(String appName)
 	{
 
