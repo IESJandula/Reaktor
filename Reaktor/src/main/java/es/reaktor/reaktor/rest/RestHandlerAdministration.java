@@ -499,14 +499,14 @@ public class RestHandlerAdministration implements IChecker
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status("install" + softwareInstance, false);
+				status = new Status("uninstall" + softwareInstance, false);
 				this.pcStatus.put(trolley, status);
 				// Añadimos como clave el carrito que contiene ordenadores y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
 			}
 			if (!professor.isEmpty())
 			{
-				status = new Status("install" + softwareInstance, false);
+				status = new Status("uninstall" + softwareInstance, false);
 				this.pcStatus.put(professor, status);
 				// Añadimos como clave el ordenador del profesor y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
