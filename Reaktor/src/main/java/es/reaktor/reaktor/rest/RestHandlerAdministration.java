@@ -1,6 +1,7 @@
 package es.reaktor.reaktor.rest;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public class RestHandlerAdministration implements IChecker
 			@RequestHeader(value = "classroom", required = false) final String classroom,
 			@RequestHeader(value = "trolley", required = false) final String trolley,
 			@RequestHeader(value = "plant", required = false) final Integer plant,
-			@RequestHeader(value = "commandLineInstance", required = false) final CommandLine commandLine)
+			@RequestHeader(value = "commandLineInstance", required = true) final CommandLine commandLine)
 	{
 		try
 		{
@@ -106,12 +107,12 @@ public class RestHandlerAdministration implements IChecker
 	}
 
 	/**
-	 * Metodo que manda una peticion a un pc para apagarse
+	 * Metodo que manda una peticion a un pc, clase o carrito para apagarse
 	 * @param serialNumber
 	 * @param classroom
 	 * @param trolley
 	 * @param plant
-	 * @return
+	 * @return OK si los parametros estan bien formados, 404 si los parametros fallan o 500 si hubo un error de servidor
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/shutdown", consumes = "application/json")
 	public ResponseEntity<?> putComputerShutdown(
@@ -128,25 +129,25 @@ public class RestHandlerAdministration implements IChecker
 			if(!serialNumber.isEmpty())
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave el pc y como valor un objeto status con el estado "apagado"
+				//Añadimos como clave el pc y como valor un objeto status con el estado apagado
 				this.pcStatus.put(serialNumber,status);
 			}
 			if(!classroom.isEmpty())
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "apagado"
+				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado apagado
 				this.pcStatus.put(classroom,status);
 			}
 			if(!trolley.isEmpty())
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave el pc y como valor un objeto status con el estado "apagado"
+				//Añadimos como clave el pc y como valor un objeto status con el estado apagado
 				this.pcStatus.put(trolley,status);
 			}
 			if(plant != null)
 			{
 				status = new Status("apagado",false);
-				//Añadimos como clave el pc y como valor un objeto status con el estado "apagado"
+				//Añadimos como clave el pc y como valor un objeto status con el estado apagado
 				this.pcStatus.put(String.valueOf(plant),status);
 			}
 			return ResponseEntity.ok().body("OK");
@@ -165,16 +166,13 @@ public class RestHandlerAdministration implements IChecker
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************REAK 102A*******************************************************************/
-	/************************************************************************************************************************************************/
-	/**
-	 * Metodo que manda una petición a pc para reiniciarse
+	 /**
+	 * Metodo que manda una petición a pc, clase o carrito para reiniciarse
 	 * @param serialNumber
 	 * @param classroom
 	 * @param trolley
 	 * @param plant
-	 * @return
+	 * @return OK si los parametros estan bien formados, 404 si los parametros fallan o 500 si hubo un error de servidor
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart", consumes = "application/json")
 	public ResponseEntity<?> putComputerRestart(
@@ -225,9 +223,13 @@ public class RestHandlerAdministration implements IChecker
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************REAK 103A*******************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que bloquea o desbloquea perifericos en una clase o carrito
+	 * @param classroom
+	 * @param trolley
+	 * @param peripherals
+	 * @return OK si los parametros estan bien formados, 404 si los parametros fallan o 500 si hubo un error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/peripheral", consumes = { "application/json" })
 	public ResponseEntity<?> postPeripheral(@RequestHeader(value = "classroom", required = false) final String classroom,
 			@RequestHeader(value = "trolley", required = false) final String trolley,
@@ -236,38 +238,39 @@ public class RestHandlerAdministration implements IChecker
 		try
 		{
 			Status status = null;
-			this.checkParamsAddByBody(classroom, trolley, peripherals);
+			this.checkParams(classroom, trolley, peripherals);
 			if(!classroom.isEmpty())
 			{
-				status = new Status("perifericos",false);
+				status = new Status(Arrays.toString(peripherals),false);
 				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "perifericos"
 				this.pcStatus.put(classroom,status);
 			}
 			if(!trolley.isEmpty())
 			{
-				status = new Status("perifericos",false);
+				status = new Status(Arrays.toString(peripherals),false);
 				//Añadimos como clave el pc y como valor un objeto status con el estado "perifericos"
 				this.pcStatus.put(trolley,status);
 			}
-			if(peripherals != null)
-			{
-				status = new Status("perifericos",false);
-				//Añadimos como clave el pc y como valor un objeto status con el estado "perifericos"
-				this.pcStatus.put(String.valueOf(peripherals),status);
-			}
 			return ResponseEntity.ok().body("All OK");
-		} catch (ComputerError ce)
+		} 
+		catch (ComputerError ce)
 		{
+			log.error("Administration error",ce);
 			return ResponseEntity.status(400).body(ce.getBodyMessageException());
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
+			log.error("Error de servidor",e);
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/***************************************************************REAK 104A************************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que solicita al servidor envio de capturas mediante clases o carritos
+	 * @param classroom
+	 * @param trolley
+	 * @return OK si los parametros estan bien formados, 404 si los parametros fallan o 500 si hubo un error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/screenshot")
 	public ResponseEntity<?> sendScreenshotOrder(@RequestHeader(value = "classroom") final String classroom,
 			@RequestHeader(value = "trolley") final String trolley)
@@ -275,25 +278,27 @@ public class RestHandlerAdministration implements IChecker
 		try
 		{
 			Status status = null;
-			this.checkParamsSendScreenshotOrder(classroom, trolley);
+			this.checkParams(classroom, trolley);
 			if(!classroom.isEmpty())
 			{
-				status = new Status("capturas",false);
+				status = new Status("sendCapturas",false);
 				//Añadimos como clave una clase en la que hay ordenadores y como valor un objeto status con el estado "capturas"
 				this.pcStatus.put(classroom,status);
 			}
 			if(!trolley.isEmpty())
 			{
-				status = new Status("capturas",false);
+				status = new Status("sendCapturas",false);
 				//Añadimos como clave el pc y como valor un objeto status con el estado "capturas"
 				this.pcStatus.put(trolley,status);
 			}
 			return ResponseEntity.ok().body("Screenshot send successfully");
-		} catch (ComputerError ex)
+		} 
+		catch (ComputerError ex)
 		{
 			log.error("Administration error", ex);
 			return ResponseEntity.status(404).body(ex);
-		} catch (Exception ex)
+		} 
+		catch (Exception ex)
 		{
 			log.error("Server error", ex);
 			return ResponseEntity.status(500).body(new ComputerError(500, "Server error"));
