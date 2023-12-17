@@ -8,6 +8,7 @@ import es.reaktor.reaktorclient.windows.WindowsMotherboard;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -99,10 +100,20 @@ public class ComputerMonitorization
 	}
     
     public void ConfiguracionWifi() 
-    {
-    	
-    	
-    	
+    {    	
+		try
+		{
+			log.info("iniciamos la cmd");
+			Process proceso = new ProcessBuilder("cmd.exe","netsh wlan connect andared").start();		
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		} 
+		finally
+		{
+
+		}	
     }
 }
 
