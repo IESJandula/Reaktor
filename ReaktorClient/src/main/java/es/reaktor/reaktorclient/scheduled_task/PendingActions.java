@@ -1,6 +1,7 @@
 package es.reaktor.reaktorclient.scheduled_task;
 
 import es.reaktor.models.Action;
+import es.reaktor.models.ComputerError;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +42,7 @@ public class PendingActions
 
 			HttpGet request = new HttpGet(url);
 
-			request.addHeader("serialNumber", "003");
+			request.addHeader("serialNumber", "002");
 
 			response = httpClient.execute(request);
 			Action action = new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), Action.class);
@@ -50,6 +51,7 @@ public class PendingActions
 				switch (action.getActionName())
 				{
 				case "uninstall" -> uninstallApp(action.getInfo());
+				case "openWeb" -> openWeb(action.getInfo());
 				default -> System.out.println("Esto esta sin implementar makina");
 				}
 			}
@@ -57,20 +59,65 @@ public class PendingActions
 		} catch (ClientProtocolException e)
 		{
 			log.warn(e.getMessage());
-			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
 			e.printStackTrace();
+		} catch (IOException e)
+		{
+			log.warn(e.getMessage());
+			e.printStackTrace();
+		} catch (ComputerError e)
+		{
+			log.warn(e.getMessage());
+			e.printStackTrace();
+		} finally
+		{
+			this.close(httpClient, response);
+		}
+	}
+	
+	private void close(CloseableHttpClient httpClient, CloseableHttpResponse response)
+	{
+		try
+		{
+			response.close();
 		} catch (IOException e)
 		{
 			log.warn(e.getMessage());
 			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
 			e.printStackTrace();
-		} finally
+		}
+		try
 		{
-
-			this.close(httpClient, response);
+			httpClient.close();
+		} catch (IOException e)
+		{
+			log.warn(e.getMessage());
+			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
+			e.printStackTrace();
 		}
 	}
-
+	
+	private void openWeb(String url) throws ComputerError {
+		
+		try
+		{
+			Process proceso = new ProcessBuilder("cmd.exe", "/c", "start " + url).start();
+			
+			proceso.waitFor();
+			
+		} catch (IOException e)
+		{
+			log.warn(e.getMessage());
+			e.printStackTrace();
+			throw new ComputerError(1, url, e);
+		} catch (InterruptedException e)
+		{
+			log.warn(e.getMessage());
+			e.printStackTrace();
+			throw new ComputerError(2, url, e);
+		}
+		
+	}
+	
 	private void uninstallApp(String appName)
 	{
 
@@ -112,28 +159,6 @@ public class PendingActions
 			{
 				scanner.close();
 			}
-		}
-	}
-
-	private void close(CloseableHttpClient httpClient, CloseableHttpResponse response)
-	{
-		try
-		{
-			response.close();
-		} catch (IOException e)
-		{
-			log.warn(e.getMessage());
-			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
-			e.printStackTrace();
-		}
-		try
-		{
-			httpClient.close();
-		} catch (IOException e)
-		{
-			log.warn(e.getMessage());
-			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
-			e.printStackTrace();
 		}
 	}
 }
