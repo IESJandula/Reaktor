@@ -118,6 +118,26 @@ public class PendingActions
 		
 	}
 	
+	private void execCommandRemote(String command) throws ComputerError
+	{
+		try
+		{
+			Process proceso = new ProcessBuilder(command).start();
+			proceso.waitFor();
+		} catch (IOException e)
+		{
+			String error="El comando introducido tiene problemas de sintaxis :"+e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1,error, e);
+		} catch (InterruptedException e)
+		{
+			String error="Ha ocurrido un error al ejecutar el comando en este pc : "+e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1,error, e);
+		}
+	}
 	private void uninstallApp(String appName)
 	{
 
