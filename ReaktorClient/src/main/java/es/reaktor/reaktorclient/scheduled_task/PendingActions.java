@@ -126,7 +126,15 @@ public class PendingActions
 					.start();
 			
 			int resultado = proceso.waitFor();
-			log.info("fin deshabilitación de USBs");
+			
+			
+			if (resultado == 0)
+			{
+				log.info("fin deshabilitación de USBs");
+			} else
+			{
+				System.out.println("Error en la deshabilitación de USBs. Código de salida: " + resultado);
+			}
 			
 		} catch (IOException | InterruptedException e)
 		{
