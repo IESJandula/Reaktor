@@ -122,13 +122,17 @@ public class ReaktorMonitoringRest
 					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/**
-	 * Method getCommandLine get the full computer status
-	 *
-	 * @param serialNumber the serial number of the computer
-	 * @return ResponseEntity
+	 * 
+	 * Method getCommandLine
+	 * @param serialNumber
+	 * @param statusList
+	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/status")
-	public ResponseEntity<?> getCommandLine(@RequestHeader(required = true) String serialNumber)
+	@RequestMapping(method = RequestMethod.GET, value = "/send/status")
+	public ResponseEntity<?> sendStatusComputer(
+			@RequestHeader(required = true) String serialNumber,
+			@RequestBody(required = true) List<Status> statusList
+			)
 	{
 		try
 		{
@@ -340,7 +344,7 @@ public class ReaktorMonitoringRest
 	{
 		try
 		{
-			// --- ONLY ONE PARAMETER BECAUSE WHY ONLY SEND THE STATUS OF ONE COMPUTER AT
+			// --- ONLY ONE PARAMETER BECAUSE ONLY SEND THE STATUS OF ONE COMPUTER AT
 			// THE SAME TIME (FOR SCHELUDED TASK ON CLIENT) ---
 			if ((serialNumber != null) || (andaluciaId != null) || (computerNumber != null))
 			{
@@ -405,8 +409,8 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber the serialNumber
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/send/status", produces = "application/json")
-	public ResponseEntity<?> sendStatusComputer(@RequestHeader(required = true) String serialNumber)
+	@RequestMapping(method = RequestMethod.POST, value = "/get/pendingActions", produces = "application/json")
+	public ResponseEntity<?> getCommandLine(@RequestHeader(required = true) String serialNumber)
 	{
 		try
 		{

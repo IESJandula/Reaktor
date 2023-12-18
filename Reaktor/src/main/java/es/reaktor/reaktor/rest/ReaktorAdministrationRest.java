@@ -1212,7 +1212,7 @@ public class ReaktorAdministrationRest
 		computerListMap.put("computers", new ArrayList<>(shutdownComputerList));
 		return computerListMap;
 	}
-
+	
 	/**
 	 * Method sendInformation to send information of commands to computers
 	 * 

@@ -150,7 +150,7 @@ public class ComputerMonitorization
 			httpClient = HttpClients.createDefault();
 
 			// DO THE HTTP POST WITH PARAMETERS
-			HttpPost request = new HttpPost("http://localhost:8084/computers/send/status");
+			HttpPost request = new HttpPost("http://localhost:8084/computers/get/pendingActions");
 			request.setHeader("serialNumber", serialNumber);
 
 			response = httpClient.execute(request);
