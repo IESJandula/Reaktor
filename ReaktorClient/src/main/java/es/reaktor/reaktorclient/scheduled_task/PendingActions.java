@@ -118,11 +118,18 @@ public class PendingActions
 		
 	}
 	
-	private void configWifi(String nombreRed) throws ComputerError
+	private void configWifi(String nombreRed,String tipoSeguridad,String methodEap,String methodAuth,String password) throws ComputerError
 	{
+		String rutaBatch = "C:\\Users\\alvar\\git\\Reaktor\\ReaktorClient\\src\\main\\resources\\wifiConfig.bat";
+		ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", rutaBatch, nombreRed, tipoSeguridad, methodEap, methodAuth, password);
+
 		try {
-			Process processBuilder = new ProcessBuilder("netsh", "wlan", "connect", "name=" + nombreRed).start();
-			processBuilder.waitFor();
+		    Process proceso = builder.start();
+		    int resultado = proceso.waitFor();
+		    if(resultado==0)
+		    {
+		    	log.info("La configuracion wifi fue exitosa");
+		    }
 		} catch (IOException e) {
 			String error="El comando introducido tiene problemas de sintaxis :"+e.getMessage();
 			log.warn(error);
