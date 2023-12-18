@@ -128,7 +128,7 @@ public class ReaktorMonitoringRest
 	 * @param statusList
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/send/status")
+	@RequestMapping(method = RequestMethod.POST, value = "/send/status", consumes = "application/json")
 	public ResponseEntity<?> sendStatusComputer(
 			@RequestHeader(required = true) String serialNumber,
 			@RequestBody(required = true) List<Status> statusList
@@ -136,26 +136,9 @@ public class ReaktorMonitoringRest
 	{
 		try
 		{
-			if ((serialNumber != null) && this.isUsable(serialNumber))
-			{
-				Computer computer = this.chekIfSerialNumberExist(serialNumber);
-				if (computer == null)
-				{
-					String error = "Compuer not found";
-					ComputerError computerError = new ComputerError(404, error, null);
-					return ResponseEntity.status(404).body(computerError.toMap());
-				}
-				else
-				{
-					return ResponseEntity.ok(computer);
-				}
-			}
-			else
-			{
-				String error = "Any Paramater Is Empty or Blank";
-				ComputerError computerError = new ComputerError(404, error, null);
-				return ResponseEntity.status(404).body(computerError.toMap());
-			}
+			log.info(serialNumber);
+			log.info(statusList.toString());
+			return ResponseEntity.ok().body("OK");
 		}
 		catch (Exception exception)
 		{
@@ -409,7 +392,7 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber the serialNumber
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/get/pendingActions", produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/pendingActions", produces = "application/json")
 	public ResponseEntity<?> getCommandLine(@RequestHeader(required = true) String serialNumber)
 	{
 		try

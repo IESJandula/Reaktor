@@ -149,8 +149,8 @@ public class ComputerMonitorization
 			// GETTING HTTP CLIENT
 			httpClient = HttpClients.createDefault();
 
-			// DO THE HTTP POST WITH PARAMETERS
-			HttpPost request = new HttpPost("http://localhost:8084/computers/get/pendingActions");
+			// DO THE HTTP GET WITH PARAMETERS
+			HttpGet request = new HttpGet("http://localhost:8084/computers/get/pendingActions");
 			request.setHeader("serialNumber", serialNumber);
 
 			response = httpClient.execute(request);
@@ -197,8 +197,23 @@ public class ComputerMonitorization
 			// -- SAVING ALL MAP INFO INTO MONITORIZATION.YML ---
 			this.savingMonitorizationYmlCfg(computerMonitorizationYml);
 
-			// --- TO-DO NEW ENDPOINT TO SEND STATUS TO SERVER ---
+			// --- ENDPOINT TO SEND STATUS TO SERVER ---
 			log.info(statusList.toString());
+	
+			// GETTING NEW HTTP CLIENT
+			CloseableHttpClient httpClientStatus = HttpClients.createDefault();
+
+			// DO THE HTTP POST WITH PARAMETERS
+			HttpPost requestPost = new HttpPost("http://localhost:8084/computers/send/status");
+			requestPost.setHeader("Content-type", "application/json");
+			
+			// -- SETTING THE STATUS LIST ON PARAMETERS FOR POST PETITION ---
+			StringEntity statusListEntity = new StringEntity(new ObjectMapper().writeValueAsString(statusList));
+			requestPost.setEntity(statusListEntity);
+			requestPost.setHeader("serialNumber", serialNumber);
+			
+			CloseableHttpResponse responseStatus = httpClient.execute(requestPost);
+			
 
 		}
 		catch (JsonProcessingException exception)
@@ -440,7 +455,7 @@ public class ComputerMonitorization
 		{
 			closeHttpClientResponse(httpClient, response);
 		}
-
+	 
 	}
 	
 	/**
@@ -450,6 +465,7 @@ public class ComputerMonitorization
 	@Scheduled(fixedDelayString = "6000", initialDelay = 2000)
 	public void getAndChangeComputerInfo() throws ReaktorClientException
 	{
+		/*
 		// fake computer info
 		Computer thisComputerInfo = new Computer("sn123", "and123", "cn123", "windows", "paco", new Location("0.5", 0, "trolley1"),
 				new ArrayList<>(), new ArrayList<>(), new CommandLine(),
@@ -501,7 +517,7 @@ public class ComputerMonitorization
 		{
 			closeHttpClientResponse(httpClient, response);
 		}
-
+*/
 	}
 
 	
