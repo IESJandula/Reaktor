@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import es.iesjandula.exceptions.HorarioError;
+import es.iesjandula.Horarios.exceptions.HorarioError;
+
 
 public class HorariosRest {
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file", consumes = "multipart/form-data")
