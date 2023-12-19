@@ -120,6 +120,11 @@ public class ReaktorMonitoringRest
 			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
 					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
 					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	/** Attribute statusComputerList */
+	private List<Computer> statusComputerList = new ArrayList<>(
+			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/**
 	 * 
@@ -138,7 +143,25 @@ public class ReaktorMonitoringRest
 		{
 			log.info(serialNumber);
 			log.info(statusList.toString());
-			return ResponseEntity.ok().body("OK");
+			
+			if(!isUsable(serialNumber))
+			{
+				String error = "Any Paramater Is Empty or Blank";
+				ComputerError computerError = new ComputerError(404, error, null);
+				return ResponseEntity.status(404).body(computerError.toMap());
+			}
+			else if(!chekIfSerialNumberExistBoolean(serialNumber)) 
+			{
+				String error = "The serial number dont exist";
+				ComputerError computerError = new ComputerError(404, error, null);
+				return ResponseEntity.status(404).body(computerError.toMap());
+			}
+			else
+			{
+				return ResponseEntity.ok().body("OK");
+			}
+			
+			
 		}
 		catch (Exception exception)
 		{
@@ -289,6 +312,19 @@ public class ReaktorMonitoringRest
 			}
 		}
 		return computer;
+	}
+	
+	private boolean chekIfSerialNumberExistBoolean(String serialNumber)
+	{
+		boolean exist = false;
+		for (Computer x : this.computerList)
+		{
+			if (x.getSerialNumber().equals(serialNumber))
+			{
+				exist = true;
+			}
+		}
+		return exist;
 	}
 	
 	/**
