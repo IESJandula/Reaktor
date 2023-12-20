@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +39,8 @@ public class RestHandlerMonitorizacion
 	
 	/**Status solo instalacion */
 	private List <Status> status;
+	/**String temporal que almacena los status */
+	private String statusJson;
 	/**
 	 * Default constructor
 	 */
@@ -41,6 +48,59 @@ public class RestHandlerMonitorizacion
 	{
 		//Public constructor
 		this.status = new LinkedList<Status>();
+		this.statusJson = "";
+	}
+	
+	/**
+	 * Endpoint que recibe una lista de status a ejecutar 
+	 * @return lista de status a ejecutar
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/status")
+	public ResponseEntity<?> getStatus()
+	{
+		//Creamos el cliente
+		CloseableHttpClient httpClient = null;
+		//Creamos la respuesta
+		CloseableHttpResponse response = null;
+		try
+		{
+			//Instanciamos cliente y respuesta
+			httpClient = HttpClients.createDefault();
+			//Definimos la url de la peticion
+			String url = "http://localhost:8080/computers/get-task";
+			//Definimos el tipo de respuesta
+			HttpGet request = new HttpGet(url);
+			response = httpClient.execute(request);
+			//Obtenemos la respuesta
+			this.statusJson = EntityUtils.toString(response.getEntity());
+			log.info("Respuesta aceptada "+this.statusJson);
+			return ResponseEntity.ok("Status recibido");
+		
+		}
+		catch(Exception ex)
+		{
+			return ResponseEntity.status(500).body("Server error");
+		}
+		finally
+		{
+			try
+			{
+				if(response!=null)
+				{
+					response.close();
+				}
+				if(httpClient!=null)
+				{
+					httpClient.close();
+				}
+			}
+			catch(IOException ex)
+			{ 
+				log.error("Error al cerrar las peticiones",ex);
+			}
+			
+		}
+		
 	}
 	/**
 	 * *****************************************************************************
@@ -88,7 +148,7 @@ public class RestHandlerMonitorizacion
 	 * *****************************************************************************
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/screenshots", consumes = "multipart/form-data")
-	public ResponseEntity<?> sendScreenshot(@RequestPart(value = "screenshot", required = true)final File screenshot)
+	public ResponseEntity<?> sendScreenshot(@RequestPart(value = "screenshot", required = true)final MultipartFile screenshot)
 	{
 		try
 		{
@@ -218,12 +278,5 @@ public class RestHandlerMonitorizacion
 			Process pr = rt.exec("cmd.exe "+app+" /S");
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 }
