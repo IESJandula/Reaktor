@@ -445,7 +445,7 @@ public class RestHandlerAdministration implements IChecker
 
 			if (!trolley.isEmpty())
 			{
-				status = new Status("install" + Arrays.toString(softwareInstance), false);
+				status = new Status("install" + softwareInstance, false);
 				this.pcStatus.put(trolley, status);
 				// Añadimos como clave el carrito que contiene ordenadores y como valor un
 				// objeto status con el estado
@@ -453,7 +453,7 @@ public class RestHandlerAdministration implements IChecker
 			}
 			if (!professor.isEmpty())
 			{
-				status = new Status("install" + Arrays.toString(softwareInstance), false);
+				status = new Status("install" + softwareInstance, false);
 				this.pcStatus.put(professor, status);
 				// Añadimos como clave el ordenador del profesor y como valor un objeto status
 				// con el estado
@@ -492,21 +492,21 @@ public class RestHandlerAdministration implements IChecker
 			Status status = null;
 			if(!classroom.isEmpty())
 			{
-				status = new Status("uninstall" + Arrays.toString(softwareInstance), false);
+				status = new Status("uninstall" + softwareInstance, false);
 				this.pcStatus.put(classroom, status);
 				// Añadimos como clave una clase que contiene ordenadores y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status("uninstall" + Arrays.toString(softwareInstance), false);
+				status = new Status("uninstall" + softwareInstance, false);
 				this.pcStatus.put(trolley, status);
 				// Añadimos como clave el carrito que contiene ordenadores y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
 			}
 			if (!professor.isEmpty())
 			{
-				status = new Status("uninstall" + Arrays.toString(softwareInstance), false);
+				status = new Status("uninstall" + softwareInstance, false);
 				this.pcStatus.put(professor, status);
 				// Añadimos como clave el ordenador del profesor y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
@@ -553,6 +553,24 @@ public class RestHandlerAdministration implements IChecker
 			return ResponseEntity.status(500).body("Server error");
 		}
 
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get-task")
+	public ResponseEntity<?> sendStatus()
+	{
+		try
+		{
+			return ResponseEntity.ok().body(this.pcStatus);
+		}
+		catch(Exception ex)
+		{
+			log.error("Server error");
+			return ResponseEntity.status(500).body("Server error");
+		}
+		finally
+		{
+			this.pcStatus = new HashMap<String,Status>();
+		}
 	}
 
 }
