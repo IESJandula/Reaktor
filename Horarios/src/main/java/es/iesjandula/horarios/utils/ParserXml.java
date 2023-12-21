@@ -49,8 +49,7 @@ public interface ParserXml
 	 * @throws HorarioError
 	 */
 	public default Centro parserFileToObject(MultipartFile xml) throws HorarioError 
-	{
-		File file = MultipartFileTransferToFile(xml);			
+	{		
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		
 		/** inicializamos los objetos **/
@@ -73,7 +72,7 @@ public interface ParserXml
 		{
 			
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();			
-			Document document = documentBuilder.parse(file);
+			Document document = documentBuilder.parse(xml.getInputStream());
 			
 			/** Elemento root centro **/
 			Element rootCentro = document.getDocumentElement();
@@ -84,17 +83,16 @@ public interface ParserXml
 			String Fecha = rootCentro.getAttributes().getNamedItem("fecha").getTextContent();
 			
 			/** Elemento asignaturas **/
-			NodeList nodeListDatos = rootCentro.getElementsByTagName("DATOS");
+			NodeList nodeListDatos = rootCentro.getElementsByTagName("ASIGNATURA");
 			
-			/** Lista de asignaturas **/
-			NodeList nodeListAsignaturas = nodeListDatos.item(0).getChildNodes();
+			
 			/** contador que recorre la lista de asignaturas **/
 			int cont = 0;
 			
 			/** creamos los objetos Asignatura **/
-			while(nodeListAsignaturas.getLength() > cont)
+			while(nodeListDatos.getLength() > cont)
 			{
-				Element asignatura = (Element) nodeListAsignaturas.item(cont);
+				Element asignatura = (Element) nodeListDatos.item(cont);
 				
 				int num_int_as = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
 				String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
@@ -106,7 +104,7 @@ public interface ParserXml
 			
 			cont = 0;
 			/** Lista de grupo **/
-			NodeList nodeListGrupos = nodeListDatos.item(1).getChildNodes();
+			NodeList nodeListGrupos = rootCentro.getElementsByTagName("GRUPO");
 			
 			/** creamos los objetos grupo **/
 			while(nodeListGrupos.getLength() > cont)
@@ -123,7 +121,7 @@ public interface ParserXml
 			
 			cont = 0;
 			/** Lista de aulas **/
-			NodeList nodeListAulas = nodeListDatos.item(2).getChildNodes();
+			NodeList nodeListAulas = rootCentro.getElementsByTagName("AULA");
 			
 			/** creamos los objetos aula **/
 			while(nodeListAulas.getLength() > cont)
@@ -140,7 +138,7 @@ public interface ParserXml
 			
 			cont = 0;
 			/** Lista de profesores **/
-			NodeList nodeListProfesores = nodeListDatos.item(3).getChildNodes();
+			NodeList nodeListProfesores = rootCentro.getElementsByTagName("PROFESOR");
 			
 			/** creamos los objetos profesor **/
 			while(nodeListProfesores.getLength() > cont)
@@ -157,7 +155,7 @@ public interface ParserXml
 			
 			cont = 0;
 			/** Lista de tramos **/
-			NodeList nodeListTramos = nodeListDatos.item(4).getChildNodes();
+			NodeList nodeListTramos = rootCentro.getElementsByTagName("TRAMO");
 			
 			/** creamos los objetos tramo **/
 			while(nodeListTramos.getLength() > cont)
@@ -434,18 +432,6 @@ public interface ParserXml
 					
 	}
 
-	/**
-	 * Transform a MultiparFile to a File
-	 * @param MultiparFile
-	 * @return File
-	 * @throws HorarioError
-	 */
-	private File MultipartFileTransferToFile(MultipartFile xml) throws HorarioError
-	{
-	    /** Move the information from a MultipartFile to a File**/
-		File file = new File(xml.getOriginalFilename());	
-		
-	    return file;
-		
-	}
+	
+	
 }

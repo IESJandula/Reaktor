@@ -106,13 +106,7 @@ public class RestHandlerHorarios implements ParserXml
 				return ResponseEntity.ok("");
 	    	
 		}
-		catch (HorarioError exception)
-		{
-			String error = "Is not a xml or is empty";
-			HorarioError horarioError = new HorarioError(404, error);
-			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
-		}
-        catch (Exception exception)
+		catch (Exception exception)
 		{     	
 			log.error(exception.getMessage());
 			HorarioError horarioError = new HorarioError(500, exception.getMessage());
@@ -136,16 +130,17 @@ public class RestHandlerHorarios implements ParserXml
 				numeroProfesor=x.getNum_int_pr();
 			}
 		}
-		for(Tramo x : listaTramos)
-		{
-			x.getHora_final();
-			x.getHora_inicio();
-			if(x.getNombre().equalsIgnoreCase(surneme+", "+name))
-			{
-				numeroProfesor=x.getNum_int_pr();
-			}
-		}
+//		for(Tramo x : listaTramos)
+//		{
+//			x.getHora_final();
+//			x.getHora_inicio();
+//			if(x.getNombre().equalsIgnoreCase(surneme+", "+name))
+//			{
+//				numeroProfesor=x.getNum_int_pr();
+//			}
+//		}
 		return null;	
+		
 	}
 
 	private String getActualHour()
