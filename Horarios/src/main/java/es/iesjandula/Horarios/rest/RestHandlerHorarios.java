@@ -1,5 +1,6 @@
 package es.iesjandula.Horarios.rest;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -50,6 +52,24 @@ public class RestHandlerHorarios
 	{
 		// Empty constructor
 	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
+	public ResponseEntity<?> sendXmlToObject(@RequestPart(value = "xmlFile", required = true) final MultipartFile file) 
+	{
+	    try {
+	    	
+	    	
+	    	
+	        return ResponseEntity.ok().build();
+	    } catch (HorarioError horarioError) {
+	        return ResponseEntity.status(400).body(horarioError);
+	    }catch (Exception e) {
+		    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+	
+		
+    }
+	
 
 	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
 	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "csvFile", required = true) final MultipartFile csvFile)
@@ -57,7 +77,7 @@ public class RestHandlerHorarios
 		try
 		{
 			check.checkFile(csvFile);
-			List<Profesor> lista = horariosUtils.parseFile(csvFile);
+			List<Profesor> lista = horariosUtils.parseCsvFile(csvFile);
 			System.out.println(lista);
 			return ResponseEntity.ok().build();
 		}
