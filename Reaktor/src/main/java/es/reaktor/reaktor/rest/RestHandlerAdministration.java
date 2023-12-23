@@ -129,13 +129,17 @@ public class RestHandlerAdministration implements IChecker
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/shutdown", consumes = "application/json")
 	public ResponseEntity<?> putComputerShutdown(
-			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
-			@RequestHeader(value = "classroom", required = false) final String classroom,
-			@RequestHeader(value = "trolley", required = false) final String trolley,
-			@RequestHeader(value = "plant", required = false) final Integer plant)
+			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
+			@RequestHeader(value = "classroom", required = false) String classroom,
+			@RequestHeader(value = "trolley", required = false) String trolley,
+			@RequestHeader(value = "plant", required = false) Integer plant)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			serialNumber = serialNumber==null ? "" : serialNumber;
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			// Se comprueba que los parametros no esten vacios
 			this.checkParams(serialNumber, classroom, trolley, plant);
@@ -190,13 +194,17 @@ public class RestHandlerAdministration implements IChecker
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart", consumes = "application/json")
 	public ResponseEntity<?> putComputerRestart(
-			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
-			@RequestHeader(value = "classroom", required = false) final String classroom,
-			@RequestHeader(value = "trolley", required = false) final String trolley,
-			@RequestHeader(value = "plant", required = false) final Integer plant)
+			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
+			@RequestHeader(value = "classroom", required = false) String classroom,
+			@RequestHeader(value = "trolley", required = false) String trolley,
+			@RequestHeader(value = "plant", required = false) Integer plant)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			serialNumber = serialNumber==null ? "" : serialNumber;
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParams(serialNumber, classroom, trolley, plant);
 			if (!serialNumber.isEmpty())
@@ -253,12 +261,15 @@ public class RestHandlerAdministration implements IChecker
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/peripheral", consumes =
 	{ "application/json" })
 	public ResponseEntity<?> postPeripheral(
-			@RequestHeader(value = "classroom", required = false) final String classroom,
-			@RequestHeader(value = "trolley", required = false) final String trolley,
+			@RequestHeader(value = "classroom", required = false) String classroom,
+			@RequestHeader(value = "trolley", required = false) String trolley,
 			@RequestBody(required = true) Peripheral[] peripherals)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParams(classroom, trolley, peripherals);
 			if (!classroom.isEmpty())
@@ -297,11 +308,15 @@ public class RestHandlerAdministration implements IChecker
 	 *         fallan o 500 si hubo un error de servidor
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/screenshot")
-	public ResponseEntity<?> sendScreenshotOrder(@RequestHeader(value = "classroom") final String classroom,
-			@RequestHeader(value = "trolley") final String trolley)
+	public ResponseEntity<?> sendScreenshotOrder(
+			@RequestHeader(value = "classroom",required = false) String classroom,
+			@RequestHeader(value = "trolley",required = false)  String trolley)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParams(classroom, trolley);
 			if (!classroom.isEmpty())
@@ -336,11 +351,14 @@ public class RestHandlerAdministration implements IChecker
 	 *******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/screenshot", produces = "application/zip")
-	public ResponseEntity<?> getScreenshots(@RequestHeader(value = "classroom") final String classroom,
-			@RequestHeader(value = "trolley") final String trolley)
+	public ResponseEntity<?> getScreenshots(@RequestHeader(value = "classroom") String classroom,
+			@RequestHeader(value = "trolley") String trolley)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParamsGetScreenshots(classroom, trolley);
 			if (!classroom.isEmpty())
@@ -379,14 +397,18 @@ public class RestHandlerAdministration implements IChecker
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/file")
 	public ResponseEntity<?> postComputerExeFile(
-			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
-			@RequestHeader(value = "classroom", required = false) final String classroom,
-			@RequestHeader(value = "trolley", required = false) final String trolley,
-			@RequestHeader(value = "plant", required = false) final Integer plant,
+			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
+			@RequestHeader(value = "classroom", required = false) String classroom,
+			@RequestHeader(value = "trolley", required = false) String trolley,
+			@RequestHeader(value = "plant", required = false) Integer plant,
 			@RequestHeader(value = "execFile", required = false) final MultipartFile execFile)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			serialNumber = serialNumber==null ? "" : serialNumber;
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParamsPostComputerExeFile(serialNumber, classroom, trolley, plant, execFile);
 			if (!serialNumber.isEmpty())
@@ -436,16 +458,23 @@ public class RestHandlerAdministration implements IChecker
 	 *******************************************************************/
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/software", consumes = "application/json")
-	public ResponseEntity<?> sendSoftware(@RequestHeader(value = "classroom", required = false) final String classroom,
-			@RequestHeader(value = "trolley", required = false) final String trolley,
-			@RequestHeader(value = "professor", required = false) final String professor,
+	public ResponseEntity<?> sendSoftware(@RequestHeader(value = "classroom", required = false) String classroom,
+			@RequestHeader(value = "trolley", required = false) String trolley,
+			@RequestHeader(value = "professor", required = false) String professor,
 			@RequestBody(required = true) final Software[] softwareInstance)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			professor = professor==null ? "" : professor;
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			professor = professor==null ? "" : professor;
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			this.checkParamsSendSoftware(classroom, trolley, professor, softwareInstance);
 			Status status = null;
-
 			if (!trolley.isEmpty())
 			{
 				status = new Status(trolley,"install" + softwareInstance, false);
@@ -483,13 +512,17 @@ public class RestHandlerAdministration implements IChecker
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/software", consumes = "application/json")
 	public ResponseEntity<?> uninstallSoftware(
-			@RequestHeader(value = "classroom", required = false) final String classroom,
-			@RequestHeader(value = "trolley", required = false) final String trolley,
-			@RequestHeader(value = "professor", required = false) final String professor,
+			@RequestHeader(value = "classroom", required = false) String classroom,
+			@RequestHeader(value = "trolley", required = false) String trolley,
+			@RequestHeader(value = "professor", required = false) String professor,
 			@RequestBody(required = true) final Software[] softwareInstance)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			professor = professor==null ? "" : professor;
+			classroom = classroom==null ? "" : classroom;
+			trolley = trolley==null ? "" : trolley;
 			this.checkParamsUninstallSoftware(classroom, trolley, professor, softwareInstance);
 			
 			Status status = null;
@@ -536,13 +569,17 @@ public class RestHandlerAdministration implements IChecker
 	/************************************************************************************************************************************************/
 	@RequestMapping(method = RequestMethod.PUT, value = "/edit")
 	public ResponseEntity<?> updateComputer(
-			@RequestHeader(value = "serialNumber", required = false) final String serialNumber,
-			@RequestHeader(value = "andaluciaId", required = false) final String andaluciaId,
-			@RequestHeader(value = "computerNumber", required = false) final String computerNumber,
-			@RequestHeader(value = "computerInstance", required = true) final Computer computer)
+			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
+			@RequestHeader(value = "andaluciaId", required = false) String andaluciaId,
+			@RequestHeader(value = "computerNumber", required = false) String computerNumber,
+			@RequestHeader(value = "computerInstance", required = true) Computer computer)
 	{
 		try
 		{
+			//Comprobamos que los valores no sean nulos para evitar punteros vacios
+			serialNumber = serialNumber==null ? "" : serialNumber;
+			andaluciaId = andaluciaId==null ? "" : andaluciaId;
+			computerNumber = computerNumber==null ? "" : computerNumber;
 			this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer);
 			// TODO: Obtener datos del ordenador desde la bbdd editarlo y subirlo
 			return ResponseEntity.ok().body("OK");
@@ -557,7 +594,10 @@ public class RestHandlerAdministration implements IChecker
 		}
 
 	}
-	
+	/**
+	 * Endpoint que envia el mapa de status para posteriormente ejecutarse
+	 * @return mapa de status
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get-task")
 	public ResponseEntity<?> sendStatus()
 	{
