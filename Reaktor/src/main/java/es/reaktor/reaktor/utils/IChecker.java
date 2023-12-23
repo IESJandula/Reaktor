@@ -2,12 +2,13 @@ package es.reaktor.reaktor.utils;
 
 import java.io.File;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.CommandLine;
 import es.reaktor.reaktor.models.Computer;
 import es.reaktor.reaktor.models.Peripheral;
 import es.reaktor.reaktor.models.Software;
-import es.reaktor.reaktor.models.Status;
 
 /**
  * 
@@ -101,32 +102,37 @@ public interface IChecker
 			throw new ComputerError(2,"Los parametros no pueden estar vacios");
 		}
 	}
-	
-	public default void checkParamsPutComputerRestart(String serialNumber, String classroom, String trolley, Integer plant)throws ComputerError
+	/**
+	 * Metodo sobrecargado que comprueba que los parametros esten correctos y que encuentra la informacion solicitada
+	 * @param serialNumber
+	 * @throws ComputerError
+	 * @see Metodo principal {@link #checkParams(String, String, String, Integer, CommandLine)}
+	 */
+	public default void checkParams(String serialNumber) throws ComputerError
 	{
-		if (serialNumber.isEmpty())
+		//Se comprueba que el serial number no este vacio
+		if(serialNumber.isEmpty())
 		{
-			throw new ComputerError(1, "Serial Number is null");
-		} else if (classroom.isEmpty())
-		{
-			throw new ComputerError(2, "Classroom is null");
-		} else if (trolley.isEmpty())
-		{
-			throw new ComputerError(3, "Trolley is null");
-		} else if (plant == null)
-		{
-			throw new ComputerError(4, "Plant is null");
+			throw new ComputerError(2,"Los parametros no pueden estar vacios");
 		}
 	}
-	
-	public default void checkParamsAddByBody(String classroom, String trolley, Peripheral[] peripheral) throws ComputerError
+	/**
+	 * Metodo que comprueba que el fichero pasado por parametro sea una imagen y tenga contenido
+	 * @param screenshot
+	 * @throws ComputerError
+	 */
+	public default void checkScreenshot(MultipartFile screenshot) throws ComputerError
 	{
-		if (classroom.isEmpty() && trolley.isEmpty())
+		//Se comprueba que el fichero sea una imagen
+		String fileName = screenshot.getOriginalFilename();
+		if(fileName.endsWith(".png") || fileName.endsWith(".PNG") || fileName.endsWith(".jpg") || fileName.endsWith(".JPG"))
 		{
-			throw new ComputerError(1, "All params can't be null");
-		} else if (peripheral == null)
+			throw new ComputerError(5,"El fichero no es una imagen png o jpg");
+		}
+		//Despues se comprueba si tiene datos
+		else if(screenshot.isEmpty())
 		{
-			throw new ComputerError(2, "The Pheriferal can't be null");
+			throw new ComputerError(6,"El fichero esta vacio");
 		}
 	}
 	
@@ -151,7 +157,7 @@ public interface IChecker
 		}
 	}
 	
-	public default void checkParamsPostComputerExeFile(String serialNumber, String classroom, String trolley, Integer plant,File execFile) throws ComputerError
+	public default void checkParamsPostComputerExeFile(String serialNumber, String classroom, String trolley, Integer plant,MultipartFile execFile) throws ComputerError
 	{
 		if (serialNumber.isEmpty() && classroom.isEmpty() && trolley.isEmpty() && plant == null)
 		{
@@ -159,7 +165,7 @@ public interface IChecker
 		} else if (execFile == null)
 		{
 			throw new ComputerError(2, "The file can't be null");
-		} else if (execFile.getName().endsWith(".exe") || execFile.getName().endsWith(".cfg")|| execFile.getName().endsWith(".exec"))
+		} else if (!execFile.getOriginalFilename().endsWith(".exe") && !execFile.getOriginalFilename().endsWith(".cfg") && !execFile.getOriginalFilename().endsWith(".exec") && execFile.getOriginalFilename().endsWith(".msi"))
 		{
 			throw new ComputerError(4, "The file extensiojn its wrong");
 		}
