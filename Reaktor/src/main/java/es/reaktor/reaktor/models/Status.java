@@ -11,6 +11,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class Status 
 {
+	/**Atributo que representa el valor de un pc, clase, aula, carrito o planta */
+	private String key;
+	
 	/**Specific pc status, reboot, shut down, install, ... */
 	private String info;
 	
