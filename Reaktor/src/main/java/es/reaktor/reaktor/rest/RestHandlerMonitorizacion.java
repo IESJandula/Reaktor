@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.Computer;
 import es.reaktor.reaktor.models.Status;
+import es.reaktor.reaktor.utils.IChecker;
 
 /**
  * 
@@ -31,8 +32,8 @@ import es.reaktor.reaktor.models.Status;
  *
  */
 @RestController
-@RequestMapping( value = "Reaktor",produces = "application/json")
-public class RestHandlerMonitorizacion 
+@RequestMapping( value = "/reaktor",produces = "application/json")
+public class RestHandlerMonitorizacion implements IChecker 
 {
 	/**Class logger */
 	private Logger log = LogManager.getLogger();
@@ -67,7 +68,7 @@ public class RestHandlerMonitorizacion
 			//Instanciamos cliente y respuesta
 			httpClient = HttpClients.createDefault();
 			//Definimos la url de la peticion
-			String url = "http://localhost:8080/computers/get-task";
+			String url = "http://localhost:8084/computers/get-task";
 			//Definimos el tipo de respuesta
 			HttpGet request = new HttpGet(url);
 			response = httpClient.execute(request);
@@ -81,6 +82,7 @@ public class RestHandlerMonitorizacion
 		{
 			return ResponseEntity.status(500).body("Server error");
 		}
+		//Cerrado de los componentes http
 		finally
 		{
 			try
@@ -103,11 +105,6 @@ public class RestHandlerMonitorizacion
 		
 	}
 	/**
-	 * *****************************************************************************
-	 * *********************************REAK102M************************************
-	 * *****************************************************************************
-	 */
-	/**
 	 * Metodo que devuelve una captura de un ordenador usando su numero de serie
 	 * @param serialNumber
 	 * @return Respuesta de 200 si encuentra el pc, respuesta de 404 o 500 si no lo encuentra 
@@ -117,14 +114,15 @@ public class RestHandlerMonitorizacion
 	{
 		try
 		{
-			this.checkSerialNumber(serialNumber);
+			//Comprobamos que los parametros esten bien formados
+			this.checkParams(serialNumber);
 			return ResponseEntity.ok().body("Getting success") ;
 		}
 		catch (ComputerError exception)
 		{
 			String message = "Computer error getting";
 			log.error(message, exception);
-			return ResponseEntity.status(400).body(exception.getBodyMessageException());
+			return ResponseEntity.status(404).body(exception.getBodyMessageException());
 		}
 		catch (Exception exception)
 		{
@@ -152,7 +150,7 @@ public class RestHandlerMonitorizacion
 	{
 		try
 		{
-			this.checkParam(screenshot);
+			this.checkScreenshot(screenshot);
 			return ResponseEntity.ok().body("Getting success") ;
 		}
 		catch (ComputerError exception)
@@ -245,7 +243,7 @@ public class RestHandlerMonitorizacion
 				log.error("App not found");
 				return ResponseEntity.status(404).body("The app to install doesn't exists");
 			}
-			this.status.add(new Status("install",false));
+			//this.status.add(new Status("install",false));
 			
 			return ResponseEntity.ok().body("File download succesfully");
 			
