@@ -1339,7 +1339,7 @@ public class HorariosRest
 	 * @param lastname
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET,value = "/teacher/get/Classroom/tramo",produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET,value = "/teacher/get/Classroom/tramo",produces = "application/json",consumes ="application/json")
 	public ResponseEntity<?> getClassroomTeacherSchedule(
 			@RequestHeader(required=true) String name,
 			@RequestHeader(required=true) String lastname,
@@ -1494,4 +1494,205 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
+	
+	
+	/**
+	 * Method getClassroomCourse
+	 * @param courseName
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/Classroomcourse",produces = "application/json")
+	public ResponseEntity<?> getClassroomCourse(
+			@RequestHeader(required = true) String courseName,
+			HttpSession session
+			)
+	{
+		
+		if(!courseName.isBlank() && !courseName.isBlank()) 
+		{
+			if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+			{
+				Centro centro = (Centro) session.getAttribute("storedCentro");
+				
+				// --- IF EXIST THE COURSE ---
+				Grupo grup = null;
+				for(Grupo grupo : centro.getDatos().getGrupos().getGrupo()) 
+				{
+					if(grupo.getNombre().trim().equalsIgnoreCase(courseName.trim())) 
+					{
+						// --- EXIST THE COURSE ---
+						grup = grupo;
+					}
+				}
+				if(grup!=null) 
+				{
+					// --- GRUPO EXIST , NOW GET THE ACUTAL TRAMO ---
+					Tramo acutalTramo = null;
+					
+					// Getting the actual time
+					String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
+					log.info(actualTime);
+					
+					for(Tramo tramo : centro.getDatos().getTramosHorarios().getTramo()) 
+					{
+						int numTr= Integer.parseInt(tramo.getNumTr());
+						
+						// --- GETTING THE HORA,MINUTO , INICIO AND FIN ---
+						int horaInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[0].trim());
+						int minutoInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[1].trim());
+						
+						int horaFin = Integer.parseInt(tramo.getHoraFinal().split(":")[0].trim());
+						int minutoFin = Integer.parseInt(tramo.getHoraFinal().split(":")[1].trim());
+		
+						// --- GETTING THE HORA, MINUTO ACTUAL ---
+						int horaActual = Integer.parseInt(actualTime.split(":")[0].trim());
+						int minutoActual = Integer.parseInt(actualTime.split(":")[1].trim());
+						
+						// --- USE CALENDAR INSTANCE FOR GET INTEGER WITH THE NUMBER OF THE DAY ON THE WEEK ---
+						Calendar calendar = Calendar.getInstance();
+						// --- PARSIN CALENDAR DAY_OF_WEK TO NUMBER -1 (-1 BECAUSE THIS START ON SUNDAY)--
+						int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1;
+						
+						// --- IF DAY IS 0 , IS 7 , BACUSE IS SUNDAY ---
+						if(dayOfWeek==0) 
+						{
+							dayOfWeek=7;
+						}
+						if(dayOfWeek>=6)
+						{
+							log.warn("DIA EXCEDIDO: (6:SABADO-7:DOMINGO) -> "+dayOfWeek);
+						}
+						
+						// --- DAY OF TRAMO ---
+						if(Integer.parseInt(tramo.getNumeroDia())==dayOfWeek) 
+						{
+							// --- IF HORA ACTUAL EQUALS HORA INICIO ---
+							if(horaActual==horaInicio)
+							{
+								// --- CHEKING IF THE MINUTO ACTUAL IS GREATER THAN THE MINUTO INICIO AND HORA ACTUAL LESS THAN HORA FIN ---
+								if(minutoActual>=minutoInicio && horaActual<=horaFin) 
+								{
+									// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
+									System.out.println("ENCONTRADO -> "+tramo);
+									acutalTramo = tramo;
+									
+								}
+							}
+							// --- IF HORA ACTUAL EQUALS HORA FIN ---
+							else if(horaActual==horaFin)
+							{
+								// --- CHEKING IF THE MINUTO ACTUAL IS LESS THAN MINUTO FIN ---
+								if(minutoActual<=minutoFin)
+								{
+									// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
+									System.out.println("ENCONTRADO -> "+tramo);
+									acutalTramo = tramo;
+									
+								}
+							}
+							
+						}
+					}
+					
+					// --- CHECKING IF THE TRAMO ACTUAL EXISTS ---
+					if(acutalTramo!=null)
+					{
+						//--- TRAMO ACTUAL EXISTS ---
+						
+						// --- NOW GETTING THE HORARIO GRUP , WITH THE SAME ID OF THE GROUP ---
+						HorarioGrup horario = null;
+						for(HorarioGrup horarioGrup : centro.getHorarios().getHorariosGrupos().getHorarioGrup()) 
+						{
+							// --- EQUAL IDS ---
+							if(horarioGrup.getHorNumIntGr().trim().equalsIgnoreCase(grup.getNumIntGr().trim())) 
+							{
+								// --- THE HORARIO GROUP OF THE GROUP ---
+								horario = horarioGrup;
+							}
+						}
+						
+						// --- IF THE HORARIO GRUP EXIST ---
+						if(horario!=null)
+						{
+							// --- GETTING THE HORARIO GRUP ACTIVIDADES ----
+							Actividad activ = null;
+							for(Actividad actividad : horario.getActividad()) 
+							{
+								// --- GETTING THE ACTIVIDAD WITH THE SAME ID OF THE ACTUAL TRAMO ---
+								if(actividad.getTramo().trim().equalsIgnoreCase(acutalTramo.getNumTr().trim())) 
+								{
+									activ = actividad;
+								}
+							}
+							
+							// --- IF EXIST THIS ACTIVIDAD ---
+							if(activ!=null) 
+							{
+								// --- NOW GET THE PROFESOR AND ASIGNATURA BY PROFESOR ID AND THE ASIGNATURA ID ---
+								
+								// --- PROFESOR ---
+								Profesor profesor = null;
+								for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+								{
+									// --- EQUAL PROFESSOR ID --
+									if(prof.getNumIntPR().trim().equalsIgnoreCase(activ.getProfesor().trim())) 
+									{
+										profesor = prof;
+									}
+								}
+								
+								// --- ASIGNATURA ---
+								Asignatura asignatura = null;
+								for(Asignatura asig : centro.getDatos().getAsignaturas().getAsignatura()) 
+								{
+									// --- EQUAL ASIGNATURA ID --
+									if(asig.getNumIntAs().trim().equalsIgnoreCase(activ.getAsignatura().trim())) 
+									{
+										asignatura = asig;
+									}
+								}
+								
+								if(profesor!=null && asignatura!=null) 
+								{
+									// --- THE FINAL PROFESSOR AND ASIGNATURA ---
+									System.out.println("PROFESOR: "+profesor+"\n"+"ASIGNATURA: "+asignatura);
+									
+								}
+								else 
+								{
+									System.out.println("PROFESOR O ASIGNATURA NO ENCONTRADOS O NULL "+profesor+"\n"+asignatura);
+								}
+								
+							}
+							else 
+							{
+								System.out.println("ERROR , ACTIVIDAD NULL O NO ENCONTRADA");
+							}
+							
+						}
+						else 
+						{
+							System.out.println("ERROR , HORARIO GRUP NULL O NO ENCONTRADO");
+						}
+					}
+					else 
+					{
+						System.out.println("ERROR , TRAMO NULL O NO EXISTE");
+					}
+				}
+				else 
+				{
+					// --- ERROR ---
+					System.out.println("ERROR GRUPO NULL O NO ENCONTRADO ");
+				}
+			}
+		}
+		else 
+		{
+			// --- ERROR ---
+			System.out.println("ERROR , CURSO EN BLANCO O NO PERMITIDO");
+		}
+		return null;
+	}
 }
+
