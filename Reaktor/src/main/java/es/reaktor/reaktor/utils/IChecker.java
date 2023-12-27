@@ -215,4 +215,12 @@ public interface IChecker
 			throw new ComputerError(2, "Computer can't be null");
 		}
 	}
+	
+//	 public default String tipoEjecucion(Boolean shutdown,Boolean reboot,Boolean exec,Boolean install,Boolean uninstall,Boolean envWifi)
+//	 {
+//		 if(shutdown==true)
+//		 {
+//			 
+//		 }
+//	 }
 }

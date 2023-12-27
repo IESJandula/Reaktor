@@ -38,8 +38,6 @@ public class RestHandlerMonitorizacion implements IChecker
 	/**Class logger */
 	private Logger log = LogManager.getLogger();
 	
-	/**Status solo instalacion */
-	private List <Status> status;
 	/**String temporal que almacena los status */
 	private String statusJson;
 	/**
@@ -48,7 +46,6 @@ public class RestHandlerMonitorizacion implements IChecker
 	public RestHandlerMonitorizacion()
 	{
 		//Public constructor
-		this.status = new LinkedList<Status>();
 		this.statusJson = "";
 	}
 	
@@ -104,6 +101,47 @@ public class RestHandlerMonitorizacion implements IChecker
 		}
 		
 	}
+	
+//	@RequestMapping(method = RequestMethod.GET, value = "/get/info-status")
+//	public ResponseEntity<?> infoStatus(
+//			@RequestHeader(value = "shutdown", required = false) Boolean shutdown,
+//			@RequestHeader(value = "reboot", required = false) Boolean reboot,
+//			@RequestHeader(value = "executable", required = false) Boolean exec,
+//			@RequestHeader(value = "install", required = false) Boolean install,
+//			@RequestHeader(value = "uninstall", required = false) Boolean uninstall,
+//			@RequestHeader(value = "envWifi", required = false) Boolean envWifi
+//			)
+//	{
+//		try
+//		{
+//			String ejecutables = "";
+//			//Se comprueba si el usuario ha introducido atributos
+//			shutdown = shutdown==null ? false : shutdown;
+//			reboot = reboot==null ? false : reboot;
+//			exec = exec==null ? false : exec;
+//			install = install==null ? false : install;
+//			uninstall = uninstall==null ? false : uninstall;
+//			envWifi = envWifi==null ? false : envWifi;
+//			if(!shutdown && !reboot && !exec && !install && !uninstall && !envWifi)
+//			{
+//				return ResponseEntity.status(204).body("Ahora mismo no hay ninguna peticion a ejecutar");
+//			}
+//			else
+//			{
+//				
+//			}
+//			
+//		}
+//		catch(ComputerError ex)
+//		{
+//			
+//		}
+//		catch(Exception ex)
+//		{
+//			
+//		}
+//	}
+	
 	/**
 	 * Metodo que devuelve una captura de un ordenador usando su numero de serie
 	 * @param serialNumber

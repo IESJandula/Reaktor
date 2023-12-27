@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -345,11 +346,12 @@ public class RestHandlerAdministration implements IChecker
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************
-	 * REAK 105A
-	 *******************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que se encarga de descargar un fichero zip de capturas de pantalla de una clase o carrito
+	 * @param classroom
+	 * @param trolley
+	 * @return OK si los parametros estan bien compuestos, 404 si fallan o 500 si hubo error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/screenshot", produces = "application/zip")
 	public ResponseEntity<?> getScreenshots(@RequestHeader(value = "classroom") String classroom,
 			@RequestHeader(value = "trolley") String trolley)
@@ -390,18 +392,22 @@ public class RestHandlerAdministration implements IChecker
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************
-	 * REAK 106A
-	 *******************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que manda un ejecutable a un ordenador, clase, carrito o planta a ejecurtar o instalarse
+	 * @param serialNumber
+	 * @param classroom
+	 * @param trolley
+	 * @param plant
+	 * @param execFile
+	 * @return OK si los parametros estan bien introducidos, 404 si los parametros o el fichero fallan, 500 si hubo un error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/file")
 	public ResponseEntity<?> postComputerExeFile(
 			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
 			@RequestHeader(value = "classroom", required = false) String classroom,
 			@RequestHeader(value = "trolley", required = false) String trolley,
 			@RequestHeader(value = "plant", required = false) Integer plant,
-			@RequestHeader(value = "execFile", required = false) final MultipartFile execFile)
+			@RequestPart(value = "execFile", required = false) final MultipartFile execFile)
 	{
 		try
 		{
@@ -452,11 +458,14 @@ public class RestHandlerAdministration implements IChecker
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************
-	 * REAK 107A
-	 *******************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que manda a ejecutar software a una clase, carrito o profesor
+	 * @param classroom
+	 * @param trolley
+	 * @param professor
+	 * @param softwareInstance
+	 * @return OK si los parametros estan bien introducidos, 404 si los parametros o el software falla y 500 si hubo un error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/software", consumes = "application/json")
 	public ResponseEntity<?> sendSoftware(@RequestHeader(value = "classroom", required = false) String classroom,
 			@RequestHeader(value = "trolley", required = false) String trolley,
@@ -505,11 +514,14 @@ public class RestHandlerAdministration implements IChecker
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************
-	 * REAK 108A
-	 *******************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que borra software de una clase, carrito o profesor
+	 * @param classroom
+	 * @param trolley
+	 * @param professor
+	 * @param softwareInstance
+	 * @return OK si los parametros estan bien introducidos, 404 si los parametros o el software falla o 500 si hubo un error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/software", consumes = "application/json")
 	public ResponseEntity<?> uninstallSoftware(
 			@RequestHeader(value = "classroom", required = false) String classroom,
@@ -562,11 +574,14 @@ public class RestHandlerAdministration implements IChecker
 		}
 	}
 
-	/************************************************************************************************************************************************/
-	/********************************************************************
-	 * REAK 109A
-	 *******************************************************************/
-	/************************************************************************************************************************************************/
+	/**
+	 * Endpoint que permite editar un ordenador buscandolo por sus atributos
+	 * @param serialNumber
+	 * @param andaluciaId
+	 * @param computerNumber
+	 * @param computer
+	 * @return OK si los parametros estan bien introducidos, 404 si los parametros o el ordenador falla o 500 si hubo un error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.PUT, value = "/edit")
 	public ResponseEntity<?> updateComputer(
 			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
