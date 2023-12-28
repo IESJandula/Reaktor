@@ -50,7 +50,12 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		this.modelos = new LinkedList<ModelCSV>();
 		this.alumnos = new Alumno[0];
 	}
-	
+	/**
+	 * Endpoint que recibe un xml como parametro con el que se recogen todos los datos de un centro
+	 * @param xml
+	 * @return Informacion del xml parseada o un error en caso de que este mal compuesto
+	 * @author Javier Martinez Megias
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = "multipart/form-data")
     public ResponseEntity<?> parseXML(@RequestPart(value = "xml",required = true)MultipartFile xml)
     {
@@ -77,6 +82,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * Endpoint que recibe un fichero csv y lo parsea internamente en sesion
 	 * @param csvFile fichero csv que recibe el servidor
 	 * @return ok si el fichero cumple las condiciones,404 si el formato o la estructura esta mal o 500 si hubo un error interno
+	 * @author Pablo Ruiz Canovas
 	 */
 	@RequestMapping(method = RequestMethod.POST,value = "/send/csv" ,consumes = "multipart/form-data")
 	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "fichero",required = true) final MultipartFile csvFile)
@@ -104,6 +110,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * Endpoint que recibe un email y busca a partir de el la lista de roles de la cuenta asociada
 	 * @param email de la cuenta a buscar 
 	 * @return ok si encontro los roles, 404 si el email no es valido o 500 si hubo un error interno
+	 * @author Pablo Ruiz Canovas
 	 */
 	@RequestMapping(method = RequestMethod.GET,value = "/get/roles")
 	public ResponseEntity<?> getRoles(@RequestHeader(value = "email",required = true) final String email)
@@ -130,6 +137,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	/**
 	 * Endpoint que devuelve una lista de alumnos ordenados
 	 * @return Lista de alumnos ordenados
+	 * @author Pablo Ruiz Canovas
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/sort-students")
 	public ResponseEntity<?> getListStudentsAlphabetically()
@@ -148,6 +156,33 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body("Error de servidor "+ex.getMessage());
 		}
 	}
+	
+	/**
+	 * Enpoint que devuelve el aula en la que imparte clase un profesor usando sus nombres apellidos y el dia que el usuario elija
+	 * @param profesorName
+	 * @param profesorSurname
+	 * @param dia
+	 * @return Aula correspondiente al profesor o un valor nulo si los parametros estan mal o un error por error de servidor o la causa anterior
+	 * @author Javier Martinez Megias
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom", produces = "multipart/form-data")
+    public ResponseEntity<?> getClassroomTeacher(
+            @RequestHeader(value= "profesorName", required = true) String profesorName,
+            @RequestHeader (value= "profesorSurname", required = true)String profesorSurname,
+            @RequestHeader (value= "dia", required = false)Integer dia)
+    {
+		try
+		{		
+				return ResponseEntity.ok(this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro));    	
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
+	
 	
 		
 }
