@@ -18,8 +18,10 @@ import es.iesjandula.horarios.constants.Constantes;
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.csv.ModelCSV;
+import es.iesjandula.horarios.models.xml.Centro;
 import es.iesjandula.horarios.utils.ICSVParser;
 import es.iesjandula.horarios.utils.IChecker;
+import es.iesjandula.horarios.utils.IParserXML;
 
 /**
  * 
@@ -28,10 +30,12 @@ import es.iesjandula.horarios.utils.IChecker;
  */
 @RestController
 @RequestMapping( value = "/horarios",produces = "application/json")
-public class RestHandlerHorarios implements ICSVParser,IChecker
+public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 {
 	/**Logger de la clase */
 	private static Logger log = LogManager.getLogger();
+	/**Datos del xml parseado */
+	private Centro centro;
 	/**Modelos del csv para guardarlos en sesion */
 	private List <ModelCSV> modelos;
 	/**Lista de alumnos por ahora cargados en constantes */
@@ -42,9 +46,33 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 	public RestHandlerHorarios() 
 	{
 		//public constructor
+		this.centro = null;
 		this.modelos = new LinkedList<ModelCSV>();
 		this.alumnos = new Alumno[0];
 	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = "multipart/form-data")
+    public ResponseEntity<?> parseXML(@RequestPart(value = "xml",required = true)MultipartFile xml)
+    {
+		try
+		{
+			this.checkIfEmptyAndXml(xml);
+			centro = this.parserFileToObject(xml);
+			return ResponseEntity.ok(centro.getDatos());
+		}
+		catch (HorarioError exception)
+		{
+			String error = "Is not a xml or is empty";
+			HorarioError horarioError = new HorarioError(404, error);
+			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
+		}
+        catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
 	/**
 	 * Endpoint que recibe un fichero csv y lo parsea internamente en sesion
 	 * @param csvFile fichero csv que recibe el servidor
