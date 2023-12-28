@@ -1,11 +1,6 @@
 package es.iesjandula.horarios.utils;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,7 +160,7 @@ public interface ParserXml
 				int num_tr = Integer.valueOf(tramo.getAttributes().getNamedItem("num_tr").getTextContent());
 				int numero_dia = Integer.valueOf(tramo.getAttributes().getNamedItem("numero_dia").getTextContent());
 				String hora_inicio = tramo.getAttributes().getNamedItem("hora_inicio").getTextContent();
-				String hora_final = tramo.getAttributes().getNamedItem("nombre").getTextContent();
+				String hora_final = tramo.getAttributes().getNamedItem("hora_final").getTextContent();
 				
 				listaTramos.add(new Tramo(num_tr,numero_dia,hora_inicio,hora_final));
 				cont++;
@@ -174,18 +169,17 @@ public interface ParserXml
 			
 			
 			/** Elemento horarios asignaturas **/
-			NodeList nodeListHorarios = rootCentro.getElementsByTagName("HORARIOS");
+			NodeList nodeListHorarios = rootCentro.getElementsByTagName("HORARIO_ASIG");
 			
 			/**------------------------------------------------ HORARIO ASIGNATURAS -------------------------------------------------------------------------------**/
-			/** Lista de horarios asignaturas **/
-			NodeList nodeListHorariosAsignatura = nodeListHorarios.item(0).getChildNodes();
+			
 			
 			cont = 0;
 			
 			/** creamos los objetos tramo **/
-			while(nodeListHorariosAsignatura.getLength() > cont)
+			while(nodeListHorarios.getLength() > cont)
 			{
-				Element horarioAsignatura = (Element) nodeListHorariosAsignatura.item(cont);
+				Element horarioAsignatura = (Element) nodeListHorarios.item(cont);
 				
 				int hor_num_int_as = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_as").getTextContent());
 				int tot_un = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tot_un").getTextContent());
@@ -193,7 +187,7 @@ public interface ParserXml
 				
 				
 				/** Lista de horarios asignatura **/
-				NodeList actividades = nodeListHorariosAsignatura.item(0).getChildNodes();
+				NodeList actividades = horarioAsignatura.getElementsByTagName("ACTIVIDAD");
 				
 				List<Actividad> listaActividades = new ArrayList<Actividad>();
 				int cont1 = 0;
@@ -207,20 +201,51 @@ public interface ParserXml
 					int profesor = Integer.valueOf(actividad.getAttributes().getNamedItem("profesor").getTextContent());
 					
 					
-					Element grupoActividad  = (Element) actividad.getElementsByTagName("GRUPOS_ACTIVIDAD");
+					NodeList gruposActividadList = actividad.getElementsByTagName("GRUPOS_ACTIVIDAD");
+					Element grupoActividad = (Element) gruposActividadList.item(0);
 					int tot_gr_act = 0;
 					int grupo_1 = 0;
 					int grupo_2 = 0;
+					int grupo_3 = 0;
+					int grupo_4 = 0;
+					int grupo_5 = 0;
 					GrupoActividad grupoAct = null;
 					
-					if(grupoActividad.hasAttribute("grupo_1") && grupoActividad.hasAttribute("tot_gr_act") && grupoActividad.hasAttribute("grupo_2"))
+					if(grupoActividad.hasAttribute("grupo_5"))
 					{
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
 						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
-						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2);
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupo_4 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_4").getTextContent());
+						grupo_5= Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_5").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3,grupo_4,grupo_5);
 					}
-					else if(grupoActividad.hasAttribute("grupo_1") && grupoActividad.hasAttribute("tot_gr_act"))
+					else if(grupoActividad.hasAttribute("grupo_4"))
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupo_4 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_4").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3,grupo_4);
+					}
+					else if(grupoActividad.hasAttribute("grupo_3"))
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3);
+					}
+					else if(grupoActividad.hasAttribute("grupo_2") )
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1,grupo_2);
+					}
+					else if(grupoActividad.hasAttribute("grupo_1") )
 					{
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
@@ -233,6 +258,7 @@ public interface ParserXml
 					}
 					
 					listaActividades.add(new Actividad(num_act, num_un, tramo, aula, profesor, grupoAct ));
+					cont1++;
 					
 				}
 				
@@ -241,7 +267,7 @@ public interface ParserXml
 			}	
 			
 			/**-----------------------------------------------------HORARIO GRUPOS -------------------------------------------------------------------------------**/
-			NodeList nodeListHorariosGrupos = nodeListHorarios.item(1).getChildNodes();
+			NodeList nodeListHorariosGrupos =  rootCentro.getElementsByTagName("HORARIO_GRUP");
 			
 			cont = 0;
 			
@@ -250,13 +276,13 @@ public interface ParserXml
 			{
 				Element horarioAsignatura = (Element) nodeListHorariosGrupos.item(cont);
 				
-				int hor_num_int_as = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_as").getTextContent());
+				int hor_num_int_as = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_gr").getTextContent());
 				int tot_un = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tot_un").getTextContent());
 				int tot_ac = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tot_ac").getTextContent());
 				
 				
 				/** Lista de horarios asignatura **/
-				NodeList actividades = nodeListHorariosAsignatura.item(0).getChildNodes();
+				NodeList actividades = horarioAsignatura.getElementsByTagName("ACTIVIDAD");
 				
 				List<Actividad> listaActividades = new ArrayList<Actividad>();
 				int cont1 = 0;
@@ -271,30 +297,30 @@ public interface ParserXml
 					
 					
 					listaActividades.add(new Actividad(num_act, num_un, tramo, aula, profesor));
-					
+					cont1++;
 				}
 				
-				listaHorariosAsignaturas.add(new TipoHorario(hor_num_int_as, tot_un, tot_ac, listaActividades));
+				listaHorariosGrupo.add(new TipoHorario(hor_num_int_as, tot_un, tot_ac, listaActividades));
 				cont++;
 			}	
 			
 			/** -------------------------------------------- HORARIO AULAS -------------------------------------------------------------------------------**/
-			NodeList nodeListHorariosAula = nodeListHorarios.item(2).getChildNodes();
+			NodeList nodeListHorariosAula = rootCentro.getElementsByTagName("HORARIO_AULA");
 			
 			cont = 0;
 			
-			/** creamos los objetos tramo **/
-			while(nodeListHorariosAsignatura.getLength() > cont)
+			
+			while(nodeListHorariosAula.getLength() > cont)
 			{
 				Element horarioAsignatura = (Element) nodeListHorariosAula.item(cont);
 				
-				int hor_num_int_as = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_as").getTextContent());
+				int hor_num_int_as = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_au").getTextContent());
 				int tot_un = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tot_un").getTextContent());
 				int tot_ac = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tot_ac").getTextContent());
 				
 				
-				/** Lista de horarios asignatura **/
-				NodeList actividades = nodeListHorariosAsignatura.item(0).getChildNodes();
+				
+				NodeList actividades = horarioAsignatura.getElementsByTagName("ACTIVIDAD");
 				
 				List<Actividad> listaActividades = new ArrayList<Actividad>();
 				int cont1 = 0;
@@ -304,24 +330,55 @@ public interface ParserXml
 					int num_act = Integer.valueOf(actividad.getAttributes().getNamedItem("num_act").getTextContent());
 					int num_un = Integer.valueOf(actividad.getAttributes().getNamedItem("num_un").getTextContent());
 					int tramo = Integer.valueOf(actividad.getAttributes().getNamedItem("tramo").getTextContent());
-					int aula = Integer.valueOf(actividad.getAttributes().getNamedItem("aula").getTextContent());
+					int aula = Integer.valueOf(actividad.getAttributes().getNamedItem("asignatura").getTextContent());
 					int profesor = Integer.valueOf(actividad.getAttributes().getNamedItem("profesor").getTextContent());
 					
 					
-					Element grupoActividad  = (Element) actividad.getElementsByTagName("GRUPOS_ACTIVIDAD");
+					NodeList gruposActividadList = actividad.getElementsByTagName("GRUPOS_ACTIVIDAD");
+					Element grupoActividad = (Element) gruposActividadList.item(0);
 					int tot_gr_act = 0;
 					int grupo_1 = 0;
 					int grupo_2 = 0;
+					int grupo_3 = 0;
+					int grupo_4 = 0;
+					int grupo_5 = 0;
 					GrupoActividad grupoAct = null;
 					
-					if(grupoActividad.hasAttribute("grupo_1") && grupoActividad.hasAttribute("tot_gr_act") && grupoActividad.hasAttribute("grupo_2"))
+					if(grupoActividad.hasAttribute("grupo_5"))
 					{
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
 						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
-						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2);
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupo_4 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_4").getTextContent());
+						grupo_5= Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_5").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3,grupo_4,grupo_5);
 					}
-					else if(grupoActividad.hasAttribute("grupo_1") && grupoActividad.hasAttribute("tot_gr_act"))
+					else if(grupoActividad.hasAttribute("grupo_4"))
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupo_4 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_4").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3,grupo_4);
+					}
+					else if(grupoActividad.hasAttribute("grupo_3"))
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3);
+					}
+					else if(grupoActividad.hasAttribute("grupo_2") )
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1,grupo_2);
+					}
+					else if(grupoActividad.hasAttribute("grupo_1") )
 					{
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
@@ -332,33 +389,31 @@ public interface ParserXml
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupoAct = new GrupoActividad(tot_gr_act);
 					}
-					
 					listaActividades.add(new Actividad(num_act, num_un, tramo, aula, profesor, grupoAct ));
-					
+					cont1++;
 				}
 				
-				listaHorariosAsignaturas.add(new TipoHorario(hor_num_int_as, tot_un, tot_ac, listaActividades));
+				listaHorariosAulas.add(new TipoHorario(hor_num_int_as, tot_un, tot_ac, listaActividades));
 				cont++;
 			}	
 			
 			/** --------------------------------------------- HORARIO PROFESOR -------------------------------------------------------------------------------**/
-			NodeList nodeListHorariosProfesor = nodeListHorarios.item(3).getChildNodes();
+			NodeList nodeListHorariosProfesor = rootCentro.getElementsByTagName("HORARIO_PROF");
 			
 			cont = 0;
 			
 			/** creamos los objetos tramo **/
-			while(nodeListHorariosAsignatura.getLength() > cont)
+			while(nodeListHorariosProfesor.getLength() > cont)
 			{
 				Element horarioAsignatura = (Element) nodeListHorariosProfesor.item(cont);
 				
-				int hor_num_int_as = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_as").getTextContent());
+				int hor_num_int_as = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_pr").getTextContent());
 				int tot_un = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tot_un").getTextContent());
 				int tot_ac = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tot_ac").getTextContent());
 				
 				
 				/** Lista de horarios asignatura **/
-				NodeList actividades = nodeListHorariosAsignatura.item(0).getChildNodes();
-				
+				NodeList actividades = horarioAsignatura.getElementsByTagName("ACTIVIDAD");
 				List<Actividad> listaActividades = new ArrayList<Actividad>();
 				int cont1 = 0;
 				while(actividades.getLength() > cont1)
@@ -367,24 +422,55 @@ public interface ParserXml
 					int num_act = Integer.valueOf(actividad.getAttributes().getNamedItem("num_act").getTextContent());
 					int num_un = Integer.valueOf(actividad.getAttributes().getNamedItem("num_un").getTextContent());
 					int tramo = Integer.valueOf(actividad.getAttributes().getNamedItem("tramo").getTextContent());
+					int asignatura = Integer.valueOf(actividad.getAttributes().getNamedItem("asignatura").getTextContent());
 					int aula = Integer.valueOf(actividad.getAttributes().getNamedItem("aula").getTextContent());
-					int profesor = Integer.valueOf(actividad.getAttributes().getNamedItem("profesor").getTextContent());
 					
 					
-					Element grupoActividad  = (Element) actividad.getElementsByTagName("GRUPOS_ACTIVIDAD");
+					NodeList gruposActividadList = actividad.getElementsByTagName("GRUPOS_ACTIVIDAD");
+					Element grupoActividad = (Element) gruposActividadList.item(0);
 					int tot_gr_act = 0;
 					int grupo_1 = 0;
 					int grupo_2 = 0;
+					int grupo_3 = 0;
+					int grupo_4 = 0;
+					int grupo_5 = 0;
 					GrupoActividad grupoAct = null;
 					
-					if(grupoActividad.hasAttribute("grupo_1") && grupoActividad.hasAttribute("tot_gr_act") && grupoActividad.hasAttribute("grupo_2"))
+					if(grupoActividad.hasAttribute("grupo_5"))
 					{
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
 						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
-						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2);
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupo_4 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_4").getTextContent());
+						grupo_5= Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_5").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3,grupo_4,grupo_5);
 					}
-					else if(grupoActividad.hasAttribute("grupo_1") && grupoActividad.hasAttribute("tot_gr_act"))
+					else if(grupoActividad.hasAttribute("grupo_4"))
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupo_4 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_4").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3,grupo_4);
+					}
+					else if(grupoActividad.hasAttribute("grupo_3"))
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupo_3 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_3").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1, grupo_2,grupo_3);
+					}
+					else if(grupoActividad.hasAttribute("grupo_2") )
+					{
+						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
+						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+						grupo_2 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_2").getTextContent());
+						grupoAct = new GrupoActividad(tot_gr_act, grupo_1,grupo_2);
+					}
+					else if(grupoActividad.hasAttribute("grupo_1") )
 					{
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupo_1 = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
@@ -395,12 +481,11 @@ public interface ParserXml
 						tot_gr_act = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("tot_gr_act").getTextContent());
 						grupoAct = new GrupoActividad(tot_gr_act);
 					}
-					
-					listaActividades.add(new Actividad(num_act, num_un, tramo, aula, profesor, grupoAct ));
-					
+					listaActividades.add(new Actividad(num_act, num_un, tramo, asignatura, aula, grupoAct ));
+					cont1++;
 				}
 				
-				listaHorariosAsignaturas.add(new TipoHorario(hor_num_int_as, tot_un, tot_ac, listaActividades));
+				listaHorariosProfesores.add(new TipoHorario(hor_num_int_as, tot_un, tot_ac, listaActividades));
 				cont++;
 			}	
 			

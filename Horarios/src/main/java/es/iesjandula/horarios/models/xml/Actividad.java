@@ -19,9 +19,9 @@ public class Actividad
 	/** Numero de tramo**/
 	private int tramo;
 	/** Numero de aulo **/
-	private int aula;
+	private int aulaOAsignatura;
 	/** Numero de profesor **/
-	private int profesor;
+	private int profesorOAula;
 	/*Grupo de actividad*/
 	private GrupoActividad grupoActividad;
 	/**
@@ -31,13 +31,13 @@ public class Actividad
 	 * @param aula
 	 * @param profesor
 	 */
-	public Actividad(int num_act, int num_un, int tramo, int aula, int profesor)
+	public Actividad(int num_act, int num_un, int tramo, int aulaOAsignatura, int profesorOAula)
 	{
 		this.num_act = num_act;
 		this.num_un = num_un;
 		this.tramo = tramo;
-		this.aula = aula;
-		this.profesor = profesor;
+		this.aulaOAsignatura = aulaOAsignatura;
+		this.profesorOAula = profesorOAula;
 	}
 	
 	
