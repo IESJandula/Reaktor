@@ -1,6 +1,11 @@
 package es.iesjandula.horarios.rest;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,10 +18,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
 import es.iesjandula.horarios.exception.HorarioError;
+import es.iesjandula.horarios.models.xml.Actividad;
 import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.models.xml.Centro;
 import es.iesjandula.horarios.models.xml.Profesor;
+import es.iesjandula.horarios.models.xml.TipoHorario;
 import es.iesjandula.horarios.models.xml.Tramo;
 import es.iesjandula.horarios.utils.ParserXml;
 
@@ -92,19 +101,20 @@ public class RestHandlerHorarios implements ParserXml
 	
 	/**
 	 * 
-	 * @param xml
+	 * @param profesorName
+	 * @param profesorSurname
+	 * @param dia
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/teacher/get/classroom", produces = "multipart/form-data")
+	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom", produces = "multipart/form-data")
     public ResponseEntity<?> getClassroomTeacher(
-            @RequestHeader String profesorName,
-            @RequestHeader String profesorSurname)
+            @RequestHeader(value= "profesorName", required = true) String profesorName,
+            @RequestHeader (value= "profesorSurname", required = true)String profesorSurname,
+            @RequestHeader (value= "dia", required = false)Integer dia)
     {
 		try
-		{
-			
-				return ResponseEntity.ok("");
-	    	
+		{		
+				return ResponseEntity.ok(getAulaByProfesorName(profesorName, profesorSurname, dia));    	
 		}
 		catch (Exception exception)
 		{     	
@@ -115,14 +125,25 @@ public class RestHandlerHorarios implements ParserXml
     }
 	
 	
-	private Aula getAulaByProfesorName(String name, String surneme)
+	private String getAulaByProfesorName(String name, String surneme, Integer dia)
 	{	
 		String horaActual = getActualHour();
+		
+		if(dia == null)
+		{
+			LocalDate date = LocalDate.now()  ;
+			DayOfWeek day = date.getDayOfWeek();
+			dia = day.getValue();
+		}
+		
 		List<Profesor> listaProfesores = centro.getDatos().getProfesor();
 		List<Tramo> listaTramos = centro.getDatos().getTramo();
+		List<TipoHorario> listaHorarioProf = centro.getDatos().getHorarios().getHorarioProfesores();
+		List<Aula> listaAulas = centro.getDatos().getAula();
+		
 		int numeroProfesor = 0;
 		int numeroTramo = 0;
-		
+		int aula = 0;
 		for(Profesor x : listaProfesores)
 		{
 			if(x.getNombre().equalsIgnoreCase(surneme+", "+name))
@@ -130,16 +151,40 @@ public class RestHandlerHorarios implements ParserXml
 				numeroProfesor=x.getNum_int_pr();
 			}
 		}
-//		for(Tramo x : listaTramos)
-//		{
-//			x.getHora_final();
-//			x.getHora_inicio();
-//			if(x.getNombre().equalsIgnoreCase(surneme+", "+name))
-//			{
-//				numeroProfesor=x.getNum_int_pr();
-//			}
-//		}
-		return null;	
+		for(Tramo x : listaTramos)
+		{
+			String horaFinal = x.getHora_final();
+			String horaInicio = x.getHora_inicio();
+			int menorHoraFinal = horaFinal.compareTo(horaActual);
+			int mayorHoraInicial = horaInicio.compareTo(horaActual);
+			if(menorHoraFinal >= 0 && mayorHoraInicial <= 0 && x.getNumero_dia() == dia)
+			{
+				numeroTramo = x.getNum_tr();
+			}
+		}
+		for(TipoHorario x :  listaHorarioProf)
+		{
+			if(x.getHor_num_int_typo() == numeroProfesor)
+			{
+				for(Actividad y : x.getActividades())
+				{
+					if(y.getTramo() == numeroTramo)
+					{
+						aula = y.getProfesorOAula();
+					}
+				}
+			}
+		}
+		for(Aula x : listaAulas)
+		{
+			if(x.getNum_int_au() == aula)
+			{
+				return x.getNombre();
+			}
+		}
+		
+		
+		return "No se ecuentra en ningun aula";	
 		
 	}
 
