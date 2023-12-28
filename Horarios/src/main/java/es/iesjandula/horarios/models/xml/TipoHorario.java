@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class TipoHorario
 {
 	/**Numero de hora asistidas**/
-	private int hor_num_int_as;
+	private int hor_num_int_tipo;
 	/**Numero de un**/
 	private int tot_un;
 	/**Numero de actividades**/
