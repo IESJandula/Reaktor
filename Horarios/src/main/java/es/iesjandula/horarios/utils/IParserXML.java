@@ -38,6 +38,23 @@ public interface IParserXML
 	static Logger log = LogManager.getLogger();
 	
 	/**
+	 * Metodo que comprueba si el fichero es un fichero xml y que tenga contenido
+	 * @param xml
+	 * @throws HorarioError
+	 */
+	public default void checkIfEmptyAndXml(MultipartFile xml) throws HorarioError
+	{
+	
+		if(!xml.getOriginalFilename().endsWith(".xml") && !xml.getOriginalFilename().endsWith(".XML"))
+		{
+			throw new HorarioError(1,"El fichero debe ser un xml");
+		}
+		else if(xml.isEmpty())
+		{
+			throw new HorarioError(3,"Error, fichero corrupto, ilegible en bytes o vacio");
+		}
+	}
+	/**
 	 * Metodo que parsea el xml pasado como parametro del endpoint
 	 * @param xml
 	 * @return Datos del xml guardados en el objeto Centro
@@ -191,6 +208,7 @@ public interface IParserXML
 				
 				List<Actividad> listaActividades = new ArrayList<Actividad>();
 				int cont1 = 0;
+				/**Creamos los grupos de actividades usando los tramos */
 				while(actividades.getLength() > cont1)
 				{
 					Element actividad = (Element) actividades.item(cont1);
