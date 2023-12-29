@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -1105,5 +1107,216 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 		return ResponseEntity.ok().body(listaCurso);
+	}
+	
+	/**
+	 * Method getClassroomTeacher
+	 * @param name
+	 * @param lastname
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/teacher/get/classroom",produces = "application/json")
+	public ResponseEntity<?> getClassroomTeacher(
+			@RequestHeader(required=true) String name,
+			@RequestHeader(required=true) String lastname,
+			HttpSession session)
+	{
+		try {
+			if(!name.isEmpty() && !name.isBlank() && !lastname.isBlank() && !lastname.isEmpty()) 
+			{
+				// --- GETTING THE STORED CENTRO DATA SESSION ---
+				if (session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
+				{
+					Centro centro = (Centro) session.getAttribute("storedCentro");
+					for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+					{
+						String profName = prof.getNombre().trim().toLowerCase();
+						String profLastName = prof.getPrimerApellido().trim().toLowerCase()+" "+prof.getSegundoApellido().trim().toLowerCase();
+						
+						System.out.println(prof);
+						if(profName.equalsIgnoreCase(name.trim()) && profLastName.equalsIgnoreCase(lastname.trim())) 
+						{
+							System.out.println("EXISTE "+prof);
+							
+							// Getting the actual time
+							String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
+							log.info(actualTime);
+							
+							
+							Tramo profTramo = null;
+							for(Tramo tramo : centro.getDatos().getTramosHorarios().getTramo()) 
+							{
+								int numTr= Integer.parseInt(tramo.getNumTr());
+								
+								// --- GETTING THE HORA,MINUTO , INICIO AND FIN ---
+								int horaInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[0].trim());
+								int minutoInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[1].trim());
+								
+								int horaFin = Integer.parseInt(tramo.getHoraFinal().split(":")[0].trim());
+								int minutoFin = Integer.parseInt(tramo.getHoraFinal().split(":")[1].trim());
+				
+								// --- GETTING THE HORA, MINUTO ACTUAL ---
+								int horaActual = Integer.parseInt(actualTime.split(":")[0].trim());
+								int minutoActual = Integer.parseInt(actualTime.split(":")[1].trim());
+								
+								// --- USE CALENDAR INSTANCE FOR GET INTEGER WITH THE NUMBER OF THE DAY ON THE WEEK ---
+								Calendar calendar = Calendar.getInstance();
+								// --- PARSIN CALENDAR DAY_OF_WEK TO NUMBER -1 (-1 BECAUSE THIS START ON SUNDAY)--
+								int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1;
+								
+								// --- IF DAY IS 0 , IS 7 , BACUSE IS SUNDAY ---
+								if(dayOfWeek==0) 
+								{
+									dayOfWeek=7;
+								}
+								
+								// --- DAY OF TRAMO ---
+								if(Integer.parseInt(tramo.getNumeroDia())==dayOfWeek) 
+								{
+									// --- IF HORA ACTUAL EQUALS HORA INICIO ---
+									if(horaActual==horaInicio)
+									{
+										// --- CHEKING IF THE MINUTO ACTUAL IS GREATER THAN THE MINUTO INICIO AND HORA ACTUAL LESS THAN HORA FIN ---
+										if(minutoActual>=minutoInicio && horaActual<=horaFin) 
+										{
+											// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
+											System.out.println("ENCONTRADO -> "+tramo);
+											profTramo = tramo;
+											
+										}
+									}
+									// --- IF HORA ACTUAL EQUALS HORA FIN ---
+									else if(horaActual==horaFin)
+									{
+										// --- CHEKING IF THE MINUTO ACTUAL IS LESS THAN MINUTO FIN ---
+										if(minutoActual<=minutoFin)
+										{
+											// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
+											System.out.println("ENCONTRADO -> "+tramo);
+											profTramo = tramo;
+											
+										}
+									}
+									
+								}
+							}
+							
+							// --- IF PROF TRAMO IS NOT NULL ---
+							if(profTramo!=null) 
+							{
+								for(HorarioProf horarioProf : centro.getHorarios().getHorariosProfesores().getHorarioProf()) 
+								{
+									if(prof.getNumIntPR().equalsIgnoreCase(horarioProf.getHorNumIntPR())) 
+									{
+										System.out.println("ENCONTRADO HORARIO PROF-> "+horarioProf);
+										
+										Actividad profActividad = null;
+										for(Actividad actividad : horarioProf.getActividad()) 
+										{
+											if(actividad.getTramo().trim().equalsIgnoreCase(profTramo.getNumTr().trim())) 
+											{
+												System.out.println("ENCONTRADO ACTIVIDAD -> "+actividad);
+												profActividad=actividad;
+												
+												// --- LEAVING ACTIVIDAD FOR EACH ---
+												break;
+											}
+										}
+										if(profActividad==null) 
+										{
+											System.out.println("EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof);
+											// --- ERROR ---
+											String error = "EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof;
+											HorariosError horariosError = new HorariosError(500, error, null);
+											log.info(error,horariosError);
+											return ResponseEntity.status(400).body(horariosError);
+										}
+										
+										// --- IF PROF ACTIVIAD IS NOT NULL ---
+										if(profActividad!=null) 
+										{
+											// --- GETTING THE ACTUAL AULA FROM AND GENERATE CLASSROOM ---
+											Aula profAula = null;
+											for(Aula aula :centro.getDatos().getAulas().getAula()) 
+											{
+												if(aula.getNumIntAu().trim().equalsIgnoreCase(profActividad.getAula().trim())) 
+												{
+													System.out.println("AULA ENCONTRADA PARA LA ACTIVIDAD --> "+profActividad+"\n"+aula);
+													// --- SETTING THE AULA VALUE TO PROF AULA ---
+													profAula = aula;
+													
+													// --- LEAVING AULA FOR EACH ---
+													break;
+												}
+											}
+											
+											if(profAula!=null) 
+											{
+												System.out.println("AULA ACTUAL PROFESOR: "+prof+"\n"+profAula);
+												Classroom classroom = null;
+												String nombreAula = profAula.getNombre();
+	
+												String[] plantaAula = profAula.getAbreviatura().split("\\.");
+												
+												String plantaNumero = "";
+												String numeroAula = "";
+												
+												// -- THE VALUES WITH CHARACTERS ONLY HAVE 1 POSITION ---
+												if(plantaAula.length>1) 
+												{
+													plantaNumero = plantaAula[0].trim();
+													numeroAula = plantaAula[1].trim();
+												}
+												else 
+												{
+													plantaNumero = plantaAula[0].trim();
+													numeroAula = plantaAula[0].trim();
+													if(plantaNumero.isEmpty()||numeroAula.isEmpty()) 
+													{
+														plantaNumero = nombreAula;
+														numeroAula = nombreAula;
+													}
+												}
+												
+												classroom = new Classroom(plantaNumero, numeroAula);
+												System.out.println(classroom);
+												return ResponseEntity.ok().body(classroom);
+											}
+										}
+										
+	
+										// --- LEAVING PROFTRAMO FOREACH ---
+										break;
+									}
+								}
+								// --- LEAVING PROF FOREACH ---
+								break;
+							}
+						}
+					}
+				}
+				else 
+				{
+					// --- ERROR ---
+					String error = "Error on storedcentro";
+					HorariosError horariosError = new HorariosError(500, error, null);
+					log.info(error,horariosError);
+					return ResponseEntity.status(400).body(horariosError);
+				}
+			}
+			// --- ERROR ---
+			String error = "Error on parameters from header";
+			HorariosError horariosError = new HorariosError(500, error, null);
+			log.info(error,horariosError);
+			return ResponseEntity.status(400).body(horariosError);
+		}
+		catch(Exception exception) 
+		{
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.info(error,horariosError);
+			return ResponseEntity.status(500).body(horariosError);
+		}
 	}
 }
