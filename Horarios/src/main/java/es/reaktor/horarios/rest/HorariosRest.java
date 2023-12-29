@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -1169,6 +1170,10 @@ public class HorariosRest
 								{
 									dayOfWeek=7;
 								}
+								if(dayOfWeek>=6)
+								{
+									log.warn("DIA EXCEDIDO: (6:SABADO-7:DOMINGO) -> "+dayOfWeek);
+								}
 								
 								// --- DAY OF TRAMO ---
 								if(Integer.parseInt(tramo.getNumeroDia())==dayOfWeek) 
@@ -1253,7 +1258,6 @@ public class HorariosRest
 											if(profAula!=null) 
 											{
 												System.out.println("AULA ACTUAL PROFESOR: "+prof+"\n"+profAula);
-												Classroom classroom = null;
 												String nombreAula = profAula.getNombre();
 	
 												String[] plantaAula = profAula.getAbreviatura().split("\\.");
@@ -1278,7 +1282,7 @@ public class HorariosRest
 													}
 												}
 												
-												classroom = new Classroom(plantaNumero, numeroAula);
+												Classroom classroom = new Classroom(plantaNumero, numeroAula);
 												System.out.println(classroom);
 												return ResponseEntity.ok().body(classroom);
 											}
@@ -1291,6 +1295,177 @@ public class HorariosRest
 								}
 								// --- LEAVING PROF FOREACH ---
 								break;
+							}
+							else 
+							{
+								// --- ERROR ---
+								LocalDateTime dateTime = LocalDateTime.now();
+								String error = "Tramo no encontrado para fecha actual: "+dateTime+" ";
+								HorariosError horariosError = new HorariosError(400, error, null);
+								log.info(error,horariosError);
+								return ResponseEntity.status(400).body(horariosError);
+							}
+						}
+					}
+				}
+				else 
+				{
+					// --- ERROR ---
+					String error = "Error on storedcentro";
+					HorariosError horariosError = new HorariosError(500, error, null);
+					log.info(error,horariosError);
+					return ResponseEntity.status(400).body(horariosError);
+				}
+			}
+			// --- ERROR ---
+			String error = "Error on parameters from header";
+			HorariosError horariosError = new HorariosError(500, error, null);
+			log.info(error,horariosError);
+			return ResponseEntity.status(400).body(horariosError);
+		}
+		catch(Exception exception) 
+		{
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.info(error,horariosError);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
+	
+	/**
+	 * Method getClassroomTeacher
+	 * @param name
+	 * @param lastname
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/teacher/get/Classroom/tramo",produces = "application/json")
+	public ResponseEntity<?> getClassroomTeacherSchedule(
+			@RequestHeader(required=true) String name,
+			@RequestHeader(required=true) String lastname,
+			@RequestBody(required=true) Tramo profTramo,
+			HttpSession session)
+	{
+		try 
+		{
+			log.info(profTramo.toString());
+			if(!name.isEmpty() && !name.isBlank() && !lastname.isBlank() && !lastname.isEmpty()) 
+			{
+				// --- GETTING THE STORED CENTRO DATA SESSION ---
+				if (session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
+				{
+					Centro centro = (Centro) session.getAttribute("storedCentro");
+					for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+					{
+						String profName = prof.getNombre().trim().toLowerCase();
+						String profLastName = prof.getPrimerApellido().trim().toLowerCase()+" "+prof.getSegundoApellido().trim().toLowerCase();
+						
+						System.out.println(prof);
+						if(profName.equalsIgnoreCase(name.trim()) && profLastName.equalsIgnoreCase(lastname.trim())) 
+						{
+							System.out.println("EXISTE "+prof);
+							
+							// Getting the actual time
+							String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
+							log.info(actualTime);
+							
+							// --- IF PROF TRAMO IS NOT NULL ---
+							if(profTramo!=null) 
+							{
+								for(HorarioProf horarioProf : centro.getHorarios().getHorariosProfesores().getHorarioProf()) 
+								{
+									if(prof.getNumIntPR().equalsIgnoreCase(horarioProf.getHorNumIntPR())) 
+									{
+										System.out.println("ENCONTRADO HORARIO PROF-> "+horarioProf);
+										
+										Actividad profActividad = null;
+										for(Actividad actividad : horarioProf.getActividad()) 
+										{
+											if(actividad.getTramo().trim().equalsIgnoreCase(profTramo.getNumTr().trim())) 
+											{
+												System.out.println("ENCONTRADO ACTIVIDAD -> "+actividad);
+												profActividad=actividad;
+												
+												// --- LEAVING ACTIVIDAD FOR EACH ---
+												break;
+											}
+										}
+										if(profActividad==null) 
+										{
+											System.out.println("EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof);
+											// --- ERROR ---
+											String error = "EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof;
+											HorariosError horariosError = new HorariosError(500, error, null);
+											log.info(error,horariosError);
+											return ResponseEntity.status(400).body(horariosError);
+										}
+										
+										// --- IF PROF ACTIVIAD IS NOT NULL ---
+										if(profActividad!=null) 
+										{
+											// --- GETTING THE ACTUAL AULA FROM AND GENERATE CLASSROOM ---
+											Aula profAula = null;
+											for(Aula aula :centro.getDatos().getAulas().getAula()) 
+											{
+												if(aula.getNumIntAu().trim().equalsIgnoreCase(profActividad.getAula().trim())) 
+												{
+													System.out.println("AULA ENCONTRADA PARA LA ACTIVIDAD --> "+profActividad+"\n"+aula);
+													// --- SETTING THE AULA VALUE TO PROF AULA ---
+													profAula = aula;
+													
+													// --- LEAVING AULA FOR EACH ---
+													break;
+												}
+											}
+											
+											if(profAula!=null) 
+											{
+												System.out.println("AULA ACTUAL PROFESOR: "+prof+"\n"+profAula);
+												String nombreAula = profAula.getNombre();
+	
+												String[] plantaAula = profAula.getAbreviatura().split("\\.");
+												
+												String plantaNumero = "";
+												String numeroAula = "";
+												
+												// -- THE VALUES WITH CHARACTERS ONLY HAVE 1 POSITION ---
+												if(plantaAula.length>1) 
+												{
+													plantaNumero = plantaAula[0].trim();
+													numeroAula = plantaAula[1].trim();
+												}
+												else 
+												{
+													plantaNumero = plantaAula[0].trim();
+													numeroAula = plantaAula[0].trim();
+													if(plantaNumero.isEmpty()||numeroAula.isEmpty()) 
+													{
+														plantaNumero = nombreAula;
+														numeroAula = nombreAula;
+													}
+												}
+												
+												Classroom classroom = new Classroom(plantaNumero, numeroAula);
+												System.out.println(classroom);
+												return ResponseEntity.ok().body(classroom);
+											}
+										}
+										
+	
+										// --- LEAVING PROFTRAMO FOREACH ---
+										break;
+									}
+								}
+								// --- LEAVING PROF FOREACH ---
+								break;
+							}
+							else 
+							{
+								// --- ERROR ---
+								String error = "Tramo introducido null"+ profTramo;
+								HorariosError horariosError = new HorariosError(400, error, null);
+								log.info(error,horariosError);
+								return ResponseEntity.status(400).body(horariosError);
 							}
 						}
 					}
