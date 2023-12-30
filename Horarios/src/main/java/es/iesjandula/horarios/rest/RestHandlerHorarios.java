@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.csv.ModelCSV;
+import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.utils.ICSVParser;
 import es.iesjandula.horarios.utils.IChecker;
 
@@ -89,5 +91,45 @@ public class RestHandlerHorarios implements ICSVParser,IChecker
 			return ResponseEntity.status(404).body("Error de servidor");
 		}
 	}
+	/**
+	 * Endpoint que devuelve un aula pasandole un profesor y un tramo horario
+	 * @param profesorName
+	 * @param profesorSurname
+	 * @param time
+	 * @param dia
+	 * @return 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom/{time}")
+	public ResponseEntity<?> getClassroomTeacherTime(
+			@RequestHeader(value = "profesorName",required = true)String profesorName,
+			@RequestHeader(value = "profesorSurname",required = true)String profesorSurname,
+			@PathVariable(name = "time",value = "time",required = true)String time,
+			@RequestHeader(value = "dia",required = false)Integer dia
+			)
+	{
+		try
+		{
+			this.checkHora(time);
+			Aula aula = this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro, time);
+			if (aula == null)
+			{
+				throw new HorarioError(1, "No se ha encontrado el aula");
+			}
+			else
+			{
+				return ResponseEntity.ok().body(aula); 
+			}
+		}
+		catch(HorarioError ex)
+		{
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			return ResponseEntity.status(500).body("Server error "+ex.getMessage());
+		}
+	}
+	
+	
 		
 }
