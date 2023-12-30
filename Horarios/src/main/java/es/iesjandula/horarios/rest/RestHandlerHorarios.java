@@ -175,14 +175,18 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
     {
 		try
 		{			
+			//Comprobamos que los parametros esten bien compuestos y que el profesor exista
 			this.checkNameSurnameDay(profesorName, profesorSurname, dia, centro.getDatos().getProfesor());
 			Aula aula = this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro, null);
 			if (aula == null)
 			{
-				throw new HorarioError(1, "No se ha encontrado el aula");
+				//Si no encuentra el aula devuelve un error
+				log.warn("No se ha encontrado el aula");
+				throw new HorarioError(17, "No se ha encontrado el aula");
 			}
 			else
 			{
+				//Si la encuentra la devuelve
 				return ResponseEntity.ok().body(aula); 
 			}
 						
@@ -206,7 +210,8 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * @param profesorSurname
 	 * @param time
 	 * @param dia
-	 * @return ok si los parametros estan bien introducidos con un aula como json, 404 si los parametros fallan o 500 si hay un error de servidor 
+	 * @return ok si los parametros estan bien introducidos con un aula como json, 404 si los parametros fallan o 500 si hay un error de servidor
+	 * @author Pablo Ruiz Canovas 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom/{time}")
 	public ResponseEntity<?> getClassroomTeacherTime(
@@ -218,14 +223,21 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	{
 		try
 		{
+			//Comprobamos que la hora este bien compuesta
 			this.checkHora(time);
+			//Comprobamos que el profesor exista 
+			this.checkNameSurnameDay(profesorName, profesorSurname, dia, centro.getDatos().getProfesor());
+			//Obtenemos el aula a partir de los parametros introducidos 
 			Aula aula = this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro, time);
 			if (aula == null)
 			{
-				throw new HorarioError(1, "No se ha encontrado el aula");
+				//Si no encuentra el aula devuelve un error
+				log.warn("No se ha encontrado el aula");
+				throw new HorarioError(17, "No se ha encontrado el aula");
 			}
 			else
 			{
+				//Si la encuentra la devuelve
 				return ResponseEntity.ok().body(aula); 
 			}
 		}
