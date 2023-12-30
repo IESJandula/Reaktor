@@ -185,16 +185,21 @@ public interface IChecker
 	
 	public default void checkNameSurnameDay(String name,String surname,int dia,  List<Profesor> listaProfesores) throws HorarioError
 	{
+		//Comprobamos que el nombre o apellido no esten vacios
 		if (name.isEmpty() || surname.isEmpty())
 		{
-			throw new HorarioError(1, "El nombre o el apellido estan vacios");		
+			log.error("El nombre y apellidos estan vacios");
+			throw new HorarioError(9, "El nombre o el apellido estan vacios");		
 		}
-		else if(dia > 7 || dia < 1)
+		//Comprobamos que los dias esten bien puestos
+		else if(dia > 5 || dia < 1)
 		{
-			throw new HorarioError(1, "El numero elegido no es un dia de la semana");	
+			log.error("El dia "+dia+" no se encuentra en el ranfo de 1 y 5");
+			throw new HorarioError(10, "El numero elegido no es un dia de la semana");	
 		}
 		else 
 		{
+			//Buscamos al profesor por su nombre y apellido
 			boolean encontrado = false;
 			for(Profesor x : listaProfesores)
 			{
@@ -203,9 +208,11 @@ public interface IChecker
 					encontrado = true;
 				}
 			}
+			//Si no lo encuentra devuelve un error
 			if(!encontrado)
 			{
-				throw new HorarioError(1, "No se ha encontrado el profesor");
+				log.error("No se ha encontrado al profesor");
+				throw new HorarioError(11, "No se ha encontrado el profesor");
 			}
 		}
 		
@@ -221,35 +228,40 @@ public interface IChecker
 		
 		try
 		{
+			//Separamos la hora
 			String [] splitHora = hora.split(":");
 			splitHora[1] = splitHora[1].substring(0);
+			//Convertimos la hora y minutos a enteros
 			Integer numHora = Integer.parseInt(splitHora[0]);
 			Integer numMinutos = Integer.parseInt(splitHora[1]);
+			//Comprobamos que el array este bien compuesto
 			if(splitHora.length!=2)
 			{
 				log.error("El array de horas no cumple la longitud establecida que son 2");
-				throw new HorarioError(1,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
+				throw new HorarioError(12,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
 			}
+			//Comprobamos que la hora esta bien introducida
 			else if(numHora>14 || numHora<8)
 			{
 				log.error("La hora "+numHora+" no entra en el rango de 8 a 14");
-				throw new HorarioError(2,"La hora"+numHora+" no coincide con la establecida en el centro de 8 a 14");
+				throw new HorarioError(13,"La hora"+numHora+" no coincide con la establecida en el centro de 8 a 14");
 			}
+			//Comprobamos que los minutos esten bien introducidos
 			else if(numMinutos>60 || numMinutos<1)
 			{
 				log.error("Los minutos "+numMinutos+ "no coinciden en el rango de 0 a 60");
-				throw new HorarioError(2,"Los minutos estan mal introducidos");
+				throw new HorarioError(14,"Los minutos estan mal introducidos");
 			}
 		}
 		catch(IndexOutOfBoundsException ex)
 		{
 			log.error("Error al parsear la hora, hay menos datos de los previstos");
-			throw new HorarioError(1,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
+			throw new HorarioError(15,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
 		}
 		catch(NumberFormatException ex)
 		{
 			log.error("Error al parsear las horas a formato entero",ex);
-			throw new HorarioError(1,"La hora esta en un formato incorrecto");
+			throw new HorarioError(16,"La hora esta en un formato incorrecto");
 		}
 		
 	}
