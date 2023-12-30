@@ -92,10 +92,10 @@ public interface IChecker
 	 * @return el aula encontrada o un valor nulo si no la encuentra
 	 * @author Javier Martinez Megias
 	 */
-	public default Aula getAulaByProfesorName(String name, String surneme, Integer dia, Centro centro)
+	public default Aula getAulaByProfesorName(String name, String surneme, Integer dia, Centro centro, String hora)
 	{	
 		//Obtencion de la hora actual
-		String horaActual = this.getActualHour();
+		String horaActual = hora==null ?  this.getActualHour() : hora;
 		
 		//Si el dia es nulo cogemos el dia del sistema
 		if(dia == null)
@@ -207,6 +207,49 @@ public interface IChecker
 			{
 				throw new HorarioError(1, "No se ha encontrado el profesor");
 			}
+		}
+		
+	}
+	
+	/**
+	 * Metodo que comprueba que la hora este en el formato correcto %%:%%
+	 * @param hora
+	 * @throws HorarioError
+	 */
+	public default void checkHora(String hora) throws HorarioError
+	{
+		
+		try
+		{
+			String [] splitHora = hora.split(":");
+			splitHora[1] = splitHora[1].substring(0);
+			Integer numHora = Integer.parseInt(splitHora[0]);
+			Integer numMinutos = Integer.parseInt(splitHora[1]);
+			if(splitHora.length!=2)
+			{
+				log.error("El array de horas no cumple la longitud establecida que son 2");
+				throw new HorarioError(1,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
+			}
+			else if(numHora>14 || numHora<8)
+			{
+				log.error("La hora "+numHora+" no entra en el rango de 8 a 14");
+				throw new HorarioError(2,"La hora"+numHora+" no coincide con la establecida en el centro de 8 a 14");
+			}
+			else if(numMinutos>60 || numMinutos<1)
+			{
+				log.error("Los minutos "+numMinutos+ "no coinciden en el rango de 0 a 60");
+				throw new HorarioError(2,"Los minutos estan mal introducidos");
+			}
+		}
+		catch(IndexOutOfBoundsException ex)
+		{
+			log.error("Error al parsear la hora, hay menos datos de los previstos");
+			throw new HorarioError(1,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
+		}
+		catch(NumberFormatException ex)
+		{
+			log.error("Error al parsear las horas a formato entero",ex);
+			throw new HorarioError(1,"La hora esta en un formato incorrecto");
 		}
 		
 	}
