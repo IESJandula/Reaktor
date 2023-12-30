@@ -197,4 +197,22 @@ public class RestHandlerHorarios implements ParserXml
 		
 		return  hours  +":"+ minutes ;
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/allTeachers", produces = "application/json")
+    public ResponseEntity<?> getProfesores()
+    {
+		try
+		{		
+			List<Profesor> profesores = centro.getDatos().getProfesor();
+			return ResponseEntity.ok().body(profesores);    	
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
+	
+	
 }
