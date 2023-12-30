@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -175,7 +176,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		try
 		{			
 			this.checkNameSurnameDay(profesorName, profesorSurname, dia, centro.getDatos().getProfesor());
-			Aula aula = this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro);
+			Aula aula = this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro, null);
 			if (aula == null)
 			{
 				throw new HorarioError(1, "No se ha encontrado el aula");
@@ -198,6 +199,46 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
 		}
     }
+	
+	/**
+	 * Endpoint que devuelve un aula pasandole un profesor y un tramo horario
+	 * @param profesorName
+	 * @param profesorSurname
+	 * @param time
+	 * @param dia
+	 * @return ok si los parametros estan bien introducidos con un aula como json, 404 si los parametros fallan o 500 si hay un error de servidor 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom/{time}")
+	public ResponseEntity<?> getClassroomTeacherTime(
+			@RequestHeader(value = "profesorName",required = true)String profesorName,
+			@RequestHeader(value = "profesorSurname",required = true)String profesorSurname,
+			@PathVariable(name = "time",value = "time",required = true)String time,
+			@RequestHeader(value = "dia",required = false)Integer dia
+			)
+	{
+		try
+		{
+			this.checkHora(time);
+			Aula aula = this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro, time);
+			if (aula == null)
+			{
+				throw new HorarioError(1, "No se ha encontrado el aula");
+			}
+			else
+			{
+				return ResponseEntity.ok().body(aula); 
+			}
+		}
+		catch(HorarioError ex)
+		{
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			return ResponseEntity.status(500).body("Server error "+ex.getMessage());
+		}
+	}
+	
 	
 	
 		
