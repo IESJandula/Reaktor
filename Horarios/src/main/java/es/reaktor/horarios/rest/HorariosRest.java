@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 import es.reaktor.horarios.exceptions.HorariosError;
 import es.reaktor.horarios.models.Classroom;
 import es.reaktor.horarios.models.Course;
+import es.reaktor.horarios.models.Hour;
 import es.reaktor.horarios.models.Rol;
 import es.reaktor.horarios.models.Student;
 import es.reaktor.horarios.models.Teacher;
@@ -1774,7 +1775,7 @@ public class HorariosRest
 	 * @param session
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.GET,value = "/get/Classroomcourse")
+	@RequestMapping(method = RequestMethod.GET,value = "/get/Classroomcourse",produces="application/json")
 	public ResponseEntity<?> getClassroomCourse(
 			@RequestHeader(required = true) String courseName,
 			HttpSession session)
@@ -1912,5 +1913,99 @@ public class HorariosRest
 		}
 	}
 	
+	/**
+	 * Method getListHours
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/get/hours",produces = "application/json")
+	public ResponseEntity<?> getListHours(HttpSession session)
+	{
+		try
+		{
+			// --- CHECKING THE VALUE OF STORED CENTRO ---
+			if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+			{
+				// --- CASTING OBJECT TO STORED CENTRO ---
+				Centro centro = (Centro) session.getAttribute("storedCentro");
+				List<Hour> hourList = new ArrayList<Hour>();
+				for(int i = 0;i<7;i++) 
+				{
+					// --- GETTING THE INFO OF EACH TRAMO, BUT ONLY THE FIRST 7 TRAMOS , BECAUSE THT REPRESENT "LUNES" "PRIMERA-ULTIMA-HORA" ---
+					Tramo tramo = centro.getDatos().getTramosHorarios().getTramo().get(i);
+					
+					// --- GETTING THE HOURNAME BY THE ID OF THE TRAMO 1-7 (1,2,3,R,4,5,6) ---
+					String hourName = "";
+					switch(tramo.getNumTr().trim())
+					{
+						case "1":
+						{
+							hourName="primera";
+							break;
+						}
+						case "2":
+						{
+							hourName="segunda";
+							break;
+						}
+						case "3":
+						{
+							hourName="tercera";
+							break;
+						}
+						case "4":
+						{
+							hourName="recreo";
+							break;
+						}
+						case "5":
+						{
+							hourName="cuarta";
+							break;
+						}
+						case "6":
+						{
+							hourName="quinta";
+							break;
+						}
+						case "7":
+						{
+							hourName="sexta";
+							break;
+						}
+						default:
+						{
+							// --- DEFAULT ---
+							hourName="Desconocido";
+							break;
+						}
+					}
+					// --- ADD THE INFO OF THE TRAMO ON HOUR OBJECT ---
+					hourList.add(new Hour(hourName,tramo.getHoraInicio().trim(),tramo.getHoraFinal().trim()));
+				}
+				// --- RESPONSE WITH THE HOURLIST ---
+				return ResponseEntity.ok(hourList);
+			}
+			else 
+			{
+				// --- ERROR ---
+				String error = "ERROR storedCentro NOT FOUND OR NULL";
+				
+				log.info(error);
+				
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.info(error,horariosError);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		catch(Exception exception) 
+		{
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.info(error,horariosError);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+		
+	}
 }
 
