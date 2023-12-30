@@ -38,6 +38,7 @@ import es.reaktor.horarios.models.Course;
 import es.reaktor.horarios.models.Rol;
 import es.reaktor.horarios.models.Student;
 import es.reaktor.horarios.models.Teacher;
+import es.reaktor.horarios.models.TeacherMoment;
 import es.reaktor.horarios.models.parse.Actividad;
 import es.reaktor.horarios.models.parse.Asignatura;
 import es.reaktor.horarios.models.parse.Asignaturas;
@@ -990,7 +991,7 @@ public class HorariosRest
 		}
 		catch (IllegalArgumentException illegalArgumentException)
 		{
-			System.out.println("Datos de CSV incompletos o incorrectos: " + linea);
+			log.info("Datos de CSV incompletos o incorrectos: " + linea);
 		}
 
 		return teacher;
@@ -1134,10 +1135,10 @@ public class HorariosRest
 						String profName = prof.getNombre().trim().toLowerCase();
 						String profLastName = prof.getPrimerApellido().trim().toLowerCase()+" "+prof.getSegundoApellido().trim().toLowerCase();
 						
-						System.out.println(prof);
+						log.info(prof.toString());
 						if(profName.equalsIgnoreCase(name.trim()) && profLastName.equalsIgnoreCase(lastname.trim())) 
 						{
-							System.out.println("EXISTE "+prof);
+							log.info("EXISTE "+prof);
 							
 							// Getting the actual time
 							String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
@@ -1185,7 +1186,7 @@ public class HorariosRest
 										if(minutoActual>=minutoInicio && horaActual<=horaFin) 
 										{
 											// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
-											System.out.println("ENCONTRADO -> "+tramo);
+											log.info("ENCONTRADO -> "+tramo);
 											profTramo = tramo;
 											
 										}
@@ -1197,7 +1198,7 @@ public class HorariosRest
 										if(minutoActual<=minutoFin)
 										{
 											// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
-											System.out.println("ENCONTRADO -> "+tramo);
+											log.info("ENCONTRADO -> "+tramo);
 											profTramo = tramo;
 											
 										}
@@ -1213,14 +1214,14 @@ public class HorariosRest
 								{
 									if(prof.getNumIntPR().equalsIgnoreCase(horarioProf.getHorNumIntPR())) 
 									{
-										System.out.println("ENCONTRADO HORARIO PROF-> "+horarioProf);
+										log.info("ENCONTRADO HORARIO PROF-> "+horarioProf);
 										
 										Actividad profActividad = null;
 										for(Actividad actividad : horarioProf.getActividad()) 
 										{
 											if(actividad.getTramo().trim().equalsIgnoreCase(profTramo.getNumTr().trim())) 
 											{
-												System.out.println("ENCONTRADO ACTIVIDAD -> "+actividad);
+												log.info("ENCONTRADO ACTIVIDAD -> "+actividad);
 												profActividad=actividad;
 												
 												// --- LEAVING ACTIVIDAD FOR EACH ---
@@ -1229,7 +1230,7 @@ public class HorariosRest
 										}
 										if(profActividad==null) 
 										{
-											System.out.println("EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof);
+											log.info("EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof);
 											// --- ERROR ---
 											String error = "EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof;
 											HorariosError horariosError = new HorariosError(500, error, null);
@@ -1246,7 +1247,7 @@ public class HorariosRest
 											{
 												if(aula.getNumIntAu().trim().equalsIgnoreCase(profActividad.getAula().trim())) 
 												{
-													System.out.println("AULA ENCONTRADA PARA LA ACTIVIDAD --> "+profActividad+"\n"+aula);
+													log.info("AULA ENCONTRADA PARA LA ACTIVIDAD --> "+profActividad+"\n"+aula);
 													// --- SETTING THE AULA VALUE TO PROF AULA ---
 													profAula = aula;
 													
@@ -1257,7 +1258,7 @@ public class HorariosRest
 											
 											if(profAula!=null) 
 											{
-												System.out.println("AULA ACTUAL PROFESOR: "+prof+"\n"+profAula);
+												log.info("AULA ACTUAL PROFESOR: "+prof+"\n"+profAula);
 												String nombreAula = profAula.getNombre();
 	
 												String[] plantaAula = profAula.getAbreviatura().split("\\.");
@@ -1283,7 +1284,7 @@ public class HorariosRest
 												}
 												
 												Classroom classroom = new Classroom(plantaNumero, numeroAula);
-												System.out.println(classroom);
+												log.info(classroom.toString());
 												return ResponseEntity.ok().body(classroom);
 											}
 										}
@@ -1360,10 +1361,10 @@ public class HorariosRest
 						String profName = prof.getNombre().trim().toLowerCase();
 						String profLastName = prof.getPrimerApellido().trim().toLowerCase()+" "+prof.getSegundoApellido().trim().toLowerCase();
 						
-						System.out.println(prof);
+						log.info(prof.toString());
 						if(profName.equalsIgnoreCase(name.trim()) && profLastName.equalsIgnoreCase(lastname.trim())) 
 						{
-							System.out.println("EXISTE "+prof);
+							log.info("EXISTE "+prof);
 							
 							// Getting the actual time
 							String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
@@ -1376,14 +1377,14 @@ public class HorariosRest
 								{
 									if(prof.getNumIntPR().equalsIgnoreCase(horarioProf.getHorNumIntPR())) 
 									{
-										System.out.println("ENCONTRADO HORARIO PROF-> "+horarioProf);
+										log.info("ENCONTRADO HORARIO PROF-> "+horarioProf);
 										
 										Actividad profActividad = null;
 										for(Actividad actividad : horarioProf.getActividad()) 
 										{
 											if(actividad.getTramo().trim().equalsIgnoreCase(profTramo.getNumTr().trim())) 
 											{
-												System.out.println("ENCONTRADO ACTIVIDAD -> "+actividad);
+												log.info("ENCONTRADO ACTIVIDAD -> "+actividad);
 												profActividad=actividad;
 												
 												// --- LEAVING ACTIVIDAD FOR EACH ---
@@ -1392,7 +1393,7 @@ public class HorariosRest
 										}
 										if(profActividad==null) 
 										{
-											System.out.println("EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof);
+											log.info("EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof);
 											// --- ERROR ---
 											String error = "EL TRAMO "+profTramo+"\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR "+prof;
 											HorariosError horariosError = new HorariosError(500, error, null);
@@ -1409,7 +1410,7 @@ public class HorariosRest
 											{
 												if(aula.getNumIntAu().trim().equalsIgnoreCase(profActividad.getAula().trim())) 
 												{
-													System.out.println("AULA ENCONTRADA PARA LA ACTIVIDAD --> "+profActividad+"\n"+aula);
+													log.info("AULA ENCONTRADA PARA LA ACTIVIDAD --> "+profActividad+"\n"+aula);
 													// --- SETTING THE AULA VALUE TO PROF AULA ---
 													profAula = aula;
 													
@@ -1420,7 +1421,7 @@ public class HorariosRest
 											
 											if(profAula!=null) 
 											{
-												System.out.println("AULA ACTUAL PROFESOR: "+prof+"\n"+profAula);
+												log.info("AULA ACTUAL PROFESOR: "+prof+"\n"+profAula);
 												String nombreAula = profAula.getNombre();
 	
 												String[] plantaAula = profAula.getAbreviatura().split("\\.");
@@ -1446,7 +1447,7 @@ public class HorariosRest
 												}
 												
 												Classroom classroom = new Classroom(plantaNumero, numeroAula);
-												System.out.println(classroom);
+												log.info(classroom.toString());
 												return ResponseEntity.ok().body(classroom);
 											}
 										}
@@ -1501,198 +1502,415 @@ public class HorariosRest
 	 * @param courseName
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/Classroomcourse",produces = "application/json")
-	public ResponseEntity<?> getClassroomCourse(
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teachersubject",produces = "application/json")
+	public ResponseEntity<?> getTeacherSubject(
 			@RequestHeader(required = true) String courseName,
 			HttpSession session
 			)
 	{
-		
-		if(!courseName.isBlank() && !courseName.isBlank()) 
+		try 
 		{
-			if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+			if(!courseName.isBlank() && !courseName.isBlank()) 
 			{
-				Centro centro = (Centro) session.getAttribute("storedCentro");
-				
-				// --- IF EXIST THE COURSE ---
-				Grupo grup = null;
-				for(Grupo grupo : centro.getDatos().getGrupos().getGrupo()) 
+				if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
 				{
-					if(grupo.getNombre().trim().equalsIgnoreCase(courseName.trim())) 
-					{
-						// --- EXIST THE COURSE ---
-						grup = grupo;
-					}
-				}
-				if(grup!=null) 
-				{
-					// --- GRUPO EXIST , NOW GET THE ACUTAL TRAMO ---
-					Tramo acutalTramo = null;
+					Centro centro = (Centro) session.getAttribute("storedCentro");
 					
-					// Getting the actual time
-					String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
-					log.info(actualTime);
-					
-					for(Tramo tramo : centro.getDatos().getTramosHorarios().getTramo()) 
+					// --- IF EXIST THE COURSE ---
+					Grupo grup = null;
+					for(Grupo grupo : centro.getDatos().getGrupos().getGrupo()) 
 					{
-						int numTr= Integer.parseInt(tramo.getNumTr());
-						
-						// --- GETTING THE HORA,MINUTO , INICIO AND FIN ---
-						int horaInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[0].trim());
-						int minutoInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[1].trim());
-						
-						int horaFin = Integer.parseInt(tramo.getHoraFinal().split(":")[0].trim());
-						int minutoFin = Integer.parseInt(tramo.getHoraFinal().split(":")[1].trim());
-		
-						// --- GETTING THE HORA, MINUTO ACTUAL ---
-						int horaActual = Integer.parseInt(actualTime.split(":")[0].trim());
-						int minutoActual = Integer.parseInt(actualTime.split(":")[1].trim());
-						
-						// --- USE CALENDAR INSTANCE FOR GET INTEGER WITH THE NUMBER OF THE DAY ON THE WEEK ---
-						Calendar calendar = Calendar.getInstance();
-						// --- PARSIN CALENDAR DAY_OF_WEK TO NUMBER -1 (-1 BECAUSE THIS START ON SUNDAY)--
-						int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1;
-						
-						// --- IF DAY IS 0 , IS 7 , BACUSE IS SUNDAY ---
-						if(dayOfWeek==0) 
+						if(grupo.getNombre().trim().equalsIgnoreCase(courseName.trim())) 
 						{
-							dayOfWeek=7;
-						}
-						if(dayOfWeek>=6)
-						{
-							log.warn("DIA EXCEDIDO: (6:SABADO-7:DOMINGO) -> "+dayOfWeek);
-						}
-						
-						// --- DAY OF TRAMO ---
-						if(Integer.parseInt(tramo.getNumeroDia())==dayOfWeek) 
-						{
-							// --- IF HORA ACTUAL EQUALS HORA INICIO ---
-							if(horaActual==horaInicio)
-							{
-								// --- CHEKING IF THE MINUTO ACTUAL IS GREATER THAN THE MINUTO INICIO AND HORA ACTUAL LESS THAN HORA FIN ---
-								if(minutoActual>=minutoInicio && horaActual<=horaFin) 
-								{
-									// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
-									System.out.println("ENCONTRADO -> "+tramo);
-									acutalTramo = tramo;
-									
-								}
-							}
-							// --- IF HORA ACTUAL EQUALS HORA FIN ---
-							else if(horaActual==horaFin)
-							{
-								// --- CHEKING IF THE MINUTO ACTUAL IS LESS THAN MINUTO FIN ---
-								if(minutoActual<=minutoFin)
-								{
-									// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
-									System.out.println("ENCONTRADO -> "+tramo);
-									acutalTramo = tramo;
-									
-								}
-							}
-							
+							// --- EXIST THE COURSE ---
+							grup = grupo;
 						}
 					}
-					
-					// --- CHECKING IF THE TRAMO ACTUAL EXISTS ---
-					if(acutalTramo!=null)
+					if(grup!=null) 
 					{
-						//--- TRAMO ACTUAL EXISTS ---
+						// --- GRUPO EXIST , NOW GET THE ACUTAL TRAMO ---
+						Tramo acutalTramo = null;
 						
-						// --- NOW GETTING THE HORARIO GRUP , WITH THE SAME ID OF THE GROUP ---
-						HorarioGrup horario = null;
-						for(HorarioGrup horarioGrup : centro.getHorarios().getHorariosGrupos().getHorarioGrup()) 
+						// Getting the actual time
+						String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
+						log.info(actualTime);
+						
+						for(Tramo tramo : centro.getDatos().getTramosHorarios().getTramo()) 
 						{
-							// --- EQUAL IDS ---
-							if(horarioGrup.getHorNumIntGr().trim().equalsIgnoreCase(grup.getNumIntGr().trim())) 
+							int numTr= Integer.parseInt(tramo.getNumTr());
+							
+							// --- GETTING THE HORA,MINUTO , INICIO AND FIN ---
+							int horaInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[0].trim());
+							int minutoInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[1].trim());
+							
+							int horaFin = Integer.parseInt(tramo.getHoraFinal().split(":")[0].trim());
+							int minutoFin = Integer.parseInt(tramo.getHoraFinal().split(":")[1].trim());
+			
+							// --- GETTING THE HORA, MINUTO ACTUAL ---
+							int horaActual = Integer.parseInt(actualTime.split(":")[0].trim());
+							int minutoActual = Integer.parseInt(actualTime.split(":")[1].trim());
+							
+							// --- USE CALENDAR INSTANCE FOR GET INTEGER WITH THE NUMBER OF THE DAY ON THE WEEK ---
+							Calendar calendar = Calendar.getInstance();
+							// --- PARSIN CALENDAR DAY_OF_WEK TO NUMBER -1 (-1 BECAUSE THIS START ON SUNDAY)--
+							int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1;
+							
+							// --- IF DAY IS 0 , IS 7 , BACUSE IS SUNDAY ---
+							if(dayOfWeek==0) 
 							{
-								// --- THE HORARIO GROUP OF THE GROUP ---
-								horario = horarioGrup;
+								dayOfWeek=7;
 							}
-						}
-						
-						// --- IF THE HORARIO GRUP EXIST ---
-						if(horario!=null)
-						{
-							// --- GETTING THE HORARIO GRUP ACTIVIDADES ----
-							Actividad activ = null;
-							for(Actividad actividad : horario.getActividad()) 
+							if(dayOfWeek>=6)
 							{
-								// --- GETTING THE ACTIVIDAD WITH THE SAME ID OF THE ACTUAL TRAMO ---
-								if(actividad.getTramo().trim().equalsIgnoreCase(acutalTramo.getNumTr().trim())) 
-								{
-									activ = actividad;
-								}
+								log.warn("DIA EXCEDIDO: (6:SABADO-7:DOMINGO) -> "+dayOfWeek);
 							}
 							
-							// --- IF EXIST THIS ACTIVIDAD ---
-							if(activ!=null) 
+							// --- DAY OF TRAMO ---
+							if(Integer.parseInt(tramo.getNumeroDia())==dayOfWeek) 
 							{
-								// --- NOW GET THE PROFESOR AND ASIGNATURA BY PROFESOR ID AND THE ASIGNATURA ID ---
-								
-								// --- PROFESOR ---
-								Profesor profesor = null;
-								for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+								// --- IF HORA ACTUAL EQUALS HORA INICIO ---
+								if(horaActual==horaInicio)
 								{
-									// --- EQUAL PROFESSOR ID --
-									if(prof.getNumIntPR().trim().equalsIgnoreCase(activ.getProfesor().trim())) 
+									// --- CHEKING IF THE MINUTO ACTUAL IS GREATER THAN THE MINUTO INICIO AND HORA ACTUAL LESS THAN HORA FIN ---
+									if(minutoActual>=minutoInicio && horaActual<=horaFin) 
 									{
-										profesor = prof;
+										// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
+										log.info("ENCONTRADO -> "+tramo);
+										acutalTramo = tramo;
+										
+									}
+								}
+								// --- IF HORA ACTUAL EQUALS HORA FIN ---
+								else if(horaActual==horaFin)
+								{
+									// --- CHEKING IF THE MINUTO ACTUAL IS LESS THAN MINUTO FIN ---
+									if(minutoActual<=minutoFin)
+									{
+										// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
+										log.info("ENCONTRADO -> "+tramo);
+										acutalTramo = tramo;
+										
 									}
 								}
 								
-								// --- ASIGNATURA ---
-								Asignatura asignatura = null;
-								for(Asignatura asig : centro.getDatos().getAsignaturas().getAsignatura()) 
+							}
+						}
+						
+						// --- CHECKING IF THE TRAMO ACTUAL EXISTS ---
+						if(acutalTramo!=null)
+						{
+							//--- TRAMO ACTUAL EXISTS ---
+							
+							// --- NOW GETTING THE HORARIO GRUP , WITH THE SAME ID OF THE GROUP ---
+							HorarioGrup horario = null;
+							for(HorarioGrup horarioGrup : centro.getHorarios().getHorariosGrupos().getHorarioGrup()) 
+							{
+								// --- EQUAL IDS ---
+								if(horarioGrup.getHorNumIntGr().trim().equalsIgnoreCase(grup.getNumIntGr().trim())) 
 								{
-									// --- EQUAL ASIGNATURA ID --
-									if(asig.getNumIntAs().trim().equalsIgnoreCase(activ.getAsignatura().trim())) 
+									// --- THE HORARIO GROUP OF THE GROUP ---
+									horario = horarioGrup;
+								}
+							}
+							
+							// --- IF THE HORARIO GRUP EXIST ---
+							if(horario!=null)
+							{
+								// --- GETTING THE HORARIO GRUP ACTIVIDADES ----
+								Actividad activ = null;
+								for(Actividad actividad : horario.getActividad()) 
+								{
+									// --- GETTING THE ACTIVIDAD WITH THE SAME ID OF THE ACTUAL TRAMO ---
+									if(actividad.getTramo().trim().equalsIgnoreCase(acutalTramo.getNumTr().trim())) 
 									{
-										asignatura = asig;
+										activ = actividad;
 									}
 								}
 								
-								if(profesor!=null && asignatura!=null) 
+								// --- IF EXIST THIS ACTIVIDAD ---
+								if(activ!=null) 
 								{
-									// --- THE FINAL PROFESSOR AND ASIGNATURA ---
-									System.out.println("PROFESOR: "+profesor+"\n"+"ASIGNATURA: "+asignatura);
+									// --- NOW GET THE PROFESOR AND ASIGNATURA BY PROFESOR ID AND THE ASIGNATURA ID ---
+									
+									// --- PROFESOR ---
+									Profesor profesor = null;
+									for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+									{
+										// --- EQUAL PROFESSOR ID --
+										if(prof.getNumIntPR().trim().equalsIgnoreCase(activ.getProfesor().trim())) 
+										{
+											profesor = prof;
+										}
+									}
+									
+									// --- ASIGNATURA ---
+									Asignatura asignatura = null;
+									for(Asignatura asig : centro.getDatos().getAsignaturas().getAsignatura()) 
+									{
+										// --- EQUAL ASIGNATURA ID --
+										if(asig.getNumIntAs().trim().equalsIgnoreCase(activ.getAsignatura().trim())) 
+										{
+											asignatura = asig;
+										}
+									}
+									
+									if(profesor!=null && asignatura!=null) 
+									{
+										// --- THE FINAL PROFESSOR AND ASIGNATURA ---
+										log.info("PROFESOR: "+profesor+"\n"+"ASIGNATURA: "+asignatura);
+										TeacherMoment teacherMoment = new TeacherMoment();
+										
+										// --- TELEFONO - EMAIL - AND -ROL - IS FAKE AND HARDCODED, BECAUSE THE XML DONT HAVE THIS INFO ---
+										//--setting teacher---
+										teacherMoment.setTeacher(new Teacher(profesor.getNombre().trim(), profesor.getPrimerApellido().trim()+" "+profesor.getSegundoApellido().trim(), profesor.getNombre().trim()+"@email.com", "000-000-000", List.of(Rol.conserje)));
+										
+										//--- setting asignatura name ---
+										teacherMoment.setSubject(asignatura.getNombre().trim());
+										
+										// --- RETURN THE THEACER MOMENT , WIOUTH CLASSROOM ---
+										return ResponseEntity.ok().body(teacherMoment);
+										
+									}
+									else 
+									{
+										
+										// --- ERROR ---
+										String error = "PROFESOR O ASIGNATURA NO ENCONTRADOS O NULL "+profesor+"\n"+asignatura;
+										
+										log.info(error);
+										
+										HorariosError horariosError = new HorariosError(400, error, null);
+										log.info(error,horariosError);
+										return ResponseEntity.status(400).body(horariosError);
+									}
 									
 								}
 								else 
 								{
-									System.out.println("PROFESOR O ASIGNATURA NO ENCONTRADOS O NULL "+profesor+"\n"+asignatura);
+									// --- ERROR ---
+									String error = "ERROR , ACTIVIDAD NULL O NO ENCONTRADA";
+									
+									log.info(error);
+									
+									HorariosError horariosError = new HorariosError(400, error, null);
+									log.info(error,horariosError);
+									return ResponseEntity.status(400).body(horariosError);
 								}
 								
 							}
 							else 
 							{
-								System.out.println("ERROR , ACTIVIDAD NULL O NO ENCONTRADA");
+								// --- ERROR ---
+								String error = "ERROR , HORARIO GRUP NULL O NO ENCONTRADO";
+								
+								log.info(error);
+								
+								HorariosError horariosError = new HorariosError(400, error, null);
+								log.info(error,horariosError);
+								return ResponseEntity.status(400).body(horariosError);
 							}
-							
 						}
 						else 
-						{
-							System.out.println("ERROR , HORARIO GRUP NULL O NO ENCONTRADO");
+						{						
+							// --- ERROR ---
+							String error = "ERROR , TRAMO NULL O NO EXISTE";
+							
+							log.info(error);
+							
+							HorariosError horariosError = new HorariosError(400, error, null);
+							log.info(error,horariosError);
+							return ResponseEntity.status(400).body(horariosError);
 						}
 					}
 					else 
 					{
-						System.out.println("ERROR , TRAMO NULL O NO EXISTE");
+						// --- ERROR ---
+						String error = "ERROR GRUPO NULL O NO ENCONTRADO ";
+						
+						log.info(error);
+						
+						HorariosError horariosError = new HorariosError(400, error, null);
+						log.info(error,horariosError);
+						return ResponseEntity.status(400).body(horariosError);
 					}
+				}
+				else
+				{
+					// --- ERROR ---
+					String error = "ERROR storedCentro not Found ";
+					
+					log.info(error);
+					
+					HorariosError horariosError = new HorariosError(400, error, null);
+					log.info(error,horariosError);
+					return ResponseEntity.status(400).body(horariosError);
+				}
+			}
+			else 
+			{
+				// --- ERROR ---
+				String error = "ERROR , CURSO EN BLANCO O NO PERMITIDO";
+				
+				log.info(error);
+				
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.info(error,horariosError);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		catch(Exception exception) 
+		{
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.info(error,horariosError);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
+	
+	/**
+	 * Method getClassroomCourse
+	 * @param courseName
+	 * @param session
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/get/Classroomcourse")
+	public ResponseEntity<?> getClassroomCourse(
+			@RequestHeader(required = true) String courseName,
+			HttpSession session)
+	{
+		try
+		{
+			// --- CHECKING IF THE COURSE NAME IS NOT BLANK AND NOT EMPTY ---
+			if(!courseName.isBlank() && !courseName.isEmpty()) 
+			{
+				// --- CHECKING THE VALUE OF STOREDCENTRO FROM SESSION ---
+				if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+				{
+					// --- CASTING OBJECT TO CENTRO ---
+					Centro centro = (Centro) session.getAttribute("storedCentro");
+					
+					// --- CHECKING IF THE GRUPO EXISTS ----
+					Grupo grupo = null;
+					for(Grupo grup : centro.getDatos().getGrupos().getGrupo()) 
+					{
+						if(grup.getNombre().trim().equalsIgnoreCase(courseName.trim())) 
+						{
+							// --- GRUPO EXISTS (SET VALUE) ---
+							grupo = grup;
+						}
+					}
+					
+					// --- IF THE GRUPO EXISTS (NOT NULL) ---
+					if(grupo!=null) 
+					{
+						// --- CHECK IF THE AULA EXISTS ---
+						Aula aula = null;
+						for(Aula aul : centro.getDatos().getAulas().getAula()) 
+						{
+							// --- REPLACE º,'SPACE', - , FOR EMPTY , FROM GRUPO NOMBRE AND GRUPO ABRV ---
+							// --- THIS IS FOR TRY TO GET THE MAX POSIBILITIES OF GET THE AULA FROM CURSO ---
+							
+							String aulaName = grupo.getNombre().trim().toLowerCase().replace("º", "").replace(" ", "").replace("-", "");
+							String aulaAbr = grupo.getAbreviatura().trim().toLowerCase().replace("º", "").replace(" ", "").replace("-", "");
+							
+							// --- CHECK IF COURSENAME EXISTS ON THE AULA NAME OR THE COURSE ABRV EXIST ON THE AULA NAME ---
+							if(aul.getNombre().trim().toLowerCase().replace("-", "").contains(aulaName) || aul.getNombre().trim().toLowerCase().replace("-", "").contains(aulaAbr)) 
+							{
+								// -- IF EXISTS , SET THE VALUE OF AUL (FOREACH) ON AULA ---
+								aula = aul;
+							}
+						}
+						
+						// --- IF THE AULA IS NOT NULL (EXISTS) ---
+						if(aula!=null) 
+						{
+							String nombreAula = aula.getNombre();
+							
+							// ---  SPLIT BY '.'  ---
+							String[] plantaAula = aula.getAbreviatura().split("\\.");
+							
+							String plantaNumero = "";
+							String numeroAula = "";
+							// -- THE VALUES WITH CHARACTERS ONLY HAVE 1 POSITION ---
+							if(plantaAula.length>1) 
+							{
+								plantaNumero = plantaAula[0].trim();
+								numeroAula = plantaAula[1].trim();
+							}
+							else 
+							{
+								plantaNumero = plantaAula[0].trim();
+								numeroAula = plantaAula[0].trim();
+							}
+							
+							// -- IMPORTANT , CLASSROOM PLANTANUMERO AND NUMEROAULA , CHANGED TO STRING BECAUSE SOME PARAMETERS CONTAINS CHARACTERS ---
+							Classroom classroom = new Classroom(plantaNumero, numeroAula);
+							
+							// --- RETURN FINALLY THE CLASSROOM ---
+							return ResponseEntity.ok(classroom);
+	
+						}
+						else
+						{
+							// --- ERROR ---
+							String error = "ERROR AULA NOT FOUND OR NULL";
+							
+							log.info(error);
+							
+							HorariosError horariosError = new HorariosError(400, error, null);
+							log.info(error,horariosError);
+							return ResponseEntity.status(400).body(horariosError);
+						}
+						
+					}
+					else 
+					{
+						// --- ERROR ---
+						String error = "ERROR GRUPO NOT FOUND OR NULL";
+						
+						log.info(error);
+						
+						HorariosError horariosError = new HorariosError(400, error, null);
+						log.info(error,horariosError);
+						return ResponseEntity.status(400).body(horariosError);
+					}
+					
 				}
 				else 
 				{
 					// --- ERROR ---
-					System.out.println("ERROR GRUPO NULL O NO ENCONTRADO ");
+					String error = "ERROR storedCentro not found or NUll";
+					
+					log.info(error);
+					
+					HorariosError horariosError = new HorariosError(400, error, null);
+					log.info(error,horariosError);
+					return ResponseEntity.status(400).body(horariosError);
 				}
+				
+			}
+			else 
+			{
+				// --- ERROR ---
+				String error = "ERROR HEADER COURSE NAME EMPTY OR BLANK";
+				
+				log.info(error);
+				
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.info(error,horariosError);
+				return ResponseEntity.status(400).body(horariosError);
 			}
 		}
-		else 
+		catch(Exception exception) 
 		{
-			// --- ERROR ---
-			System.out.println("ERROR , CURSO EN BLANCO O NO PERMITIDO");
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.info(error,horariosError);
+			return ResponseEntity.status(500).body(horariosError);
 		}
-		return null;
 	}
+	
 }
 
