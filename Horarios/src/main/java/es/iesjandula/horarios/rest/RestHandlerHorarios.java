@@ -18,6 +18,7 @@ import es.iesjandula.horarios.constants.Constantes;
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.csv.ModelCSV;
+import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.models.xml.Centro;
 import es.iesjandula.horarios.utils.ICSVParser;
 import es.iesjandula.horarios.utils.IChecker;
@@ -165,15 +166,30 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * @return Aula correspondiente al profesor o un valor nulo si los parametros estan mal o un error por error de servidor o la causa anterior
 	 * @author Javier Martinez Megias
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom", produces = "multipart/form-data")
+	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom", produces = "application/json")
     public ResponseEntity<?> getClassroomTeacher(
             @RequestHeader(value= "profesorName", required = true) String profesorName,
             @RequestHeader (value= "profesorSurname", required = true)String profesorSurname,
             @RequestHeader (value= "dia", required = false)Integer dia)
     {
 		try
-		{		
-				return ResponseEntity.ok(this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro));    	
+		{			
+			this.checkNameSurnameDay(profesorName, profesorSurname, dia, centro.getDatos().getProfesor());
+			Aula aula = this.getAulaByProfesorName(profesorName, profesorSurname, dia, this.centro);
+			if (aula == null)
+			{
+				throw new HorarioError(1, "No se ha encontrado el aula");
+			}
+			else
+			{
+				return ResponseEntity.ok().body(aula); 
+			}
+						
+		}
+		catch(HorarioError exception)
+		{
+			log.error("Error en uno de los parametros o profesor no encontrado",exception);
+			return ResponseEntity.status(404).body(exception.getBodyMessageException());
 		}
 		catch (Exception exception)
 		{     	

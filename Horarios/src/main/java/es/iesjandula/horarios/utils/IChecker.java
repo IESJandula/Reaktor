@@ -92,10 +92,11 @@ public interface IChecker
 	 * @return el aula encontrada o un valor nulo si no la encuentra
 	 * @author Javier Martinez Megias
 	 */
-	public default String getAulaByProfesorName(String name, String surneme, Integer dia, Centro centro)
+	public default Aula getAulaByProfesorName(String name, String surneme, Integer dia, Centro centro)
 	{	
 		//Obtencion de la hora actual
 		String horaActual = this.getActualHour();
+		
 		//Si el dia es nulo cogemos el dia del sistema
 		if(dia == null)
 		{
@@ -158,12 +159,12 @@ public interface IChecker
 		{
 			if(x.getNum_int_au() == aula)
 			{
-				return x.getNombre();
+				return x;
 			}
 		}
 		
 		//En caso de no encontrar nada se devuelve este valor "nulo"
-		return "No se ecuentra en ningun aula";	
+		return null;	
 		
 	}
 	
@@ -180,5 +181,33 @@ public interface IChecker
 		int minutes = locaDate.getMinute();
 		
 		return  hours  +":"+ minutes ;
+	}
+	
+	public default void checkNameSurnameDay(String name,String surname,int dia,  List<Profesor> listaProfesores) throws HorarioError
+	{
+		if (name.isEmpty() || surname.isEmpty())
+		{
+			throw new HorarioError(1, "El nombre o el apellido estan vacios");		
+		}
+		else if(dia > 7 || dia < 1)
+		{
+			throw new HorarioError(1, "El numero elegido no es un dia de la semana");	
+		}
+		else 
+		{
+			boolean encontrado = false;
+			for(Profesor x : listaProfesores)
+			{
+				if(x.getNombre().equals(surname+", "+name))
+				{
+					encontrado = true;
+				}
+			}
+			if(!encontrado)
+			{
+				throw new HorarioError(1, "No se ha encontrado el profesor");
+			}
+		}
+		
 	}
 }
