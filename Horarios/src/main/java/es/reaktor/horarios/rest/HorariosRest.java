@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -2006,6 +2008,265 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 		
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET , value = "/get/horario/teacher/pdf" , produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> getSchedulePdf(
+			@RequestHeader(required=true) String name,
+			@RequestHeader(required=true) String lastname,
+			HttpSession session)
+	{
+		
+		if(!name.trim().isBlank() && !name.trim().isEmpty() && !lastname.trim().isBlank() && !lastname.trim().isEmpty()) 
+		{
+			if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+			{
+				Centro centro = (Centro) session.getAttribute("storedCentro");
+				
+				// --- GETTING THE PROFESSOR AND CHECK IF EXISTS ---
+				if(lastname.split(" ").length<2)
+				{
+					System.out.println("ERROR NO HAY DOS APELLIDOS DEL PROFESOR O NO ENCONTRADOS EN HEADERS");
+				}
+				String profFirstLastName = lastname.trim().split(" ")[0];
+				String profSecondLastName = lastname.trim().split(" ")[1];
+						
+				Profesor profesor = null;
+				for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+				{
+					if(prof.getNombre().trim().equalsIgnoreCase(name.trim()) && prof.getPrimerApellido().trim().equalsIgnoreCase(profFirstLastName) && prof.getSegundoApellido().trim().equalsIgnoreCase(profSecondLastName)) 
+					{
+						// --- PROFESSOR EXISTS , SET THE VALUE OF PROF IN PROFESOR ---
+						profesor = prof;
+						System.out.println("PROFESOR ENCONTRADO -> "+profesor.toString());
+					}
+				}
+				
+				if(profesor!=null) 
+				{
+					// --- PROFESOR EXISTS ---
+					HorarioProf horarioProfesor = null;
+					for(HorarioProf horarioProf : centro.getHorarios().getHorariosProfesores().getHorarioProf()) 
+					{
+						if(horarioProf.getHorNumIntPR().trim().equalsIgnoreCase(profesor.getNumIntPR().trim())) 
+						{
+							// --- HORARIO PROFESOR EXISTS , SET THE VALUE ON HORARIO PROFESOR---
+							horarioProfesor = horarioProf;
+						}
+					}
+					
+					if(horarioProfesor!=null) 
+					{
+						// --- HORARIO EXISTS ---
+						// --- CREATING THE MAP WITH KEY STRING TRAMO DAY AND VALUE LIST OF ACTIVIDAD ---
+						Map<String,List<Actividad>> profesorMap = new HashMap<String,List<Actividad>>();
+						
+						// --- FOR EACH ACTIVIDAD , GET THE TRAMO DAY , AND PUT ON MAP WITH THE ACTIVIDADES OF THIS DAY (LIST ACTIVIDAD) ---
+						for(Actividad actividad : horarioProfesor.getActividad()) 
+						{
+							Tramo tramo = extractTramoFromCentroActividad(centro, actividad);
+							
+							// --- CHECKING IF THE TRAMO DAY EXISTS ---
+							if(!profesorMap.containsKey(tramo.getNumeroDia().trim()))
+							{
+								// --- ADD THE NEW KEY AND VALUE ---
+								List<Actividad> actividadList = new ArrayList<Actividad>();
+								actividadList.add(actividad);
+								
+								profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
+							}
+							else 
+							{
+								// -- ADD THE VALUE TO THE ACTUAL VALUES ---
+								List<Actividad> actividadList = profesorMap.get(tramo.getNumeroDia().trim());
+								actividadList.add(actividad);
+								profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
+							}
+						}
+						
+						for(Map.Entry<String,List<Actividad>> set :profesorMap.entrySet()) 
+						{
+							
+							// --- GET THE DAY (LUNES,MARTES... ) FROM THE KEY NUMBER ---
+							String temporalDay = this.extractTemporalDayTramo(set.getKey());
+							System.out.println("TRAMO DIA: "+temporalDay);
+							
+							for(Actividad act : set.getValue()) 
+							{
+								// -- GET THE TRAMO OBJECT FROM THE ACTIVIDAD ---
+								Tramo temporalTramo = this.extractTramoFromCentroActividad(centro, act);
+								if(temporalTramo!=null) 
+								{
+									// --- GET THE TIME START AND END FROM THE TEMPORAL_TRAMO ---
+									String temporalHourTime = temporalTramo.getHoraInicio().trim()+" - "+temporalTramo.getHoraFinal().trim();	
+									
+									System.out.println(temporalHourTime);
+									
+									// --- GET THE ASIGNATURA FROM ACTIVIDAD BY ID ---
+									Asignatura temporalAsignatura = this.getAsignaturaById(act.getAsignatura().trim(),centro);
+									if(temporalAsignatura!=null) 
+									{
+										System.out.println("ASIGNATURA: "+temporalAsignatura.getNombre().trim());
+										
+										//--- GET THE AULA FROM ACTIVIDAD BY ID ---
+										Aula temporalAula = this.getAulaById(act.getAula().trim(),centro);
+										if(temporalAula!=null) 
+										{
+											System.out.println("AULA : "+temporalAula.getNombre().trim());
+										}
+										else 
+										{
+											System.out.println("ERROR temporalAula NULL OR NOT FOUND");
+										}
+									}
+									else 
+									{
+										System.out.println("ERROR temporalAsignatura NULL OR NOT FOUND");
+									}
+
+								}
+								else 
+								{
+									System.out.println("ERROR temporalTramo NULL OR NOT FOUND");
+								}
+							}
+						}
+					}
+					else 
+					{
+						System.out.println("ERROR HORARIO_PROFESOR NOT FOUNT OR NULL");
+					}
+				}
+				else 
+				{
+					System.out.println("ERROR PROFESOR NOT FOUND OR NULL");
+				}
+				
+			}
+			else 
+			{
+				System.out.println("ERROR storedCentro NULL OR NOT FOUND");
+			}
+		}
+		else 
+		{
+			System.out.println("ERROR PARAMETROS HEADER NULL OR EMPTY, BLANK");
+		}
+		return null;
+	}
+
+	/**
+	 * Method getAulaById
+	 * @param id
+	 * @param centro
+	 * @return
+	 */
+	private Aula getAulaById(String id, Centro centro)
+	{
+		Aula aula = null;
+		for(Aula aul : centro.getDatos().getAulas().getAula()) 
+		{
+			if(aul.getNumIntAu().trim().equalsIgnoreCase(id.trim())) 
+			{
+				aula = aul;
+			}	
+		}
+		
+		return aula;
+	}
+
+	/**
+	 * Method getAsignaturaById
+	 * @param id
+	 * @param centro
+	 * @return
+	 */
+	private Asignatura getAsignaturaById(String id, Centro centro)
+	{
+		Asignatura asignatura = null;
+		for(Asignatura asig : centro.getDatos().getAsignaturas().getAsignatura()) 
+		{
+			if(asig.getNumIntAs().trim().equalsIgnoreCase(id.trim())) 
+			{
+				asignatura = asig;
+			}
+		}
+		return asignatura;
+	}
+
+	/**
+	 * Method extractTemporalDayTramo
+	 * @param key
+	 * @return
+	 */
+	private String extractTemporalDayTramo(String key)
+	{
+		String finalString = null;
+		switch(key) 
+		{
+			case "1":
+			{
+				finalString = "Lunes";
+				break;
+			}
+			case "2":
+			{
+				finalString = "Martes";
+				break;
+			}
+			case "3":
+			{
+				finalString = "Miercoles";
+				break;
+			}
+			case "4":
+			{
+				finalString = "Jueves";
+				break;
+			}
+			case "5":
+			{
+				finalString = "Viernes";
+				break;
+			}
+			case "6":
+			{
+				finalString = "Sabado";
+				break;
+			}
+			case "7":
+			{
+				finalString = "Domingo";
+				break;
+			}
+			default:
+			{
+				finalString = "Desconocido";
+				break;
+			}
+		}
+		return finalString;
+	}
+
+	/**
+	 * Method extractTramoFromCentroActividad
+	 * @param centro
+	 * @param actividad
+	 * @param tramo
+	 * @return
+	 */
+	private Tramo extractTramoFromCentroActividad(Centro centro, Actividad actividad)
+	{
+		for(Tramo tram : centro.getDatos().getTramosHorarios().getTramo()) 
+		{
+			// --- GETTING THE TRAMO ---
+			if(actividad.getTramo().trim().equalsIgnoreCase(tram.getNumTr().trim())) 
+			{
+				return tram;
+			}
+		}
+		return null;
 	}
 }
 
