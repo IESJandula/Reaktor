@@ -3,6 +3,7 @@ package es.iesjandula.horarios.rest;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -205,13 +206,14 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
     }
 	
 	/**
-	 * Endpoint que devuelve un aula pasandole un profesor y un tramo horario
+	 * Endpoint que devuelve un aula pasandole un profesor y un tramo horario, este endpoint deriva de {@link #getClassroomTeacher(String, String, Integer)}
 	 * @param profesorName
 	 * @param profesorSurname
 	 * @param time
 	 * @param dia
 	 * @return ok si los parametros estan bien introducidos con un aula como json, 404 si los parametros fallan o 500 si hay un error de servidor
 	 * @author Pablo Ruiz Canovas 
+	 * @see derivacion {@link #getClassroomTeacher(String, String, Integer)}
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom/{time}")
 	public ResponseEntity<?> getClassroomTeacherTime(
@@ -250,6 +252,36 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body("Server error "+ex.getMessage());
 		}
 	}
+	
+	/**
+	 * 
+	 * ENDPOINT 9 Y 10
+	 * 
+	 */
+	
+	/**
+	 * Endpoint que devuelve un mapa en el que por cada campo se encuentran las diferentes horas
+	 * @return el mapa de horas
+	 * @author Pablo Ruiz Canovas
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/hours")
+	public ResponseEntity<?> getHours()
+	{
+		try
+		{
+			Map<String,List<String>> horario = Constantes.cargarHoras();
+			return ResponseEntity.ok().body(horario);
+		}
+		catch(Exception ex)
+		{
+			log.error("Error al cargar las listas ",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex.getMessage());
+		}
+	}
+	
+	
+	
+	
 	
 	
 	
