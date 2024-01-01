@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Actividad
+public class Actividad implements Comparable<Actividad>
 {
 	/** Attribute gruposActividad */
 	private GruposActividad gruposActividad;
@@ -33,4 +33,18 @@ public class Actividad
 
 	/** Attribute asignatura */
 	private String asignatura;
+
+	/**
+	 * Method compareTo
+	 * @param other
+	 * @return
+	 */
+	@Override
+	public int compareTo(Actividad other)
+	{
+		// -- USED FOR SORT ACTIVIDAD BY TRAMO ID ORDER ---
+		int thisNumber = Integer.parseInt(this.tramo);
+		int otherNumber = Integer.parseInt(other.tramo);
+		return thisNumber-otherNumber;
+	}
 }

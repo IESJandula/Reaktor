@@ -1,10 +1,14 @@
 package es.reaktor.horarios.rest;
 
+import com.itextpdf.*;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +21,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,7 +39,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 import es.reaktor.horarios.exceptions.HorariosError;
+import es.reaktor.horarios.models.ApplicationPdf;
 import es.reaktor.horarios.models.Classroom;
 import es.reaktor.horarios.models.Course;
 import es.reaktor.horarios.models.Hour;
@@ -77,6 +85,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HorariosRest
 {
+	/** Attribute centroPdfs , used for get the info of PDFS */
+	private Centro centroPdfs;
+	
 	/**
 	 * Method sendXmlToObjects
 	 *
@@ -343,6 +354,7 @@ public class HorariosRest
 				session.setAttribute("storedCentro", centro);
 				log.info("UserVisits: " + centro);
 				// --- SESSION RESPONSE_ENTITY ---------
+				this.centroPdfs=centro;
 				return ResponseEntity.ok(session.getAttribute("storedCentro"));
 			}
 			else
@@ -2011,243 +2023,200 @@ public class HorariosRest
 	}
 	
 	
+	/**
+	 * Method getSchedulePdf
+	 * @param name
+	 * @param lastname
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.GET , value = "/get/horario/teacher/pdf" , produces = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> getSchedulePdf(
 			@RequestHeader(required=true) String name,
-			@RequestHeader(required=true) String lastname,
-			HttpSession session)
+			@RequestHeader(required=true) String lastname)
 	{
-		
-		if(!name.trim().isBlank() && !name.trim().isEmpty() && !lastname.trim().isBlank() && !lastname.trim().isEmpty()) 
+		try
 		{
-			if(session.getAttribute("storedCentro")!=null && session.getAttribute("storedCentro") instanceof Centro) 
+			if(!name.trim().isBlank() && !name.trim().isEmpty() && !lastname.trim().isBlank() && !lastname.trim().isEmpty()) 
 			{
-				Centro centro = (Centro) session.getAttribute("storedCentro");
-				
-				// --- GETTING THE PROFESSOR AND CHECK IF EXISTS ---
-				if(lastname.split(" ").length<2)
+				if(this.centroPdfs!=null) 
 				{
-					System.out.println("ERROR NO HAY DOS APELLIDOS DEL PROFESOR O NO ENCONTRADOS EN HEADERS");
-				}
-				String profFirstLastName = lastname.trim().split(" ")[0];
-				String profSecondLastName = lastname.trim().split(" ")[1];
-						
-				Profesor profesor = null;
-				for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
-				{
-					if(prof.getNombre().trim().equalsIgnoreCase(name.trim()) && prof.getPrimerApellido().trim().equalsIgnoreCase(profFirstLastName) && prof.getSegundoApellido().trim().equalsIgnoreCase(profSecondLastName)) 
+					Centro centro = this.centroPdfs;
+					
+					// --- GETTING THE PROFESSOR AND CHECK IF EXISTS ---
+					if(lastname.split(" ").length<2)
 					{
-						// --- PROFESSOR EXISTS , SET THE VALUE OF PROF IN PROFESOR ---
-						profesor = prof;
-						System.out.println("PROFESOR ENCONTRADO -> "+profesor.toString());
+						// -- CATCH ANY ERROR ---
+						String error = "ERROR NO HAY DOS APELLIDOS DEL PROFESOR O NO ENCONTRADOS EN HEADERS";
+						HorariosError horariosError = new HorariosError(400, error, null);
+						log.info(error,horariosError);
+						return ResponseEntity.status(400).body(horariosError);
 					}
-				}
-				
-				if(profesor!=null) 
-				{
-					// --- PROFESOR EXISTS ---
-					HorarioProf horarioProfesor = null;
-					for(HorarioProf horarioProf : centro.getHorarios().getHorariosProfesores().getHorarioProf()) 
+					String profFirstLastName = lastname.trim().split(" ")[0];
+					String profSecondLastName = lastname.trim().split(" ")[1];
+							
+					Profesor profesor = null;
+					for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
 					{
-						if(horarioProf.getHorNumIntPR().trim().equalsIgnoreCase(profesor.getNumIntPR().trim())) 
+						if(prof.getNombre().trim().equalsIgnoreCase(name.trim()) && prof.getPrimerApellido().trim().equalsIgnoreCase(profFirstLastName) && prof.getSegundoApellido().trim().equalsIgnoreCase(profSecondLastName)) 
 						{
-							// --- HORARIO PROFESOR EXISTS , SET THE VALUE ON HORARIO PROFESOR---
-							horarioProfesor = horarioProf;
+							// --- PROFESSOR EXISTS , SET THE VALUE OF PROF IN PROFESOR ---
+							profesor = prof;
+							System.out.println("PROFESOR ENCONTRADO -> "+profesor.toString());
 						}
 					}
 					
-					if(horarioProfesor!=null) 
+					if(profesor!=null) 
 					{
-						// --- HORARIO EXISTS ---
-						// --- CREATING THE MAP WITH KEY STRING TRAMO DAY AND VALUE LIST OF ACTIVIDAD ---
-						Map<String,List<Actividad>> profesorMap = new HashMap<String,List<Actividad>>();
-						
-						// --- FOR EACH ACTIVIDAD , GET THE TRAMO DAY , AND PUT ON MAP WITH THE ACTIVIDADES OF THIS DAY (LIST ACTIVIDAD) ---
-						for(Actividad actividad : horarioProfesor.getActividad()) 
+						// --- PROFESOR EXISTS ---
+						HorarioProf horarioProfesor = null;
+						for(HorarioProf horarioProf : centro.getHorarios().getHorariosProfesores().getHorarioProf()) 
 						{
-							Tramo tramo = extractTramoFromCentroActividad(centro, actividad);
-							
-							// --- CHECKING IF THE TRAMO DAY EXISTS ---
-							if(!profesorMap.containsKey(tramo.getNumeroDia().trim()))
+							if(horarioProf.getHorNumIntPR().trim().equalsIgnoreCase(profesor.getNumIntPR().trim())) 
 							{
-								// --- ADD THE NEW KEY AND VALUE ---
-								List<Actividad> actividadList = new ArrayList<Actividad>();
-								actividadList.add(actividad);
-								
-								profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
-							}
-							else 
-							{
-								// -- ADD THE VALUE TO THE ACTUAL VALUES ---
-								List<Actividad> actividadList = profesorMap.get(tramo.getNumeroDia().trim());
-								actividadList.add(actividad);
-								profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
+								// --- HORARIO PROFESOR EXISTS , SET THE VALUE ON HORARIO PROFESOR---
+								horarioProfesor = horarioProf;
 							}
 						}
 						
-						for(Map.Entry<String,List<Actividad>> set :profesorMap.entrySet()) 
+						if(horarioProfesor!=null) 
 						{
+							// --- HORARIO EXISTS ---
+							// --- CREATING THE MAP WITH KEY STRING TRAMO DAY AND VALUE LIST OF ACTIVIDAD ---
+							Map<String,List<Actividad>> profesorMap = new HashMap<String,List<Actividad>>();
 							
-							// --- GET THE DAY (LUNES,MARTES... ) FROM THE KEY NUMBER ---
-							String temporalDay = this.extractTemporalDayTramo(set.getKey());
-							System.out.println("TRAMO DIA: "+temporalDay);
-							
-							for(Actividad act : set.getValue()) 
+							// --- FOR EACH ACTIVIDAD , GET THE TRAMO DAY , AND PUT ON MAP WITH THE ACTIVIDADES OF THIS DAY (LIST ACTIVIDAD) ---
+							for(Actividad actividad : horarioProfesor.getActividad()) 
 							{
-								// -- GET THE TRAMO OBJECT FROM THE ACTIVIDAD ---
-								Tramo temporalTramo = this.extractTramoFromCentroActividad(centro, act);
-								if(temporalTramo!=null) 
+								Tramo tramo = extractTramoFromCentroActividad(centro, actividad);
+								
+								// --- CHECKING IF THE TRAMO DAY EXISTS ---
+								if(!profesorMap.containsKey(tramo.getNumeroDia().trim()))
 								{
-									// --- GET THE TIME START AND END FROM THE TEMPORAL_TRAMO ---
-									String temporalHourTime = temporalTramo.getHoraInicio().trim()+" - "+temporalTramo.getHoraFinal().trim();	
+									// --- ADD THE NEW KEY AND VALUE ---
+									List<Actividad> actividadList = new ArrayList<Actividad>();
+									actividadList.add(actividad);
+									Collections.sort(actividadList);
 									
-									System.out.println(temporalHourTime);
-									
-									// --- GET THE ASIGNATURA FROM ACTIVIDAD BY ID ---
-									Asignatura temporalAsignatura = this.getAsignaturaById(act.getAsignatura().trim(),centro);
-									if(temporalAsignatura!=null) 
-									{
-										System.out.println("ASIGNATURA: "+temporalAsignatura.getNombre().trim());
-										
-										//--- GET THE AULA FROM ACTIVIDAD BY ID ---
-										Aula temporalAula = this.getAulaById(act.getAula().trim(),centro);
-										if(temporalAula!=null) 
-										{
-											System.out.println("AULA : "+temporalAula.getNombre().trim());
-										}
-										else 
-										{
-											System.out.println("ERROR temporalAula NULL OR NOT FOUND");
-										}
-									}
-									else 
-									{
-										System.out.println("ERROR temporalAsignatura NULL OR NOT FOUND");
-									}
-
+									profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
 								}
 								else 
 								{
-									System.out.println("ERROR temporalTramo NULL OR NOT FOUND");
+									// -- ADD THE VALUE TO THE ACTUAL VALUES ---
+									List<Actividad> actividadList = profesorMap.get(tramo.getNumeroDia().trim());
+									actividadList.add(actividad);
+									Collections.sort(actividadList);
+									profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
 								}
 							}
+							
+							// --- CALLING TO APPLICATION PDF , TO GENERATE PDF ---
+							ApplicationPdf pdf = new ApplicationPdf(); 
+							try
+							{
+								// -- CALLING TO THE METHOD GET INFO PDF OF APLICATION PDF TO CREATE THE PDF ---
+								pdf.getInfoPdf(centro, profesorMap,profesor);
+								
+								// --- GETTING THE PDF BY NAME URL ---
+								File file = new File(profesor.getNombre().trim()+"_"+profesor.getPrimerApellido().trim()+"_"+profesor.getSegundoApellido()+"_Horario.pdf");
+								
+								// --- SETTING THE HEADERS WITH THE NAME OF THE FILE TO DOWLOAD PDF ---
+								HttpHeaders responseHeaders = new HttpHeaders();
+								//--- SET THE HEADERS ---
+							    responseHeaders.set("Content-Disposition", "attachment; filename="+file.getName());
+
+								try
+								{
+									// --- CONVERT FILE TO BYTE[] ---
+									byte[] bytesArray = Files.readAllBytes(file.toPath());
+									
+									// --- RETURN OK (200) WITH THE HEADERS AND THE BYTESARRAY ---
+									return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+								}
+								catch (IOException exception)
+								{
+									// --- ERROR ---
+									String error = "ERROR GETTING THE BYTES OF PDF ";
+									
+									log.info(error);
+									
+									HorariosError horariosError = new HorariosError(500, error, exception);
+									log.info(error,horariosError);
+									return ResponseEntity.status(500).body(horariosError);
+								}
+							}
+							catch (HorariosError exception)
+							{
+								// --- ERROR ---
+								String error = "ERROR getting the info pdf ";
+								
+								log.info(error);
+								
+								HorariosError horariosError = new HorariosError(400, error, exception);
+								log.info(error,horariosError);
+								return ResponseEntity.status(400).body(horariosError);
+							}
+							
+						}
+						else 
+						{
+							// --- ERROR ---
+							String error = "ERROR HORARIO_PROFESOR NOT FOUNT OR NULL";
+							
+							log.info(error);
+							
+							HorariosError horariosError = new HorariosError(400, error, null);
+							log.info(error,horariosError);
+							return ResponseEntity.status(400).body(horariosError);
 						}
 					}
 					else 
 					{
-						System.out.println("ERROR HORARIO_PROFESOR NOT FOUNT OR NULL");
+						// --- ERROR ---
+						String error = "ERROR PROFESOR NOT FOUND OR NULL";
+						
+						log.info(error);
+						
+						HorariosError horariosError = new HorariosError(400, error, null);
+						log.info(error,horariosError);
+						return ResponseEntity.status(400).body(horariosError);
 					}
+					
 				}
 				else 
 				{
-					System.out.println("ERROR PROFESOR NOT FOUND OR NULL");
+					// --- ERROR ---
+					String error = "ERROR centroPdfs NULL OR NOT FOUND";
+					
+					log.info(error);
+					
+					HorariosError horariosError = new HorariosError(400, error, null);
+					log.info(error,horariosError);
+					return ResponseEntity.status(400).body(horariosError);
 				}
-				
 			}
 			else 
 			{
-				System.out.println("ERROR storedCentro NULL OR NOT FOUND");
+				// --- ERROR ---
+				String error = "ERROR PARAMETROS HEADER NULL OR EMPTY, BLANK";
+				
+				log.info(error);
+				
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.info(error,horariosError);
+				return ResponseEntity.status(400).body(horariosError);
 			}
 		}
-		else 
+		catch(Exception exception) 
 		{
-			System.out.println("ERROR PARAMETROS HEADER NULL OR EMPTY, BLANK");
+			// -- CATCH ANY ERROR ---
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.info(error,horariosError);
+			return ResponseEntity.status(500).body(horariosError);
 		}
-		return null;
 	}
 
-	/**
-	 * Method getAulaById
-	 * @param id
-	 * @param centro
-	 * @return
-	 */
-	private Aula getAulaById(String id, Centro centro)
-	{
-		Aula aula = null;
-		for(Aula aul : centro.getDatos().getAulas().getAula()) 
-		{
-			if(aul.getNumIntAu().trim().equalsIgnoreCase(id.trim())) 
-			{
-				aula = aul;
-			}	
-		}
-		
-		return aula;
-	}
-
-	/**
-	 * Method getAsignaturaById
-	 * @param id
-	 * @param centro
-	 * @return
-	 */
-	private Asignatura getAsignaturaById(String id, Centro centro)
-	{
-		Asignatura asignatura = null;
-		for(Asignatura asig : centro.getDatos().getAsignaturas().getAsignatura()) 
-		{
-			if(asig.getNumIntAs().trim().equalsIgnoreCase(id.trim())) 
-			{
-				asignatura = asig;
-			}
-		}
-		return asignatura;
-	}
-
-	/**
-	 * Method extractTemporalDayTramo
-	 * @param key
-	 * @return
-	 */
-	private String extractTemporalDayTramo(String key)
-	{
-		String finalString = null;
-		switch(key) 
-		{
-			case "1":
-			{
-				finalString = "Lunes";
-				break;
-			}
-			case "2":
-			{
-				finalString = "Martes";
-				break;
-			}
-			case "3":
-			{
-				finalString = "Miercoles";
-				break;
-			}
-			case "4":
-			{
-				finalString = "Jueves";
-				break;
-			}
-			case "5":
-			{
-				finalString = "Viernes";
-				break;
-			}
-			case "6":
-			{
-				finalString = "Sabado";
-				break;
-			}
-			case "7":
-			{
-				finalString = "Domingo";
-				break;
-			}
-			default:
-			{
-				finalString = "Desconocido";
-				break;
-			}
-		}
-		return finalString;
-	}
 
 	/**
 	 * Method extractTramoFromCentroActividad
