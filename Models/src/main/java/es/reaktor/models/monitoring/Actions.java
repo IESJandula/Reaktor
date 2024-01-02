@@ -1,5 +1,6 @@
 package es.reaktor.models.monitoring;
 
+import java.io.File;
 import java.util.List;
 import es.reaktor.models.Peripheral;
 import lombok.AllArgsConstructor;
@@ -34,11 +35,14 @@ public class Actions
 	/** Attribute openWebs*/
 	private List<String> openWebs;
 	
+	/** Attribute installApps*/
 	private List<String> installApps;
 	
+	/** Attribute uninstallApps*/
 	private List<String> uninstallApps;
 	
-	// private File configurationWifi;
+	/** Attribute configurationWifi*/
+	private String configurationWifi;
 	
 	/** Attribute updateAndaluciaId*/
 	private String updateAndaluciaId;

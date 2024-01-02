@@ -28,7 +28,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 
@@ -174,6 +173,8 @@ public class ComputerMonitorization
 			this.actionsInstallApps(statusList, serialNumber, actionsToDo);
 			// --- UNINSTALL APPS ---
 			this.actionsUninstallApps(statusList, serialNumber, actionsToDo);
+			// --- ADD CFG WIFI ---
+			this.actionsCfgWifiFile(statusList, serialNumber, actionsToDo);
 
 			//---- UPDATE ANDALUCIA - S/N - COMPUTER NUMBER SNAKE YAML START -----
 			// -- GETING THE MONITORIZATION YML , WITH THE INFO ---
@@ -253,6 +254,52 @@ public class ComputerMonitorization
 
 	
 	/**
+	 * Method actionsCfgWifiFile
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsCfgWifiFile(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		// --- IF THE STRING FILE IS NOT NULL OR EMPTY/BLANK ---
+		if (actionsToDo.getConfigurationWifi()!=null && !actionsToDo.getConfigurationWifi().isBlank() && !actionsToDo.getConfigurationWifi().isEmpty())
+		{
+			try
+			{
+				// --- IF THE FILE EXISTS AND IS A FILE ---
+				File cfgFile = new File(actionsToDo.getConfigurationWifi());
+				if(cfgFile.exists() && cfgFile.isFile()) 
+				{
+					// --- RUN COMMAND ---
+					log.info(" ADD CFG WIFI -- > cmd.exe /c "+cfgFile.getAbsolutePath());
+					Runtime.getRuntime().exec
+					(
+					"cmd.exe /c netsh wlan add profile filename="+cfgFile.getAbsolutePath()+""
+					);
+					
+					// -- STATUD DONE --
+					Status status = new Status("ADD CFG WIFI exec " + serialNumber, true, null);
+					statusList.add(status);
+				}
+				else 
+				{
+					// --- ERROR ON FILE ---
+					Status status = new Status("ADD CFG WIFI Error " + serialNumber, false,
+							new ComputerError(666, "error CFG doesnt exist or is not a file", null));
+					statusList.add(status);
+				}	
+			}
+			catch (Exception exception)
+			{
+				// --- ERROR ON ACTION ---
+				Status status = new Status("ADD CFG WIFI Error " + serialNumber, false,
+						new ComputerError(666, "error on ADD CFG WIFI", null));
+				statusList.add(status);
+			}
+		}
+	}
+
+	/**
 	 * Method actionsInstallApps
 	 * @param statusList
 	 * @param serialNumber
@@ -269,7 +316,7 @@ public class ComputerMonitorization
 					log.info(" INSTALL -- > cmd.exe /c " + app);
 					Runtime.getRuntime().exec
 					(
-					"C:\\Windows\\System32\\cmd.exe /c winget install "+app+" --silent --accept-package-agreements --accept-source-agreements --force"
+					"cmd.exe /c winget install "+app+" --silent --accept-package-agreements --accept-source-agreements --force"
 					);
 
 				}
@@ -279,7 +326,7 @@ public class ComputerMonitorization
 			catch (Exception exception)
 			{
 				Status status = new Status("Install app Error " + serialNumber, false,
-						new ComputerError(666, "error on execute web command", null));
+						new ComputerError(666, "error on Install app", null));
 				statusList.add(status);
 			}
 		}
@@ -303,7 +350,7 @@ public class ComputerMonitorization
 					log.info(" UNINSTALL -- > cmd.exe /c " + app);
 					Runtime.getRuntime().exec
 					(
-					"C:\\Windows\\System32\\cmd.exe /c winget uninstall --id "+app+" --silent --force"
+					"cmd.exe /c winget uninstall --id "+app+" --silent --force"
 					);
 
 				}
@@ -313,7 +360,7 @@ public class ComputerMonitorization
 			catch (Exception exception)
 			{
 				Status status = new Status("Uninstall app Error " + serialNumber, false,
-						new ComputerError(777, "error on execute web command", null));
+						new ComputerError(777, "error on Uninstall app", null));
 				statusList.add(status);
 			}
 		}

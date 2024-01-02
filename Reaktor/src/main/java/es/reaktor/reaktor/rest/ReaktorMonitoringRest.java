@@ -1,5 +1,6 @@
 package es.reaktor.reaktor.rest;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -467,7 +468,7 @@ public class ReaktorMonitoringRest
 					this.sendStatusComputerUnistallApp(serialNumber, statusList,actionsToDo);
 					
 					// --- EJECUCION DE CFG WIFI ---
-					//this.sendStatusComputerCfgWifi(serialNumber, statusList);
+					this.sendStatusComputerCfgWifi(serialNumber, statusList,actionsToDo);
 					
 					// --- ACTUALIZACION DE JUNTA ANDALUCIA ---
 					this.sendStatusComputerUpdateAndalucia(serialNumber, statusList, computer,actionsToDo);
@@ -603,16 +604,16 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerCfgWifi(String serialNumber, List<Status> statusList)
+	private void sendStatusComputerCfgWifi(String serialNumber, List<Status> statusList , Actions actionsToDo)
 	{
 		for (int i = 0; i < this.configurationFileComputerList.size(); i++)
 		{
 			Computer cmp = this.configurationFileComputerList.get(i);
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				// ------------------------- TO-DO EJECUCION DE CFG WIFIL OGIC--------------------
-				Status status = new Status("CFG Configuration " + serialNumber, true, null);
-				statusList.add(status);
+				// ------------------------- WIFI LOGIC--------------------
+				actionsToDo.setConfigurationWifi("Wi-Fi-Andared_Corporativo.xml");
+				this.configurationFileComputerList.remove(cmp);
 			}
 		}
 	}
