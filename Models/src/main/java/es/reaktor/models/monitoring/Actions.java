@@ -34,9 +34,9 @@ public class Actions
 	/** Attribute openWebs*/
 	private List<String> openWebs;
 	
-	// private List<String> installApps;
+	private List<String> installApps;
 	
-	// private List<String> unistallApps;
+	private List<String> uninstallApps;
 	
 	// private File configurationWifi;
 	

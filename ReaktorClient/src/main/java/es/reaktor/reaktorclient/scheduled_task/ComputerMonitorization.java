@@ -170,6 +170,10 @@ public class ComputerMonitorization
 			this.actionsBlockDisp(statusList, serialNumber, actionsToDo);
 			// --- OPEN WEBS ---
 			this.actionsOpenWeb(statusList, serialNumber, actionsToDo);
+			// --- INSTALL APPS ---
+			this.actionsInstallApps(statusList, serialNumber, actionsToDo);
+			// --- UNINSTALL APPS ---
+			this.actionsUninstallApps(statusList, serialNumber, actionsToDo);
 
 			//---- UPDATE ANDALUCIA - S/N - COMPUTER NUMBER SNAKE YAML START -----
 			// -- GETING THE MONITORIZATION YML , WITH THE INFO ---
@@ -245,6 +249,74 @@ public class ComputerMonitorization
 			this.closeHttpClientResponse(httpClient, response);
 		}
 
+	}
+
+	
+	/**
+	 * Method actionsInstallApps
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsInstallApps(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		if (actionsToDo.getInstallApps() != null && !actionsToDo.getInstallApps().isEmpty())
+		{
+			try
+			{
+				for (String app : actionsToDo.getInstallApps())
+				{
+					log.info(" INSTALL -- > cmd.exe /c " + app);
+					Runtime.getRuntime().exec
+					(
+					"C:\\Windows\\System32\\cmd.exe /c winget install "+app+" --silent --accept-package-agreements --accept-source-agreements --force"
+					);
+
+				}
+				Status status = new Status("Install App exec " + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Install app Error " + serialNumber, false,
+						new ComputerError(666, "error on execute web command", null));
+				statusList.add(status);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Method actionsUninstallApps
+	 * @param statusList
+	 * @param serialNumber
+	 * @param actionsToDo
+	 */
+	private void actionsUninstallApps(List<Status> statusList, String serialNumber, Actions actionsToDo)
+	{
+		if (actionsToDo.getUninstallApps() != null && !actionsToDo.getUninstallApps().isEmpty())
+		{
+			try
+			{
+				for (String app : actionsToDo.getUninstallApps())
+				{
+					log.info(" UNINSTALL -- > cmd.exe /c " + app);
+					Runtime.getRuntime().exec
+					(
+					"C:\\Windows\\System32\\cmd.exe /c winget uninstall --id "+app+" --silent --force"
+					);
+
+				}
+				Status status = new Status("Uninstall App exec " + serialNumber, true, null);
+				statusList.add(status);
+			}
+			catch (Exception exception)
+			{
+				Status status = new Status("Uninstall app Error " + serialNumber, false,
+						new ComputerError(777, "error on execute web command", null));
+				statusList.add(status);
+			}
+		}
 	}
 
 	/**

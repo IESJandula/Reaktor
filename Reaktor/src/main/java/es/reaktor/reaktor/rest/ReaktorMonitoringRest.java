@@ -18,6 +18,7 @@ import es.reaktor.models.Computer;
 import es.reaktor.models.Location;
 import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Peripheral;
+import es.reaktor.models.Software;
 import es.reaktor.models.Status;
 import es.reaktor.models.monitoring.Actions;
 import lombok.extern.slf4j.Slf4j;
@@ -82,13 +83,13 @@ public class ReaktorMonitoringRest
 	/** Attribute installAppComputerList */
 	private List<Computer> installAppComputerList = new ArrayList<>(
 			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<Software>(List.of(new Software("Notepad++.Notepad++"))),
 					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
-	/** Attribute unistallAppComputerList */
-	private List<Computer> unistallAppComputerList = new ArrayList<>(
+	/** Attribute uninstallAppComputerList */
+	private List<Computer> uninstallAppComputerList = new ArrayList<>(
 			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+					new Location("0.7", 0, "trolley2"), new ArrayList<>(),new ArrayList<Software>(List.of(new Software("Mozilla.Firefox"))),
 					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/** Attribute configurationFileComputerList */
@@ -460,15 +461,13 @@ public class ReaktorMonitoringRest
 					this.sendStatusComputerOpenWeb(serialNumber, statusList,actionsToDo);
 					
 					// --- INSTALACION REMOTA DE APLICACIONES ---
-					/*
-					this.sendStatusComputerInstallApp(serialNumber, statusList);
+					this.sendStatusComputerInstallApp(serialNumber, statusList,actionsToDo);
 					
 					// --- DESISNSTALACION REMOTA DE APP ---
-					this.sendStatusComputerUnistallApp(serialNumber, statusList);
+					this.sendStatusComputerUnistallApp(serialNumber, statusList,actionsToDo);
 					
 					// --- EJECUCION DE CFG WIFI ---
-					this.sendStatusComputerCfgWifi(serialNumber, statusList);
-					*/
+					//this.sendStatusComputerCfgWifi(serialNumber, statusList);
 					
 					// --- ACTUALIZACION DE JUNTA ANDALUCIA ---
 					this.sendStatusComputerUpdateAndalucia(serialNumber, statusList, computer,actionsToDo);
@@ -623,16 +622,29 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerUnistallApp(String serialNumber, List<Status> statusList)
+	private void sendStatusComputerUnistallApp(String serialNumber, List<Status> statusList, Actions actionsToDo)
 	{
-		for (int i = 0; i < this.unistallAppComputerList.size(); i++)
+		// --- FOR EACH COMPUTER ON THE UNINSTALL APP COMPUTER LIST ---
+		for (int i = 0; i < this.uninstallAppComputerList.size(); i++)
 		{
-			Computer cmp = this.unistallAppComputerList.get(i);
+			Computer cmp = this.uninstallAppComputerList.get(i);
+			// --- GET THE COMPUTER AND GET THE LIST OF APPS TO UNINSTALL ---
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				// ------------------------- TO-DO DESISNSTALACION REMOTA DE APP LOGIC------------
-				Status status = new Status("Unistall App " + serialNumber,true, null);
-				statusList.add(status);
+				// ------------------------- Actions to do uninstall AppLOGIC-------------------------------
+				List<String> unInstallAppList = new ArrayList<String>();
+				
+				// --- FOR EACH APP TO UNINSTALL , GET THE NAME/ID AND PUT IN LIST<STRING> FOR ACTIONS OBJECT ---
+				for(Software app : cmp.getSoftwareList()) 
+				{
+					
+					unInstallAppList.add(app.getApplication());
+				}
+				// --- SET THE LIST INTO ACTIONS OBJECTS ---
+				actionsToDo.setUninstallApps(unInstallAppList);
+				
+				// --- REMOVE THE COMPUTER FROM THE UNINSTALL LIST ---
+				this.uninstallAppComputerList.remove(cmp);
 			}
 		}
 	}
@@ -642,16 +654,28 @@ public class ReaktorMonitoringRest
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerInstallApp(String serialNumber, List<Status> statusList)
+	private void sendStatusComputerInstallApp(String serialNumber, List<Status> statusList, Actions actionsToDo)
 	{
+		// --- FOR EACH COMPUTER ON THE ISNTALL APP COMPUTER LIST ---
 		for (int i = 0; i < this.installAppComputerList.size(); i++)
 		{
 			Computer cmp = this.installAppComputerList.get(i);
+			// --- GET THE COMPUTER AND GET THE LIST OF APPS TO INSTALL ---
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				// ------------------------- TO-DO Install AppLOGIC-------------------------------
-				Status status = new Status("Install App " + serialNumber, true, null);
-				statusList.add(status);
+				// ------------------------- Actions to do Install AppLOGIC-------------------------------
+				List<String> installAppList = new ArrayList<String>();
+				
+				// --- FOR EACH APP TO INSTALL , GET THE NAME/ID AND PUT IN LIST<STRING> FOR ACTIONS OBJECT ---
+				for(Software app : cmp.getSoftwareList()) 
+				{
+					installAppList.add(app.getApplication());
+				}
+				// --- SET THE LIST INTO ACTIONS OBJECTS ---
+				actionsToDo.setInstallApps(installAppList);
+				
+				// --- REMOVE THE COMPUTER FROM THE INSTALL LIST ---
+				this.installAppComputerList.remove(cmp);
 			}
 		}
 	}
