@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.iesjandula.horarios.exception.HorarioError;
+import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 
 /**
@@ -71,15 +72,16 @@ public interface ICSVParser
 	}
 	
 	/**
-	 * Metodo que lee la estructura del csv para comprobar que el fichero esta correcto
+	 * Metodo que lee la estructura del csv para comprobar que el fichero esta correcto y se determina si el csv es de alumnos o de profesores
 	 * @param fr
 	 * @param br
 	 * @param file
-	 * @return true si la estructura es correcta, false si es incorrecta
+	 * @return true si el csv es de profesores o false si el csv es de alumnos
 	 */
-	private boolean checkCSVFormat(FileReader fr,BufferedReader br,File file) throws HorarioError
+	public default boolean checkCSVFormat(FileReader fr,BufferedReader br,File file) throws HorarioError
 	{
 		boolean check = false;
+		boolean profesor = true;
 		try
 		{
 			fr = new FileReader(file);
@@ -91,15 +93,21 @@ public interface ICSVParser
 			campos[1] = campos[1].substring(0);
 			campos[2] = campos[2].substring(0);
 			campos[3] = campos[3].substring(0);
-			//Comprobamos que los campos sean nombre,apellidos y roles
-			if(!campos[0].equalsIgnoreCase("nombre") && !campos[1].equalsIgnoreCase("apellidos") && !campos[2].equalsIgnoreCase("email") && !campos[3].equalsIgnoreCase("roles"))
+			//Comprobamos que los campos sean apellido,nombre,dni/pasaporte y curso en caso de que el csv sea de alumnos
+			if(campos[0].equalsIgnoreCase("apellido") && campos[1].equalsIgnoreCase("nombre") && campos[2].equalsIgnoreCase("dni/pasaporte") && campos[3].equalsIgnoreCase("curso"))
+			{
+				profesor = false;
+				check = true;
+			}	
+			//Comprobamos que los campos sean nombre,apellidos y roles en caso de que el csv sea de profesores
+			else if(!campos[0].equalsIgnoreCase("nombre") && !campos[1].equalsIgnoreCase("apellidos") && !campos[2].equalsIgnoreCase("email") && !campos[3].equalsIgnoreCase("roles"))
 			{
 				check = false;
 			}
 			else
 			{
 				check = true;
-			}	
+			}
 			if(br!=null)
 			{
 				br.close();
@@ -132,12 +140,13 @@ public interface ICSVParser
 				log.error("Error al cerrar los flujos de entrada",ex);
 			}
 		}
-		//Mandamos el resultado final
+		//En caso de que los campos no coincidan se manda un error
 		if(!check)
 		{
 			throw new HorarioError(5,"Error la estructura del csv no es correcta, los campos principales han de ser nombre,apellidos y roles");
 		}
-		return check;
+		//Se devuelve si el csv es de alumnos o profesores
+		return profesor;
 	}
 	/**
 	 * Metodo que escribe el contenido leido en bytes en un fichero aparte
@@ -265,5 +274,61 @@ public interface ICSVParser
 		}
 		return modelos;
 		
+	}
+	/**
+	 * Metodo que carga los alumnos del csv en una lista y los devuelve
+	 * @return lista de alumnos
+	 * @throws HorarioError
+	 */
+	public default List<Alumno> parseAlumnos() throws HorarioError
+	{
+		List<Alumno> alumnos = new LinkedList<Alumno>();
+		File file = new File("src"+File.separator+"main"+File.separator+"resources"+File.separator+"datosCsv.dat");
+		FileReader fr = null;
+		BufferedReader br = null;
+		try
+		{
+			fr = new FileReader(file);
+			br = new BufferedReader(fr);
+			//Saltamos la primera linea del csv
+			br.readLine();
+			//Iteramos las lineas hasta el final
+			String linea = br.readLine();
+			while(linea!=null)
+			{
+				String [] campos = linea.split(",");
+				//Eliminamos los espacios del split
+				campos[1] = campos[1].substring(0);
+				campos[2] = campos[2].substring(0);
+				campos[3] = campos[3].substring(0);	
+				//Añadimos los alumnos uno a uno a la lista
+				alumnos.add(new Alumno(campos[0],campos[1],campos[2],campos[3]));
+				linea = br.readLine();
+			}
+		}
+		catch(IOException ex)
+		{
+			log.error("Error al leer los alumnos",ex);
+			throw new HorarioError(3,"Error, fichero corrupto, ilegible en bytes o vacio");
+		}
+		finally
+		{
+			try
+			{
+				if(br!=null)
+				{
+					br.close();
+				}
+				if(fr!=null)
+				{
+					fr.close();
+				}
+			}
+			catch(IOException ex)
+			{
+				log.error("Error al cerrar el fichero",ex);
+			}
+		}
+		return alumnos;
 	}
 }

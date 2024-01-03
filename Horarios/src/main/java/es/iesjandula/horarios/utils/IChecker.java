@@ -3,12 +3,14 @@ package es.iesjandula.horarios.utils;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.iesjandula.horarios.exception.HorarioError;
+import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 import es.iesjandula.horarios.models.xml.Actividad;
 import es.iesjandula.horarios.models.xml.Aula;
@@ -82,6 +84,33 @@ public interface IChecker
 			count++;
 		}
 		return roles;
+	}
+	/**
+	 * Metodo que carga los alumnos de una lista de java a un array para posteriormente ordenarlos
+	 * @param alumnos
+	 * @return array de alumnos cargados
+	 * @throws HorarioError
+	 * @author Pablo Ruiz Canovas
+	 */
+	public default Alumno [] sortAlumno(List<Alumno> alumnos) throws HorarioError
+	{
+		Alumno [] array = new Alumno[0];
+		//Comprobamos que la lista este cargada de alumnos
+		if(alumnos.isEmpty())
+		{
+			log.error("No existen alumnos en el sistema");
+			throw new HorarioError(9,"No se ha cargado ningun alumno en el sistema");
+		}
+		else
+		{
+			//Cargamos los alumnos en un array
+			for(Alumno a: alumnos)
+			{
+				array = Arrays.copyOf(array, array.length+1);
+				array[array.length-1] = a;
+			}
+		}
+		return array;
 	}
 	/**
 	 * Metodo que mediante un nombre,apellido,dia y centro encuentra un aula y devuelve su valor
@@ -189,13 +218,13 @@ public interface IChecker
 		if (name.isEmpty() || surname.isEmpty())
 		{
 			log.error("El nombre y apellidos estan vacios");
-			throw new HorarioError(9, "El nombre o el apellido estan vacios");		
+			throw new HorarioError(10, "El nombre o el apellido estan vacios");		
 		}
 		//Comprobamos que los dias esten bien puestos
 		else if(dia > 5 || dia < 1)
 		{
 			log.error("El dia "+dia+" no se encuentra en el ranfo de 1 y 5");
-			throw new HorarioError(10, "El numero elegido no es un dia de la semana");	
+			throw new HorarioError(11, "El numero elegido no es un dia de la semana");	
 		}
 		else 
 		{
@@ -212,7 +241,7 @@ public interface IChecker
 			if(!encontrado)
 			{
 				log.error("No se ha encontrado al profesor");
-				throw new HorarioError(11, "No se ha encontrado el profesor");
+				throw new HorarioError(12, "No se ha encontrado el profesor");
 			}
 		}
 		
@@ -222,6 +251,7 @@ public interface IChecker
 	 * Metodo que comprueba que la hora este en el formato correcto %%:%%
 	 * @param hora
 	 * @throws HorarioError
+	 * @author Pablo Ruiz Canovas
 	 */
 	public default void checkHora(String hora) throws HorarioError
 	{
@@ -238,31 +268,93 @@ public interface IChecker
 			if(splitHora.length!=2)
 			{
 				log.error("El array de horas no cumple la longitud establecida que son 2");
-				throw new HorarioError(12,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
+				throw new HorarioError(13,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
 			}
 			//Comprobamos que la hora esta bien introducida
 			else if(numHora>14 || numHora<8)
 			{
 				log.error("La hora "+numHora+" no entra en el rango de 8 a 14");
-				throw new HorarioError(13,"La hora"+numHora+" no coincide con la establecida en el centro de 8 a 14");
+				throw new HorarioError(14,"La hora"+numHora+" no coincide con la establecida en el centro de 8 a 14");
 			}
 			//Comprobamos que los minutos esten bien introducidos
 			else if(numMinutos>60 || numMinutos<1)
 			{
 				log.error("Los minutos "+numMinutos+ "no coinciden en el rango de 0 a 60");
-				throw new HorarioError(14,"Los minutos estan mal introducidos");
+				throw new HorarioError(15,"Los minutos estan mal introducidos");
 			}
 		}
 		catch(IndexOutOfBoundsException ex)
 		{
 			log.error("Error al parsear la hora, hay menos datos de los previstos");
-			throw new HorarioError(15,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
+			throw new HorarioError(16,"El formato de la hora esta mal introducido, el formato debe de ser hh:mm");
 		}
 		catch(NumberFormatException ex)
 		{
 			log.error("Error al parsear las horas a formato entero",ex);
-			throw new HorarioError(16,"La hora esta en un formato incorrecto");
+			throw new HorarioError(17,"La hora esta en un formato incorrecto");
 		}
 		
+	}
+	/**
+	 * Metodo que comprueba que el curso este bien formado y que el curso exista
+	 * @param alumnos
+	 * @param curso
+	 * @throws HorarioError
+	 * @author Pablo Ruiz Canovas
+	 */
+	public default void checkCourse(List<Alumno> alumnos,String curso) throws HorarioError
+	{
+		//Booleano centinela que controla que se encuentre el valor
+		boolean encontrado = false;
+		//Comprobamos que existan alumnos en la lista
+		if(alumnos.isEmpty())
+		{
+			log.error("No existen alumnos en el sistema");
+			throw new HorarioError(9,"No se ha cargado ningun alumno en el sistema");
+		}
+		//Comprobamos que el curso este vacio
+		if(curso.isEmpty())
+		{
+			log.error("El curso esta vacio");
+			throw new HorarioError(18,"El curso no puede estar vacio");
+		}
+		else
+		{
+			//Si no esta vacio iteramos los alumnos
+			for(Alumno a:alumnos)
+			{
+				//Si lo encuentra cambia el valor del booleano centinela
+				if(a.getCurso().equals(curso))
+				{
+					encontrado = true;
+				}
+			}
+		}
+		//Si no ha encontrado ninguno lanza un error
+		if(!encontrado)
+		{
+			log.error("El curso "+curso+" no existe en la lista");
+			throw new HorarioError(19,"Curso no encontrado");
+		}
+	}
+	/**
+	 * Metodo que devuelve un array de alumnos de un curso pasado como parametro
+	 * @param alumnos
+	 * @param curso
+	 * @return array de alumnos de un curso
+	 * @author Pablo Ruiz Canovas
+	 */
+	public default Alumno [] getAlumnoByCourse(List<Alumno> alumnos,String curso)
+	{
+		Alumno [] array = new Alumno[0];
+		for(Alumno a:alumnos)
+		{
+			if(curso.equals(a.getCurso()))
+			{
+				array = Arrays.copyOf(array, array.length+1);
+				array[array.length-1] = a;
+			}
+		}
+		return array;
 	}
 }

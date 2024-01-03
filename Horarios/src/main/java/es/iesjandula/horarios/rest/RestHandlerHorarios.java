@@ -42,7 +42,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	/**Modelos del csv para guardarlos en sesion */
 	private List <ModelCSV> modelos;
 	/**Lista de alumnos por ahora cargados en constantes */
-	private Alumno [] alumnos;
+	private List<Alumno> alumnos;
 	/**
 	 * Constructor por defecto
 	 */
@@ -51,7 +51,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		//public constructor
 		this.centro = null;
 		this.modelos = new LinkedList<ModelCSV>();
-		this.alumnos = new Alumno[0];
+		this.alumnos = new LinkedList<Alumno>();
 	}
 	/**
 	 * Endpoint que recibe un xml como parametro con el que se recogen todos los datos de un centro
@@ -110,6 +110,34 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		}
 	}
 	/**
+	 * Endpoint que recibe un csv de alumnos y lo parsea internamente
+	 * @param csvFile
+	 * @return ok si el fichero cumple las condiciones,404 si el formato o la estructura esta mal o 500 si hubo un error interno
+	 * @author Pablo Ruiz Canovas
+	 */
+	@RequestMapping(method = RequestMethod.POST,value = "send/csv-alumnos",consumes = "multipart/form-data")
+	public ResponseEntity<?> sendCsvStudents(@RequestPart(value = "fichero",required = true) final MultipartFile csvFile)
+	{
+		try
+		{
+			//Se comprueba que el fichero sea csv y cumpla con la estructura establecida
+			this.checkCSVFile(csvFile);
+			//Parseamos el fichero y guardamos los datos
+			this.alumnos = this.parseAlumnos();
+			return ResponseEntity.ok().body("Alumnos cargados con exito");
+		}
+		catch(HorarioError ex)
+		{
+			log.error("Error a la hora de parsear el fichero",ex);
+			return ResponseEntity.status(415).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Error interno de servidor",ex);
+			return ResponseEntity.status(500).body("Error interno de servidor");
+		}
+	}
+	/**
 	 * Endpoint que recibe un email y busca a partir de el la lista de roles de la cuenta asociada
 	 * @param email de la cuenta a buscar 
 	 * @return ok si encontro los roles, 404 si el email no es valido o 500 si hubo un error interno
@@ -147,11 +175,16 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	{
 		try
 		{
-			//Cargamos los alumnos con la lista de constantes
-			this.alumnos = Constantes.cargarAlumnos();
+			Alumno [] alumnosToSort = null;
 			//Se ordena y se devuelven en fotmato json
-			Arrays.sort(this.alumnos);
-			return ResponseEntity.ok().body(this.alumnos);
+			alumnosToSort = this.sortAlumno(alumnos);
+			Arrays.sort(alumnosToSort);
+			return ResponseEntity.ok().body(alumnosToSort);
+		}
+		catch(HorarioError ex)
+		{
+			log.error("Los alumnos no han sido cargados anteriormente",ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
 		}
 		catch(Exception ex)
 		{
@@ -276,6 +309,38 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		{
 			log.error("Error al cargar las listas ",ex);
 			return ResponseEntity.status(500).body("Error de servidor "+ex.getMessage());
+		}
+	}
+	/**
+	 * Endpoint que mediante un curso filtra los alumnos guardados en el sistema y los ordena por apellido
+	 * @param course
+	 * @return ok mas la lista de alumnos si el curso esta bien introducido, 404 si el curso falla o 500 si hubo un error de servidor
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "get/sort-students/{course}")
+	public ResponseEntity<?> getStudentByCourse(
+			@PathVariable(name = "course",value = "course",required = true) String course
+			)
+	{
+		try
+		{
+			Alumno [] alumnoSort = null;
+			//Comprobamos que el curso exista y que se encuentra en la lista de alumnos
+			this.checkCourse(alumnos, course);
+			//Metemos los alumnos en el array y los ordenamos
+			alumnoSort = this.getAlumnoByCourse(alumnos, course);
+			//Ordenamos la lista y la devolvemos
+			Arrays.sort(alumnoSort);
+			return ResponseEntity.ok().body(alumnoSort);
+		}
+		catch(HorarioError ex)
+		{
+			log.error("Error al buscar el curso "+course,ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Error interno de servidor");
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
 		}
 	}
 	
