@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Alumno implements Comparable<Alumno>
 {
-	/**Nombre del estudiante */
-	private String nombre;
 	/**Apellido del estudiante */
 	private String apellido;
+	/**Nombre del estudiante */
+	private String nombre;
+	/**Identificador del alumno */
+	private String dni;
 	/**Curso en el que se encuentra el alumno */
 	private String curso;
 	
