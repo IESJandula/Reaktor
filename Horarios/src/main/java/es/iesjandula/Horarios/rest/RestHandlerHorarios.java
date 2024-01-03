@@ -23,6 +23,7 @@ import es.iesjandula.Horarios.models.Profesor;
 import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.utils.HorariosCheckers;
 import es.iesjandula.Horarios.utils.HorariosUtils;
+import es.iesjandula.Horarios.utils.XmlParser;
 
 
 @RequestMapping(value = "/horarios", produces = { "application/json" })
@@ -53,12 +54,13 @@ public class RestHandlerHorarios
 		// Empty constructor
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
+	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = "multipart/form-data")
 	public ResponseEntity<?> sendXmlToObject(@RequestPart(value = "xmlFile", required = true) final MultipartFile file) 
 	{
 	    try {
 	    	
-	    	
+	    	XmlParser parser = new XmlParser();
+	    	parser.parseDataFromXmlFile(file);
 	    	
 	        return ResponseEntity.ok().build();
 	    } catch (HorarioError horarioError) {

@@ -32,7 +32,7 @@ public class HorariosUtils
 		// Empty constructor
 	}
 
-	public List<Profesor> parseFile(MultipartFile file) throws HorarioError
+	public List<Profesor> parseCsvFile(MultipartFile file) throws HorarioError
 	{
 		List<Profesor> profesores = new ArrayList<Profesor>();
 		

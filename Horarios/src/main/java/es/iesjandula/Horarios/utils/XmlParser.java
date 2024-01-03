@@ -6,7 +6,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,19 +23,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import es.iesjandula.Horarios.exceptions.HorarioError;
 import es.iesjandula.Horarios.models.xml.Asignatura;
 import es.iesjandula.Horarios.models.xml.Aula;
 import es.iesjandula.Horarios.models.xml.Datos;
 import es.iesjandula.Horarios.models.xml.Grupo;
+import es.iesjandula.Horarios.models.xml.InfoCentro;
 import es.iesjandula.Horarios.models.xml.Profesor;
 import es.iesjandula.Horarios.models.xml.TramoHorario;
+import es.iesjandula.Horarios.models.xml.horarios.Actividad;
+import es.iesjandula.Horarios.models.xml.horarios.Horarios;
 
 public class XmlParser
 {
 
 	final static Logger logger = LogManager.getLogger();
 
-	public Datos parseDataFromXmlFile(MultipartFile file)
+	public InfoCentro parseDataFromXmlFile(MultipartFile file) throws HorarioError
 	{
 
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -44,43 +51,35 @@ public class XmlParser
 
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(content);
-			
+
 			Element rootElement = document.getDocumentElement();
 
 			Datos datos = this.parseDatos(rootElement);
-			
-	/*<HORARIO_ASIG hor_num_int_as="1" tot_un="3" tot_ac="3">
-        	<ACTIVIDAD num_act="1" num_un="73" tramo="15" aula="42" profesor="3">
-          		<GRUPOS_ACTIVIDAD tot_gr_act="1" grupo_1="1" />
-        	</ACTIVIDAD>
-        	<ACTIVIDAD num_act="2" num_un="74" tramo="12" aula="42" profesor="3">
-          		<GRUPOS_ACTIVIDAD tot_gr_act="1" grupo_1="29" />
-        	</ACTIVIDAD>
-        	<ACTIVIDAD num_act="3" num_un="75" tramo="34" aula="42" profesor="3">
-          		<GRUPOS_ACTIVIDAD tot_gr_act="1" grupo_1="12" />
-        	</ACTIVIDAD>
-      	</HORARIO_ASIG>*/
 
+			Horarios horarios = this.parseHorarios(rootElement, datos);
+			
+			return new InfoCentro(datos, horarios);
 		} catch (ParserConfigurationException parserConfigurationException)
 		{
 			String message = "Error";
 			logger.error(message, parserConfigurationException);
+			throw new HorarioError(1, message, parserConfigurationException);
 		} catch (SAXException saxException)
 		{
 			String message = "Error";
 			logger.error(message, saxException);
+			throw new HorarioError(2, message, saxException);
 		} catch (IOException ioException)
 		{
 			String message = "Error";
 			logger.error(message, ioException);
+			throw new HorarioError(3, message, ioException);
 		}
-
-		return new Datos();
-
 	}
 
-	private Datos parseDatos(Element datos) {
-		
+	private Datos parseDatos(Element datos)
+	{
+
 		NodeList nodesAsignaturas = datos.getElementsByTagName("ASIGNATURA");
 		List<Asignatura> asignaturas = this.parseAsignaturas(nodesAsignaturas);
 
@@ -95,15 +94,15 @@ public class XmlParser
 
 		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
 		List<TramoHorario> tramos = this.parseTramos(nodesTramos);
-		
+
 		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos);
 	}
-	
+
 	private List<Asignatura> parseAsignaturas(NodeList list)
 	{
 		List<Asignatura> asignaturas = new ArrayList<Asignatura>();
 
-		for (int i = 0; i < list.getLength(); i++)
+		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element asignatura = (Element) list.item(i);
 
@@ -121,7 +120,7 @@ public class XmlParser
 	{
 		List<Grupo> grupos = new ArrayList<Grupo>();
 
-		for (int i = 0; i < list.getLength(); i++)
+		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element asignatura = (Element) list.item(i);
 
@@ -139,7 +138,7 @@ public class XmlParser
 	{
 		List<Aula> aulas = new ArrayList<Aula>();
 
-		for (int i = 0; i < list.getLength(); i++)
+		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element asignatura = (Element) list.item(i);
 
@@ -157,7 +156,7 @@ public class XmlParser
 	{
 		List<Profesor> profesores = new ArrayList<Profesor>();
 
-		for (int i = 0; i < list.getLength(); i++)
+		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element asignatura = (Element) list.item(i);
 
@@ -175,7 +174,7 @@ public class XmlParser
 	{
 		List<TramoHorario> tramos = new ArrayList<TramoHorario>();
 
-		for (int i = 0; i < list.getLength(); i++)
+		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element tramo = (Element) list.item(i);
 
@@ -201,4 +200,199 @@ public class XmlParser
 
 		return tramos;
 	}
+
+	private Horarios parseHorarios(Element horarios, Datos datos)
+	{
+
+		NodeList nodesHorariosAsignaturas = horarios.getElementsByTagName("HORARIO_ASIG");
+		Map<Asignatura, List<Actividad>> horariosAsignaturas = this.parseHorariosAsignaturas(nodesHorariosAsignaturas,
+				datos);
+
+		NodeList nodesHorariosGrupos = horarios.getElementsByTagName("HORARIO_GRUP");
+		Map<Grupo, List<Actividad>> horariosGrupos= this.parseHorariosGrupo(nodesHorariosGrupos, datos);
+
+		NodeList nodesHorariosAulas = horarios.getElementsByTagName("HORARIO_AULA");
+		Map<Aula, List<Actividad>> horariosAulas= this.parseHorariosAulas(nodesHorariosAulas, datos);
+
+		NodeList nodesHorariosProfesores = horarios.getElementsByTagName("HORARIO_PROF");
+		Map<Profesor, List<Actividad>> horariosProfesores= this.parseHorariosProfesores(nodesHorariosAulas, datos);
+
+		return new Horarios(horariosAsignaturas, horariosGrupos, horariosAulas, horariosProfesores);
+	}
+
+	private Map<Asignatura, List<Actividad>> parseHorariosAsignaturas(NodeList list, Datos datos)
+	{
+
+		Map<Asignatura, List<Actividad>> horariosAsignaturas = new TreeMap<Asignatura, List<Actividad>>();
+
+		for (int i = 0 ; i < list.getLength() ; i++)
+		{
+			Element horarioAsignatura = (Element) list.item(i);
+
+			int idAsignatura = Integer
+					.valueOf(horarioAsignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
+
+			Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
+
+			NodeList actividades = horarioAsignatura.getElementsByTagName("Actividad");
+
+			List<Actividad> listActividades = new ArrayList<Actividad>();
+
+			for (int j = 0 ; j < actividades.getLength() ; j++)
+			{
+
+				Element grupoActividad = (Element) horarioAsignatura.getElementsByTagName("GRUPO").item(0);
+
+				int idGrupo = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+				Grupo grupo = datos.getGrupos().get(idGrupo);
+
+				int idProfesor = Integer
+						.valueOf(horarioAsignatura.getAttributes().getNamedItem("profesor").getTextContent());
+				Profesor profesor = datos.getProfesores().get(idProfesor);
+
+				int idTramo = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tramo").getTextContent());
+				TramoHorario tramo = datos.getTramos().get(idTramo);
+
+				int idAula = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("aula").getTextContent());
+				Aula aula = datos.getAulas().get(idAula);
+
+				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+			}
+
+			horariosAsignaturas.put(asignatura, listActividades);
+		}
+		return horariosAsignaturas;
+	}
+
+	private Map<Grupo, List<Actividad>> parseHorariosGrupo(NodeList list, Datos datos)
+	{
+
+		Map<Grupo, List<Actividad>> horariosGrupos = new TreeMap<Grupo, List<Actividad>>();
+
+		for (int i = 0 ; i < list.getLength() ; i++)
+		{
+			Element horarioGrupo = (Element) list.item(i);
+			
+			int idGrupo = Integer.valueOf(horarioGrupo.getAttributes().getNamedItem("hor_num_int_gr").getTextContent());
+			Grupo grupo = datos.getGrupos().get(idGrupo);
+
+			NodeList actividades = horarioGrupo.getElementsByTagName("Actividad");
+
+			List<Actividad> listActividades = new ArrayList<Actividad>();
+
+			for (int j = 0 ; j < actividades.getLength() ; j++)
+			{
+
+				Element grupoActividad = (Element) horarioGrupo.getElementsByTagName("GRUPO").item(0);
+				
+				int idAsignatura = Integer
+						.valueOf(horarioGrupo.getAttributes().getNamedItem("asignatura").getTextContent());
+				Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
+
+				int idProfesor = Integer
+						.valueOf(horarioGrupo.getAttributes().getNamedItem("profesor").getTextContent());
+				Profesor profesor = datos.getProfesores().get(idProfesor);
+
+				int idTramo = Integer.valueOf(horarioGrupo.getAttributes().getNamedItem("tramo").getTextContent());
+				TramoHorario tramo = datos.getTramos().get(idTramo);
+
+				int idAula = Integer.valueOf(horarioGrupo.getAttributes().getNamedItem("aula").getTextContent());
+				Aula aula = datos.getAulas().get(idAula);
+
+				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+			}
+
+			horariosGrupos.put(grupo, listActividades);
+		}
+		return horariosGrupos;
+	}
+
+	private Map<Aula, List<Actividad>> parseHorariosAulas(NodeList list, Datos datos)
+	{
+
+		Map<Aula, List<Actividad>> horariosAulas = new TreeMap<Aula, List<Actividad>>();
+
+		for (int i = 0 ; i < list.getLength() ; i++)
+		{
+			Element horarioAula = (Element) list.item(i);
+
+			int idAula = Integer
+					.valueOf(horarioAula.getAttributes().getNamedItem("hor_num_int_au").getTextContent());
+
+			Aula aula = datos.getAulas().get(idAula);
+
+			NodeList actividades = horarioAula.getElementsByTagName("Actividad");
+
+			List<Actividad> listActividades = new ArrayList<Actividad>();
+
+			for (int j = 0 ; j < actividades.getLength() ; j++)
+			{
+
+				Element grupoActividad = (Element) horarioAula.getElementsByTagName("GRUPO").item(0);
+
+				int idGrupo = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+				Grupo grupo = datos.getGrupos().get(idGrupo);
+
+				int idProfesor = Integer
+						.valueOf(horarioAula.getAttributes().getNamedItem("profesor").getTextContent());
+				Profesor profesor = datos.getProfesores().get(idProfesor);
+
+				int idTramo = Integer.valueOf(horarioAula.getAttributes().getNamedItem("tramo").getTextContent());
+				TramoHorario tramo = datos.getTramos().get(idTramo);
+
+				int idAsignatura = Integer
+						.valueOf(horarioAula.getAttributes().getNamedItem("asignatura").getTextContent());
+				Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
+
+				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+			}
+
+			horariosAulas.put(aula, listActividades);
+		}
+		return horariosAulas;
+	}
+
+	private Map<Profesor, List<Actividad>> parseHorariosProfesores(NodeList list, Datos datos)
+	{
+
+		Map<Profesor, List<Actividad>> horariosAulas = new TreeMap<Profesor, List<Actividad>>();
+
+		for (int i = 0 ; i < list.getLength() ; i++)
+		{
+			Element horarioProfesor = (Element) list.item(i);
+
+			int idProfesor = Integer
+					.valueOf(horarioProfesor.getAttributes().getNamedItem("profesor").getTextContent());
+			Profesor profesor = datos.getProfesores().get(idProfesor);
+
+			NodeList actividades = horarioProfesor.getElementsByTagName("Actividad");
+
+			List<Actividad> listActividades = new ArrayList<Actividad>();
+
+			for (int j = 0 ; j < actividades.getLength() ; j++)
+			{
+
+				Element grupoActividad = (Element) horarioProfesor.getElementsByTagName("GRUPO").item(0);
+
+				int idGrupo = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+				Grupo grupo = datos.getGrupos().get(idGrupo);
+				
+				int idAula = Integer.valueOf(horarioProfesor.getAttributes().getNamedItem("aula").getTextContent());
+				Aula aula = datos.getAulas().get(idAula);
+
+				int idTramo = Integer.valueOf(horarioProfesor.getAttributes().getNamedItem("tramo").getTextContent());
+				TramoHorario tramo = datos.getTramos().get(idTramo);
+
+				int idAsignatura = Integer
+						.valueOf(horarioProfesor.getAttributes().getNamedItem("asignatura").getTextContent());
+				Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
+
+				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+			}
+
+			horariosAulas.put(profesor, listActividades);
+		}
+		return horariosAulas;
+	}
+	
 }
