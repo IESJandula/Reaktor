@@ -1,14 +1,8 @@
 package es.reaktor.reaktorclient.scheduled_task;
 
-import es.reaktor.models.Action;
-import es.reaktor.reaktorclient.utils.HttpCommunicationSender;
-import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
-import es.reaktor.reaktorclient.utils.exceptions.ReaktorClientException;
-import es.reaktor.reaktorclient.windows.WindowsMotherboard;
-import lombok.extern.slf4j.Slf4j;
-
+import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,10 +14,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import es.reaktor.models.Action;
+import es.reaktor.models.ComputerError;
+import es.reaktor.models.Status;
+import es.reaktor.reaktorclient.utils.HttpCommunicationSender;
+import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Manuel Martín Murillo
@@ -39,7 +39,8 @@ public class ComputerMonitorization
 
     @Value("${reaktor.server.url}")
     private String reaktorServerUrl;
-
+    
+    
     public void computerOnReport()
 	{
 		CloseableHttpClient httpClient = null;
@@ -56,14 +57,7 @@ public class ComputerMonitorization
 
 			response = httpClient.execute(request);
 			Action action = new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), Action.class);
-			if (action.getActionName() != null)
-			{
-				switch (action.getActionName())
-				{
-				case "configuracion" -> ConfiguracionWifi();
-				default -> System.out.println("No existe esta accion");
-				}
-			}
+			
 
 		} 
 		catch (ClientProtocolException e)
@@ -99,21 +93,41 @@ public class ComputerMonitorization
 		}
 	}
     
-    public void ConfiguracionWifi() 
-    {    	
-		try
-		{
-			log.info("iniciamos la cmd");
-			Process proceso = new ProcessBuilder("cmd.exe","netsh wlan connect andared").start();		
-		} 
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		} 
-		finally
-		{
+    private void actionsCfgWifiFile(List<Status> statusList, String serialNumber, Action actionsToDo)
+    {
+       
+        if (actionsToDo.getConfiguracionWifi()!=null && !actionsToDo.getConfiguracionWifi().isBlank() && !actionsToDo.getConfiguracionWifi().isEmpty())
+        {
+            try
+            {
+                
+                File cfgFile = new File(actionsToDo.getConfiguracionWifi());
+                if(cfgFile.exists() && cfgFile.isFile()) 
+                {
+                  
+                    log.info(" ADD CFG WIFI -- > cmd.exe /c "+cfgFile.getAbsolutePath());
+                    Runtime.getRuntime().exec
+                    (
+                    "cmd.exe /c netsh wlan add profile filename="+cfgFile.getAbsolutePath()+""
+                    );
 
-		}	
+                
+                    Status status = new Status("ADD CFG WIFI exec " + serialNumber, true);
+                    statusList.add(status);
+                }
+                else 
+                {
+                    Status status = new Status("ADD CFG WIFI Error " + serialNumber, false);
+                    statusList.add(status);
+                }
+            }
+            catch (Exception exception)
+            {
+                // --- ERROR ON ACTION ---
+                Status status = new Status("ADD CFG WIFI Error " + serialNumber, false);
+                statusList.add(status);
+            }
+        }
     }
 }
 

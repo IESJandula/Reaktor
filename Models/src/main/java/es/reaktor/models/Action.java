@@ -14,4 +14,6 @@ public class Action
 	
 	private String info;
 	
+	private String ConfiguracionWifi;
+	
 }
