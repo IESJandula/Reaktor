@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.iesjandula.Horarios.exceptions.HorarioError;
 import es.iesjandula.Horarios.models.Classroom;
 import es.iesjandula.Horarios.models.Course;
+import es.iesjandula.Horarios.models.Hour;
 import es.iesjandula.Horarios.models.Profesor;
 import es.iesjandula.Horarios.models.RolReaktor;
 import es.iesjandula.Horarios.models.Student;
@@ -49,8 +50,20 @@ public class RestHandlerHorarios
 	
 	private List<Profesor> listaProfesores = new ArrayList<Profesor>(List.of(
     		new Profesor("Juan","Pérez","juan.perez@example.com", new ArrayList<RolReaktor>(List.of(RolReaktor.administrador))),
-    		new Profesor("Juana","Rodriguez","jrodgar@example.com",new ArrayList<RolReaktor>(List.of(RolReaktor.conserje)))));
+    		new Profesor("Juana","Rodriguez","jrodgar@example.com",new ArrayList<RolReaktor>(List.of(RolReaktor.conserje)))
+    		));
 
+	
+	private List<Hour> listaHoras = new ArrayList<Hour>(List.of(
+			new Hour("Primera", "8:15", "9:15"),
+			new Hour("Segunda", "9:15", "10:15"),
+			new Hour("Tercera", "10:15", "11:15"),
+			new Hour("Recreo", "11:15", "11:45"),
+			new Hour("Cuarta", "11:45", "12:45"),
+			new Hour("Quinta", "12:45", "13:45"),
+			new Hour("Sexta", "13:45", "14:45")
+			));
+	
 	/**
 	 * Public constructor
 	 */
@@ -119,7 +132,7 @@ public class RestHandlerHorarios
 		}
 	}
 	
-	@RequestMapping(method= RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
     public ResponseEntity<?> getTeachers() 
     {
         try 
@@ -133,4 +146,21 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(500).body(exception.getMessage());
 		}
      }
+	
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/hours" ,produces="application/json")
+	public ResponseEntity<?> getListHours() 
+    {
+		try 
+        {
+		    return ResponseEntity.ok().body(this.listaHoras);
+        } 
+        catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+    }
+	
+	
 }
