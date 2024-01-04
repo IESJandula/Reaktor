@@ -43,11 +43,25 @@ public class RestHandlerHorarios
 	private HorariosCheckers check = new HorariosCheckers();
 	private HorariosUtils horariosUtils = new HorariosUtils();
 	
+	
+	
 	private List<Student> listaEstudiantes = new ArrayList<Student>(List.of(
 			new Student("Alejandro", "Cazalla Perez", new Course("2DAM", new Classroom(3, 1))),
 			new Student("Juan", "Sutil Mesa", new Course("2DAM", new Classroom(3, 1))),
 			new Student("Manuel", "Martin Murillo", new Course("2DAM", new Classroom(3, 1))),
 			new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)))
+			
+		));
+	
+	private List<Course> listaCursos = new ArrayList<Course>(List.of(
+			 new Course("2DAM", new Classroom(3, 1)),
+			 new Course("1ESOB", new Classroom(1, 1)),
+			 new Course("2ESOA", new Classroom(2, 1)),
+		     new Course("4ESOB", new Classroom(7, 1))
+			
+		));
+	
+	private List<Course> listaCursosFinal = new ArrayList<Course>(List.of(
 			
 		));
 	
@@ -208,6 +222,33 @@ public class RestHandlerHorarios
 		try 
         {
 		    return ResponseEntity.ok().body(this.listaPuntos);
+        } 
+        catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+    }
+	
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/Classroomcourse" ,produces="application/json")
+	public ResponseEntity<?> getClassroomCourse(
+				@RequestHeader(value = "course", required = true) String course
+			) 
+    {
+		try 
+        {
+			
+
+			for(int i = 0; i< listaCursos.size(); i++)
+			{
+				if(course.equals(listaCursos.get(i).getClassroom()))
+				{
+					listaCursosFinal.add(listaCursos.get(i));
+				
+				}
+			}
+			 return ResponseEntity.ok().body(this.listaCursosFinal);
         } 
         catch (Exception exception)
 		{
