@@ -215,7 +215,7 @@ public class XmlParser
 		Map<Aula, List<Actividad>> horariosAulas= this.parseHorariosAulas(nodesHorariosAulas, datos);
 
 		NodeList nodesHorariosProfesores = horarios.getElementsByTagName("HORARIO_PROF");
-		Map<Profesor, List<Actividad>> horariosProfesores= this.parseHorariosProfesores(nodesHorariosAulas, datos);
+		Map<Profesor, List<Actividad>> horariosProfesores= this.parseHorariosProfesores(nodesHorariosProfesores, datos);
 
 		return new Horarios(horariosAsignaturas, horariosGrupos, horariosAulas, horariosProfesores);
 	}
@@ -282,8 +282,6 @@ public class XmlParser
 
 			for (int j = 0 ; j < actividades.getLength() ; j++)
 			{
-
-				Element grupoActividad = (Element) horarioGrupo.getElementsByTagName("GRUPO").item(0);
 				
 				int idAsignatura = Integer
 						.valueOf(horarioGrupo.getAttributes().getNamedItem("asignatura").getTextContent());
