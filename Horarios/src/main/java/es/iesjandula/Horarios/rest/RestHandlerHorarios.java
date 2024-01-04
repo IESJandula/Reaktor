@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.iesjandula.Horarios.exceptions.HorarioError;
+import es.iesjandula.Horarios.models.AttitudePoints;
 import es.iesjandula.Horarios.models.Classroom;
 import es.iesjandula.Horarios.models.Course;
 import es.iesjandula.Horarios.models.Hour;
@@ -71,6 +72,12 @@ public class RestHandlerHorarios
 			new Hour("Sexta", "13:45", "14:45")
 			));
 	
+	private List<AttitudePoints> listaPuntos = new ArrayList<AttitudePoints>(List.of(
+			new AttitudePoints(75, "Agredir al profesor"),
+			new AttitudePoints(25, "Movil"),
+			new AttitudePoints(3, "Faltar el respeto a un compañero")
+			));
+	
 	/**
 	 * Public constructor
 	 */
@@ -93,10 +100,8 @@ public class RestHandlerHorarios
 	    }catch (Exception e) {
 		    		return ResponseEntity.status(500).body(e.getMessage());
 		}
-	
 		
     }
-	
 
 	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
 	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "csvFile", required = true) final MultipartFile csvFile)
@@ -197,5 +202,18 @@ public class RestHandlerHorarios
 		}
     }
 	
-	
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/points" ,produces="application/json")
+	public ResponseEntity<?> getListPointsCoexistence() 
+    {
+		try 
+        {
+		    return ResponseEntity.ok().body(this.listaPuntos);
+        } 
+        catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+    }
 }
