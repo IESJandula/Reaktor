@@ -22,12 +22,13 @@ import es.iesjandula.Horarios.models.AttitudePoints;
 import es.iesjandula.Horarios.models.Classroom;
 import es.iesjandula.Horarios.models.Course;
 import es.iesjandula.Horarios.models.Hour;
-import es.iesjandula.Horarios.models.Profesor;
+import es.iesjandula.Horarios.models.xml.Profesor;
 import es.iesjandula.Horarios.models.RolReaktor;
 import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.utils.HorariosCheckers;
 import es.iesjandula.Horarios.utils.HorariosUtils;
 import es.iesjandula.Horarios.utils.XmlParser;
+import jakarta.servlet.http.HttpSession;
 
 
 @RequestMapping(value = "/horarios", produces = { "application/json" })
@@ -101,12 +102,13 @@ public class RestHandlerHorarios
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = "multipart/form-data")
-	public ResponseEntity<?> sendXmlToObject(@RequestPart(value = "xmlFile", required = true) final MultipartFile file) 
+	public ResponseEntity<?> sendXmlToObject(@RequestPart(value = "xmlFile", required = true) final MultipartFile file,
+											HttpSession session) 
 	{
 	    try {
 	    	
 	    	XmlParser parser = new XmlParser();
-	    	parser.parseDataFromXmlFile(file);
+	    	session.setAttribute("info", parser.parseDataFromXmlFile(file));
 	    	
 	        return ResponseEntity.ok().build();
 	    } catch (HorarioError horarioError) {
@@ -118,12 +120,13 @@ public class RestHandlerHorarios
     }
 
 	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
-	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "csvFile", required = true) final MultipartFile csvFile)
+	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "csvFile", required = true) final MultipartFile csvFile,
+										HttpSession session)
 	{
 		try
 		{
 			check.checkFile(csvFile);
-			List<Profesor> lista = horariosUtils.parseCsvFile(csvFile);
+			List<Profesor> lista = horariosUtils.parseCsvFile(csvFile, session);
 			System.out.println(lista);
 			return ResponseEntity.ok().build();
 		}

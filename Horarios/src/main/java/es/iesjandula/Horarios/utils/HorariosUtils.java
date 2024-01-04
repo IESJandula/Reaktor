@@ -1,9 +1,6 @@
 package es.iesjandula.Horarios.utils;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +11,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.iesjandula.Horarios.exceptions.HorarioError;
-import es.iesjandula.Horarios.models.Profesor;
+import es.iesjandula.Horarios.models.xml.Profesor;
 import es.iesjandula.Horarios.models.RolReaktor;
+import es.iesjandula.Horarios.models.xml.InfoCentro;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author Alejandro Cazalla Pérez
@@ -32,9 +31,9 @@ public class HorariosUtils
 		// Empty constructor
 	}
 
-	public List<Profesor> parseCsvFile(MultipartFile file) throws HorarioError
+	public List<Profesor> parseCsvFile(MultipartFile file, HttpSession session) throws HorarioError
 	{
-		List<Profesor> profesores = new ArrayList<Profesor>();
+		List<Profesor> profesores = ((InfoCentro) session.getAttribute("info")).getDatos().getProfesores();
 		
 		try 
 		{
@@ -45,12 +44,19 @@ public class HorariosUtils
 			{
 				String[] parts = sc.nextLine().split(";");
 
-				String nombre = parts[0];
-				String apellidos = parts[1];
-				String cuentaDeCorreo = parts[2];
-				List<RolReaktor> listaDeRoles = getRoles(parts[3]);
+				String nombre = parts[1] +  ", " +parts[0];
+				
+				Profesor profesor = this.getIdProfesor(profesores, nombre);
+				
+				if(profesor != null) {
+					
+					String cuentaDeCorreo = parts[2];
+					List<RolReaktor> listaDeRoles = getRoles(parts[3]);
+					
+					profesor.setCuentaDeCorreo(cuentaDeCorreo);
+					profesor.setListaRoles(listaDeRoles);
+				}
 
-				profesores.add(new Profesor(nombre, apellidos, cuentaDeCorreo, listaDeRoles));
 			}
 			sc.close();
 		}
@@ -64,6 +70,23 @@ public class HorariosUtils
 		return profesores;
 	}
 
+	private Profesor getIdProfesor(List<Profesor> profesores, String nombre) {
+		
+		int cont = 0;
+		Profesor profesor = null;
+		while (cont < profesores.size() && profesor == null)
+		{
+			
+			if (profesores.get(cont).getNombre().equals(nombre))
+			{
+				profesor = profesores.get(cont);
+			}
+			
+		}
+		
+		return profesor;
+	}
+	
 	private List<RolReaktor> getRoles(String part)
 	{
 		List<RolReaktor> lista = new ArrayList<RolReaktor>();
