@@ -23,6 +23,7 @@ import es.iesjandula.horarios.models.Puntos;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.models.xml.Centro;
+import es.iesjandula.horarios.models.xml.Profesor;
 import es.iesjandula.horarios.utils.ICSVParser;
 import es.iesjandula.horarios.utils.IChecker;
 import es.iesjandula.horarios.utils.IParserXML;
@@ -367,8 +368,25 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body("Error de servidor"+ex);
 		}
 	}
-	
-	
+	/**
+	 * Endpoint que devuelve una lista de todos profesores
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/allTeachers", produces = "application/json")
+    public ResponseEntity<?> getProfesores()
+    {
+		try
+		{		
+			List<Profesor> profesores = centro.getDatos().getProfesor();
+			return ResponseEntity.ok().body(profesores);    	
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
 	
 	
 	
