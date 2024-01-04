@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -46,6 +47,12 @@ public class RestHandlerHorarios
 			new Student("Juan", "Sutil Mesa", new Course("2DAM", new Classroom(3, 1))),
 			new Student("Manuel", "Martin Murillo", new Course("2DAM", new Classroom(3, 1))),
 			new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)))
+			
+		));
+	
+	private List<Student> listaEstudiantesCurso = new ArrayList<Student>(List.of(
+			
+			
 		));
 	
 	private List<Profesor> listaProfesores = new ArrayList<Profesor>(List.of(
@@ -153,6 +160,34 @@ public class RestHandlerHorarios
 		try 
         {
 		    return ResponseEntity.ok().body(this.listaHoras);
+        } 
+        catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+    }
+	
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/course/sort/students" ,produces="application/json")
+	public ResponseEntity<?> getListAlumCourseFirstSurname(
+				@RequestHeader(value = "course", required = true) String course
+			) 
+    {
+		try 
+        {
+			for(int i = 0; i< listaEstudiantes.size(); i++)
+			{
+				if(course.equals(listaEstudiantes.get(i).getCourse().getName())) 
+				{
+					listaEstudiantesCurso.add(listaEstudiantes.get(i));
+					Collections.sort(this.listaEstudiantesCurso);
+					
+				}
+			}
+			
+			
+		    return ResponseEntity.ok().body(this.listaEstudiantesCurso);
         } 
         catch (Exception exception)
 		{
