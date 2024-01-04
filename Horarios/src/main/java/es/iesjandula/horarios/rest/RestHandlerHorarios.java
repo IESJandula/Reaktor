@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.iesjandula.horarios.constants.Constantes;
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
+import es.iesjandula.horarios.models.Puntos;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.models.xml.Centro;
@@ -41,8 +42,10 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	private Centro centro;
 	/**Modelos del csv para guardarlos en sesion */
 	private List <ModelCSV> modelos;
-	/**Lista de alumnos por ahora cargados en constantes */
+	/**Lista de alumnos cargados por csv */
 	private List<Alumno> alumnos;
+	/**Lista de puntos cargados en constantes */
+	private List<Puntos> puntos;
 	/**
 	 * Constructor por defecto
 	 */
@@ -52,6 +55,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		this.centro = null;
 		this.modelos = new LinkedList<ModelCSV>();
 		this.alumnos = new LinkedList<Alumno>();
+		this.puntos = new LinkedList<Puntos>();
 	}
 	/**
 	 * Endpoint que recibe un xml como parametro con el que se recogen todos los datos de un centro
@@ -343,7 +347,26 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body("Error de servidor "+ex);
 		}
 	}
-	
+	/**
+	 * Enspoint que devuelve una lista de puntos almacenada en el sistema
+	 * @return ok con la lista de puntos o 500 si hubo un error de servidor
+	 * @author Pablo Ruiz Canovas
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "get/points")
+	public ResponseEntity<?> getPoints()
+	{
+		try
+		{
+			//Cargamos los puntos en la lista usando la clase constantes
+			this.puntos = Constantes.cargarPuntos();
+			return ResponseEntity.ok().body(puntos); 
+		}
+		catch(Exception ex)
+		{
+			log.error("Error al cargar los puntos",ex);
+			return ResponseEntity.status(500).body("Error de servidor"+ex);
+		}
+	}
 	
 	
 	
