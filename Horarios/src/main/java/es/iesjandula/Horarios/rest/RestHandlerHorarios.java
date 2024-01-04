@@ -242,13 +242,13 @@ public class RestHandlerHorarios
 
 			for(int i = 0; i< listaCursos.size(); i++)
 			{
-				if(course.equals(listaCursos.get(i).getClassroom()))
+				if(course.equals(listaCursos.get(i).getName()))
 				{
 					listaCursosFinal.add(listaCursos.get(i));
 				
 				}
 			}
-			 return ResponseEntity.ok().body(this.listaCursosFinal);
+			return ResponseEntity.ok().body(this.listaCursosFinal);
         } 
         catch (Exception exception)
 		{
