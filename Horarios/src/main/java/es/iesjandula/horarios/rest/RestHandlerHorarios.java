@@ -98,7 +98,12 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		try
 		{
 			//Se comprueba que el fichero sea csv y cumpla con la estructura establecida
-			this.checkCSVFile(csvFile);
+			boolean isTeacher = this.checkCSVFile(csvFile);
+			if(!isTeacher)
+			{
+				log.error("El csv pasado no corresponde al de los profesores");
+				throw new HorarioError(5,"Error la estructura del csv no es correcta, los campos principales han de ser apellidos,nombre, apellidos, email y roles");
+			}
 			//Parseamos el fichero y guardamos los datos
 			this.modelos = this.parseCSV();
 			return ResponseEntity.ok().body("Fichero recibido con exito");
@@ -126,7 +131,14 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		try
 		{
 			//Se comprueba que el fichero sea csv y cumpla con la estructura establecida
-			this.checkCSVFile(csvFile);
+			//Ademas se añade un booleano para comprobar que el ficehero sea el de estudiantes
+			//Ya que este metodo se usa en el endpoint de profesores
+			boolean isStudent = this.checkCSVFile(csvFile);
+			if(isStudent)
+			{
+				log.error("El csv pasado no corresponde al de los alumnos");
+				throw new HorarioError(5,"Error la estructura del csv no es correcta, los campos principales han de ser apellidos,nombre,dni/pasaporte y curso");
+			}
 			//Parseamos el fichero y guardamos los datos
 			this.alumnos = this.parseAlumnos();
 			return ResponseEntity.ok().body("Alumnos cargados con exito");
@@ -167,7 +179,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		catch(Exception ex)
 		{
 			log.error("Error interno de servidor",ex);
-			return ResponseEntity.status(404).body("Error de servidor");
+			return ResponseEntity.status(500).body("Error de servidor");
 		}
 	}
 	/**
@@ -292,12 +304,6 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	}
 	
 	/**
-	 * 
-	 * ENDPOINT 9 Y 10
-	 * 
-	 */
-	
-	/**
 	 * Endpoint que devuelve un mapa en el que por cada campo se encuentran las diferentes horas
 	 * @return el mapa de horas
 	 * @author Pablo Ruiz Canovas
@@ -320,6 +326,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * Endpoint que mediante un curso filtra los alumnos guardados en el sistema y los ordena por apellido
 	 * @param course
 	 * @return ok mas la lista de alumnos si el curso esta bien introducido, 404 si el curso falla o 500 si hubo un error de servidor
+	 * @author Pablo Ruiz Canovas
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "get/sort-students/{course}")
 	public ResponseEntity<?> getStudentByCourse(
@@ -370,13 +377,15 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	}
 	/**
 	 * Endpoint que devuelve una lista de todos profesores
-	 * @return ResponseEntity
+	 * @return Lista de todos los profesores
+	 * @author Javier Martinez Megias
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/allTeachers", produces = "application/json")
     public ResponseEntity<?> getProfesores()
     {
 		try
 		{		
+			//Se recogen los profesores de los datos del xml
 			List<Profesor> profesores = centro.getDatos().getProfesor();
 			return ResponseEntity.ok().body(profesores);    	
 		}

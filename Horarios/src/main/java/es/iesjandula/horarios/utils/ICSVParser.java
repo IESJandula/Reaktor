@@ -29,8 +29,9 @@ public interface ICSVParser
 	 * @param csvFile
 	 * @throws HorarioError
 	 */
-	public default void checkCSVFile(MultipartFile csvFile) throws HorarioError
+	public default boolean checkCSVFile(MultipartFile csvFile) throws HorarioError
 	{
+		boolean profesor = true;
 		//Se obtiene el nombre del fichero
 		String fileName = csvFile.getOriginalFilename();
 		//Creamos el fichero en el que se guardara el contenido
@@ -59,7 +60,7 @@ public interface ICSVParser
 					FileReader fr = null;
 					BufferedReader br = null;
 					//Comprobamos la estructura en otro metodo
-					this.checkCSVFormat(fr, br, file);
+					profesor = this.checkCSVFormat(fr, br, file);
 					
 				}
 			}
@@ -69,6 +70,7 @@ public interface ICSVParser
 				throw new HorarioError(3,"Error, fichero corrupto, ilegible en bytes o vacio");
 			}
 		}
+		return profesor;
 	}
 	
 	/**
