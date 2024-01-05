@@ -54,7 +54,7 @@ public class XmlParser
 			
             InputSource inputSource = new InputSource(new java.io.StringReader(content));
 			
-			Document document = documentBuilder.parse(content);
+			Document document = documentBuilder.parse(inputSource);
 
 			Element rootElement = document.getDocumentElement();
 
@@ -87,19 +87,20 @@ public class XmlParser
 		NodeList nodesAsignaturas = datos.getElementsByTagName("ASIGNATURA");
 		List<Asignatura> asignaturas = this.parseAsignaturas(nodesAsignaturas);
 
-		NodeList nodesGrupos = datos.getElementsByTagName("GRUPO");
-		List<Grupo> GRUPOS = this.parseGrupos(nodesGrupos);
+//		NodeList nodesGrupos = datos.getElementsByTagName("GRUPO");
+//		List<Grupo> GRUPOS = this.parseGrupos(nodesGrupos);
+//
+//		NodeList nodesAulas = datos.getElementsByTagName("AULA");
+//		List<Aula> aulas = this.parseAulas(nodesAulas);
+//
+//		NodeList nodesProfesores = datos.getElementsByTagName("PROFESOR");
+//		List<Profesor> profesores = this.parseProfesores(nodesProfesores);
+//
+//		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
+//		List<TramoHorario> tramos = this.parseTramos(nodesTramos);
 
-		NodeList nodesAulas = datos.getElementsByTagName("AULA");
-		List<Aula> aulas = this.parseAulas(nodesAulas);
-
-		NodeList nodesProfesores = datos.getElementsByTagName("PROFESOR");
-		List<Profesor> profesores = this.parseProfesores(nodesProfesores);
-
-		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
-		List<TramoHorario> tramos = this.parseTramos(nodesTramos);
-
-		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos);
+//		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos);
+		return new Datos(asignaturas, null, null, null, null);
 	}
 
 	private List<Asignatura> parseAsignaturas(NodeList list)
@@ -111,10 +112,10 @@ public class XmlParser
 			Element asignatura = (Element) list.item(i);
 
 			int id = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
-			String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
-			String nombre = asignatura.getAttributes().getNamedItem("nombre").getTextContent();
+			//String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
+			//String nombre = asignatura.getAttributes().getNamedItem("nombre").getTextContent();
 
-			asignaturas.add(new Asignatura(id, abreviatura, nombre));
+			asignaturas.add(new Asignatura(id, null, null));
 		}
 
 		return asignaturas;

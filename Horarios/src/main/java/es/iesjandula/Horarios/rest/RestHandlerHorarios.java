@@ -47,15 +47,6 @@ public class RestHandlerHorarios
 	private HorariosUtils horariosUtils = new HorariosUtils();
 	
 	
-	
-	private List<Student> listaEstudiantes = new ArrayList<Student>(List.of(
-			new Student("Alejandro", "Cazalla Perez", new Course("2DAM", new Classroom(3, 1))),
-			new Student("Juan", "Sutil Mesa", new Course("2DAM", new Classroom(3, 1))),
-			new Student("Manuel", "Martin Murillo", new Course("2DAM", new Classroom(3, 1))),
-			new Student("Alvaro", "Marmol Romero", new Course("2DAM", new Classroom(3, 1)))
-			
-		));
-	
 	private List<Course> listaCursos = new ArrayList<Course>(List.of(
 			 new Course("2DAM", new Classroom(3, 1)),
 			 new Course("1ESOB", new Classroom(1, 1)),
@@ -99,7 +90,7 @@ public class RestHandlerHorarios
 	    	
 	        return ResponseEntity.ok().build();
 	    } catch (HorarioError horarioError) {
-	        return ResponseEntity.status(400).body(horarioError);
+	        return ResponseEntity.status(400).body(horarioError.getBodyExceptionMessage());
 	    }catch (Exception e) {
 		    		return ResponseEntity.status(500).body(e.getMessage());
 		}
@@ -131,22 +122,22 @@ public class RestHandlerHorarios
 		}
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/get/sortstudents")
-	public ResponseEntity<?> getListStudentsAlphabetically()
-	{
-		try
-		{
-			Collections.sort(this.listaEstudiantes);
-			
-			return ResponseEntity.ok().body(this.listaEstudiantes);
-		} 
-		catch (Exception exception)
-		{
-			String message = "Server Error";
-			logger.error(message, exception);
-			return ResponseEntity.status(500).body(exception.getMessage());
-		}
-	}
+//	@RequestMapping(method = RequestMethod.GET, value = "/get/sortstudents")
+//	public ResponseEntity<?> getListStudentsAlphabetically()
+//	{
+//		try
+//		{
+//			Collections.sort(this.listaEstudiantes);
+//			
+//			return ResponseEntity.ok().body(this.listaEstudiantes);
+//		} 
+//		catch (Exception exception)
+//		{
+//			String message = "Server Error";
+//			logger.error(message, exception);
+//			return ResponseEntity.status(500).body(exception.getMessage());
+//		}
+//	}
 	
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
     public ResponseEntity<?> getTeachers(
@@ -228,33 +219,33 @@ public class RestHandlerHorarios
 		}
     }
 	
-	@RequestMapping(method = RequestMethod.GET ,value = "/get/course/sort/students" ,produces="application/json")
-	public ResponseEntity<?> getListAlumCourseFirstSurname(
-				@RequestHeader(value = "course", required = true) String course
-			) 
-    {
-		try 
-        {
-			for(int i = 0; i< listaEstudiantes.size(); i++)
-			{
-				if(course.equals(listaEstudiantes.get(i).getCourse().getName())) 
-				{
-					listaEstudiantesCurso.add(listaEstudiantes.get(i));
-					Collections.sort(this.listaEstudiantesCurso);
-					
-				}
-			}
-			
-			
-		    return ResponseEntity.ok().body(this.listaEstudiantesCurso);
-        } 
-        catch (Exception exception)
-		{
-			String message = "Server Error";
-			logger.error(message, exception);
-			return ResponseEntity.status(500).body(exception.getMessage());
-		}
-    }
+//	@RequestMapping(method = RequestMethod.GET ,value = "/get/course/sort/students" ,produces="application/json")
+//	public ResponseEntity<?> getListAlumCourseFirstSurname(
+//				@RequestHeader(value = "course", required = true) String course
+//			) 
+//    {
+//		try 
+//        {
+//			for(int i = 0; i< listaEstudiantes.size(); i++)
+//			{
+//				if(course.equals(listaEstudiantes.get(i).getCourse().getName())) 
+//				{
+//					listaEstudiantesCurso.add(listaEstudiantes.get(i));
+//					Collections.sort(this.listaEstudiantesCurso);
+//					
+//				}
+//			}
+//			
+//			
+//		    return ResponseEntity.ok().body(this.listaEstudiantesCurso);
+//        } 
+//        catch (Exception exception)
+//		{
+//			String message = "Server Error";
+//			logger.error(message, exception);
+//			return ResponseEntity.status(500).body(exception.getMessage());
+//		}
+//    }
 	
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/points" ,produces="application/json")
 	public ResponseEntity<?> getListPointsCoexistence() 
