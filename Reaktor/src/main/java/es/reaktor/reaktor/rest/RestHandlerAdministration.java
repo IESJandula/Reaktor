@@ -3,6 +3,7 @@ package es.reaktor.reaktor.rest;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import es.reaktor.reaktor.constants.Constantes;
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.CommandLine;
 import es.reaktor.reaktor.models.Computer;
@@ -37,6 +39,9 @@ public class RestHandlerAdministration implements IChecker
 	private static Logger log = LogManager.getLogger();
 	/** Mapa de status para identificar procesos a ejecutar */
 	private Map<String, Status> pcStatus;
+	/**Lista de ordenadores para casos de prueba */
+	private List<Computer> computers;
+	
 
 	/**
 	 * Default constructor
@@ -45,6 +50,7 @@ public class RestHandlerAdministration implements IChecker
 	{
 		// Public constructor
 		this.pcStatus = new HashMap<String, Status>();
+		this.computers = Constantes.cargarOrdenadores();
 	}
 
 	/**
@@ -587,7 +593,7 @@ public class RestHandlerAdministration implements IChecker
 			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
 			@RequestHeader(value = "andaluciaId", required = false) String andaluciaId,
 			@RequestHeader(value = "computerNumber", required = false) String computerNumber,
-			@RequestHeader(value = "computerInstance", required = true) Computer computer)
+			@RequestBody(required = true) Computer computer)
 	{
 		try
 		{
@@ -595,8 +601,10 @@ public class RestHandlerAdministration implements IChecker
 			serialNumber = serialNumber==null ? "" : serialNumber;
 			andaluciaId = andaluciaId==null ? "" : andaluciaId;
 			computerNumber = computerNumber==null ? "" : computerNumber;
-			this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer);
-			// TODO: Obtener datos del ordenador desde la bbdd editarlo y subirlo
+			//Comprobamos que los parametros coincidan
+			computer = this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer,computers);
+			//Reemplazamos el ordenador antiguo por el nuevo
+			this.computers = this.replaceComputer(computer, computers);
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError ex)
 		{

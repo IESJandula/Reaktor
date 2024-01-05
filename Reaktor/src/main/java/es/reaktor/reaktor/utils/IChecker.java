@@ -1,6 +1,6 @@
 package es.reaktor.reaktor.utils;
 
-import java.io.File;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -205,22 +205,84 @@ public interface IChecker
 		}
 	}
 	
-	public default void checkParamsUpdatecomputer(String serialNumber, String andaluciaId, String computerNumber, Computer computer) throws ComputerError
+	public default Computer checkParamsUpdatecomputer(String serialNumber, String andaluciaId, String computerNumber, Computer computer,List<Computer>computers) throws ComputerError
 	{
 		if (serialNumber.isEmpty() && andaluciaId.isEmpty() && computerNumber.isEmpty())
 		{
 			throw new ComputerError(1, "All params can't be null");
-		} else if (computer == null)
+		} 
+		else if (computer == null)
 		{
 			throw new ComputerError(2, "Computer can't be null");
 		}
+		computer = this.updateComputer(serialNumber, andaluciaId, computerNumber, computer, computers);
+		return computer;
+		
 	}
 	
-//	 public default String tipoEjecucion(Boolean shutdown,Boolean reboot,Boolean exec,Boolean install,Boolean uninstall,Boolean envWifi)
-//	 {
-//		 if(shutdown==true)
-//		 {
-//			 
-//		 }
-//	 }
+	private Computer updateComputer(String serialNumber, String andaluciaId, String computerNumber, Computer computer,List<Computer>computers) throws ComputerError
+	{
+		Computer computerReturn = null;
+		if(!serialNumber.isEmpty())
+		{
+			for(Computer a:computers)
+			{
+				if(serialNumber.equals(a.getSerialNumber()))
+				{
+					computerReturn = computer;
+				}
+				if(computerReturn==null)
+				{
+					throw new ComputerError(3,"There's no computer with this "+serialNumber+" with serial number");
+				}
+			}
+		}
+		else if(!andaluciaId.isEmpty())
+		{
+			for(Computer a:computers)
+			{
+				if(andaluciaId.equals(a.getAndaluciaID()))
+				{
+					computerReturn = computer;
+				}
+			}
+			if(computerReturn==null)
+			{
+				throw new ComputerError(3,"There's no computer with this "+andaluciaId+" with andalucia id");
+			}
+		}
+		else if(!computerNumber.isEmpty())
+		{
+			for(Computer a:computers)
+			{
+				if(computerNumber.equals(a.getComputerNumber()))
+				{
+					computerReturn = computer;
+				}
+			}
+			if(computerReturn==null)
+			{
+				throw new ComputerError(3,"There's no computer with this "+computerNumber+" with computer number");
+			}
+		}
+		return computerReturn;
+		
+	}
+	
+	public default List<Computer> replaceComputer(Computer computer, List<Computer> computers)
+	{
+		int index = 0;
+		while(index<computers.size())
+		{
+			Computer a = computers.get(index);
+			if(a.getSerialNumber().equals(computer.getSerialNumber()) || a.getAndaluciaID().equals(computer.getAndaluciaID()) || a.getComputerNumber().equals(computer.getComputerNumber()))
+			{
+				computers.remove(index);
+				computers.add(computer);
+				break;
+			}
+			index++;
+		}
+		return computers;
+	}
 }
