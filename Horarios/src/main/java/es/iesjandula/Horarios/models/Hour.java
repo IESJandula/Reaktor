@@ -1,5 +1,7 @@
 package es.iesjandula.Horarios.models;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ public class Hour
 {
 	private String hour;
 	
-	private String start;
+	private Date start;
 	
-	private String end;
+	private Date end;
 }

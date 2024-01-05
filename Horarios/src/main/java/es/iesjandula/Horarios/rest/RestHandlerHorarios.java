@@ -22,7 +22,9 @@ import es.iesjandula.Horarios.models.AttitudePoints;
 import es.iesjandula.Horarios.models.Classroom;
 import es.iesjandula.Horarios.models.Course;
 import es.iesjandula.Horarios.models.Hour;
+import es.iesjandula.Horarios.models.xml.InfoCentro;
 import es.iesjandula.Horarios.models.xml.Profesor;
+import es.iesjandula.Horarios.models.xml.TramoHorario;
 import es.iesjandula.Horarios.models.RolReaktor;
 import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.utils.HorariosCheckers;
@@ -71,21 +73,6 @@ public class RestHandlerHorarios
 			
 		));
 	
-	private List<Profesor> listaProfesores = new ArrayList<Profesor>(List.of(
-    		new Profesor("Juan","Pérez","juan.perez@example.com", new ArrayList<RolReaktor>(List.of(RolReaktor.administrador))),
-    		new Profesor("Juana","Rodriguez","jrodgar@example.com",new ArrayList<RolReaktor>(List.of(RolReaktor.conserje)))
-    		));
-
-	
-	private List<Hour> listaHoras = new ArrayList<Hour>(List.of(
-			new Hour("Primera", "8:15", "9:15"),
-			new Hour("Segunda", "9:15", "10:15"),
-			new Hour("Tercera", "10:15", "11:15"),
-			new Hour("Recreo", "11:15", "11:45"),
-			new Hour("Cuarta", "11:45", "12:45"),
-			new Hour("Quinta", "12:45", "13:45"),
-			new Hour("Sexta", "13:45", "14:45")
-			));
 	
 	private List<AttitudePoints> listaPuntos = new ArrayList<AttitudePoints>(List.of(
 			new AttitudePoints(75, "Agredir al profesor"),
@@ -162,11 +149,15 @@ public class RestHandlerHorarios
 	}
 	
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
-    public ResponseEntity<?> getTeachers() 
+    public ResponseEntity<?> getTeachers(
+    		HttpSession httpSession
+    		) 
     {
         try 
         {
-		    return ResponseEntity.ok().body(this.listaProfesores);
+        	InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+        	List<Profesor> profeosresList =infoCentro.getDatos().getProfesores();
+		    return ResponseEntity.ok().body(profeosresList);
         } 
         catch (Exception exception)
 		{
@@ -177,11 +168,57 @@ public class RestHandlerHorarios
      }
 	
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/hours" ,produces="application/json")
-	public ResponseEntity<?> getListHours() 
+	public ResponseEntity<?> getListHours(
+			HttpSession httpSession
+			) 
     {
 		try 
         {
-		    return ResponseEntity.ok().body(this.listaHoras);
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+        	List<TramoHorario> tramosList =infoCentro.getDatos().getTramos();
+        	List<Hour>hourList= new ArrayList<Hour>();
+        	for(int i=0; i<tramosList.size(); i++)
+        	{
+        	
+        		switch (i) {
+				case 1: {
+					
+					Hour hora = new Hour("primera",tramosList.get(i).getHoraInicio(),tramosList.get(i).getHoraFinal());
+        			hourList.add(hora);
+				}
+				case 2: {
+					
+					Hour hora = new Hour("segunda",tramosList.get(i).getHoraInicio(),tramosList.get(i).getHoraFinal());
+        			hourList.add(hora);
+				}
+				case 3: {
+					
+					Hour hora = new Hour("tercera",tramosList.get(i).getHoraInicio(),tramosList.get(i).getHoraFinal());
+        			hourList.add(hora);
+				}
+				case 4: {
+					
+					Hour hora = new Hour("recreo",tramosList.get(i).getHoraInicio(),tramosList.get(i).getHoraFinal());
+        			hourList.add(hora);
+				}
+				case 5:{
+					Hour hora = new Hour("cuarta",tramosList.get(i).getHoraInicio(),tramosList.get(i).getHoraFinal());
+        			hourList.add(hora);
+				}
+				case 6:{
+					Hour hora = new Hour("quinta",tramosList.get(i).getHoraInicio(),tramosList.get(i).getHoraFinal());
+        			hourList.add(hora);
+				}
+				case 7:{
+					Hour hora = new Hour("sexta",tramosList.get(i).getHoraInicio(),tramosList.get(i).getHoraFinal());
+        			hourList.add(hora);
+				}
+				default:
+					throw new IllegalArgumentException("Unexpected value: " + i);
+				}
+        			
+        	}
+		    return ResponseEntity.ok().body(hourList);
         } 
         catch (Exception exception)
 		{
