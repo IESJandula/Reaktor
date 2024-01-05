@@ -16,6 +16,8 @@ public class Student implements Comparable<Student>
 	
 	private String lastname;
 	
+	private String dni;
+	
 	private Course course;
 
 	@Override

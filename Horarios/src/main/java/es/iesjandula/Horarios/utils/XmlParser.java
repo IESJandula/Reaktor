@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import es.iesjandula.Horarios.exceptions.HorarioError;
@@ -50,6 +51,9 @@ public class XmlParser
 			String content = file.getResource().getContentAsString(Charset.defaultCharset());
 
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
+			
+            InputSource inputSource = new InputSource(new java.io.StringReader(content));
+			
 			Document document = documentBuilder.parse(content);
 
 			Element rootElement = document.getDocumentElement();
