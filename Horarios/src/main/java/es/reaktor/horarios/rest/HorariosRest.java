@@ -2062,7 +2062,7 @@ public class HorariosRest
 						{
 							// --- PROFESSOR EXISTS , SET THE VALUE OF PROF IN PROFESOR ---
 							profesor = prof;
-							System.out.println("PROFESOR ENCONTRADO -> "+profesor.toString());
+							log.info("PROFESOR ENCONTRADO -> "+profesor.toString());
 						}
 					}
 					
@@ -2235,6 +2235,140 @@ public class HorariosRest
 				return tram;
 			}
 		}
+		return null;
+	}
+	
+	/**
+	 * Method getSchedulePdf
+	 * @param name
+	 * @param lastname
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET , value = "/get/grupo/pdf" , produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> getGroupSchedule(
+			@RequestHeader(required=true) String grupo)
+	{
+		
+		// --- CHEKING THE GRUPO ---
+		if(grupo!=null && !grupo.trim().isBlank() && !grupo.trim().isEmpty()) 
+		{
+			// --- CHECKING IF THE PDF CENTRO IS NULL ---
+			if(this.centroPdfs!=null) 
+			{
+				// --- CHEKING IF GRUPO EXISTS ---
+				Grupo grupoFinal = null;
+				for(Grupo grup : this.centroPdfs.getDatos().getGrupos().getGrupo()) 
+				{
+					// --- RAPLACING "SPACE", " º " AND " - " FOR EMPTY , THT IS FOR GET MORE SPECIFIC DATA ---
+					String grupoParam = grupo.replace(" ", "").replace("-", "").replace("º", "");
+					String grupName = grup.getNombre().replace(" ", "").replace("-", "").replace("º", "");
+					String grupAbr = grup.getAbreviatura().replace(" ", "").replace("-", "").replace("º", "");
+					
+					if(grupName.trim().toLowerCase().contains(grupoParam.trim().toLowerCase()) || grupAbr.trim().toLowerCase().contains(grupoParam.trim().toLowerCase())) 
+					{
+						grupoFinal = grup;
+					}
+				}
+				
+				// --- IF GRUPO EXISTS ---
+				if(grupoFinal!=null) 
+				{
+					// --- GRUPO EXISTS ---
+					
+					// -- CHEKING HORARIO_GRUP FROM GRUPO_FINAL ---
+					HorarioGrup horarioGrup = null;
+					for(HorarioGrup horarioGrp : this.centroPdfs.getHorarios().getHorariosGrupos().getHorarioGrup()) 
+					{
+						// -- GETTING THE HORARIO_GRUP OF THE GRUP ---
+						if(horarioGrp.getHorNumIntGr().trim().equalsIgnoreCase(grupoFinal.getNumIntGr().trim())) 
+						{
+							horarioGrup = horarioGrp;
+						}
+					}
+
+					// --- IF EXISTS HORARIO_GRUP ---
+					if(horarioGrup!=null) 
+					{
+						// --- GETTING THE ACTIVIDAD LIST OF THE GRUPO ---
+						List<Actividad> actividadList = horarioGrup.getActividad();
+						
+						
+						
+						// --- ACTIVIDAD_LIST HV MORE THAN 0 ACTIVIDAD AN IS NOT NULL ---
+						if(actividadList!=null && actividadList.size()>0) 
+						{
+							// --- GENERATE THE MAP FOR TRAMO DAY , AND ACTIVIDAD LIST ---
+							Map<String,List<Actividad>> grupoMap = new HashMap<String,List<Actividad>>();
+							
+							// --- CALSIFICATE EACH ACTIVIDAD ON THE SPECIFIC DAY ---
+							for(Actividad actv : actividadList) 
+							{
+								// --- GET THE TRAMO ---
+								Tramo tramo = this.extractTramoFromCentroActividad(this.centroPdfs, actv);
+								
+								// --- IF THE MAP NOT CONTAINS THE TRAMO DAY NUMBER , ADD THE DAY NUMBER AND THE ACTIVIDAD LIST ---
+								if(!grupoMap.containsKey(tramo.getNumeroDia().trim())) 
+								{
+									List<Actividad> temporalList = new ArrayList<Actividad>();
+									temporalList.add(actv);
+									grupoMap.put(tramo.getNumeroDia().trim(), temporalList);
+									
+								}
+								else 
+								{
+									// --- IF THE MAP ALRREADY CONTAINS THE TRAMO DAY , GET THE ACTIVIDAD LIST AND ADD THE ACTV , FINALLY PUT THEN ON THE DAY ---
+									List<Actividad> temporalList = grupoMap.get(tramo.getNumeroDia().trim());
+									temporalList.add(actv);
+									grupoMap.put(tramo.getNumeroDia().trim(), temporalList);
+								}
+							}
+							
+							// --- IF THE MAP IS NOT EMPTY , LAUNCH THE PDF GENERATION ---
+							if(!grupoMap.isEmpty()) 
+							{
+								
+								for(Map.Entry entry : grupoMap.entrySet()) 
+								{
+									log.info("DIA --> "+entry.getKey());
+									log.info("ACTIVIDADES :\n"+entry.getValue());
+								}
+								
+								ApplicationPdf applicationPdf = new ApplicationPdf();
+								applicationPdf.getInfoPdfHorarioGrupoCentro(this.centroPdfs,grupoMap, grupo.trim());
+								
+							}
+							else 
+							{
+								log.info("ERROR grupoMap IS EMPTY OR NOT FOUND");
+							}	
+						}
+						else 
+						{
+							log.info("ERROR actividadList HAVE 0 ACTIVIDAD OR IS NULL");
+						}
+						
+					}
+					else 
+					{
+						log.info("ERROR horarioGrup NULL OR NOT FOUND");
+					}
+				}
+				else 
+				{
+					log.info("ERROR GRUPO_FINAL NULL OR NOT FOUND");
+				}
+			}
+			else 
+			{
+				log.info("ERROR CENTRO_PDFS NULL OR NOT FOUND");
+			}
+		}
+		else 
+		{
+			log.info("ERROR GRUPO PARAMETER ERROR");
+		}
+
 		return null;
 	}
 }
