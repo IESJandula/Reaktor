@@ -101,9 +101,9 @@ public class XmlParser
 		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
 		Map<Integer, TramoHorario> tramos = this.parseTramos(nodesTramos);
 		
-		List<Student> alumnos = new ParseAlumnos(".\\src\\main\\resources\\alumnos.csv").parse();
+//		List<Student> alumnos = new ParseAlumnos(".\\src\\main\\resources\\alumnos.csv").parse();
 		
-		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos, alumnos);
+		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos, new ArrayList<Student>());
 	}
 
 	private Map<Integer, Asignatura> parseAsignaturas(NodeList list)
@@ -259,7 +259,7 @@ public class XmlParser
 				listActividades.add(actividad);
 			}
 
-			horariosAsignaturas.put(null, listActividades);
+			horariosAsignaturas.put(asignatura, listActividades);
 		}
 		return horariosAsignaturas;
 	}
@@ -300,7 +300,7 @@ public class XmlParser
 	private Map<Aula, List<Actividad>> parseHorariosAulas(NodeList list, Datos datos)
 	{
 
-		Map<Aula, List<Actividad>> horariosAulas = new TreeMap<Aula, List<Actividad>>();
+		Map<Aula, List<Actividad>> horariosAulas = new HashMap<Aula, List<Actividad>>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
@@ -334,13 +334,13 @@ public class XmlParser
 	private Map<Profesor, List<Actividad>> parseHorariosProfesores(NodeList list, Datos datos)
 	{
 
-		Map<Profesor, List<Actividad>> horariosAulas = new TreeMap<Profesor, List<Actividad>>();
+		Map<Profesor, List<Actividad>> horariosProfesor = new HashMap<Profesor, List<Actividad>>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element horarioProfesor = (Element) list.item(i);
 
-			int idProfesor = Integer.valueOf(horarioProfesor.getAttributes().getNamedItem("profesor").getTextContent());
+			int idProfesor = Integer.valueOf(horarioProfesor.getAttributes().getNamedItem("hor_num_int_pr").getTextContent());
 			Profesor profesor = datos.getProfesores().get(idProfesor);
 
 			NodeList actividades = horarioProfesor.getElementsByTagName("ACTIVIDAD");
@@ -359,9 +359,9 @@ public class XmlParser
 				listActividades.add(actividad);
 			}
 
-			horariosAulas.put(profesor, listActividades);
+			horariosProfesor.put(profesor, listActividades);
 		}
-		return horariosAulas;
+		return horariosProfesor;
 	}
 
 	private Actividad createActividad(Element element, Datos datos) {

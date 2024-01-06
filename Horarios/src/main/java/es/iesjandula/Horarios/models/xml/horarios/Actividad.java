@@ -13,11 +13,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Actividad
+public class Actividad implements Comparable<Actividad>
 {
 	private Asignatura asignatura;
 	private Grupo grupo;
 	private Profesor profesor;
 	private TramoHorario tramo;
 	private Aula aula;
+	@Override
+	public int compareTo(Actividad o)
+	{
+		return this.tramo.compareTo(o.getTramo());
+	}
 }

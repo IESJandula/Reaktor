@@ -30,7 +30,6 @@ import es.iesjandula.Horarios.models.xml.TramoHorario;
 import es.iesjandula.Horarios.models.xml.horarios.Actividad;
 import es.iesjandula.Horarios.models.RolReaktor;
 import es.iesjandula.Horarios.models.Student;
-import es.iesjandula.Horarios.utils.HorariosCheckers;
 import es.iesjandula.Horarios.utils.HorariosUtils;
 import es.iesjandula.Horarios.utils.XmlParser;
 import jakarta.servlet.http.HttpSession;
@@ -67,13 +66,15 @@ public class RestHandlerHorarios
 	    try {
 	    	
 	    	XmlParser parser = new XmlParser();
-	    	session.setAttribute("info", parser.parseDataFromXmlFile(file));
+	    	InfoCentro info = parser.parseDataFromXmlFile(file);
+	    	session.setAttribute("info", info);
+	    	InfoCentro info2 = (InfoCentro) session.getAttribute("info");
 	    	
-	        return ResponseEntity.ok().build();
+	        return ResponseEntity.ok().body(info2);
 	    } catch (HorarioError horarioError) {
 	        return ResponseEntity.status(400).body(horarioError.getBodyExceptionMessage());
 	    }catch (Exception e) {
-		    		return ResponseEntity.status(500).body(e.getMessage());
+	    	return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
     }
@@ -373,4 +374,41 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(500).body(exception.getMessage());
 		}
     }
+	
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/pdf" ,produces="application/json")
+	public ResponseEntity<?> getPdf(HttpSession session) 
+    {
+		try 
+        {
+			
+			InfoCentro info = (InfoCentro)session.getAttribute("info");
+			
+			new HorariosUtils().getInfoPdf(this.getProfesor("Marie", "Curie Mendel", info), info);
+			return ResponseEntity.ok().build();
+        } 
+        catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+    }
+	
+	private Profesor getProfesor(String name, String lastName, InfoCentro info) throws HorarioError
+	{
+		
+		String nombreCompleto = lastName+", "+name;
+		System.out.println(nombreCompleto);
+		for (Profesor profesor : info.getDatos().getProfesores().values())
+		{
+			if(profesor.getNombre().equals(nombreCompleto))
+			{
+				return profesor;
+			}
+			
+		}
+		
+		throw new HorarioError(1, "no se encuentra ninguna profesor con estas caracteristicas", null);
+		
+	}
 }
