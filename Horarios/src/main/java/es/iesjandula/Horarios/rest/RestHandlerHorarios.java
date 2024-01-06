@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,9 +23,11 @@ import es.iesjandula.Horarios.models.AttitudePoints;
 import es.iesjandula.Horarios.models.Classroom;
 import es.iesjandula.Horarios.models.Course;
 import es.iesjandula.Horarios.models.Hour;
+import es.iesjandula.Horarios.models.xml.Aula;
 import es.iesjandula.Horarios.models.xml.InfoCentro;
 import es.iesjandula.Horarios.models.xml.Profesor;
 import es.iesjandula.Horarios.models.xml.TramoHorario;
+import es.iesjandula.Horarios.models.xml.horarios.Actividad;
 import es.iesjandula.Horarios.models.RolReaktor;
 import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.utils.HorariosCheckers;
@@ -162,6 +165,7 @@ public class RestHandlerHorarios
 	
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
     public ResponseEntity<?> getTeachers(
+    		
     		HttpSession httpSession
     		) 
     {
@@ -182,6 +186,62 @@ public class RestHandlerHorarios
 		}
      }
 	
+	//enpoint 8 MMM
+	@RequestMapping(method = RequestMethod.GET ,value = "/teacher/get/Classroom/tramo" ,produces="application/json")
+	public ResponseEntity<?> getClassroomTeacherSchedule(
+			@RequestHeader(required = true) String name,
+    		@RequestHeader(required = true) String lastName,
+    		@RequestHeader(required = true) Hour hora,
+    		@RequestHeader(required = true) String day,
+			HttpSession httpSession
+			) 
+    {
+		try
+		{
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			// Para pasar los valoresde un mapa a lista ->List<Integer> valuesAsList = new ArrayList<>(map.values());
+        	List<Profesor> profesoresList = new ArrayList<>(infoCentro.getDatos().getProfesores().values());
+        	return ResponseEntity.ok(this.getClassroom(name, lastName, hora, profesoresList, infoCentro, day).getAbreviatura());
+	
+		}catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+    }
+	
+	private Aula getClassroom(String name, String lastName,Hour hora, List<Profesor> profesoresList, InfoCentro info, String day) throws HorarioError
+	{
+		
+		String nombreCompleto = lastName+", "+name;
+		for (Profesor profesor : profesoresList) 
+		{
+			if(profesor.getNombre().equals(name))
+			{
+				List<Actividad>listActiviadades = info.getHorarios().getHorariosProfesores().get(profesor);
+				return this.getActividadByHour(listActiviadades, hora, day, info).getAula();
+			}
+			
+		}
+		
+		throw new HorarioError(1, "no se encuentra ninguna profesor con estas caracteristicas", null);
+		
+	}
+	
+	private Actividad getActividadByHour(List<Actividad> listActividades, Hour hour, String day, InfoCentro info) throws HorarioError
+	{
+		
+		TramoHorario tramo = new HorariosUtils(info).getTramo(hour, day);
+		for(Actividad actividad : listActividades)
+		{
+			if(actividad.getTramo().equals(tramo)) {
+				return actividad;
+			}
+		}
+		
+		throw new HorarioError(3, "no se encontro la actividad concordante con esa hora", null);
+	}
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/hours" ,produces="application/json")
 	public ResponseEntity<?> getListHours(
 			HttpSession httpSession
