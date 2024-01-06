@@ -26,6 +26,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import es.iesjandula.Horarios.exceptions.HorarioError;
+import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.models.xml.Asignatura;
 import es.iesjandula.Horarios.models.xml.Aula;
 import es.iesjandula.Horarios.models.xml.Datos;
@@ -100,7 +101,9 @@ public class XmlParser
 		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
 		Map<Integer, TramoHorario> tramos = this.parseTramos(nodesTramos);
 		
-		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos);
+		List<Student> alumnos = new ParseAlumnos(".\\src\\main\\resources\\alumnos.csv").parse();
+		
+		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos, alumnos);
 	}
 
 	private Map<Integer, Asignatura> parseAsignaturas(NodeList list)

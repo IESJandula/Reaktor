@@ -18,7 +18,7 @@ public class Student implements Comparable<Student>
 	
 	private String dni;
 	
-	private Course course;
+	private String course;
 
 	@Override
 	public int compareTo(Student otroEstudiante)
