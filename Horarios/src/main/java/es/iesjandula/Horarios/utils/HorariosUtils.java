@@ -29,6 +29,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import es.iesjandula.Horarios.exceptions.HorarioError;
 import es.iesjandula.Horarios.models.Hour;
 import es.iesjandula.Horarios.models.RolReaktor;
+import es.iesjandula.Horarios.models.xml.Grupo;
 import es.iesjandula.Horarios.models.xml.InfoCentro;
 import es.iesjandula.Horarios.models.xml.Profesor;
 import es.iesjandula.Horarios.models.xml.TramoHorario;
@@ -169,7 +170,7 @@ public class HorariosUtils {
 		throw new HorarioError(2, "la hora es incorrecto", null);
 	}
 	
-	public void getInfoPdf(Profesor profesor, InfoCentro info)
+	public void getInfoPdfFromProfesor(Profesor profesor, InfoCentro info)
 	{
 		try 
 		{
@@ -177,7 +178,8 @@ public class HorariosUtils {
 			
 			document.setPageSize(PageSize.A4.rotate());
 			
-			PdfWriter.getInstance(document, new FileOutputStream(profesor.getNombre().trim()+"_"+profesor.getNombre() + "_Horario.pdf"));
+			
+			PdfWriter.getInstance(document, new FileOutputStream(profesor.getNombre()+ "_Horario.pdf"));
 			
 			document.open();
 			
@@ -195,7 +197,7 @@ public class HorariosUtils {
 				String horaInicio = tramo.getHoraInicio().getHours() + ":" + tramo.getHoraInicio().getMinutes();
 				String horaFin = tramo.getHoraFinal().getHours() + ":" + tramo.getHoraFinal().getMinutes();
 				
-				pdfTable.addCell(this.createCell(horaFin + "-" + horaFin));
+				pdfTable.addCell(this.createCell(horaInicio + "-" + horaFin));
 				
 			}
 			
@@ -204,8 +206,11 @@ public class HorariosUtils {
 			int n = 1;
 			pdfTable.addCell(this.createCell("LUNES"));
 			
-			 info.getHorarios().getHorariosProfesores().get(profesor).sort(null);
-			 
+			if (info.getHorarios().getHorariosProfesores().get(profesor)!= null)
+			{
+				info.getHorarios().getHorariosProfesores().get(profesor).sort(null);
+			
+			
 			for(Actividad actividad : info.getHorarios().getHorariosProfesores().get(profesor)) 
 			{
 				if(actividad.getTramo().getDia() != n) {
@@ -222,6 +227,77 @@ public class HorariosUtils {
 				
 				pdfTable.addCell(this.createCell(content));
 				
+			}
+			}
+			document.add(pdfTable);
+			document.close();
+		}
+		catch (FileNotFoundException | DocumentException exception)
+		{
+			String error = "ERROR FileNotFoundException OR DocumentException";
+			logger.error(error);
+		}
+		
+	}
+	
+	public void getInfoPdfFromGrupo(Grupo grupo, InfoCentro info)
+	{
+		try 
+		{
+			Document document = new Document();
+			
+			document.setPageSize(PageSize.A4.rotate());
+			
+			
+			PdfWriter.getInstance(document, new FileOutputStream(grupo.getNombre()+ "_Horario.pdf"));
+			
+			document.open();
+			
+			PdfPTable pdfTable = new PdfPTable(8);
+			pdfTable.setWidthPercentage(100f);
+			
+			
+			List<TramoHorario> tramos = new ArrayList<TramoHorario>(info.getDatos().getTramos().values());
+			pdfTable.addCell(this.createCell(""));
+			for (int i = 0; i < 7 ; i++)
+			{
+				
+				TramoHorario tramo = tramos.get(i);
+				
+				String horaInicio = tramo.getHoraInicio().getHours() + ":" + tramo.getHoraInicio().getMinutes();
+				String horaFin = tramo.getHoraFinal().getHours() + ":" + tramo.getHoraFinal().getMinutes();
+				
+				pdfTable.addCell(this.createCell(horaInicio + "-" + horaFin));
+				
+			}
+			
+			pdfTable.completeRow();
+			
+			int n = 1;
+			pdfTable.addCell(this.createCell("LUNES"));
+			
+			if (info.getHorarios().getHorariosGrupos().get(grupo)!= null)
+			{
+				info.getHorarios().getHorariosGrupos().get(grupo).sort(null);
+			
+			
+			for(Actividad actividad : info.getHorarios().getHorariosGrupos().get(grupo)) 
+			{
+				if(actividad.getTramo().getDia() != n) {
+					
+					pdfTable.completeRow();
+					
+					n = actividad.getTramo().getDia();
+					
+					pdfTable.addCell(this.createCell(this.getDiaByInt(n)));
+					
+				}
+				
+				String content = actividad.getAsignatura().getNombre() + "\n" + actividad.getAula().getAbreviatura();
+				
+				pdfTable.addCell(this.createCell(content));
+				
+			}
 			}
 			document.add(pdfTable);
 			document.close();
