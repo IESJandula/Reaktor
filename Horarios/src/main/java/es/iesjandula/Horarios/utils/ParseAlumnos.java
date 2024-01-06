@@ -61,7 +61,7 @@ public class ParseAlumnos
 		
 		String[] nombreCompleto = parameters[0].split(",");
 		
-		return new Student();
+		return new Student(nombreCompleto[1].replace(" ", ""), nombreCompleto[1], parameters[3], parameters[4]);
 	}
 
 }

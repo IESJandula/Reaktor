@@ -33,7 +33,7 @@ public class HorariosUtils
 
 	public List<Profesor> parseCsvFile(MultipartFile file, HttpSession session) throws HorarioError
 	{
-		List<Profesor> profesores = ((InfoCentro) session.getAttribute("info")).getDatos().getProfesores();
+		List<Profesor> profesores = new ArrayList<Profesor>(((InfoCentro) session.getAttribute("info")).getDatos().getProfesores().values());
 		
 		try 
 		{

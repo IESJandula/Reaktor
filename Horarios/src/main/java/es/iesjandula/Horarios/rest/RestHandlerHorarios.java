@@ -43,24 +43,6 @@ public class RestHandlerHorarios
 {
 	final static Logger logger = LogManager.getLogger();
 	
-	private HorariosCheckers check = new HorariosCheckers();
-	private HorariosUtils horariosUtils = new HorariosUtils();
-	
-	
-	private List<Course> listaCursos = new ArrayList<Course>(List.of(
-			 new Course("2DAM", new Classroom(3, 1)),
-			 new Course("1ESOB", new Classroom(1, 1)),
-			 new Course("2ESOA", new Classroom(2, 1)),
-		     new Course("4ESOB", new Classroom(7, 1))
-			
-		));
-	
-	private List<Course> listaCursosFinal = new ArrayList<Course>(List.of(
-			
-		));
-
-	
-	
 	private List<AttitudePoints> listaPuntos = new ArrayList<AttitudePoints>(List.of(
 			new AttitudePoints(75, "Agredir al profesor"),
 			new AttitudePoints(25, "Movil"),
@@ -99,7 +81,7 @@ public class RestHandlerHorarios
 	{
 		try
 		{
-			check.checkFile(csvFile);
+			HorariosUtils horariosUtils = new HorariosUtils();
 			List<Profesor> lista = horariosUtils.parseCsvFile(csvFile, session);
 			System.out.println(lista);
 			return ResponseEntity.ok().build();
@@ -261,7 +243,7 @@ public class RestHandlerHorarios
 		}
     }
 	
-	@RequestMapping(method = RequestMethod.GET ,value = "/get/Classroomcourse" ,produces="application/json")
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/ClassroomCourse" ,produces="application/json")
 	public ResponseEntity<?> getClassroomCourse(
 				@RequestHeader(value = "course", required = true) String course
 			) 
