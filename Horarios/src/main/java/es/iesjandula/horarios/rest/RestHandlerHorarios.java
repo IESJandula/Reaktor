@@ -397,7 +397,75 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		}
     }
 	
+	/**
+	 * Obtienes el profesor y la asignatura que tiene ese grupo ese dia a esa hora
+	 * @param nombreDelCurso
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teacher-subject")
+    public ResponseEntity<?> getNombreProfesorAsignatura(
+            @RequestHeader(value= "nombreDelCurso", required = true) String nombreDelCurso)
+    {
+		try
+		{		
+			
+			String result = this.nombreProfesorAsignatura(nombreDelCurso, centro);
+			if(result.equals(""))
+			{
+				throw new HorarioError(1, "No se imparte ninguna asignatura a ese grupo ahoramismo");
+			}
+			return ResponseEntity.ok().body(result);    	
+		}
+		catch (HorarioError exception)
+		{
+			String error = "No se imparte ninguna asignatura a ese grupo ahoramismo";
+			HorarioError horarioError = new HorarioError(404, error);
+			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
 	
+	
+	
+	/**
+	 * Obtienes el aula que tiene ese grupo ese dia a esa hora
+	 * @param nombreDelCurso
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/aula")
+    public ResponseEntity<?> getAula(
+            @RequestHeader(value= "nombreDelCurso", required = true) String nombreDelCurso)
+    {
+		try
+		{		
+			//Se obtiene el aula
+			String result = this.nombreAula(nombreDelCurso, centro);
+			// Se comprueba que no sea nulo
+
+			if(result.equals(""))
+			{
+				throw new HorarioError(1, "No se encuentra en ningun aula ahoramismo");
+			}
+			return ResponseEntity.ok().body(result);    	
+		}
+		catch (HorarioError exception)
+		{
+			String error = "No se encuentra en ningun aula ahoramismo";
+			HorarioError horarioError = new HorarioError(404, error);
+			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
 	
 	
 		

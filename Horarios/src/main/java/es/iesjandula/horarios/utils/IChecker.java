@@ -13,8 +13,10 @@ import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 import es.iesjandula.horarios.models.xml.Actividad;
+import es.iesjandula.horarios.models.xml.Asignatura;
 import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.models.xml.Centro;
+import es.iesjandula.horarios.models.xml.Grupo;
 import es.iesjandula.horarios.models.xml.Profesor;
 import es.iesjandula.horarios.models.xml.TipoHorario;
 import es.iesjandula.horarios.models.xml.Tramo;
@@ -356,5 +358,194 @@ public interface IChecker
 			}
 		}
 		return array;
+	}
+	
+	/**
+	 * Pasas el dia , la hora actual y la lista de tramos para obtener el numero de tramo
+	 * @param dia
+	 * @param horaActual
+	 * @param listaTramos
+	 * @param numeroTramo
+	 * @return int
+	 */
+	private int getTramoHorario(Integer dia, String horaActual, List<Tramo> listaTramos)
+	{
+		int numeroTramo = 0;
+		for(Tramo x : listaTramos)
+		{
+			String horaFinal = x.getHora_final();
+			String horaInicio = x.getHora_inicio();
+			int menorHoraFinal = horaFinal.compareTo(horaActual);
+			int mayorHoraInicial = horaInicio.compareTo(horaActual);
+			
+			if(menorHoraFinal >= 0 && mayorHoraInicial <= 0 && x.getNumero_dia() == dia)
+			{
+				numeroTramo = x.getNum_tr();
+			}
+		}
+		return numeroTramo;
+	}
+
+	/**
+	 * Return the actual day
+	 * @return integer
+	 */
+	private Integer getDay()
+	{
+		Integer dia;
+		LocalDate date = LocalDate.now()  ;
+		DayOfWeek day = date.getDayOfWeek();
+		dia = day.getValue();
+		return dia;
+	}
+	
+	/**
+	 * Se obrtiene el aula mediante el nombre del curso
+	 * @param nombreDelCurso
+	 * @return String
+	 */
+	public default String nombreAula(String nombreDelCurso,Centro centro)
+	{
+		//Se obtiene la hora y el dia
+		String hora = this.getActualHour();
+		int dia = this.getDay();
+		
+		List<TipoHorario> listaHorarios = centro.getDatos().getHorarios().getHorarioGrupo();
+		List<Grupo> listaGrupos = centro.getDatos().getGrupo();
+		List<Aula> listaAulas = centro.getDatos().getAula();
+		List<Tramo> listaTramos = centro.getDatos().getTramo();
+		Integer numeroTramo = 0;
+		Integer numeroGrupo = 0;
+		Integer numeroAula = 0;
+		String nombreAula = "";
+		String abreviatura = "";
+		String result = "";
+		
+		//Se obtine el numero de tramo
+		numeroTramo = getTramoHorario(dia, hora, listaTramos);
+		
+		//Se obtiene el numero de grupo
+		for(Grupo grupo : listaGrupos)
+		{
+			if(nombreDelCurso.equals(grupo.getNombre()))
+			{
+				numeroGrupo = grupo.getNum_int_gr();
+			}
+		}
+		
+		//Se obtine el numero de aula
+		for(TipoHorario tipoHorario : listaHorarios)
+		{
+			if(numeroGrupo == tipoHorario.getHor_num_int_tipo())
+			{
+				for(Actividad actividad : tipoHorario.getActividades())
+				{
+					if(actividad.getTramo() == numeroTramo)
+					{
+						numeroAula = actividad.getProfesorOAula();
+						
+					}
+				}
+			}
+		}
+		
+		//Se obtiene el nombre del aula y su abreviatura
+		for(Aula aula : listaAulas)
+		{
+			if(aula.getNum_int_au() == numeroAula)
+			{
+				nombreAula = aula.getNombre();
+				abreviatura = aula.getAbreviatura();
+			}
+		}
+		
+		//Se comprueba que no sea vacio
+		if(!nombreAula.equals("") && !abreviatura.equals(""))
+		{
+			result = "Nombre del Aula: "+nombreAula+"\nAula: "+abreviatura+"\nDia: "+dia+"\nHora: "+hora;
+		}
+		
+				
+		return result;
+	}
+	
+	/**
+	 * Obtienes el profesor y la asignatura que tiene ese grupo ese dia a esa hora
+	 * @param nombreDelCurso
+	 * @return String 
+	 */
+	public default String nombreProfesorAsignatura(String nombreDelCurso, Centro centro)
+	{
+		//Obtenemso el dia y la hora
+		String hora = this.getActualHour();
+		int dia = this.getDay();
+		
+		List<TipoHorario> listaHorarios = centro.getDatos().getHorarios().getHorarioGrupo();
+		List<Grupo> listaGrupos = centro.getDatos().getGrupo();
+		List<Tramo> listaTramos = centro.getDatos().getTramo();
+		List<Profesor> listaProfesores = centro.getDatos().getProfesor();
+		List<Asignatura> listaAsignaturas = centro.getDatos().getAsignatura();
+		Integer numeroTramo = 0;
+		Integer numeroGrupo = 0;
+		Integer numeroProfesor = 0;
+		Integer numeroAsignatura = 0;
+		String nombreProfesor = "";
+		String nombreAsignatura = "";
+		String result = "";
+		
+		//Obtenemos el numero de tramo
+		numeroTramo = getTramoHorario(dia, hora, listaTramos);
+		
+		//Obtenemso el grupo
+		for(Grupo grupo : listaGrupos)
+		{
+			if(nombreDelCurso.equals(grupo.getNombre()))
+			{
+				numeroGrupo = grupo.getNum_int_gr();
+			}
+		}
+		
+		//Se obtienen el numero de profesor y asignatura
+		for(TipoHorario tipoHorario : listaHorarios)
+		{
+			if(numeroGrupo == tipoHorario.getHor_num_int_tipo())
+			{
+				for(Actividad actividad : tipoHorario.getActividades())
+				{
+					if(actividad.getTramo() == numeroTramo)
+					{
+						numeroProfesor = actividad.getProfesorOAula();
+						numeroAsignatura = actividad.getAulaOAsignatura();
+					}
+				}
+			}
+		}
+		
+		//obtenemos el nombre del profesor
+		for(Profesor profesor : listaProfesores)
+		{
+			if(profesor.getNum_int_pr() == numeroProfesor)
+			{
+				nombreProfesor = profesor.getNombre();
+			}
+		}
+		
+		//obtenemos el nombre de la asignatura
+		for(Asignatura asignatura : listaAsignaturas)
+		{
+			if(asignatura.getNum_int_as() == numeroAsignatura)
+			{
+				nombreAsignatura = asignatura.getNombre();
+			}
+		}
+		
+		//Comprueba que no sea vacio
+		if(!nombreAsignatura.equals("") && !nombreProfesor.equals(""))
+		{
+			result = "Profesor: "+nombreProfesor+"\nAsignatura: "+nombreAsignatura+"\nDia: "+dia+"\nHora: "+hora;
+		}
+		
+				
+		return result;
 	}
 }
