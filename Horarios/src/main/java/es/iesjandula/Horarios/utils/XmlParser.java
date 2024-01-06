@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +52,9 @@ public class XmlParser
 			String content = file.getResource().getContentAsString(Charset.defaultCharset());
 
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
-			
-            InputSource inputSource = new InputSource(new java.io.StringReader(content));
-			
+
+			InputSource inputSource = new InputSource(new java.io.StringReader(content));
+
 			Document document = documentBuilder.parse(inputSource);
 
 			Element rootElement = document.getDocumentElement();
@@ -61,7 +62,7 @@ public class XmlParser
 			Datos datos = this.parseDatos(rootElement);
 
 			Horarios horarios = this.parseHorarios(rootElement, datos);
-			
+
 			return new InfoCentro(datos, horarios);
 		} catch (ParserConfigurationException parserConfigurationException)
 		{
@@ -85,99 +86,98 @@ public class XmlParser
 	{
 
 		NodeList nodesAsignaturas = datos.getElementsByTagName("ASIGNATURA");
-		List<Asignatura> asignaturas = this.parseAsignaturas(nodesAsignaturas);
+		Map<Integer, Asignatura> asignaturas = this.parseAsignaturas(nodesAsignaturas);
 
-//		NodeList nodesGrupos = datos.getElementsByTagName("GRUPO");
-//		List<Grupo> GRUPOS = this.parseGrupos(nodesGrupos);
-//
-//		NodeList nodesAulas = datos.getElementsByTagName("AULA");
-//		List<Aula> aulas = this.parseAulas(nodesAulas);
-//
-//		NodeList nodesProfesores = datos.getElementsByTagName("PROFESOR");
-//		List<Profesor> profesores = this.parseProfesores(nodesProfesores);
-//
-//		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
-//		List<TramoHorario> tramos = this.parseTramos(nodesTramos);
+		NodeList nodesGrupos = datos.getElementsByTagName("GRUPO");
+		Map<Integer, Grupo> GRUPOS = this.parseGrupos(nodesGrupos);
 
-//		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos);
-		return new Datos(asignaturas, null, null, null, null);
+		NodeList nodesAulas = datos.getElementsByTagName("AULA");
+		Map<Integer, Aula> aulas = this.parseAulas(nodesAulas);
+
+		NodeList nodesProfesores = datos.getElementsByTagName("PROFESOR");
+		Map<Integer, Profesor> profesores = this.parseProfesores(nodesProfesores);
+
+		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
+		Map<Integer, TramoHorario> tramos = this.parseTramos(nodesTramos);
+		
+		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos);
 	}
 
-	private List<Asignatura> parseAsignaturas(NodeList list)
+	private Map<Integer, Asignatura> parseAsignaturas(NodeList list)
 	{
-		List<Asignatura> asignaturas = new ArrayList<Asignatura>();
+		Map<Integer, Asignatura> asignaturas = new TreeMap<Integer, Asignatura>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element asignatura = (Element) list.item(i);
 
 			int id = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
-			//String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
-			//String nombre = asignatura.getAttributes().getNamedItem("nombre").getTextContent();
+			String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
+			String nombre = asignatura.getAttributes().getNamedItem("nombre").getTextContent();
 
-			asignaturas.add(new Asignatura(id, null, null));
+			asignaturas.put(id, new Asignatura(id, abreviatura, nombre));
 		}
 
 		return asignaturas;
 	}
 
-	private List<Grupo> parseGrupos(NodeList list)
+	private Map<Integer, Grupo> parseGrupos(NodeList list)
 	{
-		List<Grupo> grupos = new ArrayList<Grupo>();
+		Map<Integer, Grupo> grupos = new TreeMap<Integer, Grupo>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
-			Element asignatura = (Element) list.item(i);
+			Element grupo = (Element) list.item(i);
 
-			int id = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
-			String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
-			String nombre = asignatura.getAttributes().getNamedItem("nombre").getTextContent();
+			int id = Integer.valueOf(grupo.getAttributes().getNamedItem("num_int_gr").getTextContent());
+			String abreviatura = grupo.getAttributes().getNamedItem("abreviatura").getTextContent();
+			String nombre = grupo.getAttributes().getNamedItem("nombre").getTextContent();
 
-			grupos.add(new Grupo(id, abreviatura, nombre));
+			grupos.put(id, new Grupo(id, abreviatura, nombre));
 		}
 
 		return grupos;
 	}
 
-	private List<Aula> parseAulas(NodeList list)
+	private Map<Integer, Aula> parseAulas(NodeList list)
 	{
-		List<Aula> aulas = new ArrayList<Aula>();
+		Map<Integer, Aula> aulas = new TreeMap<Integer, Aula>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element asignatura = (Element) list.item(i);
 
-			int id = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
+			int id = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_au").getTextContent());
 			String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
 			String nombre = asignatura.getAttributes().getNamedItem("nombre").getTextContent();
 
-			aulas.add(new Aula(id, abreviatura, nombre));
+			aulas.put(id, new Aula(id, abreviatura, nombre));
 		}
 
 		return aulas;
 	}
 
-	private List<Profesor> parseProfesores(NodeList list)
+	private Map<Integer, Profesor> parseProfesores(NodeList list)
 	{
-		List<Profesor> profesores = new ArrayList<Profesor>();
+		Map<Integer, Profesor> profesores = new TreeMap<Integer, Profesor>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element asignatura = (Element) list.item(i);
 
-			int id = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
+			int id = Integer.valueOf(asignatura.getAttributes().getNamedItem("num_int_pr").getTextContent());
 			String abreviatura = asignatura.getAttributes().getNamedItem("abreviatura").getTextContent();
 			String nombre = asignatura.getAttributes().getNamedItem("nombre").getTextContent();
 
-			profesores.add(new Profesor(id, abreviatura, nombre));
+			profesores.put(id, new Profesor(id, abreviatura, nombre));
 		}
 
 		return profesores;
 	}
 
-	private List<TramoHorario> parseTramos(NodeList list)
+	private Map<Integer, TramoHorario> parseTramos(NodeList list)
 	{
-		List<TramoHorario> tramos = new ArrayList<TramoHorario>();
+		Map<Integer, TramoHorario> tramos = new TreeMap<Integer, TramoHorario>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
@@ -193,7 +193,7 @@ public class XmlParser
 			{
 				horaInicio = new SimpleDateFormat("HH:mm").parse(hI);
 				horaFinal = new SimpleDateFormat("HH:mm").parse(hF);
-				tramos.add(new TramoHorario(id, dia, horaInicio, horaFinal));
+				tramos.put(id, new TramoHorario(id, dia, horaInicio, horaFinal));
 
 			} catch (ParseException e)
 			{
@@ -214,13 +214,14 @@ public class XmlParser
 				datos);
 
 		NodeList nodesHorariosGrupos = horarios.getElementsByTagName("HORARIO_GRUP");
-		Map<Grupo, List<Actividad>> horariosGrupos= this.parseHorariosGrupo(nodesHorariosGrupos, datos);
+		Map<Grupo, List<Actividad>> horariosGrupos = this.parseHorariosGrupo(nodesHorariosGrupos, datos);
 
 		NodeList nodesHorariosAulas = horarios.getElementsByTagName("HORARIO_AULA");
-		Map<Aula, List<Actividad>> horariosAulas= this.parseHorariosAulas(nodesHorariosAulas, datos);
+		Map<Aula, List<Actividad>> horariosAulas = this.parseHorariosAulas(nodesHorariosAulas, datos);
 
 		NodeList nodesHorariosProfesores = horarios.getElementsByTagName("HORARIO_PROF");
-		Map<Profesor, List<Actividad>> horariosProfesores= this.parseHorariosProfesores(nodesHorariosProfesores, datos);
+		Map<Profesor, List<Actividad>> horariosProfesores = this.parseHorariosProfesores(nodesHorariosProfesores,
+				datos);
 
 		return new Horarios(horariosAsignaturas, horariosGrupos, horariosAulas, horariosProfesores);
 	}
@@ -228,43 +229,34 @@ public class XmlParser
 	private Map<Asignatura, List<Actividad>> parseHorariosAsignaturas(NodeList list, Datos datos)
 	{
 
-		Map<Asignatura, List<Actividad>> horariosAsignaturas = new TreeMap<Asignatura, List<Actividad>>();
+		Map<Asignatura, List<Actividad>> horariosAsignaturas = new HashMap<Asignatura, List<Actividad>>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element horarioAsignatura = (Element) list.item(i);
 
 			int idAsignatura = Integer
-					.valueOf(horarioAsignatura.getAttributes().getNamedItem("num_int_as").getTextContent());
+					.valueOf(horarioAsignatura.getAttributes().getNamedItem("hor_num_int_as").getTextContent());
 
 			Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
-
-			NodeList actividades = horarioAsignatura.getElementsByTagName("Actividad");
+			
+			NodeList actividades = horarioAsignatura.getElementsByTagName("ACTIVIDAD");
 
 			List<Actividad> listActividades = new ArrayList<Actividad>();
-
+			
 			for (int j = 0 ; j < actividades.getLength() ; j++)
 			{
 
-				Element grupoActividad = (Element) horarioAsignatura.getElementsByTagName("GRUPO").item(0);
+				Element elementActividad = (Element) actividades.item(j);
+				
+				Actividad actividad = this.createActividad(elementActividad, datos);
 
-				int idGrupo = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
-				Grupo grupo = datos.getGrupos().get(idGrupo);
-
-				int idProfesor = Integer
-						.valueOf(horarioAsignatura.getAttributes().getNamedItem("profesor").getTextContent());
-				Profesor profesor = datos.getProfesores().get(idProfesor);
-
-				int idTramo = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("tramo").getTextContent());
-				TramoHorario tramo = datos.getTramos().get(idTramo);
-
-				int idAula = Integer.valueOf(horarioAsignatura.getAttributes().getNamedItem("aula").getTextContent());
-				Aula aula = datos.getAulas().get(idAula);
-
-				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+				actividad.setAsignatura(asignatura);
+				
+				listActividades.add(actividad);
 			}
 
-			horariosAsignaturas.put(asignatura, listActividades);
+			horariosAsignaturas.put(null, listActividades);
 		}
 		return horariosAsignaturas;
 	}
@@ -272,37 +264,29 @@ public class XmlParser
 	private Map<Grupo, List<Actividad>> parseHorariosGrupo(NodeList list, Datos datos)
 	{
 
-		Map<Grupo, List<Actividad>> horariosGrupos = new TreeMap<Grupo, List<Actividad>>();
+		Map<Grupo, List<Actividad>> horariosGrupos = new HashMap<Grupo, List<Actividad>>();
 
 		for (int i = 0 ; i < list.getLength() ; i++)
 		{
 			Element horarioGrupo = (Element) list.item(i);
-			
+
 			int idGrupo = Integer.valueOf(horarioGrupo.getAttributes().getNamedItem("hor_num_int_gr").getTextContent());
 			Grupo grupo = datos.getGrupos().get(idGrupo);
 
-			NodeList actividades = horarioGrupo.getElementsByTagName("Actividad");
+			NodeList actividades = horarioGrupo.getElementsByTagName("ACTIVIDAD");
 
 			List<Actividad> listActividades = new ArrayList<Actividad>();
 
 			for (int j = 0 ; j < actividades.getLength() ; j++)
 			{
+
+				Element elementActividad = (Element) actividades.item(j);
 				
-				int idAsignatura = Integer
-						.valueOf(horarioGrupo.getAttributes().getNamedItem("asignatura").getTextContent());
-				Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
+				Actividad actividad = this.createActividad(elementActividad, datos);
 
-				int idProfesor = Integer
-						.valueOf(horarioGrupo.getAttributes().getNamedItem("profesor").getTextContent());
-				Profesor profesor = datos.getProfesores().get(idProfesor);
-
-				int idTramo = Integer.valueOf(horarioGrupo.getAttributes().getNamedItem("tramo").getTextContent());
-				TramoHorario tramo = datos.getTramos().get(idTramo);
-
-				int idAula = Integer.valueOf(horarioGrupo.getAttributes().getNamedItem("aula").getTextContent());
-				Aula aula = datos.getAulas().get(idAula);
-
-				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+				actividad.setGrupo(grupo);
+				
+				listActividades.add(actividad);
 			}
 
 			horariosGrupos.put(grupo, listActividades);
@@ -319,35 +303,24 @@ public class XmlParser
 		{
 			Element horarioAula = (Element) list.item(i);
 
-			int idAula = Integer
-					.valueOf(horarioAula.getAttributes().getNamedItem("hor_num_int_au").getTextContent());
+			int idAula = Integer.valueOf(horarioAula.getAttributes().getNamedItem("hor_num_int_au").getTextContent());
 
 			Aula aula = datos.getAulas().get(idAula);
 
-			NodeList actividades = horarioAula.getElementsByTagName("Actividad");
+			NodeList actividades = horarioAula.getElementsByTagName("ACTIVIDAD");
 
 			List<Actividad> listActividades = new ArrayList<Actividad>();
 
 			for (int j = 0 ; j < actividades.getLength() ; j++)
 			{
 
-				Element grupoActividad = (Element) horarioAula.getElementsByTagName("GRUPO").item(0);
+				Element elementActividad = (Element) actividades.item(j);
+				
+				Actividad actividad = this.createActividad(elementActividad, datos);
 
-				int idGrupo = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
-				Grupo grupo = datos.getGrupos().get(idGrupo);
-
-				int idProfesor = Integer
-						.valueOf(horarioAula.getAttributes().getNamedItem("profesor").getTextContent());
-				Profesor profesor = datos.getProfesores().get(idProfesor);
-
-				int idTramo = Integer.valueOf(horarioAula.getAttributes().getNamedItem("tramo").getTextContent());
-				TramoHorario tramo = datos.getTramos().get(idTramo);
-
-				int idAsignatura = Integer
-						.valueOf(horarioAula.getAttributes().getNamedItem("asignatura").getTextContent());
-				Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
-
-				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+				actividad.setAula(aula);
+				
+				listActividades.add(actividad);
 			}
 
 			horariosAulas.put(aula, listActividades);
@@ -364,38 +337,72 @@ public class XmlParser
 		{
 			Element horarioProfesor = (Element) list.item(i);
 
-			int idProfesor = Integer
-					.valueOf(horarioProfesor.getAttributes().getNamedItem("profesor").getTextContent());
+			int idProfesor = Integer.valueOf(horarioProfesor.getAttributes().getNamedItem("profesor").getTextContent());
 			Profesor profesor = datos.getProfesores().get(idProfesor);
 
-			NodeList actividades = horarioProfesor.getElementsByTagName("Actividad");
+			NodeList actividades = horarioProfesor.getElementsByTagName("ACTIVIDAD");
 
 			List<Actividad> listActividades = new ArrayList<Actividad>();
 
 			for (int j = 0 ; j < actividades.getLength() ; j++)
 			{
 
-				Element grupoActividad = (Element) horarioProfesor.getElementsByTagName("GRUPO").item(0);
-
-				int idGrupo = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
-				Grupo grupo = datos.getGrupos().get(idGrupo);
+				Element elementActividad = (Element) actividades.item(j);
 				
-				int idAula = Integer.valueOf(horarioProfesor.getAttributes().getNamedItem("aula").getTextContent());
-				Aula aula = datos.getAulas().get(idAula);
+				Actividad actividad = this.createActividad(elementActividad, datos);
 
-				int idTramo = Integer.valueOf(horarioProfesor.getAttributes().getNamedItem("tramo").getTextContent());
-				TramoHorario tramo = datos.getTramos().get(idTramo);
-
-				int idAsignatura = Integer
-						.valueOf(horarioProfesor.getAttributes().getNamedItem("asignatura").getTextContent());
-				Asignatura asignatura = datos.getAsignaturas().get(idAsignatura);
-
-				listActividades.add(new Actividad(asignatura, grupo, profesor, tramo, aula));
+				actividad.setProfesor(profesor);
+				
+				listActividades.add(actividad);
 			}
 
 			horariosAulas.put(profesor, listActividades);
 		}
 		return horariosAulas;
+	}
+
+	private Actividad createActividad(Element element, Datos datos) {
+		
+		Asignatura asignatura = null;
+		if (element.hasAttribute("asignatura"))
+		{
+			int idAsignatura = Integer
+					.valueOf(element.getAttributes().getNamedItem("asignatura").getTextContent());
+			asignatura = datos.getAsignaturas().get(idAsignatura);
+		}
+		
+		Grupo grupo = null;
+		Element grupoActividad = (Element) element.getElementsByTagName("GRUPOS_ACTIVIDAD").item(0);
+		
+		if (grupoActividad != null && grupoActividad.hasAttribute("grupo_1"))
+		{
+			int idGrupo = Integer.valueOf(grupoActividad.getAttributes().getNamedItem("grupo_1").getTextContent());
+			grupo = datos.getGrupos().get(idGrupo);
+		}
+
+		Profesor profesor = null;
+		if(element.hasAttribute("profesor")) {
+			int idProfesor = Integer
+					.valueOf(element.getAttributes().getNamedItem("profesor").getTextContent());
+			profesor = datos.getProfesores().get(idProfesor);
+		}
+		
+		TramoHorario tramo = null;
+		if (element.hasAttribute("tramo"))
+		{
+			int idTramo = Integer.valueOf(element.getAttributes().getNamedItem("tramo").getTextContent());
+			tramo = datos.getTramos().get(idTramo);
+		}
+		
+
+		Aula aula = null;
+		if (element.hasAttribute("aula"))
+		{
+			int idAula = Integer.valueOf(element.getAttributes().getNamedItem("aula").getTextContent());
+			aula =  datos.getAulas().get(idAula);
+		}
+		
+		return new Actividad(asignatura, grupo, profesor, tramo, aula);
 	}
 	
 }

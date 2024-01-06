@@ -58,11 +58,7 @@ public class RestHandlerHorarios
 	private List<Course> listaCursosFinal = new ArrayList<Course>(List.of(
 			
 		));
-	
-	private List<Student> listaEstudiantesCurso = new ArrayList<Student>(List.of(
-			
-			
-		));
+
 	
 	
 	private List<AttitudePoints> listaPuntos = new ArrayList<AttitudePoints>(List.of(
@@ -147,6 +143,8 @@ public class RestHandlerHorarios
         try 
         {
         	InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+        	
+        	// Para pasar los valores de un mapa a lista -> List<Integer> valuesAsList = new ArrayList<>(map.values());
         	List<Profesor> profeosresList =infoCentro.getDatos().getProfesores();
 		    return ResponseEntity.ok().body(profeosresList);
         } 
@@ -166,6 +164,7 @@ public class RestHandlerHorarios
 		try 
         {
 			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			// Para pasar los valores de un mapa a lista -> List<Integer> valuesAsList = new ArrayList<>(map.values());
         	List<TramoHorario> tramosList =infoCentro.getDatos().getTramos();
         	List<Hour>hourList= new ArrayList<Hour>();
         	for(int i=0; i<tramosList.size(); i++)

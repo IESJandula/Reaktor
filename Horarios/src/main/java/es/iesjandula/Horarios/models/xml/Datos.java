@@ -1,6 +1,6 @@
 package es.iesjandula.Horarios.models.xml;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Datos
 {
-	private List<Asignatura> asignaturas;
-	private List<Grupo> grupos;
-	private List<Aula> aulas;
-	private List<Profesor> profesores;
-	private List<TramoHorario> tramos;
+	private Map<Integer, Asignatura> asignaturas;
+	private Map<Integer, Grupo> grupos;
+	private Map<Integer, Aula> aulas;
+	private Map<Integer, Profesor> profesores;
+	private Map<Integer, TramoHorario> tramos;
 	
 }
