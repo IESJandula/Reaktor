@@ -2,6 +2,8 @@ package es.reaktor.horarios.models;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -206,10 +208,21 @@ public class ApplicationPdf
 			document.add(pdfTable);
 			document.close();
 		}
-		catch (FileNotFoundException | DocumentException exception)
+		catch (FileNotFoundException exception)
 		{
 			// --- ERROR ---
-			String error = "ERROR FileNotFoundException OR DocumentException";
+			String error = "ERROR FileNotFoundException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+		catch (DocumentException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR DocumentException";
 			
 			log.info(error);
 			
@@ -327,6 +340,158 @@ public class ApplicationPdf
 			if(actividad.getTramo().trim().equalsIgnoreCase(tram.getNumTr().trim())) 
 			{
 				return tram;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Method getInfoPdfHorarioGrupoCentro
+	 * @param centroPdfs
+	 * @param grupoMap
+	 * @throws HorariosError 
+	 */
+	public void getInfoPdfHorarioGrupoCentro(Centro centroPdfs, Map<String, List<Actividad>> grupoMap, String grupo) throws HorariosError
+	{
+
+		try
+		{
+			// --- CREATING THE DOCUMENT FOR PDF ---
+			Document document = new Document();
+			
+			// --- ROTATE THE DOCUMENT HORIZONTAL MODE ---
+			document.setPageSize(PageSize.A4.rotate());
+			
+			// --- CREATING INSTANCE OF PDFWRITER
+			PdfWriter.getInstance(document, new FileOutputStream("Horario"+grupo+".pdf"));
+			// --- OPEN THE DOCUMENT TO WORK ---
+			document.open();
+			
+			// --- FONT FOR THE PARAGRAPH ---
+			Font font = FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 12, BaseColor.RED);
+			document.add(new Paragraph("HORARIO GRUPO "+grupo.trim(), font));
+			document.add(new Paragraph("\n"));
+			
+			// --- CREATE THE PDF TABLE ---
+			PdfPTable pdfTable = new PdfPTable(grupoMap.size());
+			
+			// --- SET THE WIDTH OF TABLE TO 100% WITH FLOAT ---
+			pdfTable.setWidthPercentage(100f);
+			
+
+			for(Map.Entry entry : grupoMap.entrySet()) 
+			{
+				String temporalDay = this.extractTemporalDayTramo(entry.getKey().toString());
+				log.info("DIA -> "+temporalDay);
+				
+				// --- OTHER FONT FOR THE CELL TEXT ---
+				Font fontCell = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
+				
+				// --- CREATE THE CELL ---
+				PdfPCell temporalDayCell = new PdfPCell();
+				
+				// --- PUT THE PARAGRAPH WITH THE FONT ON THE CELL ---
+				temporalDayCell.addElement(new Paragraph(temporalDay,fontCell));
+				
+				// --- SET COLOR TO THE CELL (HEADERS LUNES MARTES ...) ---
+				temporalDayCell.setBackgroundColor(BaseColor.CYAN);
+				
+				// --- SET TEH VERTICAL ALIG ON CENTER TO THE TEXT ON THE CELL ---
+				temporalDayCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				
+				// --- HORIZONTAL ALIG ON THE CENTER ---
+				temporalDayCell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+				
+				// FINALLY ADD THE CELL TO HTE TABLE ---
+				pdfTable.addCell(temporalDayCell);
+				
+				
+				List<Actividad> temporalList = (List<Actividad>) entry.getValue();
+				Collections.sort(temporalList);
+				for(Actividad actv : temporalList) 
+				{
+					Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
+					
+					String horaInicio = temporalTramo.getHoraInicio().trim();
+					String horaFinal = temporalTramo.getHoraFinal().trim();
+					
+					Asignatura asignatura = this.getAsignaturaById(actv.getAsignatura().trim(), centroPdfs);
+					
+					String nombreAsignatura = asignatura.getNombre().trim();
+					
+					Profesor profesor = this.getProfesorById(actv.getProfesor().trim(),centroPdfs);
+					
+					String nombreProfesor = profesor.getNombre().trim()+" "+profesor.getPrimerApellido().trim()+" "+profesor.getSegundoApellido().trim();
+					
+					log.info(" ASIGNATURA : "+nombreAsignatura);
+					log.info("HORARIO : "+horaInicio+" "+horaFinal);
+					log.info("PROFESOR : "+nombreProfesor);
+					
+					
+					// --- CREATE THE FONT FOR THE CELL ---
+					fontCell = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.BLACK);
+					
+					// --- CREATE TEH CELL WITH ALL THE INFO ---
+					PdfPCell temporalData = new PdfPCell();
+					
+					// --- PUT THE INFO INTO THE CELL WITH PARAGRAPH ---
+					temporalData.addElement(new Paragraph(nombreAsignatura+"\n"+horaInicio+"-"+horaFinal+"\n"+nombreProfesor,fontCell));
+					
+					//--- SET COLOR TO THE CELL ---
+					temporalData.setBackgroundColor(BaseColor.LIGHT_GRAY);
+					
+					// --- SET THE HEIGHT FOR THE CELL ---
+					temporalData.setCalculatedHeight(90f);
+					
+					// --- FINALLY PUT THE CELL ON THE TABLE AND REPEAT WITH ALL ACTIVIDADES ---
+					pdfTable.addCell(temporalData);
+					
+					
+				}
+				pdfTable.completeRow();
+			}
+			document.add(pdfTable);
+			document.close();
+			
+			
+		}
+		catch (FileNotFoundException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR FileNotFoundException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+		catch (DocumentException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR DocumentException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+	}
+
+	/**
+	 * Method getProfesorById
+	 * @param trim
+	 * @param centroPdfs
+	 * @return
+	 */
+	private Profesor getProfesorById(String id, Centro centroPdfs)
+	{
+		for(Profesor profesor : centroPdfs.getDatos().getProfesores().getProfesor()) 
+		{
+			if(profesor.getNumIntPR().trim().equalsIgnoreCase(id.trim()))
+			{
+				return profesor;
 			}
 		}
 		return null;
