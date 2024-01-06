@@ -117,6 +117,45 @@ public class RestHandlerHorarios
 //		}
 //	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = " /get/roles")
+	public ResponseEntity<?> getRoles(
+	        @RequestHeader(required = true) String email
+	) 
+	{
+		List<Roles> listRoles = new ArrayList<Roles>();
+	    try 
+	    {
+	    	
+	    	checkEmail(email);
+	    	if(toDoCorreoRoles.get(email).isEmpty()) {
+	    		listRoles= toDoCorreoRoles.get(email);
+	    		toDoCorreoRoles.get(email).remove(0);
+	    	}
+	    	
+	        return ResponseEntity.ok(listRoles);
+	    } 
+	    catch (HorarioError horarioError) 
+	    {
+	    	
+	        return ResponseEntity.status(400).body(horarioError);
+	    }
+	    catch (Exception e) 
+	    {
+		    		return ResponseEntity.status(500).body(e.getMessage());
+		}
+	
+		
+    }
+
+	private void checkEmail(String email) throws HorarioError 
+	{
+		if(email.isBlank() || !this.toDoCorreoRoles.containsKey(email))
+		{
+			throw new HorarioError(2, "Invalid correo");
+		}
+		
+	}
+	
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
     public ResponseEntity<?> getTeachers(
     		HttpSession httpSession
