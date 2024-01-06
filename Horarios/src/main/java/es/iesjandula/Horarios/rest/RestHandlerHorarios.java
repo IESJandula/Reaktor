@@ -119,20 +119,17 @@ public class RestHandlerHorarios
 	
 	@RequestMapping(method = RequestMethod.GET, value = " /get/roles")
 	public ResponseEntity<?> getRoles(
-	        @RequestHeader(required = true) String email
-	) 
+	        @RequestHeader(required = true) String email,
+	        HttpSession httpSession
+			) 
 	{
-		List<Roles> listRoles = new ArrayList<Roles>();
-	    try 
+		InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+    	List<Profesor> profesoresList = new ArrayList<>(infoCentro.getDatos().getProfesores().values());
+    	try 
 	    {
 	    	
-	    	checkEmail(email);
-	    	if(toDoCorreoRoles.get(email).isEmpty()) {
-	    		listRoles= toDoCorreoRoles.get(email);
-	    		toDoCorreoRoles.get(email).remove(0);
-	    	}
 	    	
-	        return ResponseEntity.ok(listRoles);
+	        return ResponseEntity.ok(this.getProfesorByEmail(email, profesoresList).getListaRoles());
 	    } 
 	    catch (HorarioError horarioError) 
 	    {
@@ -147,14 +144,21 @@ public class RestHandlerHorarios
 		
     }
 
-	private void checkEmail(String email) throws HorarioError 
+	private Profesor getProfesorByEmail(String email,List<Profesor> profesoresList ) throws HorarioError
 	{
-		if(email.isBlank() || !this.toDoCorreoRoles.containsKey(email))
+		for (Profesor profesor : profesoresList) 
 		{
-			throw new HorarioError(2, "Invalid correo");
+			if(profesor.getCuentaDeCorreo().equals(email)) 
+			{
+				return profesor;
+			}
+			
+			
 		}
+		throw new HorarioError(1, "no se encuentra profesor con este email", null);
 		
 	}
+	
 	
 	@RequestMapping(method = RequestMethod.GET ,value = "/get/teachers" ,produces="application/json")
     public ResponseEntity<?> getTeachers(
