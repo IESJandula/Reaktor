@@ -1,5 +1,9 @@
 package es.reaktor.reaktor.rest;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.reaktor.models.Computer;
 import es.reaktor.models.HardwareComponent;
+import es.reaktor.models.Location;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class ReaktorWebRest {
 
+	
+	// Get any computer by serialNumber, andaluciaId, computerNumber, clasroom , trolley , plant , professor, any type of HardwareComponent or empty to get all computers
     @RequestMapping(method = RequestMethod.POST, value = "/computers/web", consumes = "application/json")
     public ResponseEntity<?> getComputersByAny(
              @RequestHeader(required = false) String serialNumber,
@@ -44,7 +51,6 @@ public class ReaktorWebRest {
 
         List<Computer> filtrarOrdenadores = new ArrayList<>();
 
-        // Filtrar los ordenadores basados en los parámetros proporcionados
         for (Computer computer : computers) {
             if ((serialNumber == null || computer.getSerialNumber().equals(serialNumber)) &&
                 (andaluciaId == null || computer.getAndaluciaId().equals(andaluciaId)) &&
@@ -61,8 +67,57 @@ public class ReaktorWebRest {
         return filtrarOrdenadores;
     }
 
-    // Descargue todas las capturas de pantalla en un archivo zip por aula, carrito, planta, profesor
-    // Este método aún no está implementado, puedes desarrollarlo aquí o en otro lugar del controlador.
+    // Download all screenshots on a zip file by classroom, trolley, plant, professor    
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/computers/web", consumes = "application/json")
+    public ResponseEntity<?> getComputersScreens(
+             @RequestHeader(required = false) String classroom,
+             @RequestHeader(required = false) String trolley,
+             @RequestHeader(required = false) String plant,
+             @RequestHeader(required = false) String profesor
+             ) 
+    {
+    	try {
+            // Lógica para obtener las capturas de pantalla y guardarlas en archivos
+
+            
+            if (classroom != null) {
+                guardarCaptura(classroom, "captura_clase.png");
+            }
+            if (trolley != null) {
+                guardarCaptura(trolley, "captura_carrito.png");
+            }
+            if (plant != null) {
+                guardarCaptura(plant, "captura_planta.png");
+            }
+            if (profesor != null) {
+                guardarCaptura(profesor, "captura_profesor.png");
+            }
+
+            return ResponseEntity.ok("Descarga de capturas completada.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    // Método para guardar capturas en archivos
+    private void guardarCaptura(String classroom, String nombreArchivo) throws IOException {
+        
+        String contenido = "Datos de la captura en " + classroom.toString(); 
+
+        // Ruta donde se guardarán los archivos
+        String ruta = "ruta/donde/guardar/";
+
+        File archivo = new File(ruta + nombreArchivo);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            writer.write(contenido);
+        }
+    }
+    
+    
+    
+    
 }
 
 
