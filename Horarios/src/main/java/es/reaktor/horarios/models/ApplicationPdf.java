@@ -208,10 +208,21 @@ public class ApplicationPdf
 			document.add(pdfTable);
 			document.close();
 		}
-		catch (FileNotFoundException | DocumentException exception)
+		catch (FileNotFoundException exception)
 		{
 			// --- ERROR ---
-			String error = "ERROR FileNotFoundException OR DocumentException";
+			String error = "ERROR FileNotFoundException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+		catch (DocumentException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR DocumentException";
 			
 			log.info(error);
 			
@@ -338,8 +349,9 @@ public class ApplicationPdf
 	 * Method getInfoPdfHorarioGrupoCentro
 	 * @param centroPdfs
 	 * @param grupoMap
+	 * @throws HorariosError 
 	 */
-	public void getInfoPdfHorarioGrupoCentro(Centro centroPdfs, Map<String, List<Actividad>> grupoMap, String grupo)
+	public void getInfoPdfHorarioGrupoCentro(Centro centroPdfs, Map<String, List<Actividad>> grupoMap, String grupo) throws HorariosError
 	{
 
 		try
@@ -409,7 +421,7 @@ public class ApplicationPdf
 					
 					Profesor profesor = this.getProfesorById(actv.getProfesor().trim(),centroPdfs);
 					
-					String nombreProfesor = profesor.getNombre().trim();
+					String nombreProfesor = profesor.getNombre().trim()+" "+profesor.getPrimerApellido().trim()+" "+profesor.getSegundoApellido().trim();
 					
 					log.info(" ASIGNATURA : "+nombreAsignatura);
 					log.info("HORARIO : "+horaInicio+" "+horaFinal);
@@ -443,19 +455,28 @@ public class ApplicationPdf
 			
 			
 		}
-		catch (FileNotFoundException e)
+		catch (FileNotFoundException exception)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// --- ERROR ---
+			String error = "ERROR FileNotFoundException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
 		}
-		catch (DocumentException e)
+		catch (DocumentException exception)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// --- ERROR ---
+			String error = "ERROR DocumentException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
 		}
-
-		
-
 	}
 
 	/**
