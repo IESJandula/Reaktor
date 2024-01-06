@@ -165,9 +165,10 @@ public class RestHandlerHorarios
         {
         	InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
         	
-        	// Para pasar los valores de un mapa a lista -> List<Integer> valuesAsList = new ArrayList<>(map.values());
-        	List<Profesor> profeosresList =infoCentro.getDatos().getProfesores();
-		    return ResponseEntity.ok().body(profeosresList);
+        	// Para pasar los valoresde un mapa a lista ->List<Integer> valuesAsList = new ArrayList<>(map.values());
+        	List<Profesor> profesoresList = new ArrayList<>(infoCentro.getDatos().getProfesores().values());
+        	
+		    return ResponseEntity.ok().body(profesoresList);
         } 
         catch (Exception exception)
 		{
