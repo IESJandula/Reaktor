@@ -3,9 +3,6 @@ package es.iesjandula.horarios.rest;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.xml.Actividad;
+import es.iesjandula.horarios.models.xml.Asignatura;
 import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.models.xml.Centro;
+import es.iesjandula.horarios.models.xml.Grupo;
 import es.iesjandula.horarios.models.xml.Profesor;
 import es.iesjandula.horarios.models.xml.TipoHorario;
 import es.iesjandula.horarios.models.xml.Tramo;
@@ -131,15 +128,13 @@ public class RestHandlerHorarios implements ParserXml
 		
 		if(dia == null)
 		{
-			LocalDate date = LocalDate.now()  ;
-			DayOfWeek day = date.getDayOfWeek();
-			dia = day.getValue();
+			dia = getDay();
 		}
 		
 		List<Profesor> listaProfesores = centro.getDatos().getProfesor();
 		List<Tramo> listaTramos = centro.getDatos().getTramo();
 		List<TipoHorario> listaHorarioProf = centro.getDatos().getHorarios().getHorarioProfesores();
-		List<Aula> listaAulas = centro.getDatos().getAula();
+		List<Aula> listaGrupos = centro.getDatos().getAula();
 		
 		int numeroProfesor = 0;
 		int numeroTramo = 0;
@@ -151,17 +146,7 @@ public class RestHandlerHorarios implements ParserXml
 				numeroProfesor=x.getNum_int_pr();
 			}
 		}
-		for(Tramo x : listaTramos)
-		{
-			String horaFinal = x.getHora_final();
-			String horaInicio = x.getHora_inicio();
-			int menorHoraFinal = horaFinal.compareTo(horaActual);
-			int mayorHoraInicial = horaInicio.compareTo(horaActual);
-			if(menorHoraFinal >= 0 && mayorHoraInicial <= 0 && x.getNumero_dia() == dia)
-			{
-				numeroTramo = x.getNum_tr();
-			}
-		}
+		numeroTramo = getTramoHorario(dia, horaActual, listaTramos);
 		for(TipoHorario x :  listaHorarioProf)
 		{
 			if(x.getHor_num_int_typo() == numeroProfesor)
@@ -175,7 +160,7 @@ public class RestHandlerHorarios implements ParserXml
 				}
 			}
 		}
-		for(Aula x : listaAulas)
+		for(Aula x : listaGrupos)
 		{
 			if(x.getNum_int_au() == aula)
 			{
@@ -186,6 +171,44 @@ public class RestHandlerHorarios implements ParserXml
 		
 		return "No se ecuentra en ningun aula";	
 		
+	}
+
+	/**
+	 * @param dia
+	 * @param horaActual
+	 * @param listaTramos
+	 * @param numeroTramo
+	 * @return
+	 */
+	private int getTramoHorario(Integer dia, String horaActual, List<Tramo> listaTramos)
+	{
+		int numeroTramo = 0;
+		for(Tramo x : listaTramos)
+		{
+			String horaFinal = x.getHora_final();
+			String horaInicio = x.getHora_inicio();
+			int menorHoraFinal = horaFinal.compareTo(horaActual);
+			int mayorHoraInicial = horaInicio.compareTo(horaActual);
+			
+			if(menorHoraFinal >= 0 && mayorHoraInicial <= 0 && x.getNumero_dia() == dia)
+			{
+				numeroTramo = x.getNum_tr();
+			}
+		}
+		return numeroTramo;
+	}
+
+	/**
+	 * Return the actual day
+	 * @return integer
+	 */
+	private Integer getDay()
+	{
+		Integer dia;
+		LocalDate date = LocalDate.now()  ;
+		DayOfWeek day = date.getDayOfWeek();
+		dia = day.getValue();
+		return dia;
 	}
 
 	private String getActualHour()
@@ -214,5 +237,183 @@ public class RestHandlerHorarios implements ParserXml
 		}
     }
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teacher-subject")
+    public ResponseEntity<?> getNombreProfesorAsignatura(
+            @RequestHeader(value= "nombreDelCurso", required = true) String nombreDelCurso)
+    {
+		try
+		{		
+			String result = this.nombreProfesorAsignatura(nombreDelCurso);
+			if(result.equals(""))
+			{
+				throw new HorarioError(1, "No se imparte ninguna asignatura a ese grupo ahoramismo");
+			}
+			return ResponseEntity.ok().body(result);    	
+		}
+		catch (HorarioError exception)
+		{
+			String error = "No se imparte ninguna asignatura a ese grupo ahoramismo";
+			HorarioError horarioError = new HorarioError(404, error);
+			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
 	
+	private String nombreProfesorAsignatura(String nombreDelCurso)
+	{
+		String hora = this.getActualHour();
+		int dia = this.getDay();
+		
+		List<TipoHorario> listaHorarios = centro.getDatos().getHorarios().getHorarioGrupo();
+		List<Grupo> listaGrupos = centro.getDatos().getGrupo();
+		List<Tramo> listaTramos = centro.getDatos().getTramo();
+		List<Profesor> listaProfesores = centro.getDatos().getProfesor();
+		List<Asignatura> listaAsignaturas = centro.getDatos().getAsignatura();
+		Integer numeroTramo = 0;
+		Integer numeroGrupo = 0;
+		Integer numeroProfesor = 0;
+		Integer numeroAsignatura = 0;
+		String nombreProfesor = "";
+		String nombreAsignatura = "";
+		String result = "";
+		numeroTramo = getTramoHorario(dia, hora, listaTramos);
+		
+		for(Grupo grupo : listaGrupos)
+		{
+			if(nombreDelCurso.equals(grupo.getNombre()))
+			{
+				numeroGrupo = grupo.getNum_int_gr();
+			}
+		}
+		
+		for(TipoHorario tipoHorario : listaHorarios)
+		{
+			if(numeroGrupo == tipoHorario.getHor_num_int_typo())
+			{
+				for(Actividad actividad : tipoHorario.getActividades())
+				{
+					if(actividad.getTramo() == numeroTramo)
+					{
+						numeroProfesor = actividad.getProfesorOAula();
+						numeroAsignatura = actividad.getAulaOAsignatura();
+					}
+				}
+			}
+		}
+		
+		for(Profesor profesor : listaProfesores)
+		{
+			if(profesor.getNum_int_pr() == numeroProfesor)
+			{
+				nombreProfesor = profesor.getNombre();
+			}
+		}
+		
+		for(Asignatura asignatura : listaAsignaturas)
+		{
+			if(asignatura.getNum_int_as() == numeroAsignatura)
+			{
+				nombreAsignatura = asignatura.getNombre();
+			}
+		}
+		
+		if(!nombreAsignatura.equals("") && !nombreProfesor.equals(""))
+		{
+			result = "Profesor: "+nombreProfesor+"\nAsignatura: "+nombreAsignatura+"\nDia: "+dia+"\nHora: "+hora;
+		}
+		
+				
+		return result;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/aula")
+    public ResponseEntity<?> getAula(
+            @RequestHeader(value= "nombreDelCurso", required = true) String nombreDelCurso)
+    {
+		try
+		{		
+			String result = this.nombreAula(nombreDelCurso);
+			if(result.equals(""))
+			{
+				throw new HorarioError(1, "No se encuentra en ningun aula ahoramismo");
+			}
+			return ResponseEntity.ok().body(result);    	
+		}
+		catch (HorarioError exception)
+		{
+			String error = "No se encuentra en ningun aula ahoramismo";
+			HorarioError horarioError = new HorarioError(404, error);
+			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
+	
+	private String nombreAula(String nombreDelCurso)
+	{
+		String hora = this.getActualHour();
+		int dia = 3;
+		this.getDay();
+		
+		List<TipoHorario> listaHorarios = centro.getDatos().getHorarios().getHorarioGrupo();
+		List<Grupo> listaGrupos = centro.getDatos().getGrupo();
+		List<Aula> listaAulas = centro.getDatos().getAula();
+		List<Tramo> listaTramos = centro.getDatos().getTramo();
+		Integer numeroTramo = 0;
+		Integer numeroGrupo = 0;
+		Integer numeroAula = 0;
+		String nombreAula = "";
+		String abreviatura = "";
+		String result = "";
+		numeroTramo = getTramoHorario(dia, hora, listaTramos);
+		
+		for(Grupo grupo : listaGrupos)
+		{
+			if(nombreDelCurso.equals(grupo.getNombre()))
+			{
+				numeroGrupo = grupo.getNum_int_gr();
+			}
+		}
+		
+		for(TipoHorario tipoHorario : listaHorarios)
+		{
+			if(numeroGrupo == tipoHorario.getHor_num_int_typo())
+			{
+				for(Actividad actividad : tipoHorario.getActividades())
+				{
+					if(actividad.getTramo() == numeroTramo)
+					{
+						numeroAula = actividad.getProfesorOAula();
+						
+					}
+				}
+			}
+		}
+		
+		for(Aula aula : listaAulas)
+		{
+			if(aula.getNum_int_au() == numeroAula)
+			{
+				nombreAula = aula.getNombre();
+				abreviatura = aula.getAbreviatura();
+			}
+		}
+		
+		if(!nombreAula.equals("") && !abreviatura.equals(""))
+		{
+			result = "Nombre del Aula: "+nombreAula+"\nAula: "+abreviatura+"\nDia: "+dia+"\nHora: "+hora;
+		}
+		
+				
+		return result;
+	}
 }
