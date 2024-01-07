@@ -6,8 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import org.springframework.http.HttpHeaders;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -26,6 +30,7 @@ import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import es.iesjandula.Horarios.exceptions.HorarioError;
 import es.iesjandula.Horarios.models.AttitudePoints;
 import es.iesjandula.Horarios.models.Hour;
+import es.iesjandula.Horarios.models.Student;
 import es.iesjandula.Horarios.models.xml.Aula;
 import es.iesjandula.Horarios.models.xml.Grupo;
 import es.iesjandula.Horarios.models.xml.InfoCentro;
@@ -389,7 +394,85 @@ public class RestHandlerHorarios
 	}
 
 	
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teacher/Classroom", produces = "application/json")
+	public ResponseEntity<?> getProfesorClass(@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastName, HttpSession session)
+	{
+		try
+		{
+			
+			InfoCentro info = (InfoCentro) session.getAttribute("info");
+			
+			Student student = this.getStudent(name, lastName, info);
+			
+			Grupo grupo = this.getGrupo(student.getCourse(), info);
+			
+			TramoHorario tramoHorario = this.getTramo(new Date(), info);
+			
+			if (tramoHorario != null)
+			{
+				
+				Actividad actividad = this.getActividad(tramoHorario, info.getHorarios().getHorariosGrupos().get(grupo));
+				
+				Map<String, String> response = new TreeMap<String, String>();
+				
+				response.put("profesor", actividad.getProfesor().getNombre());
+				response.put("aula", actividad.getAula().getNombre());
+				return ResponseEntity.ok().body(response);
+			}
+			
+			return ResponseEntity.ok().build();
+		} catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+	}
+	
+	private Actividad getActividad(TramoHorario tramo , List<Actividad> lista) throws HorarioError {
+		
+		for (Actividad actividiad : lista)
+		{
+			
+			if (actividiad.getTramo().equals(tramo))
+			{
+				return actividiad;
+			}
+			
+		}
+		throw new HorarioError(1, "no se encuentra actividad para este grupo", null);
+		
+	}
 
+	private TramoHorario getTramo(Date date, InfoCentro info) throws HorarioError {
+		for (TramoHorario tramoHorario : info.getDatos().getTramos().values())
+		{
+			if ((tramoHorario.getHoraInicio().equals(date) || tramoHorario.getHoraInicio().before(date)) && (tramoHorario.getHoraFinal().equals(date) || tramoHorario.getHoraFinal().before(date)) )
+			{
+				return tramoHorario;
+			}
+		}
+
+		return null;
+	}
+	
+	
+	private Student getStudent(String name, String lastName, InfoCentro info) throws HorarioError {
+		for (Student student : info.getDatos().getAlumnos())
+		{
+			if (student.getName().equals(name) && student.getLastname().equals(lastName))
+			{
+				return student;
+			}
+		}
+
+		throw new HorarioError(1, "no se encuentra ninguna profesor con estas caracteristicas", null);
+	}
+	
+	
 	@RequestMapping(method = RequestMethod.GET, value = "/get/horario/teacher/pdf", produces = "application/json")
 	public ResponseEntity<?> getTeacherPdf(@RequestHeader(required = true) String name,
 			@RequestHeader(required = true) String lastName, HttpSession session)
