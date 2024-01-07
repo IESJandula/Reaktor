@@ -195,6 +195,7 @@ public class ReaktorServerRest
 		return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
 	}
 
+	//Function to response with the activity of the client
 	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/status")
 	public ResponseEntity<?> getCommandLine(@RequestHeader(required = true) String serialNumber)
 	{
@@ -223,6 +224,16 @@ public class ReaktorServerRest
 		}
 	}
 
+	//Function to set a computer to do thing on the toDo list
+		private void setAccion (String serialNumber, String accion, String info) 
+		{
+			if(!toDo.containsKey(serialNumber))
+			{
+				toDo.put(serialNumber,new ArrayList<Action>());
+			}
+				toDo.get(serialNumber).add(new Action(accion,info));
+		}
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart")
 	public ResponseEntity<?> postComputerRestart(@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
@@ -231,13 +242,40 @@ public class ReaktorServerRest
 	{
 		try
 		{
+			if(serialNumber != null) 
+			{
+				setAccion(serialNumber,"restart","");
+			}else if(classroom != null) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getClassroom().equals(classroom)) 
+					{
+						setAccion(computer.getSerialNumber(),"restart","");
+					}
+				}
+			}else if(trolley != null) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getTrolley().equals(trolley)) 
+					{
+						setAccion(computer.getSerialNumber(),"restart","");
+					}
+				}
+			}else if(plant != 0) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getPlant() == plant) 
+					{
+						setAccion(computer.getSerialNumber(),"restart","");
+					}
+				}
+			}
 
 			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){
-			 * 
-			 * return ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
+		} catch (Exception e)
 		{
 			log.error("Server error", e);
 			return ResponseEntity.status(500).body(e.getMessage());
@@ -253,16 +291,6 @@ public class ReaktorServerRest
 		}
 	}
 	
-	
-	//Function to set a computer to shutdown on the toDo list
-	private void getShutdown (String serialNumber) 
-	{
-		if(!toDo.containsKey(serialNumber))
-		{
-			toDo.put(serialNumber,new ArrayList<Action>());
-		}
-			toDo.get(serialNumber).add(new Action("shutdown",""));
-	}
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/shutdown")
 	public ResponseEntity<?> postComputerShutdown(@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
@@ -273,14 +301,14 @@ public class ReaktorServerRest
 		{
 			if(serialNumber != null) 
 			{
-				getShutdown(serialNumber);
+				setAccion(serialNumber,"shutdown","");
 			}else if(classroom != null) 
 			{
 				for(Computer computer : this.computers) 
 				{
 					if(computer.getLocation().getClassroom().equals(classroom)) 
 					{
-						getShutdown(computer.getSerialNumber());
+						setAccion(computer.getSerialNumber(),"shutdown","");
 					}
 				}
 			}else if(trolley != null) 
@@ -289,7 +317,7 @@ public class ReaktorServerRest
 				{
 					if(computer.getLocation().getTrolley().equals(trolley)) 
 					{
-						getShutdown(computer.getSerialNumber());
+						setAccion(computer.getSerialNumber(),"shutdown","");
 					}
 				}
 			}else if(plant != 0) 
@@ -298,17 +326,13 @@ public class ReaktorServerRest
 				{
 					if(computer.getLocation().getPlant() == plant) 
 					{
-						getShutdown(computer.getSerialNumber());
+						setAccion(computer.getSerialNumber(),"shutdown","");
 					}
 				}
 			}
 
 			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){
-			 * 
-			 * return ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
+		} catch (Exception e)
 		{
 			log.error("Server error", e);
 			return ResponseEntity.status(500).body(e.getMessage());
@@ -326,10 +350,7 @@ public class ReaktorServerRest
 		{
 
 			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){ return
-			 * ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
+		} catch (Exception e)
 		{
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
@@ -424,9 +445,7 @@ public class ReaktorServerRest
 	{
 		try
 		{
-
 			
-
 			List<Computer> response = new ArrayList<Computer>();
 			if (serialNumber != null)
 			{
@@ -514,7 +533,7 @@ public class ReaktorServerRest
 						computer.setAndaluciaId(andaluciaId);
 					}
 				}
-			} else if (computerNumber != null)
+			} if (computerNumber != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
@@ -522,7 +541,7 @@ public class ReaktorServerRest
 						computer.setComputerNumber(computerNumber);
 					}
 				}
-			} else if (operativeSystem != null)
+			} if (operativeSystem != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
@@ -530,7 +549,7 @@ public class ReaktorServerRest
 						computer.setOperativeSystem(operativeSystem);
 					}
 				}
-			} else if (professor != null)
+			} if (professor != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
@@ -538,7 +557,7 @@ public class ReaktorServerRest
 						computer.setProfessor(professor);
 					}
 				}
-			} else if (location != null)
+			} if (location != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
@@ -546,7 +565,7 @@ public class ReaktorServerRest
 						computer.setLocation(location);
 					}
 				}
-			} else if (hardwareList != null)
+			} if (hardwareList != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
@@ -554,7 +573,7 @@ public class ReaktorServerRest
 						computer.setHardwareList(hardwareList);
 					}
 				}
-			} else if (softwareList != null)
+			} if (softwareList != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
@@ -562,7 +581,7 @@ public class ReaktorServerRest
 						computer.setSoftwareList(softwareList);
 					}
 				}
-			} else if (commandLine != null)
+			} if (commandLine != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
@@ -570,7 +589,7 @@ public class ReaktorServerRest
 						computer.setCommandLine(commandLine);
 					}
 				}
-			} else if (monitorizationLog != null)
+			} if (monitorizationLog != null)
 			{
 				for(Computer computer : computers) {
 					if (computer.getSerialNumber().equals(serialNumber))
