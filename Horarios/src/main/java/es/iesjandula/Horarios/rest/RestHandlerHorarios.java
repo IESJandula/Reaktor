@@ -1,6 +1,7 @@
 package es.iesjandula.Horarios.rest;
 
 import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -51,10 +53,11 @@ import jakarta.servlet.http.HttpSession;
 public class RestHandlerHorarios
 {
 	final static Logger logger = LogManager.getLogger();
-
+	private List<String> registrosBano = new ArrayList<>();
 	private List<AttitudePoints> listaPuntos = new ArrayList<AttitudePoints>(
 			List.of(new AttitudePoints(75, "Agredir al profesor"), new AttitudePoints(25, "Movil"),
 					new AttitudePoints(3, "Faltar el respeto a un compañero")));
+	 private List<String> listaEstudiantes = new ArrayList<>();
 
 	/**
 	 * Public constructor
@@ -732,5 +735,93 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(500).body(exception.getMessage());
 		}
 	}
+	@RequestMapping(method = RequestMethod.POST, value = " /student/regreso/bathroom", produces = "application/json")
+	public ResponseEntity<?> postReturnBathroom(@RequestHeader(required = true) String course, String name,String lastName)
+	{
+		try {  
+			LocalDateTime horaActual = LocalDateTime.now();
+
+	        // Formatea los datos en una cadena
+	        String registro = "Curso: " + course + ", Nombre: " + name + ", Apellido: " + lastName + ", Hora: " + horaActual;
+	        System.out.println(registro);
+	        // Agrega el registro a la lista
+	        registrosBano.add(registro);
+
+	        // Devuelve una respuesta
+	        return ResponseEntity.ok(registro);
+	        
+		}catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+		
+
+		
+	}
+	@RequestMapping(method = RequestMethod.POST, value = " /student/visita/bathroom", produces = "application/json")
+	public ResponseEntity<?> postVisit(@RequestHeader(required = true) String course, String name,String lastName)
+	{
+
+		try {  
+			LocalDateTime horaActual = LocalDateTime.now();
+			 String registroFiccion = "Curso: " + course + ", Nombre: " + name + ", Apellido: " + lastName + ", Hora: " + horaActual;
+	        // Formatea los datos en una cadena
+	        String registro = "Curso: " + course + ", Nombre: " + name + ", Apellido: " + lastName + ", Hora: " + horaActual;
+	        if(registro.equals(registroFiccion))
+	        {
+	        	System.out.println(registro);
+	        }
+	    
+	        
+
+	        // Devuelve una respuesta
+	        return ResponseEntity.ok(registro);
+	        
+		}catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/getListTimesBathroom", produces = "application/json")
+	public ResponseEntity<?> getListTimesBathroom(@RequestHeader String fechaInicio, @RequestHeader String fechaend) {
+	    try {
+	        List<String> studentVisits = new ArrayList<>();
+
+	        studentVisits.add("John Doe: 5 visits");
+	        studentVisits.add("Jane Smith: 3 visits");
+
+	        return ResponseEntity.ok(studentVisits);
+	    } catch (Exception exception) {
+	        logger.error("Server Error", exception);
+	        return ResponseEntity.status(500).body(exception.getMessage());
+	    }
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/get/dias/studentBathroom", produces = "application/json")
+	public ResponseEntity<?> getDayHourBathroom(@RequestHeader String name, @RequestHeader String lastname, @RequestHeader String fechaInicio, @RequestHeader String fechaend) {
+	    try {
+	        List<String> visitTimes = new ArrayList<>();
+
+	        visitTimes.add(name + " " + lastname + " - Visit on 2024-01-10 at 10:00");
+	        visitTimes.add(name + " " + lastname + " - Visit on 2024-01-11 at 11:30");
+
+	        return ResponseEntity.ok(visitTimes);
+	    } catch (Exception exception) {
+	        logger.error("Server Error", exception);
+	        return ResponseEntity.status(500).body(exception.getMessage());
+	    }
+	}
+
+	
+
+	
+	
+	
+	
 
 }
