@@ -38,6 +38,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import es.reaktor.horarios.exceptions.HorariosError;
+import es.reaktor.horarios.models.ActitudePoints;
 import es.reaktor.horarios.models.ApplicationPdf;
 import es.reaktor.horarios.models.Classroom;
 import es.reaktor.horarios.models.Course;
@@ -3293,4 +3294,247 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
+	/**
+     * method getListAlumnoFirstSurname
+     * @param course
+     * @return
+     */
+ // REQUEST MAPPING FOR GETTING SORTED STUDENT LIST BASED ON FIRST SURNAME AND COURSE
+    @RequestMapping(method = RequestMethod.GET, value = "/get/course/sort/students")
+    public ResponseEntity<?> getListAlumnoFirstSurname(@RequestHeader(required = true) String course) {
+        // CREATE AN EMPTY LIST TO STORE STUDENT OBJECTS
+        List<Student> listStudents = new ArrayList<Student>();
+
+        // --CREATE FAKE STUDENT LIST--
+        // CREATE FAKE STUDENT OBJECTS AND ADD THEM TO THE LIST
+        Student student = new Student("Carlos", "Ruiz", new Course("1DAM", null));
+        listStudents.add(student);
+        student = new Student("Manuel", "Belmonte", new Course("2DAM", null));
+        listStudents.add(student);
+
+        try {
+            // CHECK IF THE LIST OF STUDENTS IS NOT EMPTY
+            if (!listStudents.isEmpty()) {
+                // --LIST IS NOT EMPTY--
+                // --SORT THE LIST OF STUDENTS BASED ON THE LAST NAME--
+                Collections.sort(listStudents);
+
+                // --CREATE A TEMPORARY LIST TO FILTER STUDENTS BASED ON THE SPECIFIED COURSE--
+                List<Student> temporalList = new ArrayList<Student>();
+                for (Student studen : listStudents) {
+                    // --FILTER STUDENTS BASED ON THE SPECIFIED COURSE AND ADD THEM TO THE TEMPORARY LIST--
+                    if (studen.getCourse().getName().equals(course)) {
+                        temporalList.add(studen);
+                    }
+                }
+                // --RETURN THE FILTERED LIST OF STUDENTS AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK)--
+                return ResponseEntity.ok().body(temporalList);
+            } else {
+                // --LIST IS EMPTY--
+                //-- RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST)--
+                String error = "List not found";
+                HorariosError horariosError = new HorariosError(400, error, null);
+                log.error(error);
+                return ResponseEntity.status(400).body(horariosError);
+            }
+        } catch (Exception exception) {
+            // -- CATCH ANY ERROR --
+            // RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR)
+            String error = "Server Error";
+            HorariosError horariosError = new HorariosError(500, error, exception);
+            log.error(error, exception);
+            return ResponseEntity.status(500).body(horariosError);
+        }
+    }
+ // ENDPOINT FOR GETTING COEXISTENCE ACTITUDE POINTS
+    /**
+     * 
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/get/points")
+    public ResponseEntity<?> getListPointsCoexistence() {
+        // CREATE AN EMPTY LIST TO STORE COEXISTENCE ACTITUDE POINTS
+        List<ActitudePoints> listActitudePoints = new ArrayList<>();
+        
+        try {
+            // --FAKE INFO FOR POINTS LIST--
+            ActitudePoints actitudePoints = new ActitudePoints(20, "Completes all tasks");
+            listActitudePoints.add(actitudePoints);
+            actitudePoints = new ActitudePoints(-10, "Does not complete tasks");
+            listActitudePoints.add(actitudePoints);
+            actitudePoints = new ActitudePoints(-20, "Disturbs the class");
+            listActitudePoints.add(actitudePoints);
+            actitudePoints = new ActitudePoints(10, "Helps classmates");
+            listActitudePoints.add(actitudePoints);
+            
+            // --CHECK IF THE LIST OF ACTITUDE POINTS IS NOT EMPTY--
+            if (!listActitudePoints.isEmpty()) {
+                // --RETURN THE LIST OF COEXISTENCE ACTITUDE POINTS AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK)--
+                return ResponseEntity.ok().body(listActitudePoints);
+            } else {
+                // --RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST)--
+                String error = "List not found";
+                HorariosError horariosError = new HorariosError(400, error, null);
+                log.error(error);
+                return ResponseEntity.status(400).body(horariosError);
+            }
+        } catch (Exception exception) {
+            // CATCH ANY ERROR
+            String error = "Server Error";
+            HorariosError horariosError = new HorariosError(500, error, exception);
+            log.error(error, exception);
+            // --RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR)--
+            return ResponseEntity.status(500).body(horariosError);
+        }
+    }
+
+    // -- ENDPOINT FOR GETTING FIRST NAME AND LAST NAME OF A TEACHER FOR REFLECTION --
+    /**
+     * 
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/get/namelastname/reflexion")
+    public ResponseEntity<?> getFirstNameSurname() {
+        // -- CREATE A TEACHER OBJECT AND SET ITS ATTRIBUTES --
+        Teacher teacher = new Teacher();
+        teacher.setName("Raul");
+        teacher.setLastName("Diuc");
+        teacher.setEmail("rauldiuc1212@gmail.com");
+        teacher.setTelephoneNumber("655655655");
+        
+        // -- ADD A ROLE TO THE TEACHER --
+        List<Rol> roles = new ArrayList<>();
+        roles.add(Rol.docente);
+        teacher.setRoles(roles);
+
+        try {
+            // -- CHECK IF THE TEACHER OBJECT IS NOT NULL --
+            if (teacher != null) {
+                // -- RETURN THE FIRST NAME AND LAST NAME OF THE TEACHER AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK) --
+                return ResponseEntity.ok().body(teacher);
+            } 
+            else 
+            {
+                // -- TEACHER OBJECT IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST) --
+                String error = "Teacher not found";
+                HorariosError horariosError = new HorariosError(400, error, null);
+                log.error(error);
+                return ResponseEntity.status(400).body(horariosError);
+            }
+        } catch (Exception exception) {
+            // -- CATCH ANY ERROR --
+            String error = "Server Error";
+            HorariosError horariosError = new HorariosError(500, error, exception);
+            log.error(error, exception);
+            // -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR) --
+            return ResponseEntity.status(500).body(horariosError);
+        }
+    }
+
+ // -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR --
+    /**
+     * 
+     * @param name
+     * @param lastName
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor")
+    public ResponseEntity<?> getLocationStudentTutor(@RequestHeader(required = true) String name, @RequestHeader(required = true) String lastName) {
+        
+        try {
+            
+
+            // -- CHECK IF BOTH NAME AND LAST NAME ARE NOT NULL --
+            if (name != null && lastName != null) {
+                // -- CREATE TEACHER WITH FAKE DATA --
+                Teacher teacher = new Teacher();
+                teacher.setName("ObiWan");
+                teacher.setLastName("Kenobi");
+                teacher.setEmail("obiwankenobi1212@gmail.com");
+                teacher.setTelephoneNumber("655655655");
+                
+                // -- CREATE CLASSROOM WITH FAKE DATA --
+                Classroom classroom = new Classroom("3 ESO B", "2");
+                // -- ADD A ROLE TO THE TEACHER --
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.docente);
+                teacher.setRoles(roles);
+                // -- CREATE TEACHERMOMENT --
+                TeacherMoment teacherMoment = new TeacherMoment();
+                teacherMoment.setTeacher(teacher);
+                teacherMoment.setClassroom(classroom);
+                
+                // -- RETURN THE LOCATION INFORMATION OF THE STUDENT'S TUTOR AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK) --
+                return ResponseEntity.ok().body(teacherMoment);
+            } else {
+                // -- NAME OR LAST NAME IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST) --
+                String error = "Student not found";
+                HorariosError horariosError = new HorariosError(400, error, null);
+                log.error(error);
+                return ResponseEntity.status(400).body(horariosError);
+            }
+        } catch (Exception exception) {
+            // -- CATCH ANY ERROR --
+            String error = "Server Error";
+            HorariosError horariosError = new HorariosError(500, error, exception);
+            log.error(error, exception);
+            // -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR) --
+            return ResponseEntity.status(500).body(horariosError);
+        }
+    }
+
+ // -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR BASED ON COURSE --
+    /**
+     * 
+     * @param course
+     * @param name
+     * @param lastName
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor/course", produces = "application/json")
+    public ResponseEntity<?> getLocationStudentTutorCourse(@RequestHeader(required = true) String course,
+                                                          @RequestHeader(required = true) String name,
+                                                          @RequestHeader(required = true) String lastName) {
+        
+        try {
+     
+
+            // -- CHECK IF NAME, LAST NAME AND COURSE ARE NOT NULL --
+            if (name != null && lastName != null && course != null) {
+            	// -- CREATE TEACHER WITH FAKE DATA --
+                Teacher teacher = new Teacher();
+                teacher.setName("ObiWan");
+                teacher.setLastName("Kenobi");
+                teacher.setEmail("obiwankenobi1212@gmail.com");
+                teacher.setTelephoneNumber("655655655");
+                
+                // -- CREATE CLASSROOM WITH FAKE DATA --
+                Classroom classroom = new Classroom("3 ESO B", "2");
+                // -- ADD A ROLE TO THE TEACHER --
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.docente);
+                teacher.setRoles(roles);
+                // -- CREATE TEACHERMOMENT --
+                TeacherMoment teacherMoment = new TeacherMoment();
+                teacherMoment.setTeacher(teacher);
+                teacherMoment.setClassroom(classroom);
+                
+                // -- RETURN THE LOCATION INFORMATION OF THE STUDENT'S TUTOR AND COURSE AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK) --
+                return ResponseEntity.ok().body(teacherMoment);
+            } else {
+                // -- NAME OR LAST NAME IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST) --
+                String error = "Student not found";
+                HorariosError horariosError = new HorariosError(400, error, null);
+                log.error(error);
+                return ResponseEntity.status(400).body(horariosError);
+            }
+        } catch (Exception exception) {
+            // -- CATCH ANY ERROR --
+            String error = "Server Error";
+            HorariosError horariosError = new HorariosError(500, error, exception);
+            log.error(error, exception);
+            // -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR) --
+            return ResponseEntity.status(500).body(horariosError);
+        }
+    }
 }
