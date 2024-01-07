@@ -1,6 +1,7 @@
 package es.iesjandula.horarios.rest;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -479,7 +480,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		{
 			Alumno alumno = this.checkAlumno(nombre, apellido, alumnos);
 			String resultado = this.nombreProfesorAsignatura(alumno.getCurso(), centro);
-			this.getDatosProfesor(resultado, centro.getDatos().getProfesor());
+			resultado = this.getDatosProfesor(resultado,this.modelos);
 			return ResponseEntity.ok().body(resultado);
 		}
 		catch(HorarioError ex)

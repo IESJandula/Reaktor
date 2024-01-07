@@ -4,7 +4,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -569,6 +571,11 @@ public interface IChecker
 			log.error("El nombre y apellidos estan vacios");
 			throw new HorarioError(10, "El nombre o el apellido estan vacios");	
 		}
+		else if(alumnos.isEmpty())
+		{
+			log.error("No existen alumnos en el sistema");
+			throw new HorarioError(9,"No se ha cargado ningun alumno en el sistema");
+		}
 		else
 		{
 			boolean encontrado = false;
@@ -592,20 +599,41 @@ public interface IChecker
 		}
 		return alumno;
 	}
-	
-	public default Profesor getDatosProfesor(String datos,List<Profesor> profesores)
+	/**
+	 * Metodo que busca un profesor en la lista de modelo y coge su telefono y correo
+	 * @param datos
+	 * @param profesores
+	 * @return Nombre, telefono y email de un profesor guardados en un mapa
+	 */
+	public default String getDatosProfesor(String datos,List<ModelCSV> profesores)
 	{
-		Profesor profesor = null;
+		String datosProfe = "";
+		//Los datos vienen en lineas, los separamos por lineas y cogemos solo la primera
 		String [] splitDatos = datos.split("\n");
+		//Quitamos los datos innecesarios solo nos interesa obtener el nombre
 		datos = splitDatos[0].substring(10);
-		for(Profesor p:profesores)
+		int index = 0;
+		//Iteramos la lista de modelos
+		while(index<profesores.size())
 		{
-			if(p.getNombre().equals(datos))
+			ModelCSV modelo = profesores.get(index);
+			//Volvemos a separar el nombre completo para dividirlo en dos partes
+			splitDatos = datos.split(",");
+			//Eliminamos el primer espacio sobrante
+			splitDatos[1] = splitDatos[1].substring(1);
+			//Comparamos y si coincide el nombre y apellido recogemos datos
+			if(splitDatos[0].equals(modelo.getApellido()) && splitDatos[1].equals(modelo.getNombre()))
 			{
-				profesor = p;
+				datosProfe = "Nombre completo del tutor: "+modelo.getNombre()+" "+modelo.getApellido()+"\n"
+						+"Telefono de contacto: "+modelo.getTelefono()+"\n"
+						+"Correo electronico: "+modelo.getEmail();
+				
+				
+				break;
 			}
+			index++;
 		}
-		return profesor;
+		return datosProfe;
 		
 	}
 }

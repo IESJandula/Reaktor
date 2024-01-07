@@ -348,6 +348,11 @@ public interface ICSVParser
 		return alumnos;
 	}
 	
+	/**
+	 * Metodo que recoge los profesores del xml y los parsea a formato csv con un telefono y un email
+	 * @param profesores
+	 * @throws HorarioError
+	 */
 	public default void escribirModelos(List<Profesor> profesores) throws HorarioError
 	{
 		List<ModelCSV> modelos = new LinkedList<>();
@@ -368,7 +373,7 @@ public interface ICSVParser
 				String telefono = String.valueOf(numTele);
 				numTele = (int)(Math.random()*3+1);
 				String [] rol = this.seleccionarRol(numTele);
-				ModelCSV modelo = new ModelCSV(campos[0],campos[1],correo,telefono,rol);
+				ModelCSV modelo = new ModelCSV(campos[1],campos[0],correo,telefono,rol);
 				modelos.add(modelo);
 			}
 			fw.write("Nombre,Apellidos,Email,Telefono,Roles\n");

@@ -1,273 +1,273 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<CENTRO nombre_centro="I.E.S. 'Mi_Instituto' MI_CIUDAD" autor="HORW" fecha="24/11/2023 13:34:03">
+<CENTRO nombre_centro="I.E.S. 'Mi_Instituto'ï¿½MI_CIUDAD" autor="HORW" fecha="24/11/2023 13:34:03">
   <DATOS>
     <ASIGNATURAS tot_as="232">
-      <ASIGNATURA num_int_as="1" abreviatura="EPV1" nombre="Educación Plástica Visual y Audiovi" />
-      <ASIGNATURA num_int_as="2" abreviatura="ALTFR" nombre="Alternativa Francés 1º ESO" />
-      <ASIGNATURA num_int_as="3" abreviatura="ByG1" nombre="Biología y Geología 1º ESO" />
-      <ASIGNATURA num_int_as="4" abreviatura="GeH1" nombre="Geografía e Historia 1º ESO" />
-      <ASIGNATURA num_int_as="5" abreviatura="EFIS1" nombre="Educación Física 1º ESO" />
-      <ASIGNATURA num_int_as="6" abreviatura="LENG1" nombre="Lengua Castellana 1º ESO" />
-      <ASIGNATURA num_int_as="7" abreviatura="ING1" nombre="Inglés 1º ESO" />
-      <ASIGNATURA num_int_as="8" abreviatura="MATE1" nombre="Matemáticas 1º ESO" />
-      <ASIGNATURA num_int_as="9" abreviatura="MUSI1" nombre="Música 1º ESO" />
-      <ASIGNATURA num_int_as="10" abreviatura="TUTO1" nombre="Tutoría 1º ESO" />
-      <ASIGNATURA num_int_as="11" abreviatura="CT1" nombre="Coordinac. Tutorías de 1º ESO" />
-      <ASIGNATURA num_int_as="12" abreviatura="RECA2" nombre="Religión Católica 2º ESO" />
-      <ASIGNATURA num_int_as="13" abreviatura="GeH2" nombre="Geografía e Historia 2º ESO" />
-      <ASIGNATURA num_int_as="14" abreviatura="EFIS2" nombre="Educación Física 2º ESO" />
-      <ASIGNATURA num_int_as="15" abreviatura="EPV2" nombre="Educación Plástica 2º ESO" />
-      <ASIGNATURA num_int_as="16" abreviatura="LENG2" nombre="Lengua Castellana 2º ESO" />
-      <ASIGNATURA num_int_as="17" abreviatura="MATE2" nombre="Matemáticas 2º ESO" />
-      <ASIGNATURA num_int_as="18" abreviatura="TECN2" nombre="Tecnologías No Biling. 2º ESO" />
-      <ASIGNATURA num_int_as="19" abreviatura="FRA22" nombre="Francés 2º Idioma 2º ESO" />
-      <ASIGNATURA num_int_as="20" abreviatura="TUTO2" nombre="Tutoría 2º ESO" />
-      <ASIGNATURA num_int_as="21" abreviatura="CT2" nombre="Coordinación Tutorías 2º ESO" />
-      <ASIGNATURA num_int_as="22" abreviatura="RECA3" nombre="Religión Católica 3º ESO" />
-      <ASIGNATURA num_int_as="23" abreviatura="ByG3" nombre="Biología y Geología 3º" />
-      <ASIGNATURA num_int_as="24" abreviatura="FIQU3" nombre="Física y Química  3º ESO" />
-      <ASIGNATURA num_int_as="25" abreviatura="GeH3" nombre="Geografía e Historia 3º ESO" />
-      <ASIGNATURA num_int_as="26" abreviatura="EFIS3" nombre="Educación Física 3º ESO" />
-      <ASIGNATURA num_int_as="27" abreviatura="LENG3" nombre="Lengua Castellana 3º ESO" />
-      <ASIGNATURA num_int_as="28" abreviatura="ING3" nombre="Inglés 3º ESO" />
-      <ASIGNATURA num_int_as="29" abreviatura="TECN3" nombre="Tecnología y Digitalización. 3º ESO" />
-      <ASIGNATURA num_int_as="30" abreviatura="CyR3" nombre="Computación y Robótica 3º ESO" />
-      <ASIGNATURA num_int_as="31" abreviatura="TUTO3" nombre="Tutoría 3º ESO" />
-      <ASIGNATURA num_int_as="32" abreviatura="CT3" nombre="Coordinación Tutorías 3º ESO" />
-      <ASIGNATURA num_int_as="33" abreviatura="RECA4" nombre="Religión Católica 4º" />
-      <ASIGNATURA num_int_as="34" abreviatura="GeH4" nombre="Geografía e Historia 4º ESO" />
-      <ASIGNATURA num_int_as="35" abreviatura="EFIS4" nombre="Educación Física 4º" />
-      <ASIGNATURA num_int_as="36" abreviatura="LENG4" nombre="Lengua Castellana 4º ESO" />
-      <ASIGNATURA num_int_as="37" abreviatura="ING4" nombre="Inglés de 4º ESO" />
-      <ASIGNATURA num_int_as="38" abreviatura="MATA4" nombre="Matemáticas A 4ºESO" />
-      <ASIGNATURA num_int_as="39" abreviatura="MATB4" nombre="Matemáticas B 4ºESO" />
-      <ASIGNATURA num_int_as="40" abreviatura="LATI4" nombre="Latín 4º ESO" />
-      <ASIGNATURA num_int_as="41" abreviatura="TUTO4" nombre="Tutoría 4º ESO" />
-      <ASIGNATURA num_int_as="42" abreviatura="CT4" nombre="Coordinación de Tutoría 4º ESO" />
-      <ASIGNATURA num_int_as="48" abreviatura="HMC1B" nombre="Hª Mundo Contemp. 1º Bach." />
-      <ASIGNATURA num_int_as="49" abreviatura="LAT1B" nombre="Latín 1º Bach." />
-      <ASIGNATURA num_int_as="50" abreviatura="GRI1B" nombre="Griego 1º Bach." />
-      <ASIGNATURA num_int_as="51" abreviatura="TING" nombre="Tecn. e Ingenieria (4 hor) 1º Bach." />
-      <ASIGNATURA num_int_as="52" abreviatura="MAT1B" nombre="Matemáticas I 1º Bach." />
-      <ASIGNATURA num_int_as="53" abreviatura="FQ1B" nombre="Física y Química 1º Bach." />
-      <ASIGNATURA num_int_as="54" abreviatura="ByG1B" nombre="Biología y Geología 1º Bach." />
-      <ASIGNATURA num_int_as="55" abreviatura="DTC1B" nombre="Dibujo Técnico (2 horas) 1º Bach." />
-      <ASIGNATURA num_int_as="63" abreviatura="EMP2B" nombre="Empresa y Diseñ.Modelos 2º Bach." />
-      <ASIGNATURA num_int_as="65" abreviatura="GRI2B" nombre="Griego II 2º Bachillerato" />
-      <ASIGNATURA num_int_as="67" abreviatura="DTE2B" nombre="Dibujo Técnico II 2º Bach." />
-      <ASIGNATURA num_int_as="68" abreviatura="TEI2B" nombre="Tecnología e Ingeniería 2º Bach." />
-      <ASIGNATURA num_int_as="69" abreviatura="MAT2B" nombre="Matemáticas II 2º Bach." />
-      <ASIGNATURA num_int_as="72" abreviatura="TLIBA" nombre="Técnicas de tiempo libre GrpA" />
-      <ASIGNATURA num_int_as="73" abreviatura="MONTA" nombre="Guía de Alta y Baja Montaña" />
-      <ASIGNATURA num_int_as="74" abreviatura="BICIC" nombre="Guía de bicicletas" />
-      <ASIGNATURA num_int_as="75" abreviatura="ITINA" nombre="Organización de Itinerarios" />
+      <ASIGNATURA num_int_as="1" abreviatura="EPV1" nombre="Educaciï¿½n Plï¿½stica Visual y Audiovi" />
+      <ASIGNATURA num_int_as="2" abreviatura="ALTFR" nombre="Alternativa Francï¿½s 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="3" abreviatura="ByG1" nombre="Biologï¿½a y Geologï¿½a 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="4" abreviatura="GeH1" nombre="Geografï¿½a e Historia 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="5" abreviatura="EFIS1" nombre="Educaciï¿½n Fï¿½sica 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="6" abreviatura="LENG1" nombre="Lengua Castellana 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="7" abreviatura="ING1" nombre="Inglï¿½s 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="8" abreviatura="MATE1" nombre="Matemï¿½ticas 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="9" abreviatura="MUSI1" nombre="Mï¿½sica 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="10" abreviatura="TUTO1" nombre="Tutorï¿½a 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="11" abreviatura="CT1" nombre="Coordinac. Tutorï¿½as de 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="12" abreviatura="RECA2" nombre="Religiï¿½n Catï¿½lica 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="13" abreviatura="GeH2" nombre="Geografï¿½a e Historia 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="14" abreviatura="EFIS2" nombre="Educaciï¿½n Fï¿½sica 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="15" abreviatura="EPV2" nombre="Educaciï¿½n Plï¿½stica 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="16" abreviatura="LENG2" nombre="Lengua Castellana 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="17" abreviatura="MATE2" nombre="Matemï¿½ticas 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="18" abreviatura="TECN2" nombre="Tecnologï¿½as No Biling. 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="19" abreviatura="FRA22" nombre="Francï¿½s 2ï¿½ Idioma 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="20" abreviatura="TUTO2" nombre="Tutorï¿½a 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="21" abreviatura="CT2" nombre="Coordinaciï¿½n Tutorï¿½as 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="22" abreviatura="RECA3" nombre="Religiï¿½n Catï¿½lica 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="23" abreviatura="ByG3" nombre="Biologï¿½a y Geologï¿½a 3ï¿½" />
+      <ASIGNATURA num_int_as="24" abreviatura="FIQU3" nombre="Fï¿½sica y Quï¿½mica  3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="25" abreviatura="GeH3" nombre="Geografï¿½a e Historia 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="26" abreviatura="EFIS3" nombre="Educaciï¿½n Fï¿½sica 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="27" abreviatura="LENG3" nombre="Lengua Castellana 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="28" abreviatura="ING3" nombre="Inglï¿½s 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="29" abreviatura="TECN3" nombre="Tecnologï¿½a y Digitalizaciï¿½n. 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="30" abreviatura="CyR3" nombre="Computaciï¿½n y Robï¿½tica 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="31" abreviatura="TUTO3" nombre="Tutorï¿½a 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="32" abreviatura="CT3" nombre="Coordinaciï¿½n Tutorï¿½as 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="33" abreviatura="RECA4" nombre="Religiï¿½n Catï¿½lica 4ï¿½" />
+      <ASIGNATURA num_int_as="34" abreviatura="GeH4" nombre="Geografï¿½a e Historia 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="35" abreviatura="EFIS4" nombre="Educaciï¿½n Fï¿½sica 4ï¿½" />
+      <ASIGNATURA num_int_as="36" abreviatura="LENG4" nombre="Lengua Castellana 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="37" abreviatura="ING4" nombre="Inglï¿½s de 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="38" abreviatura="MATA4" nombre="Matemï¿½ticas A 4ï¿½ESO" />
+      <ASIGNATURA num_int_as="39" abreviatura="MATB4" nombre="Matemï¿½ticas B 4ï¿½ESO" />
+      <ASIGNATURA num_int_as="40" abreviatura="LATI4" nombre="Latï¿½n 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="41" abreviatura="TUTO4" nombre="Tutorï¿½a 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="42" abreviatura="CT4" nombre="Coordinaciï¿½n de Tutorï¿½a 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="48" abreviatura="HMC1B" nombre="Hï¿½ Mundo Contemp. 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="49" abreviatura="LAT1B" nombre="Latï¿½n 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="50" abreviatura="GRI1B" nombre="Griego 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="51" abreviatura="TING" nombre="Tecn. e Ingenieria (4 hor) 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="52" abreviatura="MAT1B" nombre="Matemï¿½ticas I 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="53" abreviatura="FQ1B" nombre="Fï¿½sica y Quï¿½mica 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="54" abreviatura="ByG1B" nombre="Biologï¿½a y Geologï¿½a 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="55" abreviatura="DTC1B" nombre="Dibujo Tï¿½cnico (2 horas) 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="63" abreviatura="EMP2B" nombre="Empresa y Diseï¿½.Modelos 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="65" abreviatura="GRI2B" nombre="Griego II 2ï¿½ Bachillerato" />
+      <ASIGNATURA num_int_as="67" abreviatura="DTE2B" nombre="Dibujo Tï¿½cnico II 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="68" abreviatura="TEI2B" nombre="Tecnologï¿½a e Ingenierï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="69" abreviatura="MAT2B" nombre="Matemï¿½ticas II 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="72" abreviatura="TLIBA" nombre="Tï¿½cnicas de tiempo libre GrpA" />
+      <ASIGNATURA num_int_as="73" abreviatura="MONTA" nombre="Guï¿½a de Alta y Baja Montaï¿½a" />
+      <ASIGNATURA num_int_as="74" abreviatura="BICIC" nombre="Guï¿½a de bicicletas" />
+      <ASIGNATURA num_int_as="75" abreviatura="ITINA" nombre="Organizaciï¿½n de Itinerarios" />
       <ASIGNATURA num_int_as="76" abreviatura="FOLA" nombre="FOL Grupo A" />
-      <ASIGNATURA num_int_as="77" abreviatura="NATAA" nombre="Técnicas de Natación GrupoA" />
-      <ASIGNATURA num_int_as="78" abreviatura="EQUIT" nombre="Técnicas de Equitación" />
-      <ASIGNATURA num_int_as="79" abreviatura="FOL" nombre="Formación y Orientación Laboral" />
-      <ASIGNATURA num_int_as="80" abreviatura="RED" nombre="Reunión Equipo Directivo" />
-      <ASIGNATURA num_int_as="81" abreviatura="ASL3" nombre="Ámbito Socioling. 3º ESO(10h)" />
-      <ASIGNATURA num_int_as="82" abreviatura="ACT3" nombre="Ámbito científico-técnico 3º ESO 9h" />
-      <ASIGNATURA num_int_as="83" abreviatura="END1D" nombre="ENTORNOS DE DESARROLLO - 1º DAM" />
+      <ASIGNATURA num_int_as="77" abreviatura="NATAA" nombre="Tï¿½cnicas de Nataciï¿½n GrupoA" />
+      <ASIGNATURA num_int_as="78" abreviatura="EQUIT" nombre="Tï¿½cnicas de Equitaciï¿½n" />
+      <ASIGNATURA num_int_as="79" abreviatura="FOL" nombre="Formaciï¿½n y Orientaciï¿½n Laboral" />
+      <ASIGNATURA num_int_as="80" abreviatura="RED" nombre="Reuniï¿½n Equipo Directivo" />
+      <ASIGNATURA num_int_as="81" abreviatura="ASL3" nombre="ï¿½mbito Socioling. 3ï¿½ ESO(10h)" />
+      <ASIGNATURA num_int_as="82" abreviatura="ACT3" nombre="ï¿½mbito cientï¿½fico-tï¿½cnico 3ï¿½ ESO 9h" />
+      <ASIGNATURA num_int_as="83" abreviatura="END1D" nombre="ENTORNOS DE DESARROLLO - 1ï¿½ DAM" />
       <ASIGNATURA num_int_as="84" abreviatura="BBD5" nombre="BASE DE DATOS 5 HORAS - DAM" />
-      <ASIGNATURA num_int_as="85" abreviatura="PSP" nombre="Programación de Servicios y Proceso" />
+      <ASIGNATURA num_int_as="85" abreviatura="PSP" nombre="Programaciï¿½n de Servicios y Proceso" />
       <ASIGNATURA num_int_as="86" abreviatura="LMARC" nombre="Leng.Marcas Sist.Gest.Informac.-DAM" />
       <ASIGNATURA num_int_as="87" abreviatura="ADAT" nombre="Acceso a Datos" />
       <ASIGNATURA num_int_as="88" abreviatura="DEI" nombre="Desarrollo de Interfaces" />
-      <ASIGNATURA num_int_as="89" abreviatura="PMDM" nombre="Programación Mult. y Disp. Móviles" />
-      <ASIGNATURA num_int_as="90" abreviatura="SGE" nombre="Sistemas de Gestión Empresarial" />
+      <ASIGNATURA num_int_as="89" abreviatura="PMDM" nombre="Programaciï¿½n Mult. y Disp. Mï¿½viles" />
+      <ASIGNATURA num_int_as="90" abreviatura="SGE" nombre="Sistemas de Gestiï¿½n Empresarial" />
       <ASIGNATURA num_int_as="91" abreviatura="EIE" nombre="Empresa e iniciativa emprendedora" />
-      <ASIGNATURA num_int_as="92" abreviatura="LC" nombre="Libre Configuración" />
-      <ASIGNATURA num_int_as="93" abreviatura="FRA21" nombre="Francés 2º idioma 1º ESO" />
-      <ASIGNATURA num_int_as="94" abreviatura="ByG4" nombre="Biología y Geología 4º ESO" />
+      <ASIGNATURA num_int_as="92" abreviatura="LC" nombre="Libre Configuraciï¿½n" />
+      <ASIGNATURA num_int_as="93" abreviatura="FRA21" nombre="Francï¿½s 2ï¿½ idioma 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="94" abreviatura="ByG4" nombre="Biologï¿½a y Geologï¿½a 4ï¿½ ESO" />
       <ASIGNATURA num_int_as="95" abreviatura="GUAR" nombre="GUARDIA" />
-      <ASIGNATURA num_int_as="96" abreviatura="REVA1" nombre="Religión Evangélica 1º ESO" />
-      <ASIGNATURA num_int_as="97" abreviatura="REVA2" nombre="Religión Evangélica 2ºESO" />
-      <ASIGNATURA num_int_as="98" abreviatura="EXP4" nombre="Expresión Artística 4º ESO" />
-      <ASIGNATURA num_int_as="99" abreviatura="CIEN2" nombre="Ciencias Aplic. 2º FPB" />
-      <ASIGNATURA num_int_as="100" abreviatura="CIEN1" nombre="Ciencias Aplicadas 1º F.P.B" />
-      <ASIGNATURA num_int_as="101" abreviatura="COM2F" nombre="Comunicación y Sociedad 2º F.P.B." />
-      <ASIGNATURA num_int_as="102" abreviatura="TU2FP" nombre="Tutoría 2º F.P.B." />
-      <ASIGNATURA num_int_as="103" abreviatura="ACT2A" nombre="Ámbito Cientif.Técnico 2º ESO(4H)" />
-      <ASIGNATURA num_int_as="104" abreviatura="ATEN3" nombre="Atención Educativa 3º ESO" />
-      <ASIGNATURA num_int_as="105" abreviatura="MAT3" nombre="Matemáticas 3º ESO" />
-      <ASIGNATURA num_int_as="109" abreviatura="ASL4H" nombre="Ámbito socioling. 2º ESO (4H)" />
-      <ASIGNATURA num_int_as="110" abreviatura="COM2F" nombre="Comunicación y sociedad I 1º FPB" />
-      <ASIGNATURA num_int_as="111" abreviatura="ATED2" nombre="Atención Educativa (1h)" />
-      <ASIGNATURA num_int_as="112" abreviatura="FIQU2" nombre="Física y Química 2º ESO" />
-      <ASIGNATURA num_int_as="113" abreviatura="ATED4" nombre="Atención Educativa 4º ESO" />
-      <ASIGNATURA num_int_as="116" abreviatura="SIMEC" nombre="Sist. Mecánicos -Mecatrónica-" />
-      <ASIGNATURA num_int_as="117" abreviatura="SISEE" nombre="Sist.Eléctr.Electron.-mecatr 6h" />
-      <ASIGNATURA num_int_as="118" abreviatura="PFABR" nombre="Procesos de Fabricación-Mecatrónica" />
-      <ASIGNATURA num_int_as="119" abreviatura="ELMAQ" nombre="Elementos de Máquinas - Mecatrónica" />
-      <ASIGNATURA num_int_as="120" abreviatura="RGRAF" nombre="Rptcion.Graf.Sist.- Mecatrónica 3h" />
+      <ASIGNATURA num_int_as="96" abreviatura="REVA1" nombre="Religiï¿½n Evangï¿½lica 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="97" abreviatura="REVA2" nombre="Religiï¿½n Evangï¿½lica 2ï¿½ESO" />
+      <ASIGNATURA num_int_as="98" abreviatura="EXP4" nombre="Expresiï¿½n Artï¿½stica 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="99" abreviatura="CIEN2" nombre="Ciencias Aplic. 2ï¿½ FPB" />
+      <ASIGNATURA num_int_as="100" abreviatura="CIEN1" nombre="Ciencias Aplicadas 1ï¿½ F.P.B" />
+      <ASIGNATURA num_int_as="101" abreviatura="COM2F" nombre="Comunicaciï¿½n y Sociedad 2ï¿½ F.P.B." />
+      <ASIGNATURA num_int_as="102" abreviatura="TU2FP" nombre="Tutorï¿½a 2ï¿½ F.P.B." />
+      <ASIGNATURA num_int_as="103" abreviatura="ACT2A" nombre="ï¿½mbito Cientif.Tï¿½cnico 2ï¿½ ESO(4H)" />
+      <ASIGNATURA num_int_as="104" abreviatura="ATEN3" nombre="Atenciï¿½n Educativa 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="105" abreviatura="MAT3" nombre="Matemï¿½ticas 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="109" abreviatura="ASL4H" nombre="ï¿½mbito socioling. 2ï¿½ ESO (4H)" />
+      <ASIGNATURA num_int_as="110" abreviatura="COM2F" nombre="Comunicaciï¿½n y sociedad I 1ï¿½ FPB" />
+      <ASIGNATURA num_int_as="111" abreviatura="ATED2" nombre="Atenciï¿½n Educativa (1h)" />
+      <ASIGNATURA num_int_as="112" abreviatura="FIQU2" nombre="Fï¿½sica y Quï¿½mica 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="113" abreviatura="ATED4" nombre="Atenciï¿½n Educativa 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="116" abreviatura="SIMEC" nombre="Sist. Mecï¿½nicos -Mecatrï¿½nica-" />
+      <ASIGNATURA num_int_as="117" abreviatura="SISEE" nombre="Sist.Elï¿½ctr.Electron.-mecatr 6h" />
+      <ASIGNATURA num_int_as="118" abreviatura="PFABR" nombre="Procesos de Fabricaciï¿½n-Mecatrï¿½nica" />
+      <ASIGNATURA num_int_as="119" abreviatura="ELMAQ" nombre="Elementos de Mï¿½quinas - Mecatrï¿½nica" />
+      <ASIGNATURA num_int_as="120" abreviatura="RGRAF" nombre="Rptcion.Graf.Sist.- Mecatrï¿½nica 3h" />
       <ASIGNATURA num_int_as="121" abreviatura="RLABO" nombre="Riesgos Laborales" />
-      <ASIGNATURA num_int_as="122" abreviatura="FOL" nombre="FOL - 1º MECATRONICA" />
-      <ASIGNATURA num_int_as="123" abreviatura="MUS2E" nombre="Música 2º ESO" />
-      <ASIGNATURA num_int_as="124" abreviatura="TU1FP" nombre="TUTORIA ALUMNOS 1º FPB" />
-      <ASIGNATURA num_int_as="125" abreviatura="REVA3" nombre="RELIGIÓN EVANGELICA 3ºESO" />
-      <ASIGNATURA num_int_as="126" abreviatura="LC-ME" nombre="LIBRE CONFIGURACIÓN MECATRÓNICA" />
+      <ASIGNATURA num_int_as="122" abreviatura="FOL" nombre="FOL - 1ï¿½ MECATRONICA" />
+      <ASIGNATURA num_int_as="123" abreviatura="MUS2E" nombre="Mï¿½sica 2ï¿½ ESO" />
+      <ASIGNATURA num_int_as="124" abreviatura="TU1FP" nombre="TUTORIA ALUMNOS 1ï¿½ FPB" />
+      <ASIGNATURA num_int_as="125" abreviatura="REVA3" nombre="RELIGIï¿½N EVANGELICA 3ï¿½ESO" />
+      <ASIGNATURA num_int_as="126" abreviatura="LC-ME" nombre="LIBRE CONFIGURACIï¿½N MECATRï¿½NICA" />
       <ASIGNATURA num_int_as="127" abreviatura="EIE" nombre="EMPRESA E INICIATIVA EMPRENDEDORA" />
-      <ASIGNATURA num_int_as="130" abreviatura="FyQ4" nombre="FÍSICA Y QUÍMICA 4ºESO" />
-      <ASIGNATURA num_int_as="131" abreviatura="ECON4" nombre="ECONOMÍA DE 4ºESO" />
-      <ASIGNATURA num_int_as="132" abreviatura="CSMEC" nombre="CONFIGURACIÓN DE SISTEMAS MEC.6h" />
-      <ASIGNATURA num_int_as="133" abreviatura="MONFP" nombre="Montaje 1º FP-Básica (9 horas)" />
-      <ASIGNATURA num_int_as="134" abreviatura="SI6-1" nombre="SISTEMAS INFORMÁTICOS-6H-- DAM" />
-      <ASIGNATURA num_int_as="135" abreviatura="OPCFP" nombre="Oper.Auxil.Conf.Expl.7H. 1º F.P.B." />
-      <ASIGNATURA num_int_as="136" abreviatura="EEEFP" nombre="Equipos Eléc. Electr. 8 H. 2º FPB" />
-      <ASIGNATURA num_int_as="137" abreviatura="RED22" nombre="Inst.Mntto.Redes 8 H. 2º F.P.B." />
-      <ASIGNATURA num_int_as="139" abreviatura="SHIN1" nombre="Sist.Hidr.Neum.-Mecatrónica- 4h" />
-      <ASIGNATURA num_int_as="140" abreviatura="INTEG" nombre="INTEGRACIÓN DE SISTEMAS 9h" />
-      <ASIGNATURA num_int_as="142" abreviatura="REVA4" nombre="Religión Evangélica 4º" />
-      <ASIGNATURA num_int_as="143" abreviatura="PGYMA" nombre="PROCESOS GESTIÓN Y MANT. 5horas" />
-      <ASIGNATURA num_int_as="144" abreviatura="SSMEC" nombre="SIMULACIÓN DE SIST. MECATR. 3h" />
-      <ASIGNATURA num_int_as="145" abreviatura="CoorL" nombre="Coordinación de Área LINGÚISTICA" />
-      <ASIGNATURA num_int_as="146" abreviatura="CoorA" nombre="Coordinación de Área ARTÍSTICA" />
-      <ASIGNATURA num_int_as="147" abreviatura="CoorF" nombre="Coordinación de Área FP" />
-      <ASIGNATURA num_int_as="151" abreviatura="TECO4" nombre="Tecnología Optativa - 4º ESO" />
+      <ASIGNATURA num_int_as="130" abreviatura="FyQ4" nombre="Fï¿½SICA Y QUï¿½MICA 4ï¿½ESO" />
+      <ASIGNATURA num_int_as="131" abreviatura="ECON4" nombre="ECONOMï¿½A DE 4ï¿½ESO" />
+      <ASIGNATURA num_int_as="132" abreviatura="CSMEC" nombre="CONFIGURACIï¿½N DE SISTEMAS MEC.6h" />
+      <ASIGNATURA num_int_as="133" abreviatura="MONFP" nombre="Montaje 1ï¿½ FP-Bï¿½sica (9 horas)" />
+      <ASIGNATURA num_int_as="134" abreviatura="SI6-1" nombre="SISTEMAS INFORMï¿½TICOS-6H-- DAM" />
+      <ASIGNATURA num_int_as="135" abreviatura="OPCFP" nombre="Oper.Auxil.Conf.Expl.7H. 1ï¿½ F.P.B." />
+      <ASIGNATURA num_int_as="136" abreviatura="EEEFP" nombre="Equipos Elï¿½c. Electr. 8 H. 2ï¿½ FPB" />
+      <ASIGNATURA num_int_as="137" abreviatura="RED22" nombre="Inst.Mntto.Redes 8 H. 2ï¿½ F.P.B." />
+      <ASIGNATURA num_int_as="139" abreviatura="SHIN1" nombre="Sist.Hidr.Neum.-Mecatrï¿½nica- 4h" />
+      <ASIGNATURA num_int_as="140" abreviatura="INTEG" nombre="INTEGRACIï¿½N DE SISTEMAS 9h" />
+      <ASIGNATURA num_int_as="142" abreviatura="REVA4" nombre="Religiï¿½n Evangï¿½lica 4ï¿½" />
+      <ASIGNATURA num_int_as="143" abreviatura="PGYMA" nombre="PROCESOS GESTIï¿½N Y MANT. 5horas" />
+      <ASIGNATURA num_int_as="144" abreviatura="SSMEC" nombre="SIMULACIï¿½N DE SIST. MECATR. 3h" />
+      <ASIGNATURA num_int_as="145" abreviatura="CoorL" nombre="Coordinaciï¿½n de ï¿½rea LINGï¿½ISTICA" />
+      <ASIGNATURA num_int_as="146" abreviatura="CoorA" nombre="Coordinaciï¿½n de ï¿½rea ARTï¿½STICA" />
+      <ASIGNATURA num_int_as="147" abreviatura="CoorF" nombre="Coordinaciï¿½n de ï¿½rea FP" />
+      <ASIGNATURA num_int_as="151" abreviatura="TECO4" nombre="Tecnologï¿½a Optativa - 4ï¿½ ESO" />
       <ASIGNATURA num_int_as="156" abreviatura="G30" nombre="G30" />
-      <ASIGNATURA num_int_as="158" abreviatura="CyR1" nombre="COMPUTACIÓN y ROBÓTICA" />
-      <ASIGNATURA num_int_as="159" abreviatura="CyR2" nombre="COMPUTACIÓN y ROBÓTICA" />
-      <ASIGNATURA num_int_as="160" abreviatura="EPV3" nombre="EducaciónPlásticayAudiovisual_3ESO" />
-      <ASIGNATURA num_int_as="161" abreviatura="CCLAS" nombre="Cultura Clásica" />
-      <ASIGNATURA num_int_as="162" abreviatura="RECON" nombre="Reunión Convivencia" />
-      <ASIGNATURA num_int_as="164" abreviatura="PROG6" nombre="PROGRAMACIÓN 6 HORAS - DAM" />
-      <ASIGNATURA num_int_as="166" abreviatura="ATEN1" nombre="Atención Educativa 1º ESO" />
-      <ASIGNATURA num_int_as="168" abreviatura="ATGRP" nombre="Atención a grupos" />
-      <ASIGNATURA num_int_as="169" abreviatura="GECUE" nombre="Guía Ecuestre" />
-      <ASIGNATURA num_int_as="170" abreviatura="GACUA" nombre="Guía en el Medio Acuático" />
+      <ASIGNATURA num_int_as="158" abreviatura="CyR1" nombre="COMPUTACIï¿½N y ROBï¿½TICA" />
+      <ASIGNATURA num_int_as="159" abreviatura="CyR2" nombre="COMPUTACIï¿½N y ROBï¿½TICA" />
+      <ASIGNATURA num_int_as="160" abreviatura="EPV3" nombre="Educaciï¿½nPlï¿½sticayAudiovisual_3ESO" />
+      <ASIGNATURA num_int_as="161" abreviatura="CCLAS" nombre="Cultura Clï¿½sica" />
+      <ASIGNATURA num_int_as="162" abreviatura="RECON" nombre="Reuniï¿½n Convivencia" />
+      <ASIGNATURA num_int_as="164" abreviatura="PROG6" nombre="PROGRAMACIï¿½N 6 HORAS - DAM" />
+      <ASIGNATURA num_int_as="166" abreviatura="ATEN1" nombre="Atenciï¿½n Educativa 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="168" abreviatura="ATGRP" nombre="Atenciï¿½n a grupos" />
+      <ASIGNATURA num_int_as="169" abreviatura="GECUE" nombre="Guï¿½a Ecuestre" />
+      <ASIGNATURA num_int_as="170" abreviatura="GACUA" nombre="Guï¿½a en el Medio Acuï¿½tico" />
       <ASIGNATURA num_int_as="171" abreviatura="CUERD" nombre="Maniobra con cuerdas" />
       <ASIGNATURA num_int_as="172" abreviatura="Socor" nombre="Socorrismo en el Medio Natural" />
       <ASIGNATURA num_int_as="173" abreviatura="EIEA" nombre="EIE GrpA" />
-      <ASIGNATURA num_int_as="174" abreviatura="HLCA" nombre="Horas de Libre Configuración GrpA" />
-      <ASIGNATURA num_int_as="175" abreviatura="FRA23" nombre="Francés 2º Idioma 3º ESO" />
-      <ASIGNATURA num_int_as="177" abreviatura="FAG2B" nombre="Fundamentos de Adm. Gest. 2º Bach." />
-      <ASIGNATURA num_int_as="178" abreviatura="NATAB" nombre="Técnicas de Natación GrupoB" />
+      <ASIGNATURA num_int_as="174" abreviatura="HLCA" nombre="Horas de Libre Configuraciï¿½n GrpA" />
+      <ASIGNATURA num_int_as="175" abreviatura="FRA23" nombre="Francï¿½s 2ï¿½ Idioma 3ï¿½ ESO" />
+      <ASIGNATURA num_int_as="177" abreviatura="FAG2B" nombre="Fundamentos de Adm. Gest. 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="178" abreviatura="NATAB" nombre="Tï¿½cnicas de Nataciï¿½n GrupoB" />
       <ASIGNATURA num_int_as="179" abreviatura="FOLB" nombre="FOL Grupo B" />
-      <ASIGNATURA num_int_as="180" abreviatura="TLIBB" nombre="Técnicas de tiempo libre GrpB" />
-      <ASIGNATURA num_int_as="181" abreviatura="RECA1" nombre="Religión Católica 1º ESO" />
-      <ASIGNATURA num_int_as="182" abreviatura="CULT1" nombre="CULTURA Clásica 1ºESO" />
-      <ASIGNATURA num_int_as="183" abreviatura="ING2A" nombre="Inglés 2º ESO 2 HORAS" />
-      <ASIGNATURA num_int_as="184" abreviatura="ACT2B" nombre="Ámbito Cientif.Técnico 2º ESO(3H)" />
-      <ASIGNATURA num_int_as="185" abreviatura="ING2" nombre="Inglés 2º ESO 4 HORAS" />
-      <ASIGNATURA num_int_as="186" abreviatura="ASL2H" nombre="Ámbito socioling. 2º ESO (2H)" />
-      <ASIGNATURA num_int_as="187" abreviatura="VAL2" nombre="Educación Valores (1h)" />
-      <ASIGNATURA num_int_as="188" abreviatura="ASL4" nombre="Ámbito Socioling. 4º ESO(10h)" />
-      <ASIGNATURA num_int_as="189" abreviatura="ACT4" nombre="Ámbito científico-técnico 4º ESO 9h" />
-      <ASIGNATURA num_int_as="190" abreviatura="DIG4" nombre="Digitalización 4º ESO" />
-      <ASIGNATURA num_int_as="191" abreviatura="FORM4" nombre="Formación y Orient.Pers.y Pr 4º ESO" />
-      <ASIGNATURA num_int_as="192" abreviatura="DTEC4" nombre="Dibujo Técnico 4ESO" />
-      <ASIGNATURA num_int_as="193" abreviatura="CULT4" nombre="Cultura Científica 4º ESO" />
+      <ASIGNATURA num_int_as="180" abreviatura="TLIBB" nombre="Tï¿½cnicas de tiempo libre GrpB" />
+      <ASIGNATURA num_int_as="181" abreviatura="RECA1" nombre="Religiï¿½n Catï¿½lica 1ï¿½ ESO" />
+      <ASIGNATURA num_int_as="182" abreviatura="CULT1" nombre="CULTURA Clï¿½sica 1ï¿½ESO" />
+      <ASIGNATURA num_int_as="183" abreviatura="ING2A" nombre="Inglï¿½s 2ï¿½ ESO 2 HORAS" />
+      <ASIGNATURA num_int_as="184" abreviatura="ACT2B" nombre="ï¿½mbito Cientif.Tï¿½cnico 2ï¿½ ESO(3H)" />
+      <ASIGNATURA num_int_as="185" abreviatura="ING2" nombre="Inglï¿½s 2ï¿½ ESO 4 HORAS" />
+      <ASIGNATURA num_int_as="186" abreviatura="ASL2H" nombre="ï¿½mbito socioling. 2ï¿½ ESO (2H)" />
+      <ASIGNATURA num_int_as="187" abreviatura="VAL2" nombre="Educaciï¿½n Valores (1h)" />
+      <ASIGNATURA num_int_as="188" abreviatura="ASL4" nombre="ï¿½mbito Socioling. 4ï¿½ ESO(10h)" />
+      <ASIGNATURA num_int_as="189" abreviatura="ACT4" nombre="ï¿½mbito cientï¿½fico-tï¿½cnico 4ï¿½ ESO 9h" />
+      <ASIGNATURA num_int_as="190" abreviatura="DIG4" nombre="Digitalizaciï¿½n 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="191" abreviatura="FORM4" nombre="Formaciï¿½n y Orient.Pers.y Pr 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="192" abreviatura="DTEC4" nombre="Dibujo Tï¿½cnico 4ESO" />
+      <ASIGNATURA num_int_as="193" abreviatura="CULT4" nombre="Cultura Cientï¿½fica 4ï¿½ ESO" />
       <ASIGNATURA num_int_as="194" abreviatura="ASEM4" nombre="Aprendizaje Social y Emocional 4ESO" />
-      <ASIGNATURA num_int_as="195" abreviatura="TEC4" nombre="Tecnología - 4º ESO" />
-      <ASIGNATURA num_int_as="198" abreviatura="ITINB" nombre="Organización de Itinerarios" />
+      <ASIGNATURA num_int_as="195" abreviatura="TEC4" nombre="Tecnologï¿½a - 4ï¿½ ESO" />
+      <ASIGNATURA num_int_as="198" abreviatura="ITINB" nombre="Organizaciï¿½n de Itinerarios" />
       <ASIGNATURA num_int_as="200" abreviatura="BBD1" nombre="BASE DE DATOS 1 HORA - DAM1" />
-      <ASIGNATURA num_int_as="201" abreviatura="PROG2" nombre="PROGRAMACIÓN 2 HORAS - DAM" />
-      <ASIGNATURA num_int_as="202" abreviatura="COTUT" nombre="COTUTORÍA" />
-      <ASIGNATURA num_int_as="203" abreviatura="LEN1B" nombre="Lengua 1º Bach." />
-      <ASIGNATURA num_int_as="204" abreviatura="LEN1B" nombre="Lengua 1º Bach." />
-      <ASIGNATURA num_int_as="205" abreviatura="ING1B" nombre="Inglés 1º Bach." />
-      <ASIGNATURA num_int_as="206" abreviatura="ING1B" nombre="Inglés 1º Bach." />
-      <ASIGNATURA num_int_as="207" abreviatura="MAP1B" nombre="Matemáticas Aplic. CC.SS. 1º Bach." />
-      <ASIGNATURA num_int_as="208" abreviatura="MAP1B" nombre="Matemáticas Aplic. CC.SS. 1º Bach." />
-      <ASIGNATURA num_int_as="209" abreviatura="FR21B" nombre="Francés 2º Idioma 1º Bach." />
-      <ASIGNATURA num_int_as="210" abreviatura="FR21B" nombre="Francés 2º Idioma 1º Bach." />
-      <ASIGNATURA num_int_as="211" abreviatura="ECO1B" nombre="Economía 1º Bach." />
-      <ASIGNATURA num_int_as="212" abreviatura="ECO1B" nombre="Economía 1º Bach." />
-      <ASIGNATURA num_int_as="213" abreviatura="VAL2B" nombre="Proy.Transvers. Educa.Valor2º Bach." />
-      <ASIGNATURA num_int_as="214" abreviatura="VAL2B" nombre="Proy.Transvers. Educa.Valor2º Bach." />
-      <ASIGNATURA num_int_as="215" abreviatura="LEN2B" nombre="Lengua Castellana 2º Bach." />
-      <ASIGNATURA num_int_as="216" abreviatura="LEN2B" nombre="Lengua Castellana 2º Bach." />
-      <ASIGNATURA num_int_as="217" abreviatura="ING2B" nombre="Inglés 2º Bach." />
-      <ASIGNATURA num_int_as="218" abreviatura="ING2B" nombre="Inglés 2º Bach." />
-      <ASIGNATURA num_int_as="219" abreviatura="HES2B" nombre="Hª de España 2º Bach." />
-      <ASIGNATURA num_int_as="220" abreviatura="HES2B" nombre="Hª de España 2º Bach." />
-      <ASIGNATURA num_int_as="221" abreviatura="HAR2B" nombre="Hª. del Arte 2º Bach." />
-      <ASIGNATURA num_int_as="222" abreviatura="HAR2B" nombre="Hª. del Arte 2º Bach." />
-      <ASIGNATURA num_int_as="223" abreviatura="HFI2B" nombre="Hª de la Filosofía 2º Bach." />
-      <ASIGNATURA num_int_as="224" abreviatura="HFI2B" nombre="Hª de la Filosofía 2º Bach." />
-      <ASIGNATURA num_int_as="225" abreviatura="GEO2B" nombre="Geografía 2º Bach." />
-      <ASIGNATURA num_int_as="226" abreviatura="GEO2B" nombre="Geografía 2º Bach." />
-      <ASIGNATURA num_int_as="227" abreviatura="LAT2B" nombre="Latín II 2º Bach." />
-      <ASIGNATURA num_int_as="228" abreviatura="LAT2B" nombre="Latín II 2º Bach." />
-      <ASIGNATURA num_int_as="229" abreviatura="MCS2B" nombre="Matemáticas Aplicadas 2º Bach" />
-      <ASIGNATURA num_int_as="230" abreviatura="MCS2B" nombre="Matemáticas Aplicadas 2º Bach" />
-      <ASIGNATURA num_int_as="231" abreviatura="QUI2B" nombre="Química 2º Bach." />
-      <ASIGNATURA num_int_as="232" abreviatura="QUI2B" nombre="Química 2º Bach." />
-      <ASIGNATURA num_int_as="233" abreviatura="BIO2B" nombre="Biología 2º Bach." />
-      <ASIGNATURA num_int_as="234" abreviatura="BIO2B" nombre="Biología 2º Bach." />
-      <ASIGNATURA num_int_as="235" abreviatura="AAP1B" nombre="Anatomia Aplicada 1º Bach." />
-      <ASIGNATURA num_int_as="236" abreviatura="AAP1B" nombre="Anatomia Aplicada 1º Bach." />
-      <ASIGNATURA num_int_as="237" abreviatura="LIU1B" nombre="Literatura Universal 1º Bach." />
-      <ASIGNATURA num_int_as="238" abreviatura="LIU1B" nombre="Literatura Universal 1º Bach." />
-      <ASIGNATURA num_int_as="239" abreviatura="FIS2B" nombre="Física 2º Bach." />
-      <ASIGNATURA num_int_as="240" abreviatura="FIS2B" nombre="Física 2º Bach." />
-      <ASIGNATURA num_int_as="241" abreviatura="PTE1B" nombre="Proy.Transv.Educa. 1º Bachillerat" />
-      <ASIGNATURA num_int_as="242" abreviatura="PTE1B" nombre="Proy.Transv.Educa. 1º Bachillerat" />
-      <ASIGNATURA num_int_as="243" abreviatura="PSI2B" nombre="Psicología 2º Bachillerato" />
-      <ASIGNATURA num_int_as="244" abreviatura="PSI2B" nombre="Psicología 2º Bachillerato" />
-      <ASIGNATURA num_int_as="245" abreviatura="FIL1B" nombre="FILOSOFÍA 1º BACH." />
-      <ASIGNATURA num_int_as="246" abreviatura="FIL1B" nombre="FILOSOFÍA 1º BACH." />
-      <ASIGNATURA num_int_as="247" abreviatura="TARG2" nombre="TALLER DE ARGUMENTACIÓN 2ºBACH." />
-      <ASIGNATURA num_int_as="248" abreviatura="TARG2" nombre="TALLER DE ARGUMENTACIÓN 2ºBACH." />
-      <ASIGNATURA num_int_as="249" abreviatura="TPP1B" nombre="Taller Pasa Página  1º Bach." />
-      <ASIGNATURA num_int_as="250" abreviatura="TPP1B" nombre="Taller Pasa Página  1º Bach." />
-      <ASIGNATURA num_int_as="251" abreviatura="TTE1B" nombre="Taller de Teatro  1º Bach." />
-      <ASIGNATURA num_int_as="252" abreviatura="TTE1B" nombre="Taller de Teatro  1º Bach." />
-      <ASIGNATURA num_int_as="253" abreviatura="EF1B" nombre="Educación Física 1ºBach." />
-      <ASIGNATURA num_int_as="254" abreviatura="EF1B" nombre="Educación Física 1ºBach." />
-      <ASIGNATURA num_int_as="255" abreviatura="FR22B" nombre="Francés 2º Idioma (2H) 2ºBach." />
-      <ASIGNATURA num_int_as="256" abreviatura="FR22B" nombre="Francés 2º Idioma (2H) 2ºBach." />
-      <ASIGNATURA num_int_as="257" abreviatura="TIC" nombre="Tecnología de la Información y la C" />
-      <ASIGNATURA num_int_as="258" abreviatura="TIC" nombre="Tecnología de la Información y la C" />
-      <ASIGNATURA num_int_as="259" abreviatura="TIC" nombre="Tecnología Información y Comunicaci" />
-      <ASIGNATURA num_int_as="260" abreviatura="TIC" nombre="Tecnología Información y Comunicaci" />
-      <ASIGNATURA num_int_as="261" abreviatura="REC1B" nombre="Religión Católica 1º Bach.Ciencias" />
-      <ASIGNATURA num_int_as="262" abreviatura="REC1B" nombre="Religión Católica 1º Bach.Ciencias" />
-      <ASIGNATURA num_int_as="263" abreviatura="AFI2B" nombre="Actividad Física Salud y Sd 2ºBach." />
-      <ASIGNATURA num_int_as="264" abreviatura="AFI2B" nombre="Actividad Física Salud y Sd 2ºBach." />
-      <ASIGNATURA num_int_as="265" abreviatura="PIN1B" nombre="Preparación Certif.Inglés 1º Bach." />
-      <ASIGNATURA num_int_as="266" abreviatura="PIN1B" nombre="Preparación Certif.Inglés 1º Bach." />
-      <ASIGNATURA num_int_as="267" abreviatura="REC2B" nombre="Religión Católica 2º Bach." />
-      <ASIGNATURA num_int_as="268" abreviatura="REC2B" nombre="Religión Católica 2º Bach." />
+      <ASIGNATURA num_int_as="201" abreviatura="PROG2" nombre="PROGRAMACIï¿½N 2 HORAS - DAM" />
+      <ASIGNATURA num_int_as="202" abreviatura="COTUT" nombre="COTUTORï¿½A" />
+      <ASIGNATURA num_int_as="203" abreviatura="LEN1B" nombre="Lengua 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="204" abreviatura="LEN1B" nombre="Lengua 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="205" abreviatura="ING1B" nombre="Inglï¿½s 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="206" abreviatura="ING1B" nombre="Inglï¿½s 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="207" abreviatura="MAP1B" nombre="Matemï¿½ticas Aplic. CC.SS. 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="208" abreviatura="MAP1B" nombre="Matemï¿½ticas Aplic. CC.SS. 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="209" abreviatura="FR21B" nombre="Francï¿½s 2ï¿½ Idioma 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="210" abreviatura="FR21B" nombre="Francï¿½s 2ï¿½ Idioma 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="211" abreviatura="ECO1B" nombre="Economï¿½a 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="212" abreviatura="ECO1B" nombre="Economï¿½a 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="213" abreviatura="VAL2B" nombre="Proy.Transvers. Educa.Valor2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="214" abreviatura="VAL2B" nombre="Proy.Transvers. Educa.Valor2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="215" abreviatura="LEN2B" nombre="Lengua Castellana 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="216" abreviatura="LEN2B" nombre="Lengua Castellana 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="217" abreviatura="ING2B" nombre="Inglï¿½s 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="218" abreviatura="ING2B" nombre="Inglï¿½s 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="219" abreviatura="HES2B" nombre="Hï¿½ de Espaï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="220" abreviatura="HES2B" nombre="Hï¿½ de Espaï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="221" abreviatura="HAR2B" nombre="Hï¿½. del Arte 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="222" abreviatura="HAR2B" nombre="Hï¿½. del Arte 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="223" abreviatura="HFI2B" nombre="Hï¿½ de la Filosofï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="224" abreviatura="HFI2B" nombre="Hï¿½ de la Filosofï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="225" abreviatura="GEO2B" nombre="Geografï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="226" abreviatura="GEO2B" nombre="Geografï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="227" abreviatura="LAT2B" nombre="Latï¿½n II 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="228" abreviatura="LAT2B" nombre="Latï¿½n II 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="229" abreviatura="MCS2B" nombre="Matemï¿½ticas Aplicadas 2ï¿½ Bach" />
+      <ASIGNATURA num_int_as="230" abreviatura="MCS2B" nombre="Matemï¿½ticas Aplicadas 2ï¿½ Bach" />
+      <ASIGNATURA num_int_as="231" abreviatura="QUI2B" nombre="Quï¿½mica 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="232" abreviatura="QUI2B" nombre="Quï¿½mica 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="233" abreviatura="BIO2B" nombre="Biologï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="234" abreviatura="BIO2B" nombre="Biologï¿½a 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="235" abreviatura="AAP1B" nombre="Anatomia Aplicada 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="236" abreviatura="AAP1B" nombre="Anatomia Aplicada 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="237" abreviatura="LIU1B" nombre="Literatura Universal 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="238" abreviatura="LIU1B" nombre="Literatura Universal 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="239" abreviatura="FIS2B" nombre="Fï¿½sica 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="240" abreviatura="FIS2B" nombre="Fï¿½sica 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="241" abreviatura="PTE1B" nombre="Proy.Transv.Educa. 1ï¿½ Bachillerat" />
+      <ASIGNATURA num_int_as="242" abreviatura="PTE1B" nombre="Proy.Transv.Educa. 1ï¿½ Bachillerat" />
+      <ASIGNATURA num_int_as="243" abreviatura="PSI2B" nombre="Psicologï¿½a 2ï¿½ Bachillerato" />
+      <ASIGNATURA num_int_as="244" abreviatura="PSI2B" nombre="Psicologï¿½a 2ï¿½ Bachillerato" />
+      <ASIGNATURA num_int_as="245" abreviatura="FIL1B" nombre="FILOSOFï¿½A 1ï¿½ BACH." />
+      <ASIGNATURA num_int_as="246" abreviatura="FIL1B" nombre="FILOSOFï¿½A 1ï¿½ BACH." />
+      <ASIGNATURA num_int_as="247" abreviatura="TARG2" nombre="TALLER DE ARGUMENTACIï¿½N 2ï¿½BACH." />
+      <ASIGNATURA num_int_as="248" abreviatura="TARG2" nombre="TALLER DE ARGUMENTACIï¿½N 2ï¿½BACH." />
+      <ASIGNATURA num_int_as="249" abreviatura="TPP1B" nombre="Taller Pasa Pï¿½gina  1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="250" abreviatura="TPP1B" nombre="Taller Pasa Pï¿½gina  1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="251" abreviatura="TTE1B" nombre="Taller de Teatro  1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="252" abreviatura="TTE1B" nombre="Taller de Teatro  1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="253" abreviatura="EF1B" nombre="Educaciï¿½n Fï¿½sica 1ï¿½Bach." />
+      <ASIGNATURA num_int_as="254" abreviatura="EF1B" nombre="Educaciï¿½n Fï¿½sica 1ï¿½Bach." />
+      <ASIGNATURA num_int_as="255" abreviatura="FR22B" nombre="Francï¿½s 2ï¿½ Idioma (2H) 2ï¿½Bach." />
+      <ASIGNATURA num_int_as="256" abreviatura="FR22B" nombre="Francï¿½s 2ï¿½ Idioma (2H) 2ï¿½Bach." />
+      <ASIGNATURA num_int_as="257" abreviatura="TIC" nombre="Tecnologï¿½a de la Informaciï¿½n y la C" />
+      <ASIGNATURA num_int_as="258" abreviatura="TIC" nombre="Tecnologï¿½a de la Informaciï¿½n y la C" />
+      <ASIGNATURA num_int_as="259" abreviatura="TIC" nombre="Tecnologï¿½a Informaciï¿½n y Comunicaci" />
+      <ASIGNATURA num_int_as="260" abreviatura="TIC" nombre="Tecnologï¿½a Informaciï¿½n y Comunicaci" />
+      <ASIGNATURA num_int_as="261" abreviatura="REC1B" nombre="Religiï¿½n Catï¿½lica 1ï¿½ Bach.Ciencias" />
+      <ASIGNATURA num_int_as="262" abreviatura="REC1B" nombre="Religiï¿½n Catï¿½lica 1ï¿½ Bach.Ciencias" />
+      <ASIGNATURA num_int_as="263" abreviatura="AFI2B" nombre="Actividad Fï¿½sica Salud y Sd 2ï¿½Bach." />
+      <ASIGNATURA num_int_as="264" abreviatura="AFI2B" nombre="Actividad Fï¿½sica Salud y Sd 2ï¿½Bach." />
+      <ASIGNATURA num_int_as="265" abreviatura="PIN1B" nombre="Preparaciï¿½n Certif.Inglï¿½s 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="266" abreviatura="PIN1B" nombre="Preparaciï¿½n Certif.Inglï¿½s 1ï¿½ Bach." />
+      <ASIGNATURA num_int_as="267" abreviatura="REC2B" nombre="Religiï¿½n Catï¿½lica 2ï¿½ Bach." />
+      <ASIGNATURA num_int_as="268" abreviatura="REC2B" nombre="Religiï¿½n Catï¿½lica 2ï¿½ Bach." />
       <ASIGNATURA num_int_as="269" abreviatura="Bibl" nombre="Apoyo a Biblioteca" />
       <ASIGNATURA num_int_as="270" abreviatura="ETCP" nombre="R. ETCP" />
-      <ASIGNATURA num_int_as="271" abreviatura="RBIL" nombre="REUNIÓN BILINGÜÍSMO" />
-      <ASIGNATURA num_int_as="272" abreviatura="RTED" nombre="REUNIÓN TED" />
+      <ASIGNATURA num_int_as="271" abreviatura="RBIL" nombre="REUNIï¿½N BILINGï¿½ï¿½SMO" />
+      <ASIGNATURA num_int_as="272" abreviatura="RTED" nombre="REUNIï¿½N TED" />
     </ASIGNATURAS>
     <GRUPOS tot_gr="33">
-      <GRUPO num_int_gr="1" abreviatura="1ESOA" nombre="1º ESO-A" />
-      <GRUPO num_int_gr="2" abreviatura="3ESOA" nombre="3º ESO-A" />
-      <GRUPO num_int_gr="3" abreviatura="4ESOA" nombre="4º ESO-A" />
-      <GRUPO num_int_gr="4" abreviatura="1B_C" nombre="1º BACH C" />
-      <GRUPO num_int_gr="5" abreviatura="2B_A" nombre="2º BACH A" />
-      <GRUPO num_int_gr="6" abreviatura="1ºDAM" nombre="1º CFGS DAM" />
-      <GRUPO num_int_gr="7" abreviatura="2ºGMA" nombre="2ºGUIA MEDIO NATURAL-A" />
-      <GRUPO num_int_gr="8" abreviatura="1GMNA" nombre="1º CFGM GMNTL A" />
-      <GRUPO num_int_gr="9" abreviatura="2B_B" nombre="2º BACH B" />
-      <GRUPO num_int_gr="10" abreviatura="1B_B" nombre="1º BACH B" />
-      <GRUPO num_int_gr="11" abreviatura="1B_A" nombre="1º BACH A" />
-      <GRUPO num_int_gr="12" abreviatura="1ESOB" nombre="1º ESO-B" />
-      <GRUPO num_int_gr="13" abreviatura="2ESOB" nombre="2º ESO-B-Biling" />
+      <GRUPO num_int_gr="1" abreviatura="1ESOA" nombre="1ï¿½ ESO-A" />
+      <GRUPO num_int_gr="2" abreviatura="3ESOA" nombre="3ï¿½ ESO-A" />
+      <GRUPO num_int_gr="3" abreviatura="4ESOA" nombre="4ï¿½ ESO-A" />
+      <GRUPO num_int_gr="4" abreviatura="1B_C" nombre="1ï¿½ BACH C" />
+      <GRUPO num_int_gr="5" abreviatura="2B_A" nombre="2ï¿½ BACH A" />
+      <GRUPO num_int_gr="6" abreviatura="1 DAM" nombre="1ï¿½ CFGS DAM" />
+      <GRUPO num_int_gr="7" abreviatura="2 GMA" nombre="2ï¿½GUIA MEDIO NATURAL-A" />
+      <GRUPO num_int_gr="8" abreviatura="1GMNA" nombre="1ï¿½ CFGM GMNTL A" />
+      <GRUPO num_int_gr="9" abreviatura="2B_B" nombre="2ï¿½ BACH B" />
+      <GRUPO num_int_gr="10" abreviatura="1B_B" nombre="1ï¿½ BACH B" />
+      <GRUPO num_int_gr="11" abreviatura="1B_A" nombre="1ï¿½ BACH A" />
+      <GRUPO num_int_gr="12" abreviatura="1ESOB" nombre="1ï¿½ ESO-B" />
+      <GRUPO num_int_gr="13" abreviatura="2ESOB" nombre="2ï¿½ ESO-B-Biling" />
       <GRUPO num_int_gr="14" abreviatura="3DIVE" nombre="3ESOCD-DIVER" />
-      <GRUPO num_int_gr="15" abreviatura="2ºDAM" nombre="2º CFGS DAM" />
-      <GRUPO num_int_gr="16" abreviatura="2B_C" nombre="2º BACH C" />
-      <GRUPO num_int_gr="17" abreviatura="4ESOB" nombre="4º ESO-B" />
-      <GRUPO num_int_gr="18" abreviatura="2ESOC" nombre="2º ESO-C-BILING." />
-      <GRUPO num_int_gr="19" abreviatura="3ESOC" nombre="3º ESO-C BILING." />
-      <GRUPO num_int_gr="20" abreviatura="4ESOC" nombre="4º ESO-C" />
-      <GRUPO num_int_gr="21" abreviatura="1ºFPB" nombre="1º Formación Profesional Básica" />
+      <GRUPO num_int_gr="15" abreviatura="2 DAM" nombre="2ï¿½ CFGS DAM" />
+      <GRUPO num_int_gr="16" abreviatura="2B_C" nombre="2ï¿½ BACH C" />
+      <GRUPO num_int_gr="17" abreviatura="4ESOB" nombre="4ï¿½ ESO-B" />
+      <GRUPO num_int_gr="18" abreviatura="2ESOC" nombre="2ï¿½ ESO-C-BILING." />
+      <GRUPO num_int_gr="19" abreviatura="3ESOC" nombre="3ï¿½ ESO-C BILING." />
+      <GRUPO num_int_gr="20" abreviatura="4ESOC" nombre="4ï¿½ ESO-C" />
+      <GRUPO num_int_gr="21" abreviatura="1 FPB" nombre="1ï¿½ Formaciï¿½n Profesional Bï¿½sica" />
       <GRUPO num_int_gr="22" abreviatura="Guar" nombre="Guardias" />
-      <GRUPO num_int_gr="23" abreviatura="2ºFPB" nombre="2º Formación Profesional Básica" />
-      <GRUPO num_int_gr="24" abreviatura="1ºMEC" nombre="1º CFGS MECATRÓNICA INDUSTRIAL" />
+      <GRUPO num_int_gr="23" abreviatura="2 FPB" nombre="2ï¿½ Formaciï¿½n Profesional Bï¿½sica" />
+      <GRUPO num_int_gr="24" abreviatura="1 MEC" nombre="1ï¿½ CFGS MECATRï¿½NICA INDUSTRIAL" />
       <GRUPO num_int_gr="25" abreviatura="Grec" nombre="GRecr" />
-      <GRUPO num_int_gr="26" abreviatura="2ESOA" nombre="2ºA" />
-      <GRUPO num_int_gr="27" abreviatura="2ºMEC" nombre="2º CFGS MECATRÓNICA INDUSTRIAL" />
+      <GRUPO num_int_gr="26" abreviatura="2ESOA" nombre="2ï¿½A" />
+      <GRUPO num_int_gr="27" abreviatura="2 MEC" nombre="2ï¿½ CFGS MECATRï¿½NICA INDUSTRIAL" />
       <GRUPO num_int_gr="29" abreviatura="1ESOC" nombre="1ESO C- Biling" />
-      <GRUPO num_int_gr="30" abreviatura="3ESOB" nombre="3º ESO-B" />
-      <GRUPO num_int_gr="31" abreviatura="1GMNB" nombre="1º CFGM GMNTL B" />
-      <GRUPO num_int_gr="32" abreviatura="4ESOD" nombre="4º ESO-D" />
-      <GRUPO num_int_gr="33" abreviatura="4DIVE" nombre="4º ESO-DIVER" />
+      <GRUPO num_int_gr="30" abreviatura="3ESOB" nombre="3ï¿½ ESO-B" />
+      <GRUPO num_int_gr="31" abreviatura="1GMNB" nombre="1ï¿½ CFGM GMNTL B" />
+      <GRUPO num_int_gr="32" abreviatura="4ESOD" nombre="4ï¿½ ESO-D" />
+      <GRUPO num_int_gr="33" abreviatura="4DIVE" nombre="4ï¿½ ESO-DIVER" />
       <GRUPO num_int_gr="34" abreviatura="GBibl" nombre="Guardia Biblioteca" />
     </GRUPOS>
     <AULAS tot_au="44">
@@ -285,7 +285,7 @@
       <AULA num_int_au="14" abreviatura="1.5" nombre="1ESOA" />
       <AULA num_int_au="15" abreviatura="1.7" nombre="1ESOB" />
       <AULA num_int_au="16" abreviatura="1.17" nombre="3ESO_BDIVER" />
-      <AULA num_int_au="17" abreviatura="1.11" nombre="Aula Taller Tecnología" />
+      <AULA num_int_au="17" abreviatura="1.11" nombre="Aula Taller Tecnologï¿½a" />
       <AULA num_int_au="18" abreviatura="1.9" nombre="1ESOC" />
       <AULA num_int_au="19" abreviatura="1.13" nombre="1MECA" />
       <AULA num_int_au="20" abreviatura="2.2" nombre="DESDOBLES" />
@@ -304,7 +304,7 @@
       <AULA num_int_au="35" abreviatura="0.7" nombre="2DAM/2DAW" />
       <AULA num_int_au="36" abreviatura="1.15" nombre="3ESOA" />
       <AULA num_int_au="39" abreviatura="2.17" nombre="4ESOC" />
-      <AULA num_int_au="40" abreviatura="2.21" nombre="RELIGIÓN EVANGÉLICA Y VE" />
+      <AULA num_int_au="40" abreviatura="2.21" nombre="RELIGIï¿½N EVANGï¿½LICA Y VE" />
       <AULA num_int_au="42" abreviatura="0.9" nombre="Aula de Dibujo" />
       <AULA num_int_au="43" abreviatura="0.11" nombre="1BACH-A" />
       <AULA num_int_au="44" abreviatura="0.1" nombre="1FPB" />
