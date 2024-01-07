@@ -450,6 +450,30 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
+	/**
+	 * 
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/Teachers", produces = "application/json")
+    public ResponseEntity<?> getProfesores(HttpSession session)
+    {
+		try
+		{	
+			//GET THE ATTRIBUTE CENTRO IN SESSION
+			Centro centro = (Centro) session.getAttribute("storedCentro");
+			//LIST TO SAVE THE TEACHERS
+			List<Profesor> profesores = centro.getDatos().getProfesores().getProfesor();
+			return ResponseEntity.ok().body(profesores);    	
+		}
+		catch (Exception exception)
+		{     	
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+			log.error(error,exception);
+			return ResponseEntity.status(500).body(horariosError);	
+		}
+    }
 
 	/**
 	 * Method getListStudentsAlphabetically
