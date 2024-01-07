@@ -67,6 +67,7 @@ public class RestHandlerHorarios
 		// Empty constructor
 	}
 
+//ENDPOINT 1
 	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = "multipart/form-data")
 	public ResponseEntity<?> sendXmlToObject(@RequestPart(value = "xmlFile", required = true) final MultipartFile file,
 			HttpSession session)
@@ -90,6 +91,7 @@ public class RestHandlerHorarios
 
 	}
 
+	//ENDPOINT 2
 	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = "multipart/form-data")
 	public ResponseEntity<?> sendCsvTo(@RequestPart(value = "csvFile", required = true) final MultipartFile csvFile,
 			HttpSession session)
@@ -113,23 +115,79 @@ public class RestHandlerHorarios
 		}
 	}
 
-//	@RequestMapping(method = RequestMethod.GET, value = "/get/sortstudents")
-//	public ResponseEntity<?> getListStudentsAlphabetically()
-//	{
-//		try
-//		{
-//			Collections.sort(this.listaEstudiantes);
-//			
-//			return ResponseEntity.ok().body(this.listaEstudiantes);
-//		} 
-//		catch (Exception exception)
-//		{
-//			String message = "Server Error";
-//			logger.error(message, exception);
-//			return ResponseEntity.status(500).body(exception.getMessage());
-//		}
-//	}
+	//ENDPOINT 3
+	@RequestMapping(method = RequestMethod.GET, value = "/get/courses")
+	public ResponseEntity<?> getListCourses(HttpSession httpSession)
+	{
+		try
+		{
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			
+			return ResponseEntity.ok().body(infoCentro.getDatos().getGrupos());
+		} 
+		catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+	}
+	
+	//ENDPOINT 6
+	@RequestMapping(method = RequestMethod.GET, value = "/get/sortstudents")
+	public ResponseEntity<?> getListStudentsAlphabetically(HttpSession httpSession)
+	{
+		try
+		{
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			Collections.sort(infoCentro.getDatos().getAlumnos());
+			
+			return ResponseEntity.ok().body(infoCentro.getDatos().getAlumnos());
+		} 
+		catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+	}
+	
+	//ENDPOINT 7
+	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom")
+	public ResponseEntity<?> getClassroomTeacher(HttpSession httpSession,
+			@RequestHeader(value = "name", required = true) String name,
+			@RequestHeader(value = "lastName", required = true) String lastName)
+	{
+		try {
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			
+			Profesor profesor = this.getProfesor(name, lastName, infoCentro);
+			
+			TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
+			
+			if (tramoHorario != null)
+			{
+				
+				Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosProfesores().get(profesor));
+				
+				Map<String, String> response = new TreeMap<String, String>();
+				
+				response.put("aula", actividad.getAula().getNombre());
+				return ResponseEntity.ok().body(response);
+			}
+			
+			return ResponseEntity.ok().build();
+		}catch (HorarioError horarioError)
+		{
 
+			return ResponseEntity.status(400).body(horarioError);
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
+
+	//ENDPOINT 4
 	@RequestMapping(method = RequestMethod.GET, value = " /get/roles")
 	public ResponseEntity<?> getRoles(@RequestHeader(required = true) String email, HttpSession httpSession)
 	{
@@ -164,6 +222,7 @@ public class RestHandlerHorarios
 
 	}
 
+	//ENDPOINT 5
 	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers", produces = "application/json")
 	public ResponseEntity<?> getTeachers(
 
@@ -230,7 +289,7 @@ public class RestHandlerHorarios
 			throws HorarioError
 	{
 
-		TramoHorario tramo = new HorariosUtils(info).getTramo(hour, day);
+		TramoHorario tramo = new HorariosUtils().getTramo(hour, day, info);
 		for (Actividad actividad : listActividades)
 		{
 			if (actividad.getTramo().equals(tramo))
@@ -249,40 +308,75 @@ public class RestHandlerHorarios
 			HttpSession httpSession
 			)
 	{
-		InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
-		return ResponseEntity.ok();
+		try {
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			
+			Grupo grupo = this.getGrupo(courseName, infoCentro);
+			
+			TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
+			
+			if (tramoHorario != null)
+			{
+				
+				Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosGrupos().get(grupo));
+				
+				Map<String, String> response = new TreeMap<String, String>();
+				
+				response.put("profesor", actividad.getProfesor().getNombre());
+				response.put("aula", actividad.getAula().getNombre());
+				return ResponseEntity.ok().body(response);
+			}
+			
+			return ResponseEntity.ok().build();
+		}catch (HorarioError horarioError)
+		{
+
+			return ResponseEntity.status(400).body(horarioError);
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
 	}
 	
 	
 	//endpoint 10 MMM
 		@RequestMapping(method = RequestMethod.GET, value = "/get/ClassroomCourse", produces = "application/json")
-		public ResponseEntity<?> getClassroomCourse(
-				@RequestHeader(value = "course", required = true) String course,
-				HttpSession httpSession
-				)
-		{
-			try
-			{
-
+	public ResponseEntity<?> getClassroomCourse(
+			@RequestHeader(value = "course", required = true) String course,
+			HttpSession httpSession
+			)
+	{
+			try {
 				InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
 				
-				return ResponseEntity.ok(this.getClassroomCourse(course).getNombre());
-			} 
-			catch (Exception exception)
+				Grupo grupo = this.getGrupo(course, infoCentro);
+				
+				TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
+				
+				if (tramoHorario != null)
+				{
+					
+					Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosGrupos().get(grupo));
+					
+					Map<String, String> response = new TreeMap<String, String>();
+					
+					response.put("aula", actividad.getAula().getNombre());
+					
+					return ResponseEntity.ok().body(response);
+				}
+				
+				return ResponseEntity.ok().build();
+			}catch (HorarioError horarioError)
 			{
-				String message = "Server Error";
-				logger.error(message, exception);
-				return ResponseEntity.status(500).body(exception.getMessage());
-			}
-		}
-		
-		private Aula getClassroom(InfoCentro info, String course) throws HorarioError
-		{
-			List<Actividad> listActiviadades = info.getDatos().getAulas();
-			return this.getActividadByGrupo(listActiviadades,course, info).getAula();
-			throw new HorarioError(1, "no se encuentra ninguna profesor con estas caracteristicas", null);
-		}
 
+				return ResponseEntity.status(400).body(horarioError);
+			} catch (Exception e)
+			{
+				return ResponseEntity.status(500).body(e.getMessage());
+			}
+	}
+	
+	//ENDPOINT 11
 	@RequestMapping(method = RequestMethod.GET, value = "/get/hours", produces = "application/json")
 	public ResponseEntity<?> getListHours(HttpSession httpSession)
 	{
@@ -291,7 +385,7 @@ public class RestHandlerHorarios
 			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
 			// Para pasar los valores de un mapa a lista -> List<Integer> valuesAsList = new
 			// ArrayList<>(map.values());
-			List<TramoHorario> tramosList = infoCentro.getDatos().getTramos();
+			List<TramoHorario> tramosList = new ArrayList<>(infoCentro.getDatos().getTramos().values());
 			List<Hour> hourList = new ArrayList<Hour>();
 			for (int i = 0 ; i < tramosList.size() ; i++)
 			{
@@ -354,36 +448,40 @@ public class RestHandlerHorarios
 		}
 	}
 
-//	@RequestMapping(method = RequestMethod.GET ,value = "/get/course/sort/students" ,produces="application/json")
-//	public ResponseEntity<?> getListAlumCourseFirstSurname(
-//				@RequestHeader(value = "course", required = true) String course
-//			) 
-//    {
-//		try 
-//        {
-//			for(int i = 0; i< listaEstudiantes.size(); i++)
-//			{
-//				if(course.equals(listaEstudiantes.get(i).getCourse().getName())) 
-//				{
-//					listaEstudiantesCurso.add(listaEstudiantes.get(i));
-//					Collections.sort(this.listaEstudiantesCurso);
-//					
-//				}
-//			}
-//			
-//			
-//		    return ResponseEntity.ok().body(this.listaEstudiantesCurso);
-//        } 
-//        catch (Exception exception)
-//		{
-//			String message = "Server Error";
-//			logger.error(message, exception);
-//			return ResponseEntity.status(500).body(exception.getMessage());
-//		}
-//    }
+	//ENDPOINT 12
+	@RequestMapping(method = RequestMethod.GET ,value = "/get/course/sort/students" ,produces="application/json")
+	public ResponseEntity<?> getListAlumCourseFirstSurname(
+				@RequestHeader(value = "course", required = true) String course,
+				HttpSession httpSession
+			) 
+    {
+		try 
+        {
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			List<Student> listaEstudiantes = new ArrayList<Student>();
+			for(int i = 0; i< infoCentro.getDatos().getAlumnos().size(); i++)
+			{
+				if(course.equals(infoCentro.getDatos().getAlumnos().get(i).getCourse())) 
+				{
+					listaEstudiantes.add(infoCentro.getDatos().getAlumnos().get(i));
+				}
+			}
+			
+			Collections.sort(listaEstudiantes);
+			
+		    return ResponseEntity.ok().body(listaEstudiantes);
+        } 
+        catch (Exception exception)
+		{
+			String message = "Server Error";
+			logger.error(message, exception);
+			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+    }
 
+	//ENDPOINT 13
 	@RequestMapping(method = RequestMethod.GET, value = "/get/points", produces = "application/json")
-	public ResponseEntity<?> getListPointsCoexistence()
+	public ResponseEntity<?> getListPointsCoexistence(HttpSession httpSession)
 	{
 		try
 		{
@@ -393,6 +491,127 @@ public class RestHandlerHorarios
 			String message = "Server Error";
 			logger.error(message, exception);
 			return ResponseEntity.status(500).body(exception.getMessage());
+		}
+	}
+
+	//ENDPOINT 14
+	@RequestMapping(method = RequestMethod.GET, value = "/get/namelastname/reflexion", produces = "application/json")
+	public ResponseEntity<?> getFirstNameSurname(HttpSession httpSession)
+	{
+		try {
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			
+			List<Profesor> profesores = new ArrayList<>(infoCentro.getDatos().getProfesores().values());
+			
+			TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
+			
+			if (tramoHorario != null)
+			{
+				
+				Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosProfesores().get(profesores));
+				
+				Map<String, String> response = new TreeMap<String, String>();
+				
+				String nombreProfesor = "";
+				for(int i = 0; i < profesores.size(); i++) 
+				{
+					if(profesores.get(i).getId() == actividad.getAula().getId()) 
+					{
+						nombreProfesor = profesores.get(i).getNombre();
+					}
+				}
+				
+				response.put("nombreProfesor", nombreProfesor);
+				return ResponseEntity.ok().body(response);
+			}
+			
+			return ResponseEntity.ok().build();
+		}catch (HorarioError horarioError)
+		{
+
+			return ResponseEntity.status(400).body(horarioError);
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
+	
+	//ENDPOINT 15
+	@RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor", produces = "application/json")
+	public ResponseEntity<?> getLocationStudentTutor(HttpSession httpSession,
+			@RequestHeader(value = "name", required = true) String name,
+			@RequestHeader(value = "lastName", required = true) String lastName)
+	{
+		try {
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			
+			Student student = this.getStudent(name, lastName, infoCentro);
+			
+			Grupo grupo = this.getGrupo(student.getCourse(), infoCentro);
+			
+			TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
+			
+			if (tramoHorario != null)
+			{
+				
+				Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosGrupos().get(grupo));
+				
+				Map<String, String> response = new TreeMap<String, String>();
+				
+				response.put("correoProfesor", actividad.getProfesor().getCuentaDeCorreo());
+				response.put("curso", actividad.getAula().getNombre());
+				
+				return ResponseEntity.ok().body(response);
+			}
+			
+			return ResponseEntity.ok().build();
+		}catch (HorarioError horarioError)
+		{
+
+			return ResponseEntity.status(400).body(horarioError);
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
+	
+	//ENDPOINT 16
+	@RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor/course", produces = "application/json")
+	public ResponseEntity<?> getLocationStudentTutorCourse(HttpSession httpSession,
+			@RequestHeader(value = "course", required = true) String course,
+			@RequestHeader(value = "name", required = true) String name,
+			@RequestHeader(value = "lastName", required = true) String lastName)
+	{
+		try {
+			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+			
+			Student student = this.getStudent(name, lastName, infoCentro);
+			
+			Grupo grupo = this.getGrupo(student.getCourse(), infoCentro);
+			
+			TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
+			
+			if (tramoHorario != null)
+			{
+				
+				Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosGrupos().get(grupo));
+				
+				Map<String, String> response = new TreeMap<String, String>();
+				
+				response.put("correoProfesor", actividad.getProfesor().getCuentaDeCorreo());
+				response.put("curso", actividad.getAula().getNombre());
+				
+				return ResponseEntity.ok().body(response);
+			}
+			
+			return ResponseEntity.ok().build();
+		}catch (HorarioError horarioError)
+		{
+
+			return ResponseEntity.status(400).body(horarioError);
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 	}
 
