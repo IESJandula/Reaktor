@@ -25,7 +25,7 @@ public class ParseAlumnos
 
 	public List<Student> parse()
 	{
-		File file = new File("C:\\Users\\Juan\\Downloads\\ALUMNADO.csv");
+		File file = new File(this.path);
 		
 		Scanner scanner = null;
 
