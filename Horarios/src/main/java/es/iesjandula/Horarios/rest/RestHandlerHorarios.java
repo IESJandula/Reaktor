@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import es.iesjandula.Horarios.exceptions.HorarioError;
 import es.iesjandula.Horarios.models.AttitudePoints;
 import es.iesjandula.Horarios.models.Hour;
@@ -185,13 +187,11 @@ public class RestHandlerHorarios
 		try
 		{
 			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
-			// Para pasar los valoresde un mapa a lista ->List<Integer> valuesAsList = new
-			// ArrayList<>(map.values());
 			List<Profesor> profesoresList = new ArrayList<>(infoCentro.getDatos().getProfesores().values());
-			return ResponseEntity
-					.ok(this.getClassroom(name, lastName, hora, profesoresList, infoCentro, day).getAbreviatura());
+			return ResponseEntity.ok(this.getClassroom(name, lastName, hora, profesoresList, infoCentro, day).getAbreviatura());
 
-		} catch (Exception exception)
+		} 
+		catch (Exception exception)
 		{
 			String message = "Server Error";
 			logger.error(message, exception);
@@ -233,6 +233,47 @@ public class RestHandlerHorarios
 
 		throw new HorarioError(3, "no se encontro la actividad concordante con esa hora", null);
 	}
+	
+	//endpoint 9 MMM
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teachersubject", produces = "application/json")
+	public ResponseEntity<?> getTeacherSubject(
+			@RequestHeader(required = true) String courseName,
+			HttpSession httpSession
+			)
+	{
+		InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+		return ResponseEntity.ok();
+	}
+	
+	
+	//endpoint 10 MMM
+		@RequestMapping(method = RequestMethod.GET, value = "/get/ClassroomCourse", produces = "application/json")
+		public ResponseEntity<?> getClassroomCourse(
+				@RequestHeader(value = "course", required = true) String course,
+				HttpSession httpSession
+				)
+		{
+			try
+			{
+
+				InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
+				
+				return ResponseEntity.ok(this.getClassroomCourse(course).getNombre());
+			} 
+			catch (Exception exception)
+			{
+				String message = "Server Error";
+				logger.error(message, exception);
+				return ResponseEntity.status(500).body(exception.getMessage());
+			}
+		}
+		
+		private Aula getClassroom(InfoCentro info, String course) throws HorarioError
+		{
+			List<Actividad> listActiviadades = info.getDatos().getAulas();
+			return this.getActividadByGrupo(listActiviadades,course, info).getAula();
+			throw new HorarioError(1, "no se encuentra ninguna profesor con estas caracteristicas", null);
+		}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/get/hours", produces = "application/json")
 	public ResponseEntity<?> getListHours(HttpSession httpSession)
@@ -347,28 +388,7 @@ public class RestHandlerHorarios
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/get/ClassroomCourse", produces = "application/json")
-	public ResponseEntity<?> getClassroomCourse(@RequestHeader(value = "course", required = true) String course)
-	{
-		try
-		{
-
-			for (int i = 0 ; i < listaCursos.size() ; i++)
-			{
-				if (course.equals(listaCursos.get(i).getName()))
-				{
-					listaCursosFinal.add(listaCursos.get(i));
-
-				}
-			}
-			return ResponseEntity.ok().body(this.listaCursosFinal);
-		} catch (Exception exception)
-		{
-			String message = "Server Error";
-			logger.error(message, exception);
-			return ResponseEntity.status(500).body(exception.getMessage());
-		}
-	}
+	
 
 	@RequestMapping(method = RequestMethod.GET, value = "/get/horario/teacher/pdf", produces = "application/json")
 	public ResponseEntity<?> getTeacherPdf(@RequestHeader(required = true) String name,
