@@ -433,6 +433,25 @@ public class ReaktorServerRest
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
 	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/get/screenshot/client")
+	public ResponseEntity<?> getScreenshotClient(@RequestHeader(required = true) String serialNumber,
+	@RequestBody(required = true) MultipartFile file)
+	{
+		try
+		{
+
+            FileOutputStream fos = new FileOutputStream(".\\Screenshot\\"+serialNumber+"\\"+file.getOriginalFilename());
+            
+            fos.write(file.getBytes());
+            fos.close();
+			
+			return ResponseEntity.ok().build();
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/screenshot")
 	public ResponseEntity<?> getScreenshot(@RequestHeader(required = false) String serialNumber)

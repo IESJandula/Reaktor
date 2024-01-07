@@ -51,6 +51,7 @@ public class PendingActions
 				case "uninstall" -> uninstallApp(action.getInfo());
 				case "install" -> installApp(null);
 				case "configWifi" -> configWifi(null,null,null,null, null);
+				case "screenshot" -> screenshot();
 				default -> System.out.println("Esto esta sin implementar makina");
 				}
 			}
@@ -303,6 +304,35 @@ public class PendingActions
 			log.warn(e.getMessage());
 			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
 			e.printStackTrace();
+		}
+	}
+	
+	private void screenshot() 
+	{
+		CloseableHttpClient httpClient = null;
+		CloseableHttpResponse response = null;
+		try
+		{
+			httpClient = HttpClients.createDefault();
+			String url = reaktorServerUrl + "/computers/get/screenshot/client";
+			HttpGet request = new HttpGet(url);
+			request.addHeader("serialNumber", "003");
+			
+			response = httpClient.execute(request);
+
+		} catch (ClientProtocolException e)
+		{
+			log.warn(e.getMessage());
+			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			log.warn(e.getMessage());
+			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
+			e.printStackTrace();
+		} finally
+		{
+			this.close(httpClient, response);
 		}
 	}
 
