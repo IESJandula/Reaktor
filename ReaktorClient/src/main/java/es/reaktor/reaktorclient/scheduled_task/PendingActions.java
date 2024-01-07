@@ -5,11 +5,9 @@ import es.reaktor.models.Action;
 import es.reaktor.models.ComputerError;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -19,7 +17,6 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
@@ -42,6 +39,7 @@ public class PendingActions
 			Action action = new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), Action.class);
 			if (action.getActionName() != null) {
 				switch (action.getActionName()) {
+				case "reset" -> reset();
 				case "shutdown" -> shutdown();
 				default -> System.out.println("Esto esta sin implementar makina");
 				}
@@ -58,7 +56,7 @@ public class PendingActions
 			this.close(httpClient, response);
 		}
 	}
-	
+
 	private void openWeb(String url) throws ComputerError {
 		
 		try
@@ -127,8 +125,6 @@ public class PendingActions
 		}
 	}
   
-	private void uninstallApp(String appName)
-	{
 
 	private void uninstallApp(String appName) {
 		Scanner scanner = null;
@@ -184,12 +180,25 @@ public class PendingActions
 		} catch (IOException | InterruptedException e)
 		{
 			e.printStackTrace();
-		} finally
-		{
-			if (scanner != null)
-			{
+		} finally {
+			if (scanner != null) {
 				scanner.close();
 			}
+		}
+	}
+  
+	private void reset() {
+		Scanner scanner = null;
+		try {
+			Process proceso = new ProcessBuilder("cmd.exe", "/c", "shutdown /r /t 60").start();
+			int resultado = proceso.waitFor();
+			if (resultado == 0) {
+				log.info("El ordenador se reiniciara en 60 segundos");
+			} else {
+				System.out.println("Error al reiniciar. Código de salida: " + resultado);
+      }
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -207,6 +216,7 @@ public class PendingActions
 			e.printStackTrace();
 		}
 	}
+
 	private void close(CloseableHttpClient httpClient, CloseableHttpResponse response) {
 		try {
 			response.close();
@@ -223,4 +233,7 @@ public class PendingActions
 			e.printStackTrace();
 		}
 	}
+
+}
+
 }
