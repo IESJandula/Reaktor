@@ -644,6 +644,54 @@ public class ReaktorServerRest
 		}
 	}
 	
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/web/screenshot", produces = "application/zip")
+	public ResponseEntity<?> getComputersScreens(@RequestHeader(required = true) String serialNumber)
+	{
+		try
+		{
+
+			
+			String archivoZip = "archivos.zip";
+
+            // Buffer para la lectura y escritura
+            byte[] buffer = new byte[1024];
+
+            FileOutputStream fos = new FileOutputStream(archivoZip);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+
+            
+            ZipEntry ze = new ZipEntry(".\\Screenshots\\"+serialNumber);
+            zos.putNextEntry(ze);
+
+            FileInputStream in = new FileInputStream(".\\Screenshots\\"+serialNumber);
+
+            int len;
+            while ((len = in.read(buffer)) > 0)
+            {
+                zos.write(buffer, 0, len);
+            }
+
+            in.close();
+            zos.closeEntry();
+            
+            // Cerrar el flujo de salida
+            zos.close();
+
+            File file = new File(archivoZip);
+
+            byte[] bytesArray = Files.readAllBytes(file.toPath());
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set("Content-Disposition", "attachment; filename=" + file.getName());
+
+            return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+			
+		
+		}catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/computer/edit", consumes = "application/json")
 	public ResponseEntity<?> updateComputer(@RequestHeader(required = true) String serialNumber,
 			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
