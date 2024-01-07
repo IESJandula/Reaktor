@@ -367,7 +367,7 @@ public interface ICSVParser
 				campos[1] = campos[1].substring(1);
 				String [] apellidos = campos[0].split(" ");
 				apellidos[1] = apellidos[1].substring(0);
-				String correo = campos[1].substring(0,0) + apellidos[0].substring(0, 2) + apellidos[1].substring(0, 2) + "@g.educaand.es";
+				String correo = campos[1].substring(0,1) + apellidos[0].substring(0, 3) + apellidos[1].substring(0, 3) + "@g.educaand.es";
 				correo = correo.toLowerCase();
 				int numTele = (int)(Math.random()*999999999+100000000);
 				String telefono = String.valueOf(numTele);

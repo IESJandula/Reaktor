@@ -1,7 +1,6 @@
 package es.iesjandula.horarios.rest;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ import es.iesjandula.horarios.constants.Constantes;
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.Puntos;
+import es.iesjandula.horarios.models.TramoBathroom;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 import es.iesjandula.horarios.models.xml.Aula;
 import es.iesjandula.horarios.models.xml.Centro;
@@ -48,6 +48,8 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	private List<Alumno> alumnos;
 	/**Lista de puntos cargados en constantes */
 	private List<Puntos> puntos;
+	/**Lista de tramos para horario de bathroom */
+	private List<TramoBathroom> tramoBathroom;
 	/**
 	 * Constructor por defecto
 	 */
@@ -58,6 +60,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		this.modelos = new LinkedList<ModelCSV>();
 		this.alumnos = new LinkedList<Alumno>();
 		this.puntos = new LinkedList<Puntos>();
+		this.tramoBathroom = new LinkedList<TramoBathroom>();
 	}
 	/**
 	 * Endpoint que recibe un xml como parametro con el que se recogen todos los datos de un centro
@@ -153,6 +156,25 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		{
 			log.error("Error interno de servidor",ex);
 			return ResponseEntity.status(500).body("Error interno de servidor");
+		}
+	}
+	/**
+	 * Endpoint que carga la lista de aulas del xml en un json 
+	 * @return json de las aulas con clave nombre, aula y valor el nombre del aula y el numero de aula
+	 * @author Pablo Ruiz Canovas
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/get/cursos")
+	public ResponseEntity<?> getCourses()
+	{
+		try
+		{
+			List<Map<String,String>> listaCursos = this.cargarCursos(centro);
+			return ResponseEntity.ok().body(listaCursos);
+		}
+		catch(Exception ex)
+		{
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
 		}
 	}
 	/**
@@ -469,17 +491,27 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
 		}
     }
-	
+	/**
+	 * Endpoint que devuelve el telefono y el email de un profesor pasandole un nombre y apellido del alumno
+	 * @param nombre
+	 * @param apellido
+	 * @return ok mas los datos del profesor, 404 si los datos estan mal introducidos o 500 si hubo un error de servidor
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/loc-alumno")
 	public ResponseEntity<?> getAlumnoLocation(
 			@RequestHeader(value="nombre",required = true)String nombre,
-			@RequestHeader(value="apellido",required = true)String apellido
+			@RequestHeader(value="apellido",required = true)String apellido,
+			@RequestHeader(value="curso",required = false)String curso
 			)
 	{
 		try
 		{
 			Alumno alumno = this.checkAlumno(nombre, apellido, alumnos);
-			String resultado = this.nombreProfesorAsignatura(alumno.getCurso(), centro);
+			//Comprobamos que el curso se ha pasado como parametro
+			String datosCurso = curso!=null ? curso : alumno.getCurso();
+			//Obtenemos los datos completos del profesor
+			String resultado = this.nombreProfesorAsignatura(datosCurso, centro);
+			//Obtenemos los datos necesarios del profesor
 			resultado = this.getDatosProfesor(resultado,this.modelos);
 			return ResponseEntity.ok().body(resultado);
 		}
@@ -494,7 +526,10 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body("Error de servidor "+ex);
 		}
 	}
-	
+	/**
+	 * Enspoint que carga los profesores en un archivo csv con atributos adicionales
+	 * @return ok si se ha cargado el fichero correctamente
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/modelos")
 	public ResponseEntity<?> getModelo()
 	{
@@ -514,6 +549,99 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body("Error de servidor "+ex);
 		}
 	}
+	/**
+	 * Endpoint que guarda el tramo de inicio de un alumno para ir al servicio
+	 * @param nombre
+	 * @param apellido
+	 * @param curso
+	 * @return ok si se han introducido bien todos los parametros, 404 si estan mal introducidos o 500 si huvo un error de servidor
+	 * @author Pablo Ruiz Canovas
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/send/alumno-bathroom-ida")
+	public ResponseEntity<?> sendAlumnoBathroom(
+			@RequestHeader(value = "nombre",required = true)String nombre,
+			@RequestHeader(value = "apellido",required = true)String apellido,
+			@RequestHeader(value = "curso",required = true)String curso
+			)
+	{
+		try
+		{
+			//Comprobamos que el alumno exista
+			Alumno alumno = this.checkAlumno(nombre, apellido, alumnos);
+			//Comprobamos que los cursos coincidan
+			if(!alumno.getCurso().equals(curso))
+			{
+				throw new HorarioError(21,"El curso no coincide con el curso del alumno");
+			}
+			//Cogemos la hora inicial
+			String tramoInicial = this.getActualHour();
+			//Creamos el tramo con solo la hora inicial
+			TramoBathroom tramo = new TramoBathroom(alumno, tramoInicial, "",this.getActualDay());
+			//Aumentamos el numero de veces que ha ido al servicio
+			int numBaño = alumno.getNumBaño();
+			numBaño++;
+			alumno.setNumBaño(numBaño);
+			//Actualizamos el alumno y guardamos el tramo
+			alumnos = this.reemplazarAlumno(alumno, alumnos);
+			this.tramoBathroom.add(tramo);
+			return ResponseEntity.ok().body("Tramo del alumno "+alumno.getNombre()+" "+alumno.getApellido()+" actualizado");
+		}
+		catch(HorarioError ex)
+		{
+			log.error("Error al actualizar el tramo",ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
+		}
+	}
+	/**
+	 * Endpoint que apunta la hora de vuelta de un alumno que ha ido al servicio
+	 * @param nombre
+	 * @param apellido
+	 * @param curso
+	 * @return ok si se han introducido bien todos los parametros, 404 si estan mal introducidos o 500 si huvo un error de servidor 
+	 * @author Pablo Ruiz Canovas
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/send/alumno-bathroom-vuelta")
+	public ResponseEntity<?>sendAlumnoBathroomBack(
+			@RequestHeader(value = "nombre",required = true)String nombre,
+			@RequestHeader(value = "apellido",required = true)String apellido,
+			@RequestHeader(value = "curso",required = true)String curso
+			)
+	{
+		try
+		{
+			//Comprobamos que el alumno exista
+			Alumno alumno = this.checkAlumno(nombre, apellido, this.alumnos);
+			//Comprobamos que los cursos coincidan
+			if(!alumno.getCurso().equals(curso))
+			{
+				throw new HorarioError(21,"El curso no coincide con el alumno");
+			}
+			//Cogemos la hora de vuelta
+			String tramoFinal = this.getActualHour();
+			//Buscamos el tramo
+			TramoBathroom tramo = this.buscarTramo(alumno, this.tramoBathroom);
+			//Le añadimos la hora final y lo reemplazamos en la lista
+			tramo.setTramoFinal(tramoFinal);
+			this.tramoBathroom = this.reemplazarTramo(tramo, tramoBathroom);
+			return ResponseEntity.ok().body("Tramo del alumno "+alumno.getNombre()+" "+alumno.getApellido()+" actualizado");
+		}
+		catch(HorarioError ex)
+		{
+			log.error("Error al actualizar el tramo",ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
+		}
+	}
+	
 	
 	
 		

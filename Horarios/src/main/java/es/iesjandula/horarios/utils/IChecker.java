@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
+import es.iesjandula.horarios.models.TramoBathroom;
 import es.iesjandula.horarios.models.csv.ModelCSV;
 import es.iesjandula.horarios.models.xml.Actividad;
 import es.iesjandula.horarios.models.xml.Asignatura;
@@ -25,7 +27,7 @@ import es.iesjandula.horarios.models.xml.Tramo;
 
 /**
  * 
- * @author Pablo Ruiz Canovas, Javier Martinez Megias
+ * @author Pablo Ruiz Canovas, Javier Martinez Megias, Juan Alberto Jurado Valdivia
  *
  */
 public interface IChecker 
@@ -88,6 +90,30 @@ public interface IChecker
 			count++;
 		}
 		return roles;
+	}
+	/**
+	 * Metodo que carga las aulas del xml en una lista de mapas
+	 * @param centro
+	 * @return lista de mapas con clave nombre y aula y el valor el nombre del curso y el numero de aula
+	 * @author Juan Alberto Jurado Valdivia
+	 */
+	public default List<Map<String,String>> cargarCursos(Centro centro)
+	{
+		List<Map<String,String>> listaCursos = new LinkedList<Map<String,String>>();
+		Map<String,String> mapa = new HashMap<String,String>();
+		//Obtenemos la lista de aulas
+		List<Aula> aulas = centro.getDatos().getAula();
+		//Iteramos las aulas
+		for(Aula a:aulas)
+		{
+			//Introducimos los datos
+			mapa.put("nombre", a.getNombre());
+			mapa.put("aula", a.getAbreviatura());
+			listaCursos.add(mapa);
+			//Nos cargamos el mapa para guardar nuevos datos sin alterar la lista
+			mapa = new HashMap<String,String>();
+		}
+		return listaCursos;	
 	}
 	/**
 	 * Metodo que carga los alumnos de una lista de java a un array para posteriormente ordenarlos
@@ -206,7 +232,7 @@ public interface IChecker
 	 * @return la hora y minutos actuales 
 	 * @author Javier Martinez Megias
 	 */
-	private String getActualHour()
+	public default String getActualHour()
 	{
 		
 		LocalDateTime locaDate = LocalDateTime.now();
@@ -214,6 +240,15 @@ public interface IChecker
 		int minutes = locaDate.getMinute();
 		
 		return  hours  +":"+ minutes ;
+	}
+	/**
+	 * Metodo 
+	 * @return
+	 */
+	public default String getActualDay()
+	{
+		LocalDate date = LocalDate.now();
+		return date.getDayOfMonth()+"/"+date.getMonthValue()+"/"+date.getYear();
 	}
 	
 	public default void checkNameSurnameDay(String name,String surname,int dia,  List<Profesor> listaProfesores) throws HorarioError
@@ -636,4 +671,78 @@ public interface IChecker
 		return datosProfe;
 		
 	}
+	/**
+	 * Metodo que reemplaza un alumno en la lista de alumnos
+	 * @param alumno
+	 * @param alumnos
+	 * @return lista de alumnos actualizada
+	 * @author Pablo Ruiz Canovas
+	 */
+	public default List<Alumno> reemplazarAlumno(Alumno alumno,List<Alumno> alumnos) throws HorarioError
+	{
+		int index = 0;
+		while(index<alumnos.size())
+		{
+			Alumno a = alumnos.get(index);
+			if(a.getDni().equals(alumno.getDni()) && a.getNombre().equals(alumno.getNombre()) && a.getApellido().equals(alumno.getApellido()))
+			{
+				alumnos.remove(index);
+				alumnos.add(alumno);
+				break;
+			}
+			index++;
+		}
+		return alumnos;
+	}
+	
+	public default TramoBathroom buscarTramo(Alumno alumno,List<TramoBathroom> tramos) throws HorarioError
+	{
+		if(tramos.isEmpty())
+		{
+			log.error("Lista de tramos vacia");
+			throw new HorarioError(21,"Lista de tramos vacia");
+		}
+		boolean encontrado = false;
+		int index = 0;
+		TramoBathroom t = null;
+		while(index<tramos.size())
+		{
+			t = tramos.get(index);
+			if(t.getAlumno().equals(alumno))
+			{
+				encontrado = true;
+				break;
+			}
+			index++;
+		}
+		if(!encontrado)
+		{
+			log.error("No existe un tramo con este alumno: "+alumno);
+			throw new HorarioError(22,"Tramo con el alumno "+alumno+" no encontrado");
+		}
+		return t;
+	}
+	/**
+	 * Metodo que reemplaza un tramo antiguo por el nuevo actualizado
+	 * @param tramo
+	 * @param tramos
+	 * @return Lista de tramos actualizada
+	 */
+	public default List<TramoBathroom> reemplazarTramo(TramoBathroom tramo,List<TramoBathroom> tramos)
+	{
+		int index = 0;
+		while(index<tramos.size())
+		{
+			TramoBathroom a = tramos.get(index);
+			if(a.getAlumno().equals(tramo.getAlumno()))
+			{
+				tramos.remove(index);
+				tramos.add(tramo);
+				break;
+			}
+			index++;
+		}
+		return tramos;
+	}
+	
 }
