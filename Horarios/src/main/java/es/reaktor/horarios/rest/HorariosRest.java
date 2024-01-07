@@ -455,7 +455,7 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/Teachers", produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers", produces = "application/json")
     public ResponseEntity<?> getProfesores(HttpSession session)
     {
 		try
@@ -1057,45 +1057,6 @@ public class HorariosRest
 	}
 
 	/**
-	 * Method getTeachers
-	 *
-	 * @param session
-	 * @return ResponseEntity
-	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers", produces = "application/json")
-	public ResponseEntity<?> getTeachers(HttpSession session)
-	{
-		try
-		{
-			List<Teacher> teacherList = new ArrayList<>();
-
-			// --- GETTING CSV FROM SESSION ---
-			if ((session.getAttribute("csvInfo") != null) && (session.getAttribute("csvInfo") instanceof List))
-			{
-				// --- CASTING TEACHER LIST ---
-				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
-				return ResponseEntity.ok().body(teacherList);
-			}
-			else
-			{
-				// --- ERROR NO CSV INFO OR EMPTY ON SESSION ---
-				String error = "no csv info";
-				HorariosError horariosError = new HorariosError(400, error, null);
-				log.error(error, horariosError);
-				return ResponseEntity.status(500).body(horariosError);
-			}
-		}
-		catch (Exception exception)
-		{
-			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error, exception);
-			log.error(error, exception);
-			return ResponseEntity.status(500).body(horariosError);
-		}
-
-	}
-
-	/**
 	 * Method getListCourse
 	 *
 	 * @param session
@@ -1348,7 +1309,7 @@ public class HorariosRest
 	 * @param lastname
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/Classroom/tramo", produces = "application/json", consumes = "application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/teacher/get/Classroom/tramo", produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> getClassroomTeacherSchedule(@RequestHeader(required = true) String name,
 			@RequestHeader(required = true) String lastname, @RequestBody(required = true) Tramo profTramo,
 			HttpSession session)
