@@ -1,6 +1,5 @@
 package es.reaktor.reaktor.rest;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,122 +36,107 @@ public class ReaktorMonitoringRest
 	/** Attribute computerList */
 	private List<Computer> computerList = new ArrayList<>(List.of(
 			new Computer("sn123", "and123", "cn123", "windows", "paco", new Location("0.5", 0, "trolley1"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog()),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog()),
 			new Computer("sn1234", "and1234", "cn12344", "windows", "paco", new Location("0.5", 0, "trolley1"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog()),
-			new Computer("sn123434231423423", "and12355", "cn123455", "windows", "paco", new Location("0.7", 0, "trolley2"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog()),
+			new Computer("sn123434231423423", "and12355", "cn123455", "windows", "paco",
+					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(), new CommandLine(),
 					new MonitorizationLog()),
 			new Computer("sn123556", "and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog()),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog()),
 			new Computer("sn123777", "and123777", "cn1234777", "windows", "paco", new Location("0.9", 0, "trolley3"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog())
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog())
 
 	));
 	/** Attribute shutDownComputerList */
-	private List<Computer> shutDownComputerList = new ArrayList<>(List.of(new Computer("sn123556", "and123556",
-			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(),
-			new ArrayList<>(), new CommandLine(), new MonitorizationLog())));
+	private List<Computer> shutDownComputerList = new ArrayList<>(List.of(
+			new Computer("sn123556", "and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog())));
 	/** Attribute restartDownComputerList */
-	private List<Computer> restartDownComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(), new MonitorizationLog())));
+	private List<Computer> restartDownComputerList = new ArrayList<>(List.of(
+			new Computer("sn123556", "and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog())));
 
 	/** Attribute execCommandsComputerList */
-	private List<Computer> execCommandsComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("mkdir .\\carpeta1David")), new MonitorizationLog())));
+	private List<Computer> execCommandsComputerList = new ArrayList<>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+			new CommandLine(List.of("mkdir .\\carpeta1David")), new MonitorizationLog())));
 
 	/** Attribute blockDispositiveComputerList */
 	private List<Computer> blockDispositiveComputerList = new ArrayList<>(
 			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(List.of(new Peripheral("Raton",1,true))), new ArrayList<>(),
-					new CommandLine(), new MonitorizationLog())));
+					new Location("0.7", 0, "trolley2"), new ArrayList<>(List.of(new Peripheral("Raton", 1, true))),
+					new ArrayList<>(), new CommandLine(), new MonitorizationLog())));
 
 	/** Attribute openWebComputerList */
-	private List<Computer> openWebComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("start chrome www.iesjandula.es")), new MonitorizationLog())));
+	private List<Computer> openWebComputerList = new ArrayList<>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+			new CommandLine(List.of("start chrome www.iesjandula.es")), new MonitorizationLog())));
 
 	/** Attribute installAppComputerList */
-	private List<Computer> installAppComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<Software>(List.of(new Software("Notepad++.Notepad++"))),
+	private List<Computer> installAppComputerList = new ArrayList<>(List.of(
+			new Computer("sn123556", "and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"),
+					new ArrayList<>(), new ArrayList<>(List.of(new Software("Notepad++.Notepad++"))),
 					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/** Attribute uninstallAppComputerList */
-	private List<Computer> uninstallAppComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(),new ArrayList<Software>(List.of(new Software("Mozilla.Firefox"))),
+	private List<Computer> uninstallAppComputerList = new ArrayList<>(List.of(
+			new Computer("sn123556", "and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"),
+					new ArrayList<>(), new ArrayList<>(List.of(new Software("Mozilla.Firefox"))),
 					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/** Attribute configurationFileComputerList */
-	private List<Computer> configurationFileComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	private List<Computer> configurationFileComputerList = new ArrayList<>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+			new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/** Attribute updateAndaluciaComputerList */
-	private List<Computer> updateAndaluciaComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	private List<Computer> updateAndaluciaComputerList = new ArrayList<>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+			new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/** Attribute updateSerialNumberComputerList */
-	private List<Computer> updateSerialNumberComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	private List<Computer> updateSerialNumberComputerList = new ArrayList<>(List.of(new Computer("sn123556",
+			"and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(),
+			new ArrayList<>(), new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/** Attribute updateComputerNumberComputerList */
-	private List<Computer> updateComputerNumberComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
-	
+	private List<Computer> updateComputerNumberComputerList = new ArrayList<>(List.of(new Computer("sn123556",
+			"and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(),
+			new ArrayList<>(), new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+
 	/** Attribute screenshotOrderComputerList */
-	private List<Computer> screenshotOrderComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	private List<Computer> screenshotOrderComputerList = new ArrayList<>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+			new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 	/** Attribute statusComputerList */
-	private List<Computer> statusComputerList = new ArrayList<>(
-			List.of(new Computer("sn123556", "and123556", "cn1234556", "windows", "paco",
-					new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
-					new CommandLine(List.of("start chrome")), new MonitorizationLog())));
+	private List<Computer> statusComputerList = new ArrayList<>(List.of(new Computer("sn123556", "and123556",
+			"cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"), new ArrayList<>(), new ArrayList<>(),
+			new CommandLine(List.of("start chrome")), new MonitorizationLog())));
 
 	/**
-	 * 
-	 * Method getCommandLine
+	 * Method sendStatusComputer
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/status", consumes = "application/json")
-	public ResponseEntity<?> sendStatusComputer(
-			@RequestHeader(required = true) String serialNumber,
-			@RequestBody(required = true) List<Status> statusList
-			)
+	public ResponseEntity<?> sendStatusComputer(@RequestHeader(required = true) String serialNumber,
+			@RequestBody(required = true) List<Status> statusList)
 	{
 		try
 		{
 			log.info(serialNumber);
 			log.info(statusList.toString());
-			
-			if(!isUsable(serialNumber))
+
+			if (!this.isUsable(serialNumber))
 			{
 				String error = "Any Paramater Is Empty or Blank";
 				ComputerError computerError = new ComputerError(404, error, null);
 				return ResponseEntity.status(404).body(computerError.toMap());
 			}
-			else if(!chekIfSerialNumberExistBoolean(serialNumber)) 
+			else if (!this.chekIfSerialNumberExistBoolean(serialNumber))
 			{
 				String error = "The serial number dont exist";
 				ComputerError computerError = new ComputerError(404, error, null);
@@ -162,8 +146,7 @@ public class ReaktorMonitoringRest
 			{
 				return ResponseEntity.ok().body("OK");
 			}
-			
-			
+
 		}
 		catch (Exception exception)
 		{
@@ -175,6 +158,7 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Getting the files , the computer send the serialNumber to identify
+	 *
 	 * @param serialNumber, the serial number of the computer
 	 * @return ResponseEntity
 	 */
@@ -212,6 +196,7 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Getting the screenshot order , the compuer send the serialNumber to identify
+	 *
 	 * @param serialNumber, the serial number of the computer
 	 * @return ResponseEntity
 	 */
@@ -230,9 +215,9 @@ public class ReaktorMonitoringRest
 					ComputerError computerError = new ComputerError(404, error, null);
 					return ResponseEntity.status(404).body(computerError.toMap());
 				}
-				else 
+				else
 				{
-					screenshotOrderComputerList.remove(this.chekIfSerialNumberExist(serialNumber));
+					this.screenshotOrderComputerList.remove(this.chekIfSerialNumberExist(serialNumber));
 					return ResponseEntity.ok("OK");
 				}
 			}
@@ -253,6 +238,7 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Getting the files , the computer send the serialNumber to identify
+	 *
 	 * @param serialNumber, the serial number of the computer
 	 * @return ResponseEntity
 	 */
@@ -281,6 +267,7 @@ public class ReaktorMonitoringRest
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
 	}
+
 	/**
 	 * this Method check if the serialNumber is blank or empty
 	 *
@@ -315,7 +302,7 @@ public class ReaktorMonitoringRest
 		}
 		return computer;
 	}
-	
+
 	private boolean chekIfSerialNumberExistBoolean(String serialNumber)
 	{
 		boolean exist = false;
@@ -328,15 +315,16 @@ public class ReaktorMonitoringRest
 		}
 		return exist;
 	}
-	
+
 	/**
 	 * this method check the order
+	 *
 	 * @param serialNumber
 	 * @return boolean
 	 */
 	private boolean chekOrder(String serialNumber)
 	{
-		
+
 		for (Computer x : this.screenshotOrderComputerList)
 		{
 			if (x.getSerialNumber().equals(serialNumber))
@@ -359,8 +347,7 @@ public class ReaktorMonitoringRest
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> sendFullComputer(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String andaluciaId,
-			@RequestHeader(required = false) String computerNumber,
+			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
 			@RequestBody(required = true) Computer computerInstance)
 	{
 		try
@@ -451,31 +438,31 @@ public class ReaktorMonitoringRest
 				{
 					// --- SCANNING TASKS ---
 					// --- SHUTDOWN ---
-					this.sendStatusComputerShutdown(serialNumber, statusList,actionsToDo);
+					this.sendStatusComputerShutdown(serialNumber, statusList, actionsToDo);
 					// --- RESTART ---
-					this.sendStatusComputerRestart(serialNumber, statusList,actionsToDo);
+					this.sendStatusComputerRestart(serialNumber, statusList, actionsToDo);
 					// --- COMMAND EXECUTE ---
-					this.sendStatusComputerCommandExecute(serialNumber, statusList,actionsToDo);
+					this.sendStatusComputerCommandExecute(serialNumber, statusList, actionsToDo);
 					// --- BLOCK DISPOSITIVE ---
-					this.sendStatusComputerBlockDisp(serialNumber, statusList, computer,actionsToDo);
+					this.sendStatusComputerBlockDisp(serialNumber, statusList, computer, actionsToDo);
 					// --- APERTURA REMOTA DE ENLACE WEB ---
-					this.sendStatusComputerOpenWeb(serialNumber, statusList,actionsToDo);
-					
+					this.sendStatusComputerOpenWeb(serialNumber, statusList, actionsToDo);
+
 					// --- INSTALACION REMOTA DE APLICACIONES ---
-					this.sendStatusComputerInstallApp(serialNumber, statusList,actionsToDo);
-					
+					this.sendStatusComputerInstallApp(serialNumber, statusList, actionsToDo);
+
 					// --- DESISNSTALACION REMOTA DE APP ---
-					this.sendStatusComputerUnistallApp(serialNumber, statusList,actionsToDo);
-					
+					this.sendStatusComputerUnistallApp(serialNumber, statusList, actionsToDo);
+
 					// --- EJECUCION DE CFG WIFI ---
-					this.sendStatusComputerCfgWifi(serialNumber, statusList,actionsToDo);
-					
+					this.sendStatusComputerCfgWifi(serialNumber, statusList, actionsToDo);
+
 					// --- ACTUALIZACION DE JUNTA ANDALUCIA ---
-					this.sendStatusComputerUpdateAndalucia(serialNumber, statusList, computer,actionsToDo);
+					this.sendStatusComputerUpdateAndalucia(serialNumber, statusList, computer, actionsToDo);
 					// --- ACTUALIZACION DE NUMERO DE SERIE ---
-					this.sendStatusComputerUpdateSn(serialNumber, statusList, computer,actionsToDo);
+					this.sendStatusComputerUpdateSn(serialNumber, statusList, computer, actionsToDo);
 					// --- ACTUALIZACION DE NUM DE CAJA ---
-					this.sendStatusComputerUpdateCn(serialNumber, statusList, computer,actionsToDo);
+					this.sendStatusComputerUpdateCn(serialNumber, statusList, computer, actionsToDo);
 				}
 			}
 			return ResponseEntity.ok().body(actionsToDo);
@@ -490,18 +477,20 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerUpdateCn
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 * @param computer
 	 */
-	private Actions sendStatusComputerUpdateCn(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
+	private Actions sendStatusComputerUpdateCn(String serialNumber, List<Status> statusList, Computer computer,
+			Actions actionsToDo)
 	{
 		for (int i = 0; i < this.updateComputerNumberComputerList.size(); i++)
 		{
 			Computer cmp = this.updateComputerNumberComputerList.get(i);
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				// -------------------------  ACTUALIZACION DE NUM DE CAJA LOGIC---------
+				// ------------------------- ACTUALIZACION DE NUM DE CAJA LOGIC---------
 //				try
 //				{
 //					//  --- UPDATE FULL LIST WITH THE CMP FROM UPDATE TASKS  ---
@@ -527,11 +516,13 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerUpdateSn
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 * @param computer
 	 */
-	private Actions sendStatusComputerUpdateSn(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
+	private Actions sendStatusComputerUpdateSn(String serialNumber, List<Status> statusList, Computer computer,
+			Actions actionsToDo)
 	{
 		for (int i = 0; i < this.updateSerialNumberComputerList.size(); i++)
 		{
@@ -564,11 +555,13 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerUpdateAndalucia
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 * @param computer
 	 */
-	private Actions sendStatusComputerUpdateAndalucia(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
+	private Actions sendStatusComputerUpdateAndalucia(String serialNumber, List<Status> statusList, Computer computer,
+			Actions actionsToDo)
 	{
 		for (int i = 0; i < this.updateAndaluciaComputerList.size(); i++)
 		{
@@ -601,10 +594,11 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerCfgWifi
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerCfgWifi(String serialNumber, List<Status> statusList , Actions actionsToDo)
+	private void sendStatusComputerCfgWifi(String serialNumber, List<Status> statusList, Actions actionsToDo)
 	{
 		for (int i = 0; i < this.configurationFileComputerList.size(); i++)
 		{
@@ -620,6 +614,7 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerUnistallApp
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 */
@@ -632,18 +627,20 @@ public class ReaktorMonitoringRest
 			// --- GET THE COMPUTER AND GET THE LIST OF APPS TO UNINSTALL ---
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				// ------------------------- Actions to do uninstall AppLOGIC-------------------------------
-				List<String> unInstallAppList = new ArrayList<String>();
-				
-				// --- FOR EACH APP TO UNINSTALL , GET THE NAME/ID AND PUT IN LIST<STRING> FOR ACTIONS OBJECT ---
-				for(Software app : cmp.getSoftwareList()) 
+				// ------------------------- Actions to do uninstall
+				// AppLOGIC-------------------------------
+				List<String> unInstallAppList = new ArrayList<>();
+
+				// --- FOR EACH APP TO UNINSTALL , GET THE NAME/ID AND PUT IN LIST<STRING> FOR
+				// ACTIONS OBJECT ---
+				for (Software app : cmp.getSoftwareList())
 				{
-					
+
 					unInstallAppList.add(app.getApplication());
 				}
 				// --- SET THE LIST INTO ACTIONS OBJECTS ---
 				actionsToDo.setUninstallApps(unInstallAppList);
-				
+
 				// --- REMOVE THE COMPUTER FROM THE UNINSTALL LIST ---
 				this.uninstallAppComputerList.remove(cmp);
 			}
@@ -652,6 +649,7 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerInstallApp
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 */
@@ -664,17 +662,19 @@ public class ReaktorMonitoringRest
 			// --- GET THE COMPUTER AND GET THE LIST OF APPS TO INSTALL ---
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				// ------------------------- Actions to do Install AppLOGIC-------------------------------
-				List<String> installAppList = new ArrayList<String>();
-				
-				// --- FOR EACH APP TO INSTALL , GET THE NAME/ID AND PUT IN LIST<STRING> FOR ACTIONS OBJECT ---
-				for(Software app : cmp.getSoftwareList()) 
+				// ------------------------- Actions to do Install
+				// AppLOGIC-------------------------------
+				List<String> installAppList = new ArrayList<>();
+
+				// --- FOR EACH APP TO INSTALL , GET THE NAME/ID AND PUT IN LIST<STRING> FOR
+				// ACTIONS OBJECT ---
+				for (Software app : cmp.getSoftwareList())
 				{
 					installAppList.add(app.getApplication());
 				}
 				// --- SET THE LIST INTO ACTIONS OBJECTS ---
 				actionsToDo.setInstallApps(installAppList);
-				
+
 				// --- REMOVE THE COMPUTER FROM THE INSTALL LIST ---
 				this.installAppComputerList.remove(cmp);
 			}
@@ -683,10 +683,11 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerOpenWeb
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerOpenWeb(String serialNumber, List<Status> statusList,Actions actionsToDo)
+	private void sendStatusComputerOpenWeb(String serialNumber, List<Status> statusList, Actions actionsToDo)
 	{
 		for (int i = 0; i < this.openWebComputerList.size(); i++)
 		{
@@ -694,10 +695,10 @@ public class ReaktorMonitoringRest
 			Computer cmp = this.openWebComputerList.get(i);
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				List<String> webCommands = new ArrayList<String>();
+				List<String> webCommands = new ArrayList<>();
 				for (String command : cmp.getCommandLine().getCommands())
 				{
-					if(command.contains("start chrome"))
+					if (command.contains("start chrome"))
 					{
 						webCommands.add(command);
 					}
@@ -710,11 +711,13 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerBlockDisp
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 * @param computer
 	 */
-	private void sendStatusComputerBlockDisp(String serialNumber, List<Status> statusList, Computer computer,Actions actionsToDo)
+	private void sendStatusComputerBlockDisp(String serialNumber, List<Status> statusList, Computer computer,
+			Actions actionsToDo)
 	{
 		for (int i = 0; i < this.blockDispositiveComputerList.size(); i++)
 		{
@@ -722,7 +725,7 @@ public class ReaktorMonitoringRest
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				// ------------------------- BLOCK DISP.LOGIC-------------------------------
-				List<Peripheral> peripheralList = new ArrayList<Peripheral>();
+				List<Peripheral> peripheralList = new ArrayList<>();
 				Peripheral peripheral = (Peripheral) cmp.getHardwareList().get(0);
 				peripheralList.add(peripheral);
 				actionsToDo.setBlockDispositives(peripheralList);
@@ -733,17 +736,19 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerCommandExecute
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 */
-	private void sendStatusComputerCommandExecute(String serialNumber, List<Status> statusList,Actions actionsToDo)
+	private void sendStatusComputerCommandExecute(String serialNumber, List<Status> statusList, Actions actionsToDo)
 	{
 		for (int i = 0; i < this.execCommandsComputerList.size(); i++)
 		{
 			Computer cmp = this.execCommandsComputerList.get(i);
 			if (cmp.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
-				// ------------------------- COMMAND EXECUTE LOGIC-------------------------------
+				// ------------------------- COMMAND EXECUTE
+				// LOGIC-------------------------------
 				actionsToDo.setCommands(cmp.getCommandLine().getCommands());
 				this.execCommandsComputerList.remove(cmp);
 			}
@@ -752,6 +757,7 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerRestart
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 */
@@ -771,6 +777,7 @@ public class ReaktorMonitoringRest
 
 	/**
 	 * Method sendStatusComputerShutdown
+	 *
 	 * @param serialNumber
 	 * @param statusList
 	 */
@@ -785,7 +792,7 @@ public class ReaktorMonitoringRest
 				actionsToDo.setShutdown(true);
 				this.shutDownComputerList.remove(cmp);
 			}
-			
+
 		}
 	}
 

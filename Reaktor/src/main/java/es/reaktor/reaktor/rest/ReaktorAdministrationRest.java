@@ -2,8 +2,6 @@ package es.reaktor.reaktor.rest;
 
 import java.io.File;
 import java.io.FileOutputStream;
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,9 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.File;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.springframework.http.ResponseEntity;
@@ -26,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import es.reaktor.exceptions.ComputerError;
 import es.reaktor.models.CommandLine;
@@ -51,20 +46,15 @@ public class ReaktorAdministrationRest
 	/** Attribute computerList */
 	private List<Computer> computerList = new ArrayList<>(List.of(
 			new Computer("sn123", "and123", "cn123", "windows", "paco", new Location("0.5", 0, "trolley1"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog()),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog()),
 			new Computer("sn1234", "and1234", "cn12344", "windows", "paco", new Location("0.5", 0, "trolley1"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog()),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog()),
 			new Computer("sn123", "and12355", "cn123455", "windows", "paco", new Location("0.7", 0, "trolley2"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog()),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog()),
 			new Computer("sn123556", "and123556", "cn1234556", "windows", "paco", new Location("0.7", 0, "trolley2"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog()),
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog()),
 			new Computer("sn123777", "and123777", "cn1234777", "windows", "paco", new Location("0.9", 0, "trolley3"),
-					new ArrayList<>(), new ArrayList<>(), new CommandLine(),
-					new MonitorizationLog())
+					new ArrayList<>(), new ArrayList<>(), new CommandLine(), new MonitorizationLog())
 
 	));
 
@@ -79,12 +69,9 @@ public class ReaktorAdministrationRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/commandLine", consumes = "application/json")
-	public ResponseEntity<?> postComputerCommandLine(
-			@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom,
-			@RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) Integer plant,
-			@RequestBody(required = true) CommandLine commandLine)
+	public ResponseEntity<?> postComputerCommandLine(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) Integer plant, @RequestBody(required = true) CommandLine commandLine)
 	{
 		try
 		{
@@ -128,7 +115,7 @@ public class ReaktorAdministrationRest
 					this.commandsToComputerByPlant(plant, commands);
 					methodsUsed += "plant,";
 				}
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.computerListToMap());
 			}
@@ -136,21 +123,21 @@ public class ReaktorAdministrationRest
 			{
 				// COMMANDS RUN ON ALL COMPUTERS
 				this.commandsToAllComputers(commands);
-				ReaktorAdministrationRest.log.info("By all Computers");
+				log.info("By all Computers");
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
 	}
 
-
 	/**
 	 * Method shutdownComputers
+	 * 
 	 * @param serialNumber
 	 * @param classroom
 	 * @param trolley
@@ -158,10 +145,8 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/shutdown")
-	public ResponseEntity<?> putComputerShutdown(
-			@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom,
-			@RequestHeader(required = false) String trolley,
+	public ResponseEntity<?> putComputerShutdown(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
 			@RequestHeader(required = false) Integer plant)
 	{
 		try
@@ -205,7 +190,7 @@ public class ReaktorAdministrationRest
 					this.addByPlant(plant, shutdownComputerListDistint);
 					methodsUsed += "plant,";
 				}
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.shutdownComputerListDistintToMap(shutdownComputerListDistint));
 			}
@@ -213,13 +198,13 @@ public class ReaktorAdministrationRest
 			{
 				// SHUTDOWN ALL COMPUTERS
 				this.addByAll(shutdownComputerListDistint);
-				ReaktorAdministrationRest.log.info("By all Computers");
+				log.info("By all Computers");
 				return ResponseEntity.ok(this.shutdownComputerListDistintToMap(shutdownComputerListDistint));
 			}
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -227,6 +212,7 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method shutdownComputers
+	 * 
 	 * @param serialNumber
 	 * @param classroom
 	 * @param trolley
@@ -234,10 +220,8 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart")
-	public ResponseEntity<?> putComputerRestart(
-			@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom,
-			@RequestHeader(required = false) String trolley,
+	public ResponseEntity<?> putComputerRestart(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
 			@RequestHeader(required = false) Integer plant)
 	{
 		try
@@ -277,20 +261,20 @@ public class ReaktorAdministrationRest
 					this.addByPlant(plant, restartComputerListDistint);
 					methodsUsed += "plant,";
 				}
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.shutdownComputerListDistintToMap(restartComputerListDistint));
 			}
 			else
 			{
 				this.addByAll(restartComputerListDistint);
-				ReaktorAdministrationRest.log.info("By all Computers");
+				log.info("By all Computers");
 				return ResponseEntity.ok(this.restartComputerListDistintToMap(restartComputerListDistint));
 			}
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -298,14 +282,14 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method postPeripheral
+	 * 
 	 * @param classroom
 	 * @param trolley
 	 * @param hardwareComponent
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/peripheral", consumes = "application/json")
-	public ResponseEntity<?> postPeripheral(
-			@RequestHeader(required = false) String classroom,
+	public ResponseEntity<?> postPeripheral(@RequestHeader(required = false) String classroom,
 			@RequestHeader(required = false) String trolley,
 			@RequestBody(required = true) List<Peripheral> peripheralInstance)
 	{
@@ -328,13 +312,14 @@ public class ReaktorAdministrationRest
 				if (trolley != null)
 				{
 					// ON SPECIFIC COMPUTER BY trolley
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
+						if (computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
 						{
-							List<HardwareComponent> hardwareComponentList = this.getHardwarePeripheralListEdited(peripheralInstance, computer);
+							List<HardwareComponent> hardwareComponentList = this
+									.getHardwarePeripheralListEdited(peripheralInstance, computer);
 							computer.setHardwareList(hardwareComponentList);
 						}
 						this.computerList.add(i, computer);
@@ -344,13 +329,14 @@ public class ReaktorAdministrationRest
 				if (classroom != null)
 				{
 					// ON SPECIFIC COMPUTER BY classroom
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
+						if (computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
 						{
-							List<HardwareComponent> hardwareComponentList = this.getHardwarePeripheralListEdited(peripheralInstance, computer);
+							List<HardwareComponent> hardwareComponentList = this
+									.getHardwarePeripheralListEdited(peripheralInstance, computer);
 							computer.setHardwareList(hardwareComponentList);
 						}
 						this.computerList.add(i, computer);
@@ -358,30 +344,31 @@ public class ReaktorAdministrationRest
 					methodsUsed += "classroom,";
 				}
 
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 			else
 			{
 				// ON ALL COMPUTERS
-				for(int i = 0 ; i<this.computerList.size();i++)
+				for (int i = 0; i < this.computerList.size(); i++)
 				{
 					Computer computer = this.computerList.get(i);
 					this.computerList.remove(computer);
 
-					List<HardwareComponent> hardwareComponentList = this.getHardwarePeripheralListEdited(peripheralInstance, computer);
+					List<HardwareComponent> hardwareComponentList = this
+							.getHardwarePeripheralListEdited(peripheralInstance, computer);
 					computer.setHardwareList(hardwareComponentList);
 
 					this.computerList.add(i, computer);
 				}
-				ReaktorAdministrationRest.log.info("By all Computers");
+				log.info("By all Computers");
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -389,13 +376,13 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method sendScreenshotOrder
+	 * 
 	 * @param classroom
 	 * @param trolley
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/screenshot")
-	public ResponseEntity<?> sendScreenshotOrder(
-			@RequestHeader(required = false) String classroom,
+	public ResponseEntity<?> sendScreenshotOrder(@RequestHeader(required = false) String classroom,
 			@RequestHeader(required = false) String trolley)
 	{
 		try
@@ -426,20 +413,20 @@ public class ReaktorAdministrationRest
 					methodsUsed += "classroom,";
 				}
 
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.shutdownComputerListDistintToMap(sendScreenshotOrderComputerListDistint));
 			}
 			else
 			{
 				this.addByAll(sendScreenshotOrderComputerListDistint);
-				ReaktorAdministrationRest.log.info("By all Computers");
+				log.info("By all Computers");
 				return ResponseEntity.ok(this.shutdownComputerListDistintToMap(sendScreenshotOrderComputerListDistint));
 			}
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -447,16 +434,15 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method sendSoftware
+	 * 
 	 * @param classroom
 	 * @param trolley
 	 * @param softwareInstance
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/software", consumes = "application/json")
-	public ResponseEntity<?> sendSoftware(
-			@RequestHeader(required = false) String classroom,
-			@RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) String professor,
+	public ResponseEntity<?> sendSoftware(@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley, @RequestHeader(required = false) String professor,
 			@RequestBody(required = true) List<Software> softwareInstance)
 	{
 		try
@@ -477,13 +463,13 @@ public class ReaktorAdministrationRest
 				if (professor != null)
 				{
 					// ON SPECIFIC COMPUTER BY professor
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getProfessor().equalsIgnoreCase(professor))
+						if (computer.getProfessor().equalsIgnoreCase(professor))
 						{
-							List<Software> softwareList = getSoftwareListEdited(softwareInstance, computer);
+							List<Software> softwareList = this.getSoftwareListEdited(softwareInstance, computer);
 							computer.setSoftwareList(softwareList);
 						}
 						this.computerList.add(i, computer);
@@ -493,13 +479,13 @@ public class ReaktorAdministrationRest
 				if (trolley != null)
 				{
 					// ON SPECIFIC COMPUTER BY trolley
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
+						if (computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
 						{
-							List<Software> softwareList = getSoftwareListEdited(softwareInstance, computer);
+							List<Software> softwareList = this.getSoftwareListEdited(softwareInstance, computer);
 							computer.setSoftwareList(softwareList);
 						}
 						this.computerList.add(i, computer);
@@ -509,13 +495,13 @@ public class ReaktorAdministrationRest
 				if (classroom != null)
 				{
 					// ON SPECIFIC COMPUTER BY classroom
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
+						if (computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
 						{
-							List<Software> softwareList = getSoftwareListEdited(softwareInstance, computer);
+							List<Software> softwareList = this.getSoftwareListEdited(softwareInstance, computer);
 							computer.setSoftwareList(softwareList);
 						}
 						this.computerList.add(i, computer);
@@ -523,30 +509,30 @@ public class ReaktorAdministrationRest
 					methodsUsed += "classroom,";
 				}
 
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 			else
 			{
 				// ON ALL COMPUTERS
-				for(int i = 0 ; i<this.computerList.size();i++)
+				for (int i = 0; i < this.computerList.size(); i++)
 				{
 					Computer computer = this.computerList.get(i);
 					this.computerList.remove(computer);
 
-					List<Software> softwareList = getSoftwareListEdited(softwareInstance, computer);
+					List<Software> softwareList = this.getSoftwareListEdited(softwareInstance, computer);
 					computer.setSoftwareList(softwareList);
 
 					this.computerList.add(i, computer);
 				}
-				ReaktorAdministrationRest.log.info("By all Computers");
+				log.info("By all Computers");
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -554,6 +540,7 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method unistallSoftware
+	 * 
 	 * @param classroom
 	 * @param trolley
 	 * @param professor
@@ -561,10 +548,8 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/software", consumes = "application/json")
-	public ResponseEntity<?> unistallSoftware(
-			@RequestHeader(required = false) String classroom,
-			@RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) String professor,
+	public ResponseEntity<?> unistallSoftware(@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley, @RequestHeader(required = false) String professor,
 			@RequestBody(required = true) List<Software> softwareInstance)
 	{
 		try
@@ -576,7 +561,7 @@ public class ReaktorAdministrationRest
 				String methodsUsed = "";
 
 				// --- CHECKING IF ANY PARAMETER IS BLANK OR EMPTY ---
-				if (this.checkEmptysProfessorClassTrolley(professor,classroom, trolley))
+				if (this.checkEmptysProfessorClassTrolley(professor, classroom, trolley))
 				{
 					String error = "Any Paramater Is Empty or Blank";
 					ComputerError computerError = new ComputerError(404, error, null);
@@ -586,15 +571,15 @@ public class ReaktorAdministrationRest
 				if (professor != null)
 				{
 					// ON SPECIFIC COMPUTER BY professor
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getProfessor().equalsIgnoreCase(professor))
+						if (computer.getProfessor().equalsIgnoreCase(professor))
 						{
 							List<Software> softwareList = new ArrayList<>(computer.getSoftwareList());
 
-							removeSoftwareFromList(softwareInstance, softwareList);
+							this.removeSoftwareFromList(softwareInstance, softwareList);
 							computer.setSoftwareList(softwareList);
 						}
 						this.computerList.add(i, computer);
@@ -604,15 +589,15 @@ public class ReaktorAdministrationRest
 				if (trolley != null)
 				{
 					// ON SPECIFIC COMPUTER BY trolley
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
+						if (computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
 						{
 							List<Software> softwareList = new ArrayList<>(computer.getSoftwareList());
 
-							removeSoftwareFromList(softwareInstance, softwareList);
+							this.removeSoftwareFromList(softwareInstance, softwareList);
 							computer.setSoftwareList(softwareList);
 						}
 						this.computerList.add(i, computer);
@@ -622,15 +607,15 @@ public class ReaktorAdministrationRest
 				if (classroom != null)
 				{
 					// ON SPECIFIC COMPUTER BY classroom
-					for(int i = 0 ; i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
 						this.computerList.remove(computer);
-						if(computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
+						if (computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
 						{
 							List<Software> softwareList = new ArrayList<>(computer.getSoftwareList());
 
-							removeSoftwareFromList(softwareInstance, softwareList);
+							this.removeSoftwareFromList(softwareInstance, softwareList);
 							computer.setSoftwareList(softwareList);
 						}
 						this.computerList.add(i, computer);
@@ -638,33 +623,32 @@ public class ReaktorAdministrationRest
 					methodsUsed += "classroom,";
 				}
 
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 			else
 			{
 				// ON ALL COMPUTERS
-				for(int i = 0 ; i<this.computerList.size();i++)
+				for (int i = 0; i < this.computerList.size(); i++)
 				{
 					Computer computer = this.computerList.get(i);
 					this.computerList.remove(computer);
 
 					List<Software> softwareList = new ArrayList<>(computer.getSoftwareList());
 
-					removeSoftwareFromList(softwareInstance, softwareList);
+					this.removeSoftwareFromList(softwareInstance, softwareList);
 					computer.setSoftwareList(softwareList);
-
 
 					this.computerList.add(i, computer);
 				}
-				ReaktorAdministrationRest.log.info("By all Computers");
+				log.info("By all Computers");
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -672,6 +656,7 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method updateComputer
+	 * 
 	 * @param serialNumber
 	 * @param andaluciaId
 	 * @param computerNumber
@@ -679,10 +664,8 @@ public class ReaktorAdministrationRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.PUT, value = "/computer/edit", consumes = "application/json")
-	public ResponseEntity<?> updateComputer(
-			@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String andaluciaId,
-			@RequestHeader(required = false) String computerNumber,
+	public ResponseEntity<?> updateComputer(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
 			@RequestBody(required = true) Computer computerInstance)
 	{
 		try
@@ -703,10 +686,10 @@ public class ReaktorAdministrationRest
 				if (serialNumber != null)
 				{
 					// ON SPECIFIC COMPUTER BY serialNumber
-					for(int i = 0;i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
-						if(computer.getSerialNumber().equalsIgnoreCase(serialNumber))
+						if (computer.getSerialNumber().equalsIgnoreCase(serialNumber))
 						{
 							this.computerList.remove(computer);
 						}
@@ -718,10 +701,10 @@ public class ReaktorAdministrationRest
 				if (andaluciaId != null)
 				{
 					// ON SPECIFIC COMPUTER BY trolley
-					for(int i = 0;i<this.computerList.size();i++)
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
-						if(computer.getAndaluciaID().equalsIgnoreCase(andaluciaId))
+						if (computer.getAndaluciaID().equalsIgnoreCase(andaluciaId))
 						{
 							this.computerList.remove(computer);
 						}
@@ -731,11 +714,11 @@ public class ReaktorAdministrationRest
 				}
 				if (computerNumber != null)
 				{
-					//ON SPECIFIC COMPUTER BY classroom
-					for(int i = 0;i<this.computerList.size();i++)
+					// ON SPECIFIC COMPUTER BY classroom
+					for (int i = 0; i < this.computerList.size(); i++)
 					{
 						Computer computer = this.computerList.get(i);
-						if(computer.getComputerNumber().equalsIgnoreCase(computerNumber))
+						if (computer.getComputerNumber().equalsIgnoreCase(computerNumber))
 						{
 							this.computerList.remove(computer);
 						}
@@ -744,13 +727,13 @@ public class ReaktorAdministrationRest
 					methodsUsed += "classroom,";
 				}
 
-				ReaktorAdministrationRest.log.info("Parameters Used: " + methodsUsed);
+				log.info("Parameters Used: " + methodsUsed);
 				// --- RETURN OK RESPONSE ---
 				return ResponseEntity.ok(this.computerListToMap());
 			}
 			else
 			{
-				//ALL COMPUTERS
+				// ALL COMPUTERS
 				String error = "No parameters selected";
 				ComputerError computerError = new ComputerError(404, error, null);
 				return ResponseEntity.status(404).body(computerError.toMap());
@@ -758,7 +741,7 @@ public class ReaktorAdministrationRest
 		}
 		catch (Exception exception)
 		{
-			ReaktorAdministrationRest.log.error(exception.getMessage());
+			log.error(exception.getMessage());
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
@@ -766,22 +749,24 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method removeSoftwareFromList
+	 * 
 	 * @param softwareInstance
 	 * @param softwareList
 	 */
 	private void removeSoftwareFromList(List<Software> softwareInstance, List<Software> softwareList)
 	{
-		for(Software software : softwareInstance)
+		for (Software software : softwareInstance)
 		{
-			if(softwareList.contains(software))
+			if (softwareList.contains(software))
 			{
 				softwareList.remove(software);
 			}
 		}
 	}
-	
+
 	/**
 	 * Method checkEmptyIds
+	 * 
 	 * @param serialNumber
 	 * @param computerNumber
 	 * @param computerNumber2
@@ -795,7 +780,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "serialNumber Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -805,7 +790,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "andaluciaId Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -815,16 +800,16 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "computerNumber Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
 		return false;
 	}
 
-
 	/**
 	 * Method checkEmptysProfessorClassTrolley
+	 * 
 	 * @param professor
 	 * @param classroom
 	 * @param trolley
@@ -838,7 +823,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Professor Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -848,7 +833,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Trolley Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -858,16 +843,16 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Classroom Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
 		return false;
 	}
 
-
 	/**
 	 * Method checkBlanksOrEmptyClassRoomTrolley
+	 * 
 	 * @param classroom
 	 * @param trolley
 	 * @return
@@ -880,7 +865,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Trolley Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -890,13 +875,12 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Classroom Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
 		return false;
 	}
-
 
 	/**
 	 * Method checkBlanksOrEmptys
@@ -914,7 +898,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Serial Number Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -924,7 +908,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Trolley Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -934,7 +918,7 @@ public class ReaktorAdministrationRest
 			{
 				// --- IF IS PARAMETER IS BLANK OR EMPTY ---
 				String error = "Classroom Is Empty or Blank";
-				ReaktorAdministrationRest.log.error(error);
+				log.error(error);
 				return true;
 			}
 		}
@@ -1038,11 +1022,9 @@ public class ReaktorAdministrationRest
 		}
 	}
 
-
-
-
 	/**
 	 * Method addByAll
+	 * 
 	 * @param computerListDistint
 	 */
 	private void addByAll(Set<Computer> computerListDistint)
@@ -1053,10 +1035,9 @@ public class ReaktorAdministrationRest
 		}
 	}
 
-
-
 	/**
 	 * Method addByPlant
+	 * 
 	 * @param plant
 	 * @param computerListDistint
 	 */
@@ -1064,17 +1045,16 @@ public class ReaktorAdministrationRest
 	{
 		for (Computer computer : this.computerList)
 		{
-			if(computer.getLocation().getPlant()==plant)
+			if (computer.getLocation().getPlant() == plant)
 			{
 				computerListDistint.add(computer);
 			}
 		}
 	}
 
-
-
 	/**
 	 * Method addByClassroom
+	 * 
 	 * @param classroom
 	 * @param computerListDistint
 	 */
@@ -1082,17 +1062,16 @@ public class ReaktorAdministrationRest
 	{
 		for (Computer computer : this.computerList)
 		{
-			if(computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
+			if (computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
 			{
 				computerListDistint.add(computer);
 			}
 		}
 	}
 
-
-
 	/**
 	 * Method addByTrolley
+	 * 
 	 * @param trolley
 	 * @param computerListDistint
 	 */
@@ -1100,16 +1079,16 @@ public class ReaktorAdministrationRest
 	{
 		for (Computer computer : this.computerList)
 		{
-			if(computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
+			if (computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
 			{
 				computerListDistint.add(computer);
 			}
 		}
 	}
 
-
 	/**
 	 * Method addBySerialNumber
+	 * 
 	 * @param serialNumber
 	 * @param computerListDistint
 	 */
@@ -1117,17 +1096,16 @@ public class ReaktorAdministrationRest
 	{
 		for (Computer computer : this.computerList)
 		{
-			if(computer.getSerialNumber().equalsIgnoreCase(serialNumber))
+			if (computer.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				computerListDistint.add(computer);
 			}
 		}
 	}
 
-
-
 	/**
 	 * Method getHardwarePeripheralListEdited
+	 * 
 	 * @param peripheralInstance
 	 * @param computer
 	 * @return
@@ -1137,9 +1115,9 @@ public class ReaktorAdministrationRest
 	{
 		List<HardwareComponent> hardwareComponentList = new ArrayList<>(computer.getHardwareList());
 
-		for(Peripheral peripheral : peripheralInstance)
+		for (Peripheral peripheral : peripheralInstance)
 		{
-			if(hardwareComponentList.contains(peripheral))
+			if (hardwareComponentList.contains(peripheral))
 			{
 				hardwareComponentList.remove(peripheral);
 				hardwareComponentList.add(peripheral);
@@ -1151,9 +1129,10 @@ public class ReaktorAdministrationRest
 		}
 		return hardwareComponentList;
 	}
-	
+
 	/**
 	 * Method getSoftwareListEdited
+	 * 
 	 * @param softwareInstance
 	 * @param computer
 	 * @return
@@ -1162,9 +1141,9 @@ public class ReaktorAdministrationRest
 	{
 		List<Software> softwareList = new ArrayList<>(computer.getSoftwareList());
 
-		for(Software software : softwareInstance)
+		for (Software software : softwareInstance)
 		{
-			if(softwareList.contains(software))
+			if (softwareList.contains(software))
 			{
 				softwareList.remove(software);
 				softwareList.add(software);
@@ -1176,7 +1155,7 @@ public class ReaktorAdministrationRest
 		}
 		return softwareList;
 	}
-	
+
 	/**
 	 * Method computerListToMap , method for debug or testing only
 	 *
@@ -1191,6 +1170,7 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method shutdownComputerListDistintToMap
+	 * 
 	 * @param shutdownComputerList
 	 * @return
 	 */
@@ -1203,6 +1183,7 @@ public class ReaktorAdministrationRest
 
 	/**
 	 * Method shutdownComputerListDistintToMap
+	 * 
 	 * @param shutdownComputerList
 	 * @return
 	 */
@@ -1212,29 +1193,26 @@ public class ReaktorAdministrationRest
 		computerListMap.put("computers", new ArrayList<>(shutdownComputerList));
 		return computerListMap;
 	}
-	
+
 	/**
 	 * Method sendInformation to send information of commands to computers
-	 * 
+	 *
 	 * @param serialNumber the serial number of computer
 	 * @param classroom    the classroom
 	 * @param trolley      the trolley
 	 * @param plant        the plant
-	 * @param File the execFile
+	 * @param File         the execFile
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/file", consumes = "multipart/form-data")
-	public ResponseEntity<?> postComputerCommandLine(
-			@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom, 
-			@RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) Integer plant,
-			@RequestBody(required = true) MultipartFile execFile)
+	public ResponseEntity<?> postComputerCommandLine(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) Integer plant, @RequestBody(required = true) MultipartFile execFile)
 	{
 		try
 		{
-			List<Computer> fileComputers = new ArrayList<Computer>();
-			if (serialNumber != null || classroom != null || trolley != null || plant != null)
+			List<Computer> fileComputers = new ArrayList<>();
+			if ((serialNumber != null) || (classroom != null) || (trolley != null) || (plant != null))
 			{
 				// --- CHECKING IF ANY PARAMETER IS BLANK OR EMPTY ---
 				if (this.checkBlanksOrEmptys(serialNumber, classroom, trolley))
@@ -1248,29 +1226,28 @@ public class ReaktorAdministrationRest
 				{
 					// ALL FILE ON SPECIFIC COMPUTER BY serialNumber
 					this.fileToComputerBySerialNumber(serialNumber, fileComputers);
-					
+
 				}
 				if (trolley != null)
 				{
 					// ALL FILE ON SPECIFIC COMPUTER BY trolley
 					this.fileToComputerByTrolley(trolley, fileComputers);
-					
+
 				}
 				if (classroom != null)
 				{
 					// ALL FILE ON SPECIFIC COMPUTER BY classroom
 					this.fileToComputerByClassroom(classroom, fileComputers);
-					
+
 				}
 				if (plant != null)
 				{
 					// ALL FILE ON SPECIFIC COMPUTER BY plant
 					this.fileToComputerByPlant(plant, fileComputers);
-					
+
 				}
-				
 				// --- RETURN OK RESPONSE ---
-				return ResponseEntity.ok(this.computerListToMap( fileComputers));
+				return ResponseEntity.ok(this.computerListToMap(fileComputers));
 			}
 			else
 			{
@@ -1281,97 +1258,97 @@ public class ReaktorAdministrationRest
 		}
 		catch (Exception exception)
 		{
-			log.error(exception.getMessage(),exception);
+			log.error(exception.getMessage(), exception);
 			ComputerError computerError = new ComputerError(500, exception.getMessage(), exception);
 			return ResponseEntity.status(500).body(computerError.toMap());
 		}
-		
+
 	}
-	
-	
+
 	/**
 	 * Method fileToAllComputers send to all classroom computers
-	 * 
+	 *
 	 * @param file
 	 */
 	private void fileToAllComputers(List<Computer> fileComputers)
 	{
-		for (int i = 0; i < computerList.size(); i++)
+		for (int i = 0; i < this.computerList.size(); i++)
 		{
-			Computer computer = computerList.get(i);
+			Computer computer = this.computerList.get(i);
 			fileComputers.add(computer);
 		}
 	}
+
 	/**
 	 * Method fileToComputerByPlant send file by plant computers
-	 * 
+	 *
 	 * @param file
 	 */
 	private void fileToComputerByPlant(Integer plant, List<Computer> fileComputers)
 	{
-		for (int i = 0; i < computerList.size(); i++)
+		for (int i = 0; i < this.computerList.size(); i++)
 		{
-			Computer computer = computerList.get(i);
+			Computer computer = this.computerList.get(i);
 			if (computer.getLocation().getPlant() == plant)
-			{								
+			{
 				fileComputers.add(computer);
 			}
 		}
 	}
-	
+
 	/**
 	 * Method fileToComputerByClassroom send file by classroom computers
-	 * 
+	 *
 	 * @param file
 	 */
 	private void fileToComputerByClassroom(String classroom, List<Computer> fileComputers)
 	{
-		for (int i = 0; i < computerList.size(); i++)
+		for (int i = 0; i < this.computerList.size(); i++)
 		{
-			Computer computer = computerList.get(i);
+			Computer computer = this.computerList.get(i);
 			if (computer.getLocation().getClassroom().equalsIgnoreCase(classroom))
 			{
 				fileComputers.add(computer);
 			}
 		}
 	}
-	
+
 	/**
 	 * Method fileToComputerByTrolley send file by trolley computers
-	 * 
+	 *
 	 * @param file
 	 */
 	private void fileToComputerByTrolley(String trolley, List<Computer> fileComputers)
 	{
-		for (int i = 0; i < computerList.size(); i++)
+		for (int i = 0; i < this.computerList.size(); i++)
 		{
-			Computer computer = computerList.get(i);
+			Computer computer = this.computerList.get(i);
 			if (computer.getLocation().getTrolley().equalsIgnoreCase(trolley))
 			{
 				fileComputers.add(computer);
 			}
 		}
 	}
+
 	/**
 	 * Method fileToComputerBySerialNumber send file by serial number computers
-	 * 
+	 *
 	 * @param file
 	 */
 	private void fileToComputerBySerialNumber(String serialNumber, List<Computer> fileComputers)
 	{
-		for (int i = 0; i < computerList.size(); i++)
+		for (int i = 0; i < this.computerList.size(); i++)
 		{
-			Computer computer = computerList.get(i);
+			Computer computer = this.computerList.get(i);
 			if (computer.getSerialNumber().equalsIgnoreCase(serialNumber))
 			{
 				fileComputers.add(computer);
 			}
 		}
 	}
-	
-	
+
 	/**
-	 * 
+	 *
 	 * @param fileComputers change the list to a map
 	 * @return
 	 */
@@ -1396,59 +1373,62 @@ public class ReaktorAdministrationRest
 		String type = exception.getRequiredType().getSimpleName();
 		Object value = exception.getValue();
 		String message = String.format("'%s' should be a valid '%s' and '%s' isn't", name, type, value);
-		ReaktorAdministrationRest.log.error(message);
+		log.error(message);
 		ComputerError computerError = new ComputerError(404, message, exception);
 		return ResponseEntity.status(404).body(computerError.toMap());
 	}
-	
+
 	/**
 	 * Method getComputer
+	 * 
 	 * @author Adrian
 	 * @param classroom
 	 * @param trolley
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/computer/admin/screenshot", produces = "application/zip")
-    public ResponseEntity<?> getComputer(@RequestHeader(required=false) String classroom,
-    									 @RequestHeader(required=false) String trolley)
-    {
-		try 
+	public ResponseEntity<?> getComputer(@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley)
+	{
+		try
 		{
-			if(classroom.isEmpty()&&trolley.isEmpty()) 
+			if (classroom.isEmpty() && trolley.isEmpty())
 			{
 				this.checkParams(classroom, trolley);
 
-	            File zipFile = getZipFile(classroom, trolley);
+				File zipFile = this.getZipFile(classroom, trolley);
 			}
-	        return ResponseEntity.ok("OK");
+			return ResponseEntity.ok("OK");
 		}
 		catch (ComputerError error)
-        {
-            return ResponseEntity.status(400).body(error.getMessage());
-        }
+		{
+			return ResponseEntity.status(400).body(error.getMessage());
+		}
 		catch (Exception error)
-        {
-            return ResponseEntity.status(500).body(error.getMessage());
-        }
-    }
-	
+		{
+			return ResponseEntity.status(500).body(error.getMessage());
+		}
+	}
+
 	/**
 	 * Method checkParams
+	 * 
 	 * @author Adrian
 	 * @param classroom
 	 * @param trolley
 	 * @throws ComputerError
 	 */
-	private void checkParams(String classroom,String trolley) throws ComputerError
-    {
-        if(classroom.isEmpty() && trolley.isEmpty())
-        {
-            throw new ComputerError(400,"Error",null);
-        }
-    }
-	
+	private void checkParams(String classroom, String trolley) throws ComputerError
+	{
+		if (classroom.isEmpty() && trolley.isEmpty())
+		{
+			throw new ComputerError(400, "Error", null);
+		}
+	}
+
 	/**
 	 * Method getZipFile
+	 * 
 	 * @author Adrian
 	 * @param classroom
 	 * @param trolley
@@ -1456,15 +1436,15 @@ public class ReaktorAdministrationRest
 	 * @throws Exception
 	 */
 	private File getZipFile(String classroom, String trolley) throws Exception
-    {
+	{
 
-        File zipFile = File.createTempFile("screenshots", ".zip");
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile)))
-        {
-            zipOutputStream.putNextEntry(new ZipEntry("screenshot.png"));
-            zipOutputStream.write("Contenido de la captura de pantalla".getBytes());
-            zipOutputStream.closeEntry();
-        }
-        return zipFile;
-    }
+		File zipFile = File.createTempFile("screenshots", ".zip");
+		try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile)))
+		{
+			zipOutputStream.putNextEntry(new ZipEntry("screenshot.png"));
+			zipOutputStream.write("Contenido de la captura de pantalla".getBytes());
+			zipOutputStream.closeEntry();
+		}
+		return zipFile;
+	}
 }
