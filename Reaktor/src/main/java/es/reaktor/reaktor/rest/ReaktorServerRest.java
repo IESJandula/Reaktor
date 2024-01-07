@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.reaktor.models.Action;
-
+import es.reaktor.models.CommandLine;
+import es.reaktor.models.Computer;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.reaktor.models.ComputerError;
+import es.reaktor.models.Location;
 import es.reaktor.models.Malware;
+import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
@@ -33,7 +36,6 @@ import es.reaktor.reaktor.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -51,11 +53,12 @@ public class ReaktorServerRest
 
 	@Autowired
 	private ReaktorService reaktorService;
-	
-	private Map<String, List<Action>> toDo = new HashMap<String, List<Action>>(Map.of(
-   			"001", new ArrayList<Action>( List.of(new Action("shutdown",""),new Action("reset", ""),new Action("uninstall", "chrome.exe"))),
-   			"002", new ArrayList<Action>(),
-			"003", new ArrayList<Action>(List.of(new Action("uninstall", "chrome.exe")))));
+
+	private Map<String, List<Action>> toDo = new HashMap<String, List<Action>>(Map.of("001",
+			new ArrayList<Action>(List.of(new Action("shutdown", ""), new Action("reset", ""),
+					new Action("uninstall", "chrome.exe"))),
+			"002", new ArrayList<Action>(), "003",
+			new ArrayList<Action>(List.of(new Action("uninstall", "chrome.exe")))));
 
 	@RequestMapping(method = RequestMethod.POST, value = "/reaktor")
 	public ResponseEntity<?> sendInformation(@RequestBody Reaktor reaktor)
@@ -175,144 +178,250 @@ public class ReaktorServerRest
 	{
 		return ResponseEntity.ok(reaktorService.getInformationReaktor(idComputer));
 	}
-   @RequestMapping(method = RequestMethod.GET, value = "/computers/get/status")
-   public ResponseEntity<?> getCommandLine(
-    		@RequestHeader(required = true) String serialNumber)
-    {
-	   	
-    	try {
-    		Action response = new Action();
-    		checkSerialNumber(serialNumber);
-    		
-    		if(!toDo.get(serialNumber).isEmpty()) {
-    			response = toDo.get(serialNumber).get(0);
-    			
-    			toDo.get(serialNumber).remove(0);
-    		}
-			
+
+	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/status")
+	public ResponseEntity<?> getCommandLine(@RequestHeader(required = true) String serialNumber)
+	{
+
+		try
+		{
+			Action response = new Action();
+			checkSerialNumber(serialNumber);
+
+			if (!toDo.get(serialNumber).isEmpty())
+			{
+				response = toDo.get(serialNumber).get(0);
+
+				toDo.get(serialNumber).remove(0);
+			}
+
 			return ResponseEntity.ok(response);
-    	}catch (ComputerError computerError){
+		} catch (ComputerError computerError)
+		{
 
-    		log.error("Computer error", computerError);
-    		return ResponseEntity.status(400).body(computerError.toMap());
-    	}catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
+			log.error("Computer error", computerError);
+			return ResponseEntity.status(400).body(computerError.toMap());
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-    }
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart")
-	public ResponseEntity<?> postComputerRestart(
-    		@RequestHeader(required = false) String serialNumber,
-		    @RequestHeader(required = false) String classroom,
-		    @RequestHeader(required = false) String trolley,
-		    @RequestHeader(required = false) int plant
-		   )
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}/*catch (ComputerError computerError){
+	public ResponseEntity<?> postComputerRestart(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) int plant)
+	{
+		try
+		{
 
-    		return ResponseEntity.status(400).body(computerError);
-    	}*/catch (Exception e) {
-    		log.error("Server error", e);
-    		return ResponseEntity.status(500).body(e.getMessage());
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){
+			 * 
+			 * return ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			log.error("Server error", e);
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-   } 
-   private void checkSerialNumber(String serialNumber) throws ComputerError {
-	   
-	   if (serialNumber.isBlank() || !this.toDo.containsKey(serialNumber))
-	   {
-		   throw new ComputerError(2, "invalid SerialNumber", null);
-	   }
-   }
+	}
+
+	private void checkSerialNumber(String serialNumber) throws ComputerError
+	{
+
+		if (serialNumber.isBlank() || !this.toDo.containsKey(serialNumber))
+		{
+			throw new ComputerError(2, "invalid SerialNumber", null);
+		}
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file")
-	public ResponseEntity<?> postComputerExecFile(
-    		@RequestHeader(required = false) String serialNumber,
-		    @RequestHeader(required = false) String classroom,
-		    @RequestHeader(required = false) String trolley,
-		    @RequestHeader(required = false) int plant,
-		    @RequestBody(required= true) File file
-		   )
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}/*catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);
-    	}*/catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
+	public ResponseEntity<?> postComputerExecFile(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) int plant, @RequestBody(required = true) File file)
+	{
+		try
+		{
+
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){ return
+			 * ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-    }
-	
-	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/file" ,produces="multipart/form-data")
-	public ResponseEntity<?> getAnyFile(
-    		@RequestHeader(required = false) String serialNumber
-		   )
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}/*catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);
-    	}*/catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/file", produces = "multipart/form-data")
+	public ResponseEntity<?> getAnyFile(@RequestHeader(required = false) String serialNumber)
+	{
+		try
+		{
+
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){ return
+			 * ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-    }
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/screenshot")
-	public ResponseEntity<?> getScreenshotOrder(
-    		@RequestHeader(required = false) String serialNumber
-		   )
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}/*catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);
-    	}*/catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
+	public ResponseEntity<?> getScreenshotOrder(@RequestHeader(required = false) String serialNumber)
+	{
+		try
+		{
+
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){ return
+			 * ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-    }
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/screenshot")
-	public ResponseEntity<?> sendScreenshot(
-    		@RequestHeader(required = false) String screenshot
-		   )
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}/*catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);
-    	}*/catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
+	public ResponseEntity<?> sendScreenshot(@RequestHeader(required = false) String screenshot)
+	{
+		try
+		{
+
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){ return
+			 * ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-    }
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/fullInfo")
-	public ResponseEntity<?> sendFullComputer(
-    		@RequestHeader(required = false) String serialNumber,
-    		@RequestHeader(required = false) String andaluciaId,
-    		@RequestHeader(required = false) String computerNumber
-		   )
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}/*catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);
-    	}*/catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
+	public ResponseEntity<?> sendFullComputer(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber)
+	{
+		try
+		{
+
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){ return
+			 * ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-    }
-	
-	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/status", consumes="application/json")
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/status", consumes = "application/json")
 	public ResponseEntity<?> sendFullComputer()
-    {
-    	try {
-    		
-    		return ResponseEntity.ok().build();
-    	}/*catch (ComputerError computerError){
-    		return ResponseEntity.status(400).body(computerError);
-    	}*/catch (Exception e) {
-    		return ResponseEntity.status(500).body(e.getMessage());
+	{
+		try
+		{
+
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){ return
+			 * ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
-    }
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/web", consumes = "application/json")
+	public ResponseEntity<?> getComputersByAny(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
+			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) String plant, @RequestHeader(required = false) String professor)
+	{
+		try
+		{
+
+			List<Computer> computers = new ArrayList<Computer>(List.of(
+					new Computer("001", "A001", "1", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
+							null),
+					new Computer("002", "A002", "2", "Linux", "Vicente", new Location("0.5", 0, "10"), null, null, null,
+							null),
+					new Computer("003", "A003", "3", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
+							null),
+					new Computer("004", "A004", "4", "MacOS", "Vicente", new Location("1.5", 1, "2"), null, null, null,
+							null),
+					new Computer("005", "A005", "5", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
+							null),
+					new Computer("006", "A006", "6", "Linux", "Vicente", new Location("2.5", 2, ""), null, null, null,
+							null)));
+
+			List<Computer> response = new ArrayList<Computer>();
+			if (serialNumber != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						response.add(computer);
+					}
+				}
+			} else if (andaluciaId != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getAndaluciaId().equals(andaluciaId))
+					{
+						response.add(computer);
+					}
+				}
+			} else if (computerNumber != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getComputerNumber().equals(computerNumber))
+					{
+						response.add(computer);
+					}
+				}
+			} else if (classroom != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getLocation().getClassroom().equals(classroom))
+					{
+						response.add(computer);
+					}
+				}
+			} else if (trolley != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getLocation().getTrolley().equals(trolley))
+					{
+						response.add(computer);
+					}
+				}
+			} else if (plant != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getLocation().getPlant() == Integer.valueOf(plant))
+					{
+						response.add(computer);
+					}
+				}
+			} else if (professor != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getProfessor().equals(professor))
+					{
+						response.add(computer);
+					}
+				}
+			}
+
+			return ResponseEntity.ok().body(response);
+		}catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
+
 }

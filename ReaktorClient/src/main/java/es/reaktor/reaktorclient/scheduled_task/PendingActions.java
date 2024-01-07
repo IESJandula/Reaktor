@@ -27,44 +27,63 @@ public class PendingActions
 	private String reaktorServerUrl;
 
 	@Scheduled(fixedDelayString = "${reaktor.pendingActions}", initialDelay = 2000)
-	public void computerOnReport() {
+	public void computerOnReport()
+	{
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
-		try {
+		try
+		{
 			httpClient = HttpClients.createDefault();
 			String url = reaktorServerUrl + "/computers/get/status";
 			HttpGet request = new HttpGet(url);
 			request.addHeader("serialNumber", "003");
 			response = httpClient.execute(request);
 			Action action = new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), Action.class);
-			if (action.getActionName() != null) {
-				switch (action.getActionName()) {
+			if (action.getActionName() != null)
+			{
+				switch (action.getActionName())
+				{
 				case "reset" -> reset();
 				case "shutdown" -> shutdown();
+				case "openWeb" -> openWeb(action.getInfo());
+				case "execCommand" -> execCommandRemote(action.getInfo());
+				case "blockDevices" -> blockDevicesIO();
+				case "uninstall" -> uninstallApp(action.getInfo());
+				case "install" -> installApp(null);
+				case "configWifi" -> configWifi(null,null,null,null, null);
 				default -> System.out.println("Esto esta sin implementar makina");
 				}
 			}
-		} catch (ClientProtocolException e) {
+		} catch (ClientProtocolException e)
+		{
 			log.warn(e.getMessage());
 			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			log.warn(e.getMessage());
 			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
 			e.printStackTrace();
-		} finally {
+		} catch (ComputerError e)
+		{
+			log.warn(e.getMessage());
+			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
+			e.printStackTrace();
+		} finally
+		{
 			this.close(httpClient, response);
 		}
 	}
 
-	private void openWeb(String url) throws ComputerError {
-		
+	private void openWeb(String url) throws ComputerError
+	{
+
 		try
 		{
 			Process proceso = new ProcessBuilder("cmd.exe", "/c", "start " + url).start();
-			
+
 			proceso.waitFor();
-			
+
 		} catch (IOException e)
 		{
 			log.warn(e.getMessage());
@@ -76,7 +95,7 @@ public class PendingActions
 			e.printStackTrace();
 			throw new ComputerError(2, url, e);
 		}
-		
+
 	}
 
 	private void execCommandRemote(String command) throws ComputerError
@@ -87,54 +106,61 @@ public class PendingActions
 			proceso.waitFor();
 		} catch (IOException e)
 		{
-      String error="El comando introducido tiene problemas de sintaxis :"+e.getMessage();
+			String error = "El comando introducido tiene problemas de sintaxis :" + e.getMessage();
 			log.warn(error);
 			e.printStackTrace();
-			throw new ComputerError(1,error, e);
-      } catch (InterruptedException e)
-		{
-			String error="Ha ocurrido un error al ejecutar el comando en este pc : "+e.getMessage();
-			log.warn(error);
-			e.printStackTrace();
-			throw new ComputerError(1,error, e);
-		}
-	}
-	private void configWifi(String nombreRed,String tipoSeguridad,String methodEap,String methodAuth,String password) throws ComputerError
-	{
-		String rutaBatch = "C:\\Users\\alvar\\git\\Reaktor\\ReaktorClient\\src\\main\\resources\\wifiConfig.bat";
-		ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", rutaBatch, nombreRed, tipoSeguridad, methodEap, methodAuth, password);
-
-		try {
-		    Process proceso = builder.start();
-		    int resultado = proceso.waitFor();
-		    if(resultado==0)
-		    {
-		    	log.info("La configuracion wifi fue exitosa");
-		    }
-		} catch (IOException e) {
-			String error="El comando introducido tiene problemas de sintaxis :"+e.getMessage();
-			log.warn(error);
-			e.printStackTrace();
-			throw new ComputerError(1,error, e);
+			throw new ComputerError(1, error, e);
 		} catch (InterruptedException e)
 		{
-			String error="Ha ocurrido un error al ejecutar el comando en este pc : "+e.getMessage();
+			String error = "Ha ocurrido un error al ejecutar el comando en este pc : " + e.getMessage();
 			log.warn(error);
 			e.printStackTrace();
-			throw new ComputerError(1,error, e);
+			throw new ComputerError(1, error, e);
 		}
 	}
-  
 
-	private void uninstallApp(String appName) {
+	private void configWifi(String nombreRed, String tipoSeguridad, String methodEap, String methodAuth,
+			String password) throws ComputerError
+	{
+		String rutaBatch = "C:\\Users\\alvar\\git\\Reaktor\\ReaktorClient\\src\\main\\resources\\wifiConfig.bat";
+		ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", rutaBatch, nombreRed, tipoSeguridad, methodEap,
+				methodAuth, password);
+
+		try
+		{
+			Process proceso = builder.start();
+			int resultado = proceso.waitFor();
+			if (resultado == 0)
+			{
+				log.info("La configuracion wifi fue exitosa");
+			}
+		} catch (IOException e)
+		{
+			String error = "El comando introducido tiene problemas de sintaxis :" + e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1, error, e);
+		} catch (InterruptedException e)
+		{
+			String error = "Ha ocurrido un error al ejecutar el comando en este pc : " + e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1, error, e);
+		}
+	}
+
+	private void uninstallApp(String appName)
+	{
 		Scanner scanner = null;
-		try {
+		try
+		{
 			log.info("inicio busqueda chrome");
 			Process proceso = new ProcessBuilder("cmd.exe", "/c", "dir /s /b C:\\" + appName + " > resultados.txt")
 					.start();
 			int resultado = proceso.waitFor();
 			log.info("fin busqueda chrome");
-			if (resultado == 0) {
+			if (resultado == 0)
+			{
 				scanner = new Scanner(new File("resultados.txt"));
 				String path = scanner.nextLine();
 				log.info("inicio borrado resultado");
@@ -144,18 +170,22 @@ public class PendingActions
 				proceso = new ProcessBuilder("cmd.exe", "/c", "\"" + path + "\" --uninstall --force-uninstall").start();
 				resultado = proceso.waitFor();
 				log.info("fin desinstalacion");
-			} else {
+			} else
+			{
 				System.out.println("Error en la desinstalación. Código de salida: " + resultado);
 			}
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException | InterruptedException e)
+		{
 			e.printStackTrace();
-		} finally {
-			if (scanner != null) {
+		} finally
+		{
+			if (scanner != null)
+			{
 				scanner.close();
 			}
 		}
 	}
-	
+
 	private void blockDevicesIO()
 	{
 
@@ -163,12 +193,12 @@ public class PendingActions
 		try
 		{
 			log.info("inicio deshabilitación de USBs");
-			Process proceso = new ProcessBuilder("cmd.exe", "/c", "reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\UsbStor /v \"Start\" /t REG_DWORD /d \"4\" /f")
+			Process proceso = new ProcessBuilder("cmd.exe", "/c",
+					"reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\UsbStor /v \"Start\" /t REG_DWORD /d \"4\" /f")
 					.start();
-			
+
 			int resultado = proceso.waitFor();
-			
-			
+
 			if (resultado == 0)
 			{
 				log.info("fin deshabilitación de USBs");
@@ -176,18 +206,19 @@ public class PendingActions
 			{
 				System.out.println("Error en la deshabilitación de USBs. Código de salida: " + resultado);
 			}
-			
+
 		} catch (IOException | InterruptedException e)
 		{
 			e.printStackTrace();
-		} finally {
-			if (scanner != null) {
+		} finally
+		{
+			if (scanner != null)
+			{
 				scanner.close();
 			}
 		}
 	}
 
-	
 	private void installApp(File appName)
 	{
 
@@ -197,7 +228,7 @@ public class PendingActions
 			log.info("inicio instalación aplicacion");
 			Process proceso = new ProcessBuilder("cmd.exe", "/c", "dir /s /b C:\\" + appName + " > resultados.txt")
 					.start();
-			
+
 			int resultado = proceso.waitFor();
 			log.info("fin instalación aplicacion");
 
@@ -210,56 +241,69 @@ public class PendingActions
 			{
 				scanner.close();
 			}
-    }
+		}
 	}
-  
-	private void reset() {
+
+	private void reset()
+	{
 		Scanner scanner = null;
-		try {
+		try
+		{
 			Process proceso = new ProcessBuilder("cmd.exe", "/c", "shutdown /r /t 60").start();
 			int resultado = proceso.waitFor();
-			if (resultado == 0) {
+			if (resultado == 0)
+			{
 				log.info("El ordenador se reiniciara en 60 segundos");
-			} else {
+			} else
+			{
 				System.out.println("Error al reiniciar. Código de salida: " + resultado);
-      }
-		} catch (IOException | InterruptedException e) {
+			}
+		} catch (IOException | InterruptedException e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	private void shutdown() {
+	private void shutdown()
+	{
 		Scanner scanner = null;
-		try {
+		try
+		{
 			Process proceso = new ProcessBuilder("cmd.exe", "/c", "shutdown /s /t 60").start();
 			int resultado = proceso.waitFor();
-			if (resultado == 0) {
+			if (resultado == 0)
+			{
 				log.info("El ordenador se apagara en 60 segundos");
-			} else {
+			} else
+			{
 				System.out.println("Error al apagar. Código de salida: " + resultado);
 			}
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException | InterruptedException e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	private void close(CloseableHttpClient httpClient, CloseableHttpResponse response) {
-		try {
+	private void close(CloseableHttpClient httpClient, CloseableHttpResponse response)
+	{
+		try
+		{
 			response.close();
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			log.warn(e.getMessage());
 			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
 			e.printStackTrace();
 		}
-		try {
+		try
+		{
 			httpClient.close();
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			log.warn(e.getMessage());
 			log.warn(ConstantsErrors.ERROR_COMMUNICATION_TO_SERVER, e);
 			e.printStackTrace();
 		}
 	}
-
-}
 
 }
