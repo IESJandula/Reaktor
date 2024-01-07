@@ -1,10 +1,17 @@
 package es.reaktor.reaktor.rest;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import org.springframework.http.HttpHeaders;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +23,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.reaktor.models.Action;
 import es.reaktor.models.CommandLine;
 import es.reaktor.models.Computer;
-import es.reaktor.models.DTO.MalwareDTOWeb;
-import es.reaktor.models.DTO.ReaktorDTO;
-import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.reaktor.models.ComputerError;
 import es.reaktor.models.HardwareComponent;
 import es.reaktor.models.Location;
@@ -31,13 +36,14 @@ import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
 import es.reaktor.models.Software;
+import es.reaktor.models.DTO.MalwareDTOWeb;
+import es.reaktor.models.DTO.ReaktorDTO;
+import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
 import es.reaktor.reaktor.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -339,16 +345,85 @@ public class ReaktorServerRest
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file")
+	
+	private void setAccion (String serialNumber, String accion, String info, String fileName, byte[] file) 
+	{
+		if(!toDo.containsKey(serialNumber))
+		{
+			toDo.put(serialNumber,new ArrayList<Action>());
+		}
+			toDo.get(serialNumber).add(new Action(accion,info));
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file", consumes = "multipart-formdata")
 	public ResponseEntity<?> postComputerExecFile(@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
 			@RequestHeader(required = false) String trolley,
 			@RequestHeader(required = false) int plant, 
-			@RequestBody(required = true) File file)
+			@RequestBody(required = true) MultipartFile file)
 	{
 		try
 		{
+			
+			if(serialNumber != null) 
+			{
+				setAccion(serialNumber,"execCommand","",file.getOriginalFilename(),file.getBytes());
+			}else if(classroom != null) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getClassroom().equals(classroom)) 
+					{
+						setAccion(computer.getSerialNumber(),"execCommand","",file.getOriginalFilename(),file.getBytes());
+					}
+				}
+			}else if(trolley != null) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getTrolley().equals(trolley)) 
+					{
+						setAccion(computer.getSerialNumber(),"execCommand","",file.getOriginalFilename(),file.getBytes());
+					}
+				}
+			}else if(plant != 0) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getPlant() == plant) 
+					{
+						setAccion(computer.getSerialNumber(),"execCommand","",file.getOriginalFilename(),file.getBytes());
+					}
+				}
+			}
+			
+			return ResponseEntity.ok().build();
+			
+		} catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
 
+//	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/file", produces = "multipart/form-data")
+//	public ResponseEntity<?> getAnyFile(@RequestHeader(required = true) String serialNumber)
+//	{
+//		try
+//		{
+	
+//		} catch (Exception e)
+//		{
+//			return ResponseEntity.status(500).body(e.getMessage());
+//		}
+//	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/screenshot")
+	public ResponseEntity<?> sendScreenshotOrder(@RequestHeader(required = true) String serialNumber)
+	{
+		try
+		{
+			setAccion(serialNumber,"screenshot","");
+			
 			return ResponseEntity.ok().build();
 		} catch (Exception e)
 		{
@@ -356,49 +431,46 @@ public class ReaktorServerRest
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/file", produces = "multipart/form-data")
-	public ResponseEntity<?> getAnyFile(@RequestHeader(required = false) String serialNumber)
-	{
-		try
-		{
-
-			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){ return
-			 * ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
-		{
-			return ResponseEntity.status(500).body(e.getMessage());
-		}
-	}
-
 	@RequestMapping(method = RequestMethod.GET, value = "/computers/get/screenshot")
-	public ResponseEntity<?> getScreenshotOrder(@RequestHeader(required = false) String serialNumber)
+	public ResponseEntity<?> getScreenshot(@RequestHeader(required = false) String serialNumber)
 	{
 		try
 		{
+			String archivoZip = "archivos.zip";
 
-			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){ return
-			 * ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
-		{
-			return ResponseEntity.status(500).body(e.getMessage());
-		}
-	}
+            // Buffer para la lectura y escritura
+            byte[] buffer = new byte[1024];
 
-	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/screenshot")
-	public ResponseEntity<?> sendScreenshot(@RequestHeader(required = false) String screenshot)
-	{
-		try
-		{
+            FileOutputStream fos = new FileOutputStream(archivoZip);
+            ZipOutputStream zos = new ZipOutputStream(fos);
 
-			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){ return
-			 * ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
+            
+            ZipEntry ze = new ZipEntry(".\\Screenshots\\"+serialNumber);
+            zos.putNextEntry(ze);
+
+            FileInputStream in = new FileInputStream(".\\Screenshots\\"+serialNumber);
+
+            int len;
+            while ((len = in.read(buffer)) > 0)
+            {
+                zos.write(buffer, 0, len);
+            }
+
+            in.close();
+            zos.closeEntry();
+            
+            // Cerrar el flujo de salida
+            zos.close();
+
+            File file = new File(archivoZip);
+
+            byte[] bytesArray = Files.readAllBytes(file.toPath());
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set("Content-Disposition", "attachment; filename=" + file.getName());
+
+            return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+
+		} catch (Exception e)
 		{
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
@@ -406,16 +478,53 @@ public class ReaktorServerRest
 
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/fullInfo")
 	public ResponseEntity<?> sendFullComputer(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber)
+			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber
+			,@RequestHeader(required = false) Computer computerInstance)
 	{
 		try
 		{
-
+			if(serialNumber != null) 
+			{
+				Computer c = new Computer();
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getSerialNumber().equals(serialNumber)) 
+					{
+						c = computer;
+						
+					}
+				}
+				computers.remove(c);
+				computers.add(computerInstance);
+			}else if(andaluciaId != null) 
+			{
+				Computer c = new Computer();
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getAndaluciaId().equals(andaluciaId)) 
+					{
+						c = computer;
+						
+					}
+				}
+				computers.remove(c);
+				computers.add(computerInstance);
+			}else if(computerNumber != null) 
+			{
+				Computer c = new Computer();
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getComputerNumber().equals(computerNumber)) 
+					{
+						c = computer;
+						
+					}
+				}
+				computers.remove(c);
+				computers.add(computerInstance);
+			}
 			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){ return
-			 * ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
+		} catch (Exception e)
 		{
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
