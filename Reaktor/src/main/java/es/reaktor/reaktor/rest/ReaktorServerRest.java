@@ -24,11 +24,13 @@ import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
 import es.reaktor.models.ComputerError;
+import es.reaktor.models.HardwareComponent;
 import es.reaktor.models.Location;
 import es.reaktor.models.Malware;
 import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
+import es.reaktor.models.Software;
 import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
 import es.reaktor.reaktor.reaktor_actions.ReaktorService;
 import es.reaktor.reaktor.repository.IMalwareRepository;
@@ -59,6 +61,20 @@ public class ReaktorServerRest
 					new Action("uninstall", "chrome.exe"))),
 			"002", new ArrayList<Action>(), "003",
 			new ArrayList<Action>(List.of(new Action("uninstall", "chrome.exe")))));
+	
+	private List<Computer> computers = new ArrayList<Computer>(List.of(
+			new Computer("001", "A001", "1", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
+					null),
+			new Computer("002", "A002", "2", "Linux", "Vicente", new Location("0.5", 0, "10"), null, null, null,
+					null),
+			new Computer("003", "A003", "3", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
+					null),
+			new Computer("004", "A004", "4", "MacOS", "Vicente", new Location("1.5", 1, "2"), null, null, null,
+					null),
+			new Computer("005", "A005", "5", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
+					null),
+			new Computer("006", "A006", "6", "Linux", "Vicente", new Location("2.5", 2, ""), null, null, null,
+					null)));
 
 	@RequestMapping(method = RequestMethod.POST, value = "/reaktor")
 	public ResponseEntity<?> sendInformation(@RequestBody Reaktor reaktor)
@@ -209,7 +225,8 @@ public class ReaktorServerRest
 
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/restart")
 	public ResponseEntity<?> postComputerRestart(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) String classroom, 
+			@RequestHeader(required = false) String trolley,
 			@RequestHeader(required = false) int plant)
 	{
 		try
@@ -235,11 +252,75 @@ public class ReaktorServerRest
 			throw new ComputerError(2, "invalid SerialNumber", null);
 		}
 	}
+	
+	
+	//Function to set a computer to shutdown on the toDo list
+	private void getShutdown (String serialNumber) 
+	{
+		if(!toDo.containsKey(serialNumber))
+		{
+			toDo.put(serialNumber,new ArrayList<Action>());
+		}
+			toDo.get(serialNumber).add(new Action("shutdown",""));
+	}
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/shutdown")
+	public ResponseEntity<?> postComputerShutdown(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, 
+			@RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) int plant)
+	{
+		try
+		{
+			if(serialNumber != null) 
+			{
+				getShutdown(serialNumber);
+			}else if(classroom != null) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getClassroom().equals(classroom)) 
+					{
+						getShutdown(computer.getSerialNumber());
+					}
+				}
+			}else if(trolley != null) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getTrolley().equals(trolley)) 
+					{
+						getShutdown(computer.getSerialNumber());
+					}
+				}
+			}else if(plant != 0) 
+			{
+				for(Computer computer : this.computers) 
+				{
+					if(computer.getLocation().getPlant() == plant) 
+					{
+						getShutdown(computer.getSerialNumber());
+					}
+				}
+			}
+
+			return ResponseEntity.ok().build();
+		} /*
+			 * catch (ComputerError computerError){
+			 * 
+			 * return ResponseEntity.status(400).body(computerError); }
+			 */catch (Exception e)
+		{
+			log.error("Server error", e);
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file")
 	public ResponseEntity<?> postComputerExecFile(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) int plant, @RequestBody(required = true) File file)
+			@RequestHeader(required = false) String classroom, 
+			@RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) int plant, 
+			@RequestBody(required = true) File file)
 	{
 		try
 		{
@@ -344,19 +425,7 @@ public class ReaktorServerRest
 		try
 		{
 
-			List<Computer> computers = new ArrayList<Computer>(List.of(
-					new Computer("001", "A001", "1", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
-							null),
-					new Computer("002", "A002", "2", "Linux", "Vicente", new Location("0.5", 0, "10"), null, null, null,
-							null),
-					new Computer("003", "A003", "3", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
-							null),
-					new Computer("004", "A004", "4", "MacOS", "Vicente", new Location("1.5", 1, "2"), null, null, null,
-							null),
-					new Computer("005", "A005", "5", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
-							null),
-					new Computer("006", "A006", "6", "Linux", "Vicente", new Location("2.5", 2, ""), null, null, null,
-							null)));
+			
 
 			List<Computer> response = new ArrayList<Computer>();
 			if (serialNumber != null)
@@ -417,6 +486,99 @@ public class ReaktorServerRest
 				}
 			}
 
+			return ResponseEntity.ok().body(response);
+		}catch (Exception e)
+		{
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/computer/edit", consumes = "application/json")
+	public ResponseEntity<?> updateComputer(@RequestHeader(required = true) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
+			@RequestHeader(required = false) String operativeSystem, @RequestHeader(required = false) String professor,
+			@RequestHeader(required = false) Location location, @RequestHeader(required = false) List<HardwareComponent> hardwareList,
+			@RequestHeader(required = false) List<Software> softwareList, @RequestHeader(required = false) CommandLine commandLine,
+			@RequestHeader(required = false) MonitorizationLog monitorizationLog)
+	{
+		try
+		{
+
+			List<Computer> response = new ArrayList<Computer>();
+			
+			if (andaluciaId != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setAndaluciaId(andaluciaId);
+					}
+				}
+			} else if (computerNumber != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setComputerNumber(computerNumber);
+					}
+				}
+			} else if (operativeSystem != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setOperativeSystem(operativeSystem);
+					}
+				}
+			} else if (professor != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setProfessor(professor);
+					}
+				}
+			} else if (location != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setLocation(location);
+					}
+				}
+			} else if (hardwareList != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setHardwareList(hardwareList);
+					}
+				}
+			} else if (softwareList != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setSoftwareList(softwareList);
+					}
+				}
+			} else if (commandLine != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setCommandLine(commandLine);
+					}
+				}
+			} else if (monitorizationLog != null)
+			{
+				for(Computer computer : computers) {
+					if (computer.getSerialNumber().equals(serialNumber))
+					{
+						computer.setMonitorizationLog(monitorizationLog);
+					}
+				}
+			}
 			return ResponseEntity.ok().body(response);
 		}catch (Exception e)
 		{
