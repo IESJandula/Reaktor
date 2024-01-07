@@ -58,6 +58,57 @@ public class PendingActions
 			this.close(httpClient, response);
 		}
 	}
+	
+	private void openWeb(String url) throws ComputerError {
+		
+		try
+		{
+			Process proceso = new ProcessBuilder("cmd.exe", "/c", "start " + url).start();
+			
+			proceso.waitFor();
+			
+		} catch (IOException e)
+		{
+			log.warn(e.getMessage());
+			e.printStackTrace();
+			throw new ComputerError(1, url, e);
+		} catch (InterruptedException e)
+		{
+			log.warn(e.getMessage());
+			e.printStackTrace();
+			throw new ComputerError(2, url, e);
+		}
+		
+	}
+	
+	private void configWifi(String nombreRed,String tipoSeguridad,String methodEap,String methodAuth,String password) throws ComputerError
+	{
+		String rutaBatch = "C:\\Users\\alvar\\git\\Reaktor\\ReaktorClient\\src\\main\\resources\\wifiConfig.bat";
+		ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", rutaBatch, nombreRed, tipoSeguridad, methodEap, methodAuth, password);
+
+		try {
+		    Process proceso = builder.start();
+		    int resultado = proceso.waitFor();
+		    if(resultado==0)
+		    {
+		    	log.info("La configuracion wifi fue exitosa");
+		    }
+		} catch (IOException e) {
+			String error="El comando introducido tiene problemas de sintaxis :"+e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1,error, e);
+		} catch (InterruptedException e) {
+			String error="Ha ocurrido un error al ejecutar el comando en este pc : "+e.getMessage();
+			log.warn(e.getMessage());
+			e.printStackTrace();
+			throw new ComputerError(1, error, e);
+		}
+
+	}
+	
+	private void uninstallApp(String appName)
+	{
 
 	private void uninstallApp(String appName) {
 		Scanner scanner = null;
