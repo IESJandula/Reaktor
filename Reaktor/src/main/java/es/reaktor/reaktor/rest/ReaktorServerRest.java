@@ -3,7 +3,6 @@ package es.reaktor.reaktor.rest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import org.springframework.http.HttpHeaders;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,6 +36,7 @@ import es.reaktor.models.MonitorizationLog;
 import es.reaktor.models.Motherboard;
 import es.reaktor.models.Reaktor;
 import es.reaktor.models.Software;
+import es.reaktor.models.Status;
 import es.reaktor.models.DTO.MalwareDTOWeb;
 import es.reaktor.models.DTO.ReaktorDTO;
 import es.reaktor.models.DTO.SimpleComputerDTO;
@@ -81,7 +82,9 @@ public class ReaktorServerRest
 					null),
 			new Computer("006", "A006", "6", "Linux", "Vicente", new Location("2.5", 2, ""), null, null, null,
 					null)));
-
+	
+	private Map<String,List<Status>> statuses = new HashMap<String,List<Status>>();
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/reaktor")
 	public ResponseEntity<?> sendInformation(@RequestBody Reaktor reaktor)
 	{
@@ -531,16 +534,17 @@ public class ReaktorServerRest
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/computers/send/status", consumes = "application/json")
-	public ResponseEntity<?> sendFullComputer()
+	public ResponseEntity<?> sendStatusComputer(@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) Status status)
 	{
 		try
 		{
-
+			if(!statuses.containsKey(serialNumber)) {
+				statuses.put(serialNumber, new ArrayList<Status>());
+			}
+			statuses.get(serialNumber).add(status);
 			return ResponseEntity.ok().build();
-		} /*
-			 * catch (ComputerError computerError){ return
-			 * ResponseEntity.status(400).body(computerError); }
-			 */catch (Exception e)
+		} catch (Exception e)
 		{
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
