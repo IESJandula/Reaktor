@@ -391,28 +391,29 @@ public class HorariosRest
 			{
 				// -- GETTIN TEACHER LIST FROM CSV INFO --- (SESSION)
 				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
-				
+
 				// -- FUSION OF XML TEAHCERS WITH CSV TEACHERS ---
-				if((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro)) 
+				if ((session.getAttribute("storedCentro") != null)
+						&& (session.getAttribute("storedCentro") instanceof Centro))
 				{
 					Centro centro = (Centro) session.getAttribute("storedCentro");
-					for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+					for (Profesor prof : centro.getDatos().getProfesores().getProfesor())
 					{
 						Teacher newTeacher = new Teacher();
 						newTeacher.setName(prof.getNombre().trim());
-						newTeacher.setLastName(prof.getPrimerApellido().trim()+" "+prof.getSegundoApellido().trim());
-						newTeacher.setEmail(prof.getAbreviatura()+"exampleXML@xml.com");
-						newTeacher.setTelephoneNumber(String.valueOf((Math.random()*10000000)+1));
-						newTeacher.setRoles(List.of(Rol.administrador,Rol.conserje,Rol.docente));
-						
+						newTeacher
+								.setLastName(prof.getPrimerApellido().trim() + " " + prof.getSegundoApellido().trim());
+						newTeacher.setEmail(prof.getAbreviatura() + "exampleXML@xml.com");
+						newTeacher.setTelephoneNumber(String.valueOf((Math.random() * 10000000) + 1));
+						newTeacher.setRoles(List.of(Rol.administrador, Rol.conserje, Rol.docente));
+
 						teacherList.add(newTeacher);
 					}
 				}
-				else 
+				else
 				{
 					log.error("ERROR ON LOAD TEACHERS FROM XML");
 				}
-				
 
 				if (!email.trim().isEmpty())
 				{
@@ -1086,7 +1087,8 @@ public class HorariosRest
 		try
 		{
 			// --- GETTING STORED CENTRO ---
-			if ((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro))
+			if ((session.getAttribute("storedCentro") != null)
+					&& (session.getAttribute("storedCentro") instanceof Centro))
 			{
 				Centro centro = (Centro) session.getAttribute("storedCentro");
 				// -- GETTING LIST OF AULA IN CENTER ---
@@ -1862,7 +1864,8 @@ public class HorariosRest
 		try
 		{
 			// --- CHECKING THE VALUE OF STORED CENTRO ---
-			if ((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro))
+			if ((session.getAttribute("storedCentro") != null)
+					&& (session.getAttribute("storedCentro") instanceof Centro))
 			{
 				// --- CASTING OBJECT TO STORED CENTRO ---
 				Centro centro = (Centro) session.getAttribute("storedCentro");
@@ -2743,7 +2746,8 @@ public class HorariosRest
 		try
 		{
 			// --- checking stored CENTRO ---
-			if ((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro))
+			if ((session.getAttribute("storedCentro") != null)
+					&& (session.getAttribute("storedCentro") instanceof Centro))
 			{
 				Centro centro = (Centro) session.getAttribute("storedCentro");
 
@@ -3381,6 +3385,7 @@ public class HorariosRest
 
 	/**
 	 * Method getListPointsCoexistence
+	 * 
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/points")
@@ -3430,10 +3435,12 @@ public class HorariosRest
 		}
 	}
 
-	// -- ENDPOINT FOR GETTING FIRST NAME AND LAST NAME OF A TEACHER FOR REFLECTION --
+	// -- ENDPOINT FOR GETTING FIRST NAME AND LAST NAME OF A TEACHER FOR REFLECTION
+	// --
 
 	/**
 	 * Method getFirstNameSurname
+	 * 
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/namelastname/reflexion")
@@ -3544,7 +3551,8 @@ public class HorariosRest
 		}
 	}
 
-	// -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR BASED ON COURSE --
+	// -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR BASED ON
+	// COURSE --
 	/**
 	 *
 	 * @param course
