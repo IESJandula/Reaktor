@@ -375,7 +375,7 @@ public class HorariosRest
 
 	/**
 	 * Method getRoles , returns ResponseEntity with the teacher roles
-	 * 
+	 *
 	 * @param email
 	 * @param session
 	 * @return ResponseEntity
@@ -385,12 +385,34 @@ public class HorariosRest
 	{
 		try
 		{
-			List<Teacher> teacherList = new ArrayList<Teacher>();
+			List<Teacher> teacherList = new ArrayList<>();
 			// --- VALIDATING CSV INFO (IN SESSION)---
-			if (session.getAttribute("csvInfo") != null && session.getAttribute("csvInfo") instanceof List)
+			if ((session.getAttribute("csvInfo") != null) && (session.getAttribute("csvInfo") instanceof List))
 			{
 				// -- GETTIN TEACHER LIST FROM CSV INFO --- (SESSION)
 				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
+				
+				// -- FUSION OF XML TEAHCERS WITH CSV TEACHERS ---
+				if((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro)) 
+				{
+					Centro centro = (Centro) session.getAttribute("storedCentro");
+					for(Profesor prof : centro.getDatos().getProfesores().getProfesor()) 
+					{
+						Teacher newTeacher = new Teacher();
+						newTeacher.setName(prof.getNombre().trim());
+						newTeacher.setLastName(prof.getPrimerApellido().trim()+" "+prof.getSegundoApellido().trim());
+						newTeacher.setEmail(prof.getAbreviatura()+"exampleXML@xml.com");
+						newTeacher.setTelephoneNumber(String.valueOf((Math.random()*10000000)+1));
+						newTeacher.setRoles(List.of(Rol.administrador,Rol.conserje,Rol.docente));
+						
+						teacherList.add(newTeacher);
+					}
+				}
+				else 
+				{
+					log.error("ERROR ON LOAD TEACHERS FROM XML");
+				}
+				
 
 				if (!email.trim().isEmpty())
 				{
@@ -430,7 +452,7 @@ public class HorariosRest
 
 	/**
 	 * Method getListStudentsAlphabetically
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/sortstudents", produces = "application/json")
@@ -439,13 +461,13 @@ public class HorariosRest
 		try
 		{
 			// --- CREATING FAKE STUDEN LIST ---
-			List<Student> studentList = new ArrayList<Student>();
+			List<Student> studentList = new ArrayList<>();
 			for (int i = 100; i > studentList.size(); i--)
 			{
 				Student student = new Student();
 				student.setCourse(new Course("Course" + i, new Classroom(String.valueOf(i), String.valueOf(i))));
-				student.setName("Alumno1" + (int) (Math.random() * 100 + 1));
-				student.setLastName("PrimerApp" + (int) (Math.random() * 100 + 1));
+				student.setName("Alumno1" + (int) ((Math.random() * 100) + 1));
+				student.setLastName("PrimerApp" + (int) ((Math.random() * 100) + 1));
 				studentList.add(student);
 			}
 			// -- IF ALL ITS DONE , RETURN THE LIST SORTED ---
@@ -464,7 +486,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfHorarioProf
-	 * 
+	 *
 	 * @param horarioProfNodeList
 	 * @param horarioProfList
 	 */
@@ -514,7 +536,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfHorarioAula
-	 * 
+	 *
 	 * @param horarioAulaNodeList
 	 * @param horarioAulaList
 	 */
@@ -564,7 +586,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfHorarioGrup
-	 * 
+	 *
 	 * @param horarioGrupNodeList
 	 * @param horarioGrupList
 	 */
@@ -607,7 +629,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfHorarioAsig
-	 * 
+	 *
 	 * @param horarioAsigNodeList
 	 * @param horarioAsigList
 	 */
@@ -639,7 +661,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfActividad
-	 * 
+	 *
 	 * @param actividadNodeList
 	 * @param actividadList
 	 */
@@ -668,7 +690,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfGruposActividadAttrs
-	 * 
+	 *
 	 * @param actividadList
 	 * @param newActividad
 	 * @param gruposActividad
@@ -759,7 +781,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfTramo
-	 * 
+	 *
 	 * @param tramosHorariosNodeList
 	 * @param tramosList
 	 */
@@ -779,7 +801,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfProfesor
-	 * 
+	 *
 	 * @param profesoresNodeList
 	 * @param profesoresList
 	 */
@@ -808,7 +830,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfAula
-	 * 
+	 *
 	 * @param aulasNodeList
 	 * @param aulasList
 	 */
@@ -827,7 +849,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfGrupo
-	 * 
+	 *
 	 * @param gruposNodeList
 	 * @param gruposList
 	 */
@@ -846,7 +868,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingValuesOfAsignatura
-	 * 
+	 *
 	 * @param asignaturasNodeList
 	 * @param asignaturasList
 	 */
@@ -900,7 +922,7 @@ public class HorariosRest
 
 	/**
 	 * method sendCsvTo
-	 * 
+	 *
 	 * @param archivo
 	 * @return
 	 */
@@ -909,7 +931,7 @@ public class HorariosRest
 	{
 		try
 		{
-			List<Teacher> teachers = new ArrayList<Teacher>();
+			List<Teacher> teachers = new ArrayList<>();
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(archivo.getInputStream())))
 			{
 				// --- READEING LINES FROM CSV ---
@@ -952,7 +974,7 @@ public class HorariosRest
 
 	/**
 	 * Method parsearLineaCSV
-	 * 
+	 *
 	 * @param linea
 	 * @return Teacher
 	 */
@@ -980,7 +1002,7 @@ public class HorariosRest
 			String[] rolesArray = stringTemporal.split(",");
 
 			// --- GETTING EACH VALUE OF STRING AND PARSE TO ROL ---
-			List<Rol> listaRoles = new ArrayList<Rol>();
+			List<Rol> listaRoles = new ArrayList<>();
 			for (String rol : rolesArray)
 			{
 				switch (rol.toLowerCase().trim())
@@ -1011,7 +1033,7 @@ public class HorariosRest
 
 	/**
 	 * Method getTeachers
-	 * 
+	 *
 	 * @param session
 	 * @return ResponseEntity
 	 */
@@ -1020,10 +1042,10 @@ public class HorariosRest
 	{
 		try
 		{
-			List<Teacher> teacherList = new ArrayList<Teacher>();
+			List<Teacher> teacherList = new ArrayList<>();
 
 			// --- GETTING CSV FROM SESSION ---
-			if (session.getAttribute("csvInfo") != null && session.getAttribute("csvInfo") instanceof List)
+			if ((session.getAttribute("csvInfo") != null) && (session.getAttribute("csvInfo") instanceof List))
 			{
 				// --- CASTING TEACHER LIST ---
 				teacherList = (List<Teacher>) session.getAttribute("csvInfo");
@@ -1050,21 +1072,21 @@ public class HorariosRest
 
 	/**
 	 * Method getListCourse
-	 * 
+	 *
 	 * @param session
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/courses", produces = "application/json")
 	public ResponseEntity<?> getListCourse(HttpSession session)
 	{
-		List<Course> listaCurso = new ArrayList<Course>();
+		List<Course> listaCurso = new ArrayList<>();
 		Course curso;
 		Classroom classroom;
-		List<Aula> listaAula = new ArrayList<Aula>();
+		List<Aula> listaAula = new ArrayList<>();
 		try
 		{
 			// --- GETTING STORED CENTRO ---
-			if (session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
+			if ((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro))
 			{
 				Centro centro = (Centro) session.getAttribute("storedCentro");
 				// -- GETTING LIST OF AULA IN CENTER ---
@@ -1073,7 +1095,7 @@ public class HorariosRest
 				// -- FOR EAHC AULA IN listAula ---
 				for (int i = 0; i < listaAula.size(); i++)
 				{
-					if (listaAula.get(i).getAbreviatura().isEmpty() || listaAula.get(i).getAbreviatura() == null)
+					if (listaAula.get(i).getAbreviatura().isEmpty() || (listaAula.get(i).getAbreviatura() == null))
 					{
 						continue;
 					}
@@ -1125,7 +1147,7 @@ public class HorariosRest
 
 	/**
 	 * Method getClassroomTeacher
-	 * 
+	 *
 	 * @param name
 	 * @param lastname
 	 * @return
@@ -1139,8 +1161,8 @@ public class HorariosRest
 			if (!name.isEmpty() && !name.isBlank() && !lastname.isBlank() && !lastname.isEmpty())
 			{
 				// --- GETTING THE STORED CENTRO DATA SESSION ---
-				if (session.getAttribute("storedCentro") != null
-						&& session.getAttribute("storedCentro") instanceof Centro)
+				if ((session.getAttribute("storedCentro") != null)
+						&& (session.getAttribute("storedCentro") instanceof Centro))
 				{
 					Centro centro = (Centro) session.getAttribute("storedCentro");
 					for (Profesor prof : centro.getDatos().getProfesores().getProfesor())
@@ -1159,7 +1181,7 @@ public class HorariosRest
 							log.info(actualTime);
 
 							Tramo profTramo = null;
-							profTramo = gettingTramoActual(centro, actualTime, profTramo);
+							profTramo = this.gettingTramoActual(centro, actualTime, profTramo);
 
 							// --- IF PROF TRAMO IS NOT NULL ---
 							if (profTramo != null)
@@ -1295,7 +1317,7 @@ public class HorariosRest
 
 	/**
 	 * Method getClassroomTeacher
-	 * 
+	 *
 	 * @param name
 	 * @param lastname
 	 * @return
@@ -1311,8 +1333,8 @@ public class HorariosRest
 			if (!name.isEmpty() && !name.isBlank() && !lastname.isBlank() && !lastname.isEmpty())
 			{
 				// --- GETTING THE STORED CENTRO DATA SESSION ---
-				if (session.getAttribute("storedCentro") != null
-						&& session.getAttribute("storedCentro") instanceof Centro)
+				if ((session.getAttribute("storedCentro") != null)
+						&& (session.getAttribute("storedCentro") instanceof Centro))
 				{
 					Centro centro = (Centro) session.getAttribute("storedCentro");
 					for (Profesor prof : centro.getDatos().getProfesores().getProfesor())
@@ -1463,7 +1485,7 @@ public class HorariosRest
 
 	/**
 	 * Method getClassroomCourse
-	 * 
+	 *
 	 * @param courseName
 	 * @return ResponseEntity
 	 */
@@ -1474,8 +1496,8 @@ public class HorariosRest
 		{
 			if (!courseName.isBlank() && !courseName.isBlank())
 			{
-				if (session.getAttribute("storedCentro") != null
-						&& session.getAttribute("storedCentro") instanceof Centro)
+				if ((session.getAttribute("storedCentro") != null)
+						&& (session.getAttribute("storedCentro") instanceof Centro))
 				{
 					Centro centro = (Centro) session.getAttribute("storedCentro");
 
@@ -1559,7 +1581,7 @@ public class HorariosRest
 										}
 									}
 
-									if (profesor != null && asignatura != null)
+									if ((profesor != null) && (asignatura != null))
 									{
 										// --- THE FINAL PROFESSOR AND ASIGNATURA ---
 										log.info("PROFESOR: " + profesor + "\n" + "ASIGNATURA: " + asignatura);
@@ -1681,7 +1703,7 @@ public class HorariosRest
 
 	/**
 	 * Method getClassroomCourse
-	 * 
+	 *
 	 * @param courseName
 	 * @param session
 	 * @return ResponseEntity
@@ -1695,8 +1717,8 @@ public class HorariosRest
 			if (!courseName.isBlank() && !courseName.isEmpty())
 			{
 				// --- CHECKING THE VALUE OF STOREDCENTRO FROM SESSION ---
-				if (session.getAttribute("storedCentro") != null
-						&& session.getAttribute("storedCentro") instanceof Centro)
+				if ((session.getAttribute("storedCentro") != null)
+						&& (session.getAttribute("storedCentro") instanceof Centro))
 				{
 					// --- CASTING OBJECT TO CENTRO ---
 					Centro centro = (Centro) session.getAttribute("storedCentro");
@@ -1831,7 +1853,7 @@ public class HorariosRest
 
 	/**
 	 * Method getListHours
-	 * 
+	 *
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/hours", produces = "application/json")
@@ -1840,11 +1862,11 @@ public class HorariosRest
 		try
 		{
 			// --- CHECKING THE VALUE OF STORED CENTRO ---
-			if (session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
+			if ((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro))
 			{
 				// --- CASTING OBJECT TO STORED CENTRO ---
 				Centro centro = (Centro) session.getAttribute("storedCentro");
-				List<Hour> hourList = new ArrayList<Hour>();
+				List<Hour> hourList = new ArrayList<>();
 				for (int i = 0; i < 7; i++)
 				{
 					// --- GETTING THE INFO OF EACH TRAMO, BUT ONLY THE FIRST 7 TRAMOS , BECAUSE THT
@@ -1925,62 +1947,58 @@ public class HorariosRest
 		}
 
 	}
-	
-	
-	
+
 	/**
 	 * @author MANU
 	 * @param name
 	 * @param lastname
 	 * @param course
 	 * @return
-	 */	
-	@RequestMapping(method = RequestMethod.POST,value = "/student/visita/bathroom",produces = "application/json")
-	public ResponseEntity<?> postVisit(
-			@RequestHeader(required=true) String name,
-			@RequestHeader(required=true) String lastname,
-			@RequestHeader(required=true) String course,
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/student/visita/bathroom", produces = "application/json")
+	public ResponseEntity<?> postVisit(@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String course,
 			HttpSession session)
 	{
-		try 
+		try
 		{
-			
-			Student student = new Student(name,lastname,new Course(course,null));
-	        
-			//GET THE CURRENT TIME
-	        LocalDateTime currentDateTime = LocalDateTime.now();
 
-	        //MAP WITH THE STUDENT AND THE TIME HE GO TO THE BATHROOM
-	        Map<String, Object> studentDataTimeMap = new HashMap<>();
-	        studentDataTimeMap.put("Informacion estudiante", student);
-	        studentDataTimeMap.put("Fecha Actual", currentDateTime);
-	        String studenNameLastname = name + " " + lastname; 
-	        //STUDENTS WITH A LIST OF DATES FOR EVERYONE SAVED IN SESSION
-	        List<LocalDateTime> fechasAlumno = (List<LocalDateTime>) session.getAttribute(studenNameLastname + "_visitas");
-	        //CREATE THE LIST IF ITS NULL
-	        if(fechasAlumno == null) 
-	        {
-	        	
-	        	fechasAlumno = new ArrayList<LocalDateTime>();
-	        	
-	        }
-	        //WE ADD THE DATE TO THE LIST
-	        fechasAlumno.add(currentDateTime);
-	        //SET THE ATRIBUTTE
-	        session.setAttribute(studenNameLastname + "_visitas", fechasAlumno);
-	          
-	        return ResponseEntity.ok().body(studentDataTimeMap);		
+			Student student = new Student(name, lastname, new Course(course, null));
+
+			// GET THE CURRENT TIME
+			LocalDateTime currentDateTime = LocalDateTime.now();
+
+			// MAP WITH THE STUDENT AND THE TIME HE GO TO THE BATHROOM
+			Map<String, Object> studentDataTimeMap = new HashMap<>();
+			studentDataTimeMap.put("Informacion estudiante", student);
+			studentDataTimeMap.put("Fecha Actual", currentDateTime);
+			String studenNameLastname = name + " " + lastname;
+			// STUDENTS WITH A LIST OF DATES FOR EVERYONE SAVED IN SESSION
+			List<LocalDateTime> fechasAlumno = (List<LocalDateTime>) session
+					.getAttribute(studenNameLastname + "_visitas");
+			// CREATE THE LIST IF ITS NULL
+			if (fechasAlumno == null)
+			{
+
+				fechasAlumno = new ArrayList<>();
+
+			}
+			// WE ADD THE DATE TO THE LIST
+			fechasAlumno.add(currentDateTime);
+			// SET THE ATRIBUTTE
+			session.setAttribute(studenNameLastname + "_visitas", fechasAlumno);
+
+			return ResponseEntity.ok().body(studentDataTimeMap);
 		}
-		catch(Exception exception) 
-		{		
+		catch (Exception exception)
+		{
 			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error,exception);
-			log.error(error,exception);
-			return ResponseEntity.status(500).body(horariosError);	
-		}		
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
 	}
-	
-	
+
 	/**
 	 * @author MANU
 	 * @param name
@@ -1989,47 +2007,45 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST,value = "/student/regreso/bathroom",produces = "application/json")
-	public ResponseEntity<?> postReturnBathroom(
-			@RequestHeader(required=true) String name,
-			@RequestHeader(required=true) String lastname,
-			@RequestHeader(required=true) String course,
+	@RequestMapping(method = RequestMethod.POST, value = "/student/regreso/bathroom", produces = "application/json")
+	public ResponseEntity<?> postReturnBathroom(@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String course,
 			HttpSession session)
 	{
-		try 
+		try
 		{
-			Student student = new Student(name,lastname,new Course(course,null));
-			//GET THE CURRENT TIME
-	        LocalDateTime currentDateTime = LocalDateTime.now();
+			Student student = new Student(name, lastname, new Course(course, null));
+			// GET THE CURRENT TIME
+			LocalDateTime currentDateTime = LocalDateTime.now();
 
-	      //MAP WITH THE STUDENT AND THE TIME HE COMEBACK TO THE BATHROOM
-	        Map<String, Object> studentDataComebackTimeMap = new HashMap<>();
-	        studentDataComebackTimeMap.put("Informacion estudiante", student);
-	        studentDataComebackTimeMap.put("Fecha Actual", currentDateTime);
-	        String studenNameLastname = name + " " + lastname; 
-	        List<LocalDateTime> fechasAlumnoComeback = (List<LocalDateTime>) session.getAttribute(studenNameLastname + "_visitas");
-	        //CREATE THE LIST IF ITS NULL
-	        if(fechasAlumnoComeback == null) 
-	        {
-	        	
-	        	fechasAlumnoComeback = new ArrayList<LocalDateTime>();
-	        	
-	        }
-	        //WE ADD THE DATE TO THE LIST
-	        fechasAlumnoComeback.add(currentDateTime);
+			// MAP WITH THE STUDENT AND THE TIME HE COMEBACK TO THE BATHROOM
+			Map<String, Object> studentDataComebackTimeMap = new HashMap<>();
+			studentDataComebackTimeMap.put("Informacion estudiante", student);
+			studentDataComebackTimeMap.put("Fecha Actual", currentDateTime);
+			String studenNameLastname = name + " " + lastname;
+			List<LocalDateTime> fechasAlumnoComeback = (List<LocalDateTime>) session
+					.getAttribute(studenNameLastname + "_visitas");
+			// CREATE THE LIST IF ITS NULL
+			if (fechasAlumnoComeback == null)
+			{
 
-	        return ResponseEntity.ok().body(studentDataComebackTimeMap);		
+				fechasAlumnoComeback = new ArrayList<>();
+
+			}
+			// WE ADD THE DATE TO THE LIST
+			fechasAlumnoComeback.add(currentDateTime);
+
+			return ResponseEntity.ok().body(studentDataComebackTimeMap);
 		}
-		catch(Exception exception) 
-		{		
+		catch (Exception exception)
+		{
 			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error,exception);
-			log.error(error,exception);
-			return ResponseEntity.status(500).body(horariosError);	
-		}		
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
 	}
-	
-	
+
 	/**
 	 * @author MANU
 	 * @param name
@@ -2039,35 +2055,32 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET,value = "/get/veces/visitado/studentFechas",produces = "application/json")
-	public ResponseEntity<?> getNumberVisitsBathroom(
-			@RequestHeader(required=true) String name,
-			@RequestHeader(required=true) String lastname,
-			@RequestHeader(required=true) String fechaInicio,
-			@RequestHeader(required=true) String fechaEnd,
-			HttpSession session)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/veces/visitado/studentFechas", produces = "application/json")
+	public ResponseEntity<?> getNumberVisitsBathroom(@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String fechaInicio,
+			@RequestHeader(required = true) String fechaEnd, HttpSession session)
 	{
-		try 
+		try
 		{
-			//CONCAT NAME WITH LASTNAME TO GET A UNIC KEY
+			// CONCAT NAME WITH LASTNAME TO GET A UNIC KEY
 			String studentNameLastname = name + " " + lastname;
-			//PARSE STRING TO DATE
+			// PARSE STRING TO DATE
 			LocalDate startDate = LocalDate.parse(fechaInicio);
-	        LocalDate endDate = LocalDate.parse(fechaEnd);
-	        //CALL METHOD TO COUNT THE VISITS
-	        int visitCount = getVisitsInRange(session, studentNameLastname, startDate, endDate);
-	        return ResponseEntity.ok().body("Número de visitas del alumno: " + visitCount);
-			
+			LocalDate endDate = LocalDate.parse(fechaEnd);
+			// CALL METHOD TO COUNT THE VISITS
+			int visitCount = this.getVisitsInRange(session, studentNameLastname, startDate, endDate);
+			return ResponseEntity.ok().body("Número de visitas del alumno: " + visitCount);
+
 		}
-		catch(Exception exception) 
-		{		
+		catch (Exception exception)
+		{
 			String error = "Server Error";
-			HorariosError horariosError = new HorariosError(500, error,exception);
-			log.error(error,exception);
-			return ResponseEntity.status(500).body(horariosError);	
-		}	
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
 	}
-	
+
 	/**
 	 * @author MANU
 	 * @param fechaInicio
@@ -2075,33 +2088,29 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET,value = "/get/students/visitas/bathroom",produces = "application/json")
-	public ResponseEntity<?> getListTimesBathroom(
-			@RequestHeader(required=true) String fechaInicio,
-			@RequestHeader(required=true) String fechaEnd,
-			HttpSession session)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/students/visitas/bathroom", produces = "application/json")
+	public ResponseEntity<?> getListTimesBathroom(@RequestHeader(required = true) String fechaInicio,
+			@RequestHeader(required = true) String fechaEnd, HttpSession session)
 	{
-		try 
+		try
 		{
-	        //PARSE STRING TO DATES
-	        LocalDate startDate = LocalDate.parse(fechaInicio);
-	        LocalDate endDate = LocalDate.parse(fechaEnd);
-	        //SAVE THE RESPONSE OF THE METHOD IN A MAP
-	        Map<String, Integer> studentVisitsMap = getStudentVisitsMap(session, startDate, endDate);
+			// PARSE STRING TO DATES
+			LocalDate startDate = LocalDate.parse(fechaInicio);
+			LocalDate endDate = LocalDate.parse(fechaEnd);
+			// SAVE THE RESPONSE OF THE METHOD IN A MAP
+			Map<String, Integer> studentVisitsMap = this.getStudentVisitsMap(session, startDate, endDate);
 
-	        return ResponseEntity.ok().body(studentVisitsMap);
-	    } 
-			catch (Exception exception) 
+			return ResponseEntity.ok().body(studentVisitsMap);
+		}
+		catch (Exception exception)
 		{
-	        String error = "Server Error";
-	        HorariosError horariosError = new HorariosError(500, error, exception);
-	        log.error(error, exception);
-	        return ResponseEntity.status(500).body(horariosError);
-	    }
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
 	}
-	
-	
-	
+
 	/**
 	 * @author MANU
 	 * @param name
@@ -2111,120 +2120,118 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET,value = "/get/dias/studentBathroom",produces = "application/json")
-	public ResponseEntity<?> getDayHourBathroom(
-			@RequestHeader(required=true) String name,
-			@RequestHeader(required=true) String lastname,
-			@RequestHeader(required=true) String fechaInicio,
-			@RequestHeader(required=true) String fechaEnd,
-			HttpSession session)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/dias/studentBathroom", produces = "application/json")
+	public ResponseEntity<?> getDayHourBathroom(@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String fechaInicio,
+			@RequestHeader(required = true) String fechaEnd, HttpSession session)
 	{
-		try 
+		try
 		{
-			//PARSE THE STRING TO DATES
-	        LocalDate startDate = LocalDate.parse(fechaInicio);
-	        LocalDate endDate = LocalDate.parse(fechaEnd);
+			// PARSE THE STRING TO DATES
+			LocalDate startDate = LocalDate.parse(fechaInicio);
+			LocalDate endDate = LocalDate.parse(fechaEnd);
 
-	      //CONCAT NAME WITH LASTNAME TO GET A UNIC KEY
-	        String studentNameLastname = name + " " + lastname;
+			// CONCAT NAME WITH LASTNAME TO GET A UNIC KEY
+			String studentNameLastname = name + " " + lastname;
 
-	        // MAP TO SAVE THE VISITS PER DAY
-	        Map<LocalDate, Integer> visitsPerDay = new HashMap<>();
+			// MAP TO SAVE THE VISITS PER DAY
+			Map<LocalDate, Integer> visitsPerDay = new HashMap<>();
 
-	        //WE TAKE THE INITIAL DATE AND ADD 1 DAY UNTIL WE REACH THE END DATE 
-	        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) 
-	        {
-	        	int visitsOnDay = 0;
-	            // CALL METHOT THE GET THE VISITS IN THE RANGE OF DATES
-	            visitsOnDay = getVisitsInRange(session, studentNameLastname, date, date);
-	            visitsPerDay.put(date, visitsOnDay);
-	        }
-	        return ResponseEntity.ok().body(visitsPerDay);
-	    } 
-		catch (Exception exception) 
+			// WE TAKE THE INITIAL DATE AND ADD 1 DAY UNTIL WE REACH THE END DATE
+			for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1))
+			{
+				int visitsOnDay = 0;
+				// CALL METHOT THE GET THE VISITS IN THE RANGE OF DATES
+				visitsOnDay = this.getVisitsInRange(session, studentNameLastname, date, date);
+				visitsPerDay.put(date, visitsOnDay);
+			}
+			return ResponseEntity.ok().body(visitsPerDay);
+		}
+		catch (Exception exception)
 		{
-	        String error = "Error en el servidor";
-	        HorariosError horariosError = new HorariosError(500, error, exception);
-	        log.error(error, exception);
-	        return ResponseEntity.status(500).body(horariosError);
-	    }
+			String error = "Error en el servidor";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
 	}
-	
-	
+
 	/**
-	 * 
+	 *
 	 * @param session
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-	private Map<String, Integer> getStudentVisitsMap(HttpSession session, LocalDate startDate, LocalDate endDate) 
+	private Map<String, Integer> getStudentVisitsMap(HttpSession session, LocalDate startDate, LocalDate endDate)
 	{
-	    // CREATE A MAP TO SAVE THE RESULTS
-	    Map<String, Integer> studentVisitsMap = new HashMap<>();
+		// CREATE A MAP TO SAVE THE RESULTS
+		Map<String, Integer> studentVisitsMap = new HashMap<>();
 
-	    // GET A LIST OF ATTRIBUTE NAMES FROM THE SESSION 
-	    List<String> attributeNames = Collections.list(session.getAttributeNames());
+		// GET A LIST OF ATTRIBUTE NAMES FROM THE SESSION
+		List<String> attributeNames = Collections.list(session.getAttributeNames());
 
-	    // ITERATE THROUGH THE ATTRIBUTE NAMES TO FIND THOSE ENDING WITH _VISITAS 
-	    for (String attributeName : attributeNames) 
-	    {
-	        if (attributeName.endsWith("_visitas")) 
-	        {
-	            // EXTRACT THE STUDENT NAMELASTNAME FROM THE ATTRIBUTENAME
-	            String studentNameLastname = attributeName.replace("_visitas", "");
+		// ITERATE THROUGH THE ATTRIBUTE NAMES TO FIND THOSE ENDING WITH _VISITAS
+		for (String attributeName : attributeNames)
+		{
+			if (attributeName.endsWith("_visitas"))
+			{
+				// EXTRACT THE STUDENT NAMELASTNAME FROM THE ATTRIBUTENAME
+				String studentNameLastname = attributeName.replace("_visitas", "");
 
-	            // CALL METHOD TO GET THE TOTAL VISITS IN A RANGE
-	            int visitsInRange = getTotalVisitsInRange(session, studentNameLastname, startDate, endDate);
+				// CALL METHOD TO GET THE TOTAL VISITS IN A RANGE
+				int visitsInRange = this.getTotalVisitsInRange(session, studentNameLastname, startDate, endDate);
 
-	            // PUT THE STUDENT NAMELASTNAME AND TOTAL VISITS INTO THE MAP
-	            studentVisitsMap.put(studentNameLastname, visitsInRange);
-	        }
-	    }
+				// PUT THE STUDENT NAMELASTNAME AND TOTAL VISITS INTO THE MAP
+				studentVisitsMap.put(studentNameLastname, visitsInRange);
+			}
+		}
 
-	    // RETURN THE MAP
-	    return studentVisitsMap;
+		// RETURN THE MAP
+		return studentVisitsMap;
 	}
+
 	/**
 	 * Method
+	 *
 	 * @param session
 	 * @param studentNameLastname
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-	public int getTotalVisitsInRange(HttpSession session, String studentNameLastname, LocalDate startDate, LocalDate endDate) 
+	public int getTotalVisitsInRange(HttpSession session, String studentNameLastname, LocalDate startDate,
+			LocalDate endDate)
 	{
-	    // INITIALIZE THE TOAL VISITS COUNT 
-	    int totalVisitsInRange = 0;
+		// INITIALIZE THE TOAL VISITS COUNT
+		int totalVisitsInRange = 0;
 
-	    // GET A LIST OF ATTRIBUTENAMES FROM THE SESSION
-	    List<String> attributeNames = Collections.list(session.getAttributeNames());
+		// GET A LIST OF ATTRIBUTENAMES FROM THE SESSION
+		List<String> attributeNames = Collections.list(session.getAttributeNames());
 
-	    //ITERATE THROUGH THE ATTRIBUTE NAMES TO FIND THOSE ENDING WITH _VISITAS 
-	    for (String attributeName : attributeNames) 
-	    {
-	        if (attributeName.endsWith("_visitas")) 
-	        {
-	            // EXTRACT _VISITAS TO GET THE STUDENT 
-	            String studentTemporal = attributeName.replace("_visitas", "");
+		// ITERATE THROUGH THE ATTRIBUTE NAMES TO FIND THOSE ENDING WITH _VISITAS
+		for (String attributeName : attributeNames)
+		{
+			if (attributeName.endsWith("_visitas"))
+			{
+				// EXTRACT _VISITAS TO GET THE STUDENT
+				String studentTemporal = attributeName.replace("_visitas", "");
 
-	            // CHECK IF THE STUDENT EXISTS
-	            if (studentTemporal.equals(studentNameLastname)) 
-	            {
-	                // CALL METHOD THE GET THE VISITS IN THE RANGE
-	                int visitsInRange = getVisitsInRange(session, studentTemporal, startDate, endDate);
+				// CHECK IF THE STUDENT EXISTS
+				if (studentTemporal.equals(studentNameLastname))
+				{
+					// CALL METHOD THE GET THE VISITS IN THE RANGE
+					int visitsInRange = this.getVisitsInRange(session, studentTemporal, startDate, endDate);
 
-	                // UPDATE THE TOTAL VISITS
-	                totalVisitsInRange += visitsInRange;
-	            }
-	        }
-	    }
+					// UPDATE THE TOTAL VISITS
+					totalVisitsInRange += visitsInRange;
+				}
+			}
+		}
 
-	    // RETURN TOTALS VISITS
-	    return totalVisitsInRange;
+		// RETURN TOTALS VISITS
+		return totalVisitsInRange;
 	}
-	
 
 	/**
 	 * @author MANU
@@ -2234,51 +2241,52 @@ public class HorariosRest
 	 * @param endDate
 	 * @return
 	 */
-	public int getVisitsInRange(HttpSession session, String studentNameLastname, LocalDate startDate, LocalDate endDate) 
+	public int getVisitsInRange(HttpSession session, String studentNameLastname, LocalDate startDate, LocalDate endDate)
 	{
-		//COUNT FOR THE VISITS
-	    int visitsInRange = 0;
-	    //GET THE LIST IN SESSION
-	    List <LocalDateTime> lista = (List<LocalDateTime>)session.getAttribute(studentNameLastname + "_visitas");
-	    
-	    if(lista != null) 
-	    {
-	    	
-	    	for(LocalDateTime date : lista) 
-		    {
-	    		LocalDate localDate = date.toLocalDate();
-	    		//LIST DATE HAS TO BE FREATER THAN OR EQUAL TO STARDATE AND LESS THAN OR EQUAL TO ENDDATE
-	    		if (localDate.isEqual(startDate) || (localDate.isAfter(startDate) && localDate.isBefore(endDate)) || localDate.isEqual(endDate))
-		    	{
-		    		//INCREMENT THE COUNT
-	    			visitsInRange++;
-	    			
-		    	}	
-		    }	
-	    }
-	    
-	    return visitsInRange;
+		// COUNT FOR THE VISITS
+		int visitsInRange = 0;
+		// GET THE LIST IN SESSION
+		List<LocalDateTime> lista = (List<LocalDateTime>) session.getAttribute(studentNameLastname + "_visitas");
+
+		if (lista != null)
+		{
+
+			for (LocalDateTime date : lista)
+			{
+				LocalDate localDate = date.toLocalDate();
+				// LIST DATE HAS TO BE FREATER THAN OR EQUAL TO STARDATE AND LESS THAN OR EQUAL
+				// TO ENDDATE
+				if (localDate.isEqual(startDate) || (localDate.isAfter(startDate) && localDate.isBefore(endDate))
+						|| localDate.isEqual(endDate))
+				{
+					// INCREMENT THE COUNT
+					visitsInRange++;
+
+				}
+			}
+		}
+
+		return visitsInRange;
 	}
 
-		
 	/**
-	 * @author MANU
-	 * get the number of times a student go to the bathroom saved in session
+	 * @author MANU get the number of times a student go to the bathroom saved in
+	 *         session
 	 * @param session
 	 * @param studentNameLastname
 	 * @return
 	 */
-	public int getVisitCount(HttpSession session, String studentNameLastname) 
+	public int getVisitCount(HttpSession session, String studentNameLastname)
 	{
-		//GET THE NUMBER OF TIMES THE STUDENT WENT TO THE BATHROOM FROM THE SESSION
-        Integer visitCount = (Integer) session.getAttribute(studentNameLastname + "_visitas");
-        //RETURN THE NUMBER OF TIMES THE STUDENT WENT TO THE BATHROOM OR 0 IF NULL
-        return visitCount != null ? visitCount : 0;
-    }
+		// GET THE NUMBER OF TIMES THE STUDENT WENT TO THE BATHROOM FROM THE SESSION
+		Integer visitCount = (Integer) session.getAttribute(studentNameLastname + "_visitas");
+		// RETURN THE NUMBER OF TIMES THE STUDENT WENT TO THE BATHROOM OR 0 IF NULL
+		return visitCount != null ? visitCount : 0;
+	}
 
 	/**
 	 * Method getSchedulePdf
-	 * 
+	 *
 	 * @param name
 	 * @param lastname
 	 * @param session
@@ -2340,19 +2348,19 @@ public class HorariosRest
 							// --- HORARIO EXISTS ---
 							// --- CREATING THE MAP WITH KEY STRING TRAMO DAY AND VALUE LIST OF ACTIVIDAD
 							// ---
-							Map<String, List<Actividad>> profesorMap = new HashMap<String, List<Actividad>>();
+							Map<String, List<Actividad>> profesorMap = new HashMap<>();
 
 							// --- FOR EACH ACTIVIDAD , GET THE TRAMO DAY , AND PUT ON MAP WITH THE
 							// ACTIVIDADES OF THIS DAY (LIST ACTIVIDAD) ---
 							for (Actividad actividad : horarioProfesor.getActividad())
 							{
-								Tramo tramo = extractTramoFromCentroActividad(centro, actividad);
+								Tramo tramo = this.extractTramoFromCentroActividad(centro, actividad);
 
 								// --- CHECKING IF THE TRAMO DAY EXISTS ---
 								if (!profesorMap.containsKey(tramo.getNumeroDia().trim()))
 								{
 									// --- ADD THE NEW KEY AND VALUE ---
-									List<Actividad> actividadList = new ArrayList<Actividad>();
+									List<Actividad> actividadList = new ArrayList<>();
 									actividadList.add(actividad);
 									Collections.sort(actividadList);
 
@@ -2479,7 +2487,7 @@ public class HorariosRest
 
 	/**
 	 * Method extractTramoFromCentroActividad
-	 * 
+	 *
 	 * @param centro
 	 * @param actividad
 	 * @param tramo
@@ -2500,7 +2508,7 @@ public class HorariosRest
 
 	/**
 	 * Method getSchedulePdf
-	 * 
+	 *
 	 * @param name
 	 * @param lastname
 	 * @param session
@@ -2512,7 +2520,7 @@ public class HorariosRest
 		try
 		{
 			// --- CHEKING THE GRUPO ---
-			if (grupo != null && !grupo.trim().isBlank() && !grupo.trim().isEmpty())
+			if ((grupo != null) && !grupo.trim().isBlank() && !grupo.trim().isEmpty())
 			{
 				// --- CHECKING IF THE PDF CENTRO IS NULL ---
 				if (this.centroPdfs != null)
@@ -2558,10 +2566,10 @@ public class HorariosRest
 							List<Actividad> actividadList = horarioGrup.getActividad();
 
 							// --- ACTIVIDAD_LIST HV MORE THAN 0 ACTIVIDAD AN IS NOT NULL ---
-							if (actividadList != null && actividadList.size() > 0)
+							if ((actividadList != null) && (actividadList.size() > 0))
 							{
 								// --- GENERATE THE MAP FOR TRAMO DAY , AND ACTIVIDAD LIST ---
-								Map<String, List<Actividad>> grupoMap = new HashMap<String, List<Actividad>>();
+								Map<String, List<Actividad>> grupoMap = new HashMap<>();
 
 								// --- CALSIFICATE EACH ACTIVIDAD ON THE SPECIFIC DAY ---
 								for (Actividad actv : actividadList)
@@ -2573,7 +2581,7 @@ public class HorariosRest
 									// ACTIVIDAD LIST ---
 									if (!grupoMap.containsKey(tramo.getNumeroDia().trim()))
 									{
-										List<Actividad> temporalList = new ArrayList<Actividad>();
+										List<Actividad> temporalList = new ArrayList<>();
 										temporalList.add(actv);
 										grupoMap.put(tramo.getNumeroDia().trim(), temporalList);
 
@@ -2715,7 +2723,7 @@ public class HorariosRest
 
 	/**
 	 * Method getTeacherClassroom
-	 * 
+	 *
 	 * @param name
 	 * @param lastname
 	 * @param session
@@ -2726,7 +2734,7 @@ public class HorariosRest
 			@RequestHeader(required = true) String lastname, HttpSession session)
 	{
 		// -- LISTA ESTUDIANTES -- (FAKE) ---
-		List<Student> listaEstudiantes = new ArrayList<Student>(
+		List<Student> listaEstudiantes = new ArrayList<>(
 				List.of(new Student("David", "Martinez Flores", new Course("1ESOA", null)),
 						new Student("Pablo", "Fernandez Garcia", new Course("2ESOB", null)),
 						new Student("Manuel", "Belmonte Oliva", new Course("3ESOA", null)),
@@ -2735,11 +2743,11 @@ public class HorariosRest
 		try
 		{
 			// --- checking stored CENTRO ---
-			if (session.getAttribute("storedCentro") != null && session.getAttribute("storedCentro") instanceof Centro)
+			if ((session.getAttribute("storedCentro") != null) && (session.getAttribute("storedCentro") instanceof Centro))
 			{
 				Centro centro = (Centro) session.getAttribute("storedCentro");
 
-				if (name != null && !name.trim().isBlank() && !name.trim().isEmpty())
+				if ((name != null) && !name.trim().isBlank() && !name.trim().isEmpty())
 				{
 					// -- NOMBRE Y APELLIDOS CON CONTENIDO ---
 
@@ -2975,6 +2983,7 @@ public class HorariosRest
 
 	/**
 	 * Method gettingTramoActual
+	 *
 	 * @param centro
 	 * @param actualTime
 	 * @param tramoActual
@@ -3022,7 +3031,7 @@ public class HorariosRest
 				{
 					// --- CHEKING IF THE MINUTO ACTUAL IS GREATER THAN THE MINUTO INICIO AND
 					// HORA ACTUAL LESS THAN HORA FIN ---
-					if (minutoActual >= minutoInicio && horaActual <= horaFin)
+					if ((minutoActual >= minutoInicio) && (horaActual <= horaFin))
 					{
 						// --- SETTING THE VALUE OF TRAMO INTO PROF TRAMO ---
 						log.info("ENCONTRADO -> " + tramo);
@@ -3046,123 +3055,126 @@ public class HorariosRest
 		}
 		return tramoActual;
 	}
-	
 
 	/**
 	 * Method getTeachersSchedule
+	 *
 	 * @return ResponseEntity , File PDF
 	 */
-	@RequestMapping(method = RequestMethod.GET , value = "/get/teachers/pdf" , produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers/pdf", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> getTeachersSchedule()
 	{
-		try {
-		Map<Profesor,Map<String,List<Actividad>>> mapProfesors = new HashMap<Profesor,Map<String,List<Actividad>>>();
-		if(this.centroPdfs!=null) 
+		try
 		{
-			// --- CENTRO PDF IS LOADED---
-			for(Profesor profesor: this.centroPdfs.getDatos().getProfesores().getProfesor()) 
+			Map<Profesor, Map<String, List<Actividad>>> mapProfesors = new HashMap<>();
+			if (this.centroPdfs != null)
 			{
-				// --- FOR EACH PROFESOR ---
-				HorarioProf horarioProf = null;
-				for(HorarioProf horarioPrf : this.centroPdfs.getHorarios().getHorariosProfesores().getHorarioProf()) 
+				// --- CENTRO PDF IS LOADED---
+				for (Profesor profesor : this.centroPdfs.getDatos().getProfesores().getProfesor())
 				{
-					if(horarioPrf.getHorNumIntPR().trim().equalsIgnoreCase(profesor.getNumIntPR().trim())) 
+					// --- FOR EACH PROFESOR ---
+					HorarioProf horarioProf = null;
+					for (HorarioProf horarioPrf : this.centroPdfs.getHorarios().getHorariosProfesores()
+							.getHorarioProf())
 					{
-						horarioProf = horarioPrf;
-					}
-				}
-				
-				if(horarioProf!=null) 
-				{
-					// --- HORARIO PROF EXISTS ---
-					
-					// --- FOR EACH ACTIVIDAD ---
-					Map<String,List<Actividad>> mapProfesor = new HashMap<String,List<Actividad>>();
-					for(Actividad atcv : horarioProf.getActividad()) 
-					{
-						Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, atcv);
-						
-						if(!mapProfesor.containsKey(temporalTramo.getNumeroDia().trim())) 
+						if (horarioPrf.getHorNumIntPR().trim().equalsIgnoreCase(profesor.getNumIntPR().trim()))
 						{
-							List<Actividad> temporalList = new ArrayList<Actividad>();
-							temporalList.add(atcv);
-							mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
-						}
-						else 
-						{
-							List<Actividad> temporalList = mapProfesor.get(temporalTramo.getNumeroDia().trim());
-							temporalList.add(atcv);
-							mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
+							horarioProf = horarioPrf;
 						}
 					}
 
-					// --- ADD THE PROFESSOR WITH THE PROFESSOR MAP ---
-					mapProfesors.put(profesor, mapProfesor);
-				}
-				else 
-				{
-					log.error("ERROR profesor "+profesor+" HORARIO PROF NOT FOUND OR NULL");
-				}
-			}
-			
-			try
-			{
-				// --- USING APPLICATION PDF TO GENERATE THE PDF , WITH ALL TEACHERS ---
-				ApplicationPdf applicationPdf = new ApplicationPdf();
-				applicationPdf.getAllTeachersPdfInfo(mapProfesors,this.centroPdfs);
-				
-				// --- GETTING THE PDF BY NAME URL ---
-				File file = new File("All_Teachers_Horarios.pdf");
+					if (horarioProf != null)
+					{
+						// --- HORARIO PROF EXISTS ---
 
-				// --- SETTING THE HEADERS WITH THE NAME OF THE FILE TO DOWLOAD PDF ---
-				HttpHeaders responseHeaders = new HttpHeaders();
-				// --- SET THE HEADERS ---
-				responseHeaders.set("Content-Disposition", "attachment; filename=" + file.getName());
+						// --- FOR EACH ACTIVIDAD ---
+						Map<String, List<Actividad>> mapProfesor = new HashMap<>();
+						for (Actividad atcv : horarioProf.getActividad())
+						{
+							Tramo temporalTramo = this.extractTramoFromCentroActividad(this.centroPdfs, atcv);
+
+							if (!mapProfesor.containsKey(temporalTramo.getNumeroDia().trim()))
+							{
+								List<Actividad> temporalList = new ArrayList<>();
+								temporalList.add(atcv);
+								mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
+							}
+							else
+							{
+								List<Actividad> temporalList = mapProfesor.get(temporalTramo.getNumeroDia().trim());
+								temporalList.add(atcv);
+								mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
+							}
+						}
+
+						// --- ADD THE PROFESSOR WITH THE PROFESSOR MAP ---
+						mapProfesors.put(profesor, mapProfesor);
+					}
+					else
+					{
+						log.error("ERROR profesor " + profesor + " HORARIO PROF NOT FOUND OR NULL");
+					}
+				}
 
 				try
 				{
-					// --- CONVERT FILE TO BYTE[] ---
-					byte[] bytesArray = Files.readAllBytes(file.toPath());
+					// --- USING APPLICATION PDF TO GENERATE THE PDF , WITH ALL TEACHERS ---
+					ApplicationPdf applicationPdf = new ApplicationPdf();
+					applicationPdf.getAllTeachersPdfInfo(mapProfesors, this.centroPdfs);
 
-					// --- RETURN OK (200) WITH THE HEADERS AND THE BYTESARRAY ---
-					return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+					// --- GETTING THE PDF BY NAME URL ---
+					File file = new File("All_Teachers_Horarios.pdf");
+
+					// --- SETTING THE HEADERS WITH THE NAME OF THE FILE TO DOWLOAD PDF ---
+					HttpHeaders responseHeaders = new HttpHeaders();
+					// --- SET THE HEADERS ---
+					responseHeaders.set("Content-Disposition", "attachment; filename=" + file.getName());
+
+					try
+					{
+						// --- CONVERT FILE TO BYTE[] ---
+						byte[] bytesArray = Files.readAllBytes(file.toPath());
+
+						// --- RETURN OK (200) WITH THE HEADERS AND THE BYTESARRAY ---
+						return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+					}
+					catch (IOException exception)
+					{
+						// --- ERROR ---
+						String error = "ERROR GETTING THE BYTES OF PDF ";
+
+						log.info(error);
+
+						HorariosError horariosError = new HorariosError(500, error, exception);
+						log.info(error, horariosError);
+						return ResponseEntity.status(500).body(horariosError);
+					}
 				}
-				catch (IOException exception)
+				catch (HorariosError exception)
 				{
 					// --- ERROR ---
-					String error = "ERROR GETTING THE BYTES OF PDF ";
+					String error = "ERROR getting the info pdf ";
 
 					log.info(error);
 
-					HorariosError horariosError = new HorariosError(500, error, exception);
+					HorariosError horariosError = new HorariosError(400, error, exception);
 					log.info(error, horariosError);
-					return ResponseEntity.status(500).body(horariosError);
+					return ResponseEntity.status(400).body(horariosError);
 				}
 			}
-			catch (HorariosError exception)
+			else
 			{
 				// --- ERROR ---
-				String error = "ERROR getting the info pdf ";
+				String error = "ERROR centroPdfs IS NULL OR NOT FOUND";
 
 				log.info(error);
 
-				HorariosError horariosError = new HorariosError(400, error, exception);
+				HorariosError horariosError = new HorariosError(400, error, null);
 				log.info(error, horariosError);
 				return ResponseEntity.status(400).body(horariosError);
 			}
 		}
-		else 
-		{
-			// --- ERROR ---
-			String error = "ERROR centroPdfs IS NULL OR NOT FOUND";
-
-			log.info(error);
-
-			HorariosError horariosError = new HorariosError(400, error, null);
-			log.info(error, horariosError);
-			return ResponseEntity.status(400).body(horariosError);
-		}
-		}catch (Exception exception)
+		catch (Exception exception)
 		{
 			String error = "Server Error";
 			HorariosError horariosError = new HorariosError(500, error, exception);
@@ -3170,123 +3182,125 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
-	
-	
+
 	/**
 	 * Method getTeachersSchedule
+	 *
 	 * @return ResponseEntity , File PDF
 	 */
-	@RequestMapping(method = RequestMethod.GET , value = "/get/grupos/pdf" , produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/grupos/pdf", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> getGlobalSchedule()
 	{
-		try {
-		Map<Grupo,Map<String,List<Actividad>>> mapGroups = new HashMap<Grupo,Map<String,List<Actividad>>>();
-		if(this.centroPdfs!=null) 
+		try
 		{
-			// --- CENTRO PDF IS LOADED---
-			for(Grupo grupo: this.centroPdfs.getDatos().getGrupos().getGrupo()) 
+			Map<Grupo, Map<String, List<Actividad>>> mapGroups = new HashMap<>();
+			if (this.centroPdfs != null)
 			{
-				// --- FOR EACH GRUPO ---
-				HorarioGrup horarioGrup = null;
-				for(HorarioGrup horarioGrp : this.centroPdfs.getHorarios().getHorariosGrupos().getHorarioGrup()) 
+				// --- CENTRO PDF IS LOADED---
+				for (Grupo grupo : this.centroPdfs.getDatos().getGrupos().getGrupo())
 				{
-					if(horarioGrp.getHorNumIntGr().trim().equalsIgnoreCase(grupo.getNumIntGr().trim())) 
+					// --- FOR EACH GRUPO ---
+					HorarioGrup horarioGrup = null;
+					for (HorarioGrup horarioGrp : this.centroPdfs.getHorarios().getHorariosGrupos().getHorarioGrup())
 					{
-						horarioGrup = horarioGrp;
-					}
-				}
-				
-				if(horarioGrup!=null) 
-				{
-					// --- HORARIO GRUP EXISTS ---
-					
-					// --- FOR EACH ACTIVIDAD ---
-					Map<String,List<Actividad>> mapGroup = new HashMap<String,List<Actividad>>();
-					for(Actividad atcv : horarioGrup.getActividad()) 
-					{
-						Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, atcv);
-						
-						if(!mapGroup.containsKey(temporalTramo.getNumeroDia().trim())) 
+						if (horarioGrp.getHorNumIntGr().trim().equalsIgnoreCase(grupo.getNumIntGr().trim()))
 						{
-							List<Actividad> temporalList = new ArrayList<Actividad>();
-							temporalList.add(atcv);
-							mapGroup.put(temporalTramo.getNumeroDia().trim(), temporalList);
-						}
-						else 
-						{
-							List<Actividad> temporalList = mapGroup.get(temporalTramo.getNumeroDia().trim());
-							temporalList.add(atcv);
-							mapGroup.put(temporalTramo.getNumeroDia().trim(), temporalList);
+							horarioGrup = horarioGrp;
 						}
 					}
 
-					// --- ADD THE PROFESSOR WITH THE PROFESSOR MAP ---
-					mapGroups.put(grupo, mapGroup);
-				}
-				else 
-				{
-					log.error("ERROR grupo "+grupo+" HORARIO grup NOT FOUND OR NULL");
-				}
-			}
-			
-			try
-			{
-				// --- USING APPLICATION PDF TO GENERATE THE PDF , WITH ALL TEACHERS ---
-				ApplicationPdf applicationPdf = new ApplicationPdf();
-				applicationPdf.getAllGroupsPdfInfo(mapGroups,this.centroPdfs);
-				
-				// --- GETTING THE PDF BY NAME URL ---
-				File file = new File("All_Groups_Horarios.pdf");
+					if (horarioGrup != null)
+					{
+						// --- HORARIO GRUP EXISTS ---
 
-				// --- SETTING THE HEADERS WITH THE NAME OF THE FILE TO DOWLOAD PDF ---
-				HttpHeaders responseHeaders = new HttpHeaders();
-				// --- SET THE HEADERS ---
-				responseHeaders.set("Content-Disposition", "attachment; filename=" + file.getName());
+						// --- FOR EACH ACTIVIDAD ---
+						Map<String, List<Actividad>> mapGroup = new HashMap<>();
+						for (Actividad atcv : horarioGrup.getActividad())
+						{
+							Tramo temporalTramo = this.extractTramoFromCentroActividad(this.centroPdfs, atcv);
+
+							if (!mapGroup.containsKey(temporalTramo.getNumeroDia().trim()))
+							{
+								List<Actividad> temporalList = new ArrayList<>();
+								temporalList.add(atcv);
+								mapGroup.put(temporalTramo.getNumeroDia().trim(), temporalList);
+							}
+							else
+							{
+								List<Actividad> temporalList = mapGroup.get(temporalTramo.getNumeroDia().trim());
+								temporalList.add(atcv);
+								mapGroup.put(temporalTramo.getNumeroDia().trim(), temporalList);
+							}
+						}
+
+						// --- ADD THE PROFESSOR WITH THE PROFESSOR MAP ---
+						mapGroups.put(grupo, mapGroup);
+					}
+					else
+					{
+						log.error("ERROR grupo " + grupo + " HORARIO grup NOT FOUND OR NULL");
+					}
+				}
 
 				try
 				{
-					// --- CONVERT FILE TO BYTE[] ---
-					byte[] bytesArray = Files.readAllBytes(file.toPath());
+					// --- USING APPLICATION PDF TO GENERATE THE PDF , WITH ALL TEACHERS ---
+					ApplicationPdf applicationPdf = new ApplicationPdf();
+					applicationPdf.getAllGroupsPdfInfo(mapGroups, this.centroPdfs);
 
-					// --- RETURN OK (200) WITH THE HEADERS AND THE BYTESARRAY ---
-					return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+					// --- GETTING THE PDF BY NAME URL ---
+					File file = new File("All_Groups_Horarios.pdf");
+
+					// --- SETTING THE HEADERS WITH THE NAME OF THE FILE TO DOWLOAD PDF ---
+					HttpHeaders responseHeaders = new HttpHeaders();
+					// --- SET THE HEADERS ---
+					responseHeaders.set("Content-Disposition", "attachment; filename=" + file.getName());
+
+					try
+					{
+						// --- CONVERT FILE TO BYTE[] ---
+						byte[] bytesArray = Files.readAllBytes(file.toPath());
+
+						// --- RETURN OK (200) WITH THE HEADERS AND THE BYTESARRAY ---
+						return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+					}
+					catch (IOException exception)
+					{
+						// --- ERROR ---
+						String error = "ERROR GETTING THE BYTES OF PDF ";
+
+						log.info(error);
+
+						HorariosError horariosError = new HorariosError(500, error, exception);
+						log.info(error, horariosError);
+						return ResponseEntity.status(500).body(horariosError);
+					}
 				}
-				catch (IOException exception)
+				catch (HorariosError exception)
 				{
 					// --- ERROR ---
-					String error = "ERROR GETTING THE BYTES OF PDF ";
+					String error = "ERROR getting the info pdf ";
 
 					log.info(error);
 
-					HorariosError horariosError = new HorariosError(500, error, exception);
+					HorariosError horariosError = new HorariosError(400, error, exception);
 					log.info(error, horariosError);
-					return ResponseEntity.status(500).body(horariosError);
+					return ResponseEntity.status(400).body(horariosError);
 				}
 			}
-			catch (HorariosError exception)
+			else
 			{
 				// --- ERROR ---
-				String error = "ERROR getting the info pdf ";
+				String error = "ERROR centroPdfs IS NULL OR NOT FOUND";
 
 				log.info(error);
 
-				HorariosError horariosError = new HorariosError(400, error, exception);
+				HorariosError horariosError = new HorariosError(400, error, null);
 				log.info(error, horariosError);
 				return ResponseEntity.status(400).body(horariosError);
 			}
 		}
-		else 
-		{
-			// --- ERROR ---
-			String error = "ERROR centroPdfs IS NULL OR NOT FOUND";
-
-			log.info(error);
-
-			HorariosError horariosError = new HorariosError(400, error, null);
-			log.info(error, horariosError);
-			return ResponseEntity.status(400).body(horariosError);
-		}
-		}catch (Exception exception)
+		catch (Exception exception)
 		{
 			String error = "Server Error";
 			HorariosError horariosError = new HorariosError(500, error, exception);
@@ -3294,247 +3308,302 @@ public class HorariosRest
 			return ResponseEntity.status(500).body(horariosError);
 		}
 	}
+
 	/**
-     * method getListAlumnoFirstSurname
-     * @param course
-     * @return
-     */
- // REQUEST MAPPING FOR GETTING SORTED STUDENT LIST BASED ON FIRST SURNAME AND COURSE
-    @RequestMapping(method = RequestMethod.GET, value = "/get/course/sort/students")
-    public ResponseEntity<?> getListAlumnoFirstSurname(@RequestHeader(required = true) String course) {
-        // CREATE AN EMPTY LIST TO STORE STUDENT OBJECTS
-        List<Student> listStudents = new ArrayList<Student>();
+	 * method getListAlumnoFirstSurname
+	 *
+	 * @param course
+	 * @return
+	 */
+	// REQUEST MAPPING FOR GETTING SORTED STUDENT LIST BASED ON FIRST SURNAME AND
+	// COURSE
+	@RequestMapping(method = RequestMethod.GET, value = "/get/course/sort/students")
+	public ResponseEntity<?> getListAlumnoFirstSurname(@RequestHeader(required = true) String course)
+	{
+		// CREATE AN EMPTY LIST TO STORE STUDENT OBJECTS
+		List<Student> listStudents = new ArrayList<>();
 
-        // --CREATE FAKE STUDENT LIST--
-        // CREATE FAKE STUDENT OBJECTS AND ADD THEM TO THE LIST
-        Student student = new Student("Carlos", "Ruiz", new Course("1DAM", null));
-        listStudents.add(student);
-        student = new Student("Manuel", "Belmonte", new Course("2DAM", null));
-        listStudents.add(student);
+		// --CREATE FAKE STUDENT LIST--
+		// CREATE FAKE STUDENT OBJECTS AND ADD THEM TO THE LIST
+		Student student = new Student("Carlos", "Ruiz", new Course("1DAM", null));
+		listStudents.add(student);
+		student = new Student("Manuel", "Belmonte", new Course("2DAM", null));
+		listStudents.add(student);
 
-        try {
-            // CHECK IF THE LIST OF STUDENTS IS NOT EMPTY
-            if (!listStudents.isEmpty()) {
-                // --LIST IS NOT EMPTY--
-                // --SORT THE LIST OF STUDENTS BASED ON THE LAST NAME--
-                Collections.sort(listStudents);
+		try
+		{
+			// CHECK IF THE LIST OF STUDENTS IS NOT EMPTY
+			if (!listStudents.isEmpty())
+			{
+				// --LIST IS NOT EMPTY--
+				// --SORT THE LIST OF STUDENTS BASED ON THE LAST NAME--
+				Collections.sort(listStudents);
 
-                // --CREATE A TEMPORARY LIST TO FILTER STUDENTS BASED ON THE SPECIFIED COURSE--
-                List<Student> temporalList = new ArrayList<Student>();
-                for (Student studen : listStudents) {
-                    // --FILTER STUDENTS BASED ON THE SPECIFIED COURSE AND ADD THEM TO THE TEMPORARY LIST--
-                    if (studen.getCourse().getName().equals(course)) {
-                        temporalList.add(studen);
-                    }
-                }
-                // --RETURN THE FILTERED LIST OF STUDENTS AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK)--
-                return ResponseEntity.ok().body(temporalList);
-            } else {
-                // --LIST IS EMPTY--
-                //-- RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST)--
-                String error = "List not found";
-                HorariosError horariosError = new HorariosError(400, error, null);
-                log.error(error);
-                return ResponseEntity.status(400).body(horariosError);
-            }
-        } catch (Exception exception) {
-            // -- CATCH ANY ERROR --
-            // RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR)
-            String error = "Server Error";
-            HorariosError horariosError = new HorariosError(500, error, exception);
-            log.error(error, exception);
-            return ResponseEntity.status(500).body(horariosError);
-        }
-    }
- // ENDPOINT FOR GETTING COEXISTENCE ACTITUDE POINTS
-    /**
-     * 
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/get/points")
-    public ResponseEntity<?> getListPointsCoexistence() {
-        // CREATE AN EMPTY LIST TO STORE COEXISTENCE ACTITUDE POINTS
-        List<ActitudePoints> listActitudePoints = new ArrayList<>();
-        
-        try {
-            // --FAKE INFO FOR POINTS LIST--
-            ActitudePoints actitudePoints = new ActitudePoints(20, "Completes all tasks");
-            listActitudePoints.add(actitudePoints);
-            actitudePoints = new ActitudePoints(-10, "Does not complete tasks");
-            listActitudePoints.add(actitudePoints);
-            actitudePoints = new ActitudePoints(-20, "Disturbs the class");
-            listActitudePoints.add(actitudePoints);
-            actitudePoints = new ActitudePoints(10, "Helps classmates");
-            listActitudePoints.add(actitudePoints);
-            
-            // --CHECK IF THE LIST OF ACTITUDE POINTS IS NOT EMPTY--
-            if (!listActitudePoints.isEmpty()) {
-                // --RETURN THE LIST OF COEXISTENCE ACTITUDE POINTS AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK)--
-                return ResponseEntity.ok().body(listActitudePoints);
-            } else {
-                // --RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST)--
-                String error = "List not found";
-                HorariosError horariosError = new HorariosError(400, error, null);
-                log.error(error);
-                return ResponseEntity.status(400).body(horariosError);
-            }
-        } catch (Exception exception) {
-            // CATCH ANY ERROR
-            String error = "Server Error";
-            HorariosError horariosError = new HorariosError(500, error, exception);
-            log.error(error, exception);
-            // --RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR)--
-            return ResponseEntity.status(500).body(horariosError);
-        }
-    }
+				// --CREATE A TEMPORARY LIST TO FILTER STUDENTS BASED ON THE SPECIFIED COURSE--
+				List<Student> temporalList = new ArrayList<>();
+				for (Student studen : listStudents)
+				{
+					// --FILTER STUDENTS BASED ON THE SPECIFIED COURSE AND ADD THEM TO THE TEMPORARY
+					// LIST--
+					if (studen.getCourse().getName().equals(course))
+					{
+						temporalList.add(studen);
+					}
+				}
+				// --RETURN THE FILTERED LIST OF STUDENTS AS A RESPONSEENTITY WITH HTTP STATUS
+				// 200 (OK)--
+				return ResponseEntity.ok().body(temporalList);
+			}
+			else
+			{
+				// --LIST IS EMPTY--
+				// -- RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD
+				// REQUEST)--
+				String error = "List not found";
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.error(error);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		catch (Exception exception)
+		{
+			// -- CATCH ANY ERROR --
+			// RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500
+			// (INTERNAL SERVER ERROR)
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
 
-    // -- ENDPOINT FOR GETTING FIRST NAME AND LAST NAME OF A TEACHER FOR REFLECTION --
-    /**
-     * 
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/get/namelastname/reflexion")
-    public ResponseEntity<?> getFirstNameSurname() {
-        // -- CREATE A TEACHER OBJECT AND SET ITS ATTRIBUTES --
-        Teacher teacher = new Teacher();
-        teacher.setName("Raul");
-        teacher.setLastName("Diuc");
-        teacher.setEmail("rauldiuc1212@gmail.com");
-        teacher.setTelephoneNumber("655655655");
-        
-        // -- ADD A ROLE TO THE TEACHER --
-        List<Rol> roles = new ArrayList<>();
-        roles.add(Rol.docente);
-        teacher.setRoles(roles);
+	// ENDPOINT FOR GETTING COEXISTENCE ACTITUDE POINTS
 
-        try {
-            // -- CHECK IF THE TEACHER OBJECT IS NOT NULL --
-            if (teacher != null) {
-                // -- RETURN THE FIRST NAME AND LAST NAME OF THE TEACHER AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK) --
-                return ResponseEntity.ok().body(teacher);
-            } 
-            else 
-            {
-                // -- TEACHER OBJECT IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST) --
-                String error = "Teacher not found";
-                HorariosError horariosError = new HorariosError(400, error, null);
-                log.error(error);
-                return ResponseEntity.status(400).body(horariosError);
-            }
-        } catch (Exception exception) {
-            // -- CATCH ANY ERROR --
-            String error = "Server Error";
-            HorariosError horariosError = new HorariosError(500, error, exception);
-            log.error(error, exception);
-            // -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR) --
-            return ResponseEntity.status(500).body(horariosError);
-        }
-    }
+	/**
+	 * Method getListPointsCoexistence
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/points")
+	public ResponseEntity<?> getListPointsCoexistence()
+	{
+		// CREATE AN EMPTY LIST TO STORE COEXISTENCE ACTITUDE POINTS
+		List<ActitudePoints> listActitudePoints = new ArrayList<>();
 
- // -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR --
-    /**
-     * 
-     * @param name
-     * @param lastName
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor")
-    public ResponseEntity<?> getLocationStudentTutor(@RequestHeader(required = true) String name, @RequestHeader(required = true) String lastName) {
-        
-        try {
-            
+		try
+		{
+			// --FAKE INFO FOR POINTS LIST--
+			ActitudePoints actitudePoints = new ActitudePoints(20, "Completes all tasks");
+			listActitudePoints.add(actitudePoints);
+			actitudePoints = new ActitudePoints(-10, "Does not complete tasks");
+			listActitudePoints.add(actitudePoints);
+			actitudePoints = new ActitudePoints(-20, "Disturbs the class");
+			listActitudePoints.add(actitudePoints);
+			actitudePoints = new ActitudePoints(10, "Helps classmates");
+			listActitudePoints.add(actitudePoints);
 
-            // -- CHECK IF BOTH NAME AND LAST NAME ARE NOT NULL --
-            if (name != null && lastName != null) {
-                // -- CREATE TEACHER WITH FAKE DATA --
-                Teacher teacher = new Teacher();
-                teacher.setName("ObiWan");
-                teacher.setLastName("Kenobi");
-                teacher.setEmail("obiwankenobi1212@gmail.com");
-                teacher.setTelephoneNumber("655655655");
-                
-                // -- CREATE CLASSROOM WITH FAKE DATA --
-                Classroom classroom = new Classroom("3 ESO B", "2");
-                // -- ADD A ROLE TO THE TEACHER --
-                List<Rol> roles = new ArrayList<>();
-                roles.add(Rol.docente);
-                teacher.setRoles(roles);
-                // -- CREATE TEACHERMOMENT --
-                TeacherMoment teacherMoment = new TeacherMoment();
-                teacherMoment.setTeacher(teacher);
-                teacherMoment.setClassroom(classroom);
-                
-                // -- RETURN THE LOCATION INFORMATION OF THE STUDENT'S TUTOR AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK) --
-                return ResponseEntity.ok().body(teacherMoment);
-            } else {
-                // -- NAME OR LAST NAME IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST) --
-                String error = "Student not found";
-                HorariosError horariosError = new HorariosError(400, error, null);
-                log.error(error);
-                return ResponseEntity.status(400).body(horariosError);
-            }
-        } catch (Exception exception) {
-            // -- CATCH ANY ERROR --
-            String error = "Server Error";
-            HorariosError horariosError = new HorariosError(500, error, exception);
-            log.error(error, exception);
-            // -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR) --
-            return ResponseEntity.status(500).body(horariosError);
-        }
-    }
+			// --CHECK IF THE LIST OF ACTITUDE POINTS IS NOT EMPTY--
+			if (!listActitudePoints.isEmpty())
+			{
+				// --RETURN THE LIST OF COEXISTENCE ACTITUDE POINTS AS A RESPONSEENTITY WITH
+				// HTTP STATUS 200 (OK)--
+				return ResponseEntity.ok().body(listActitudePoints);
+			}
+			else
+			{
+				// --RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD
+				// REQUEST)--
+				String error = "List not found";
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.error(error);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		catch (Exception exception)
+		{
+			// CATCH ANY ERROR
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			// --RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500
+			// (INTERNAL SERVER ERROR)--
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
 
- // -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR BASED ON COURSE --
-    /**
-     * 
-     * @param course
-     * @param name
-     * @param lastName
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor/course", produces = "application/json")
-    public ResponseEntity<?> getLocationStudentTutorCourse(@RequestHeader(required = true) String course,
-                                                          @RequestHeader(required = true) String name,
-                                                          @RequestHeader(required = true) String lastName) {
-        
-        try {
-     
+	// -- ENDPOINT FOR GETTING FIRST NAME AND LAST NAME OF A TEACHER FOR REFLECTION --
 
-            // -- CHECK IF NAME, LAST NAME AND COURSE ARE NOT NULL --
-            if (name != null && lastName != null && course != null) {
-            	// -- CREATE TEACHER WITH FAKE DATA --
-                Teacher teacher = new Teacher();
-                teacher.setName("ObiWan");
-                teacher.setLastName("Kenobi");
-                teacher.setEmail("obiwankenobi1212@gmail.com");
-                teacher.setTelephoneNumber("655655655");
-                
-                // -- CREATE CLASSROOM WITH FAKE DATA --
-                Classroom classroom = new Classroom("3 ESO B", "2");
-                // -- ADD A ROLE TO THE TEACHER --
-                List<Rol> roles = new ArrayList<>();
-                roles.add(Rol.docente);
-                teacher.setRoles(roles);
-                // -- CREATE TEACHERMOMENT --
-                TeacherMoment teacherMoment = new TeacherMoment();
-                teacherMoment.setTeacher(teacher);
-                teacherMoment.setClassroom(classroom);
-                
-                // -- RETURN THE LOCATION INFORMATION OF THE STUDENT'S TUTOR AND COURSE AS A RESPONSEENTITY WITH HTTP STATUS 200 (OK) --
-                return ResponseEntity.ok().body(teacherMoment);
-            } else {
-                // -- NAME OR LAST NAME IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 400 (BAD REQUEST) --
-                String error = "Student not found";
-                HorariosError horariosError = new HorariosError(400, error, null);
-                log.error(error);
-                return ResponseEntity.status(400).body(horariosError);
-            }
-        } catch (Exception exception) {
-            // -- CATCH ANY ERROR --
-            String error = "Server Error";
-            HorariosError horariosError = new HorariosError(500, error, exception);
-            log.error(error, exception);
-            // -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500 (INTERNAL SERVER ERROR) --
-            return ResponseEntity.status(500).body(horariosError);
-        }
-    }
+	/**
+	 * Method getFirstNameSurname
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/namelastname/reflexion")
+	public ResponseEntity<?> getFirstNameSurname()
+	{
+		// -- CREATE A TEACHER OBJECT AND SET ITS ATTRIBUTES --
+		try
+		{
+			Teacher teacher;
+			teacher = new Teacher();
+			teacher.setName("Raul");
+			teacher.setLastName("Diuc");
+			teacher.setEmail("rauldiuc1212@gmail.com");
+			teacher.setTelephoneNumber("655655655");
+
+			// -- ADD A ROLE TO THE TEACHER --
+			List<Rol> roles = new ArrayList<>();
+			roles.add(Rol.docente);
+			teacher.setRoles(roles);
+			// -- CHECK IF THE TEACHER OBJECT IS NOT NULL --
+			if (teacher != null)
+			{
+				// -- RETURN THE FIRST NAME AND LAST NAME OF THE TEACHER AS A RESPONSEENTITY
+				// WITH HTTP STATUS 200 (OK) --
+				return ResponseEntity.ok().body(teacher);
+			}
+			else
+			{
+				// -- TEACHER OBJECT IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY WITH
+				// HTTP STATUS 400 (BAD REQUEST) --
+				String error = "Teacher not found";
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.error(error);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		catch (Exception exception)
+		{
+			// -- CATCH ANY ERROR --
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			// -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500
+			// (INTERNAL SERVER ERROR) --
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
+
+	// -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR --
+	/**
+	 *
+	 * @param name
+	 * @param lastName
+	 * @return ResponseEntity
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor")
+	public ResponseEntity<?> getLocationStudentTutor(@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastName)
+	{
+
+		try
+		{
+
+			// -- CHECK IF BOTH NAME AND LAST NAME ARE NOT NULL --
+			if ((name != null) && (lastName != null))
+			{
+				// -- CREATE TEACHER WITH FAKE DATA --
+				Teacher teacher = new Teacher();
+				teacher.setName("ObiWan");
+				teacher.setLastName("Kenobi");
+				teacher.setEmail("obiwankenobi1212@gmail.com");
+				teacher.setTelephoneNumber("655655655");
+
+				// -- CREATE CLASSROOM WITH FAKE DATA --
+				Classroom classroom = new Classroom("3 ESO B", "2");
+				// -- ADD A ROLE TO THE TEACHER --
+				List<Rol> roles = new ArrayList<>();
+				roles.add(Rol.docente);
+				teacher.setRoles(roles);
+				// -- CREATE TEACHERMOMENT --
+				TeacherMoment teacherMoment = new TeacherMoment();
+				teacherMoment.setTeacher(teacher);
+				teacherMoment.setClassroom(classroom);
+
+				// -- RETURN THE LOCATION INFORMATION OF THE STUDENT'S TUTOR AS A RESPONSEENTITY
+				// WITH HTTP STATUS 200 (OK) --
+				return ResponseEntity.ok().body(teacherMoment);
+			}
+			else
+			{
+				// -- NAME OR LAST NAME IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY
+				// WITH HTTP STATUS 400 (BAD REQUEST) --
+				String error = "Student not found";
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.error(error);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		catch (Exception exception)
+		{
+			// -- CATCH ANY ERROR --
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			// -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500
+			// (INTERNAL SERVER ERROR) --
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
+
+	// -- ENDPOINT FOR GETTING LOCATION INFORMATION OF A STUDENT'S TUTOR BASED ON COURSE --
+	/**
+	 *
+	 * @param course
+	 * @param name
+	 * @param lastName
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor/course", produces = "application/json")
+	public ResponseEntity<?> getLocationStudentTutorCourse(@RequestHeader(required = true) String course,
+			@RequestHeader(required = true) String name, @RequestHeader(required = true) String lastName)
+	{
+
+		try
+		{
+
+			// -- CHECK IF NAME, LAST NAME AND COURSE ARE NOT NULL --
+			if ((name != null) && (lastName != null) && (course != null))
+			{
+				// -- CREATE TEACHER WITH FAKE DATA --
+				Teacher teacher = new Teacher();
+				teacher.setName("ObiWan");
+				teacher.setLastName("Kenobi");
+				teacher.setEmail("obiwankenobi1212@gmail.com");
+				teacher.setTelephoneNumber("655655655");
+
+				// -- CREATE CLASSROOM WITH FAKE DATA --
+				Classroom classroom = new Classroom("3 ESO B", "2");
+				// -- ADD A ROLE TO THE TEACHER --
+				List<Rol> roles = new ArrayList<>();
+				roles.add(Rol.docente);
+				teacher.setRoles(roles);
+				// -- CREATE TEACHERMOMENT --
+				TeacherMoment teacherMoment = new TeacherMoment();
+				teacherMoment.setTeacher(teacher);
+				teacherMoment.setClassroom(classroom);
+
+				// -- RETURN THE LOCATION INFORMATION OF THE STUDENT'S TUTOR AND COURSE AS A
+				// RESPONSEENTITY WITH HTTP STATUS 200 (OK) --
+				return ResponseEntity.ok().body(teacherMoment);
+			}
+			else
+			{
+				// -- NAME OR LAST NAME IS NULL, RETURN AN ERROR MESSAGE AS A RESPONSEENTITY
+				// WITH HTTP STATUS 400 (BAD REQUEST) --
+				String error = "Student not found";
+				HorariosError horariosError = new HorariosError(400, error, null);
+				log.error(error);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		catch (Exception exception)
+		{
+			// -- CATCH ANY ERROR --
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			// -- RETURN A SERVER ERROR MESSAGE AS A RESPONSEENTITY WITH HTTP STATUS 500
+			// (INTERNAL SERVER ERROR) --
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
 }
