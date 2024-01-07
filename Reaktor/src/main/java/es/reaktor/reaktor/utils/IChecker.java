@@ -285,4 +285,144 @@ public interface IChecker
 		}
 		return computers;
 	}
+	
+	public default void checkComputer(String serialNumber, String andaluciaId, String computerNumber, List<Computer>computers) throws ComputerError 
+	{
+		if (serialNumber.isEmpty() && andaluciaId.isEmpty() && computerNumber.isEmpty())
+		{
+			throw new ComputerError(1, "All params can't be null");
+		} 
+		else  if (!serialNumber.isEmpty()) 
+		{
+			this.iterateComputer(serialNumber, "serialNumber", computers);
+		}
+		else if (!andaluciaId.isEmpty()) 
+		{
+			this.iterateComputer(andaluciaId, "andaluciaId", computers);
+		}
+		else if (!computerNumber.isEmpty()) 
+		{
+			this.iterateComputer(computerNumber, "computerNumber", computers);
+		}	
+	}
+	
+	private Computer iterateComputer(String data, String dataType, List<Computer>computers) throws ComputerError 
+	{
+		Computer computerReturn = null;
+		if (dataType.equals("serialNumber"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getSerialNumber().equals(data))
+				{
+					computerReturn = a;
+				}
+			}
+		}
+		else if (dataType.equals("andaluciaId"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getAndaluciaID().equals(data))
+				{
+					computerReturn = a;
+				}
+			}
+		}
+		else if (dataType.equals("computerNumber"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getComputerNumber().equals(data))
+				{
+					computerReturn = a;
+				}
+			}
+		}
+		else
+		{
+			throw new ComputerError(1, "data types are not correct");
+		}
+		
+		if(computerReturn==null)
+		{
+			throw new ComputerError(2,"There's no computer with this data");
+		}
+		
+		return computerReturn;
+		
+	}
+	
+	public default void checkArguments(String classroom, String trolley, Integer plant, List<Computer> computers) throws ComputerError
+	{
+		if (classroom.isEmpty() && trolley.isEmpty() && plant == null)
+		{
+			throw new ComputerError(1, "All params can't be null");
+		} 
+		else  if (!classroom.isEmpty()) 
+		{
+			this.iterateArguments(classroom, "classroom", computers);
+		}
+		else if (!trolley.isEmpty()) 
+		{
+			this.iterateArguments(trolley, "trolley", computers);
+		}
+		else if (plant != null) 
+		{
+			this.iterateArguments(String.valueOf(plant), "plant", computers);
+		}	
+	}
+	
+	private Computer iterateArguments(String data, String dataType, List<Computer>computers) throws ComputerError 
+	{
+		Computer computerReturn = null;
+		if (dataType.equals("classroom"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getLocation().getClassroom().equals(data))
+				{
+					computerReturn = a;
+				}
+			}
+		}
+		else if (dataType.equals("trolley"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getLocation().getTrolley().equals(data))
+				{
+					computerReturn = a;
+				}
+			}
+		}
+		else if (dataType.equals("plant"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (String.valueOf(a.getLocation().getPlant()).equals(data))
+				{
+					computerReturn = a;
+				}
+			}
+		}
+		else
+		{
+			throw new ComputerError(1, "data types are not correct");
+		}
+		
+		if(computerReturn==null)
+		{
+			throw new ComputerError(2,"There's no computer with this data");
+		}
+		
+		return computerReturn;
+		
+	}
 }

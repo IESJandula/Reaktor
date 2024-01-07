@@ -83,6 +83,14 @@ public class RestHandlerAdministration implements IChecker
 			Status status = null;
 			// Comprobamos que los atributos no esten vacios
 			this.checkParams(serialNumber, classroom, trolley, plant, commandLine);
+			if(!serialNumber.isEmpty()) 
+			{
+				this.checkComputer(serialNumber, "", "", computers);
+			}else
+			{
+				this.checkArguments(classroom, trolley, plant, computers);
+			}
+			
 			if (!serialNumber.isEmpty())
 			{
 				
@@ -150,6 +158,13 @@ public class RestHandlerAdministration implements IChecker
 			Status status = null;
 			// Se comprueba que los parametros no esten vacios
 			this.checkParams(serialNumber, classroom, trolley, plant);
+			if(!serialNumber.isEmpty()) 
+			{
+				this.checkComputer(serialNumber, "", "", computers);
+			}else
+			{
+				this.checkArguments(classroom, trolley, plant, computers);
+			}
 			if (!serialNumber.isEmpty())
 			{
 				status = new Status(serialNumber,"apagado", false);
@@ -214,6 +229,13 @@ public class RestHandlerAdministration implements IChecker
 			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParams(serialNumber, classroom, trolley, plant);
+			if(!serialNumber.isEmpty()) 
+			{
+				this.checkComputer(serialNumber, "", "", computers);
+			}else
+			{
+				this.checkArguments(classroom, trolley, plant, computers);
+			}
 			if (!serialNumber.isEmpty())
 			{
 				status = new Status(serialNumber,"reiniciado", false);
@@ -279,6 +301,8 @@ public class RestHandlerAdministration implements IChecker
 			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParams(classroom, trolley, peripherals);
+			this.checkArguments(classroom, trolley, null, computers);
+			
 			if (!classroom.isEmpty())
 			{
 				status = new Status(classroom,Arrays.toString(peripherals), false);
@@ -326,6 +350,8 @@ public class RestHandlerAdministration implements IChecker
 			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParams(classroom, trolley);
+			this.checkArguments(classroom, trolley, null, computers);
+			
 			if (!classroom.isEmpty())
 			{
 				status = new Status(classroom,"sendCapturas", false);
@@ -369,6 +395,8 @@ public class RestHandlerAdministration implements IChecker
 			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParamsGetScreenshots(classroom, trolley);
+			this.checkArguments(classroom, trolley, null, computers);
+			
 			if (!classroom.isEmpty())
 			{
 				status = new Status(classroom,"capturas", false);
@@ -423,6 +451,14 @@ public class RestHandlerAdministration implements IChecker
 			trolley = trolley==null ? "" : trolley;
 			Status status = null;
 			this.checkParamsPostComputerExeFile(serialNumber, classroom, trolley, plant, execFile);
+			if(!serialNumber.isEmpty()) 
+			{
+				this.checkComputer(serialNumber, "", "", computers);
+			}else
+			{
+				this.checkArguments(classroom, trolley, plant, computers);
+			}
+			
 			if (!serialNumber.isEmpty())
 			{
 				status = new Status(serialNumber,"ejecutable", false);
@@ -489,6 +525,8 @@ public class RestHandlerAdministration implements IChecker
 			classroom = classroom==null ? "" : classroom;
 			trolley = trolley==null ? "" : trolley;
 			this.checkParamsSendSoftware(classroom, trolley, professor, softwareInstance);
+			this.checkArguments(classroom, trolley, null, computers);
+			
 			Status status = null;
 			if (!trolley.isEmpty())
 			{
@@ -542,6 +580,7 @@ public class RestHandlerAdministration implements IChecker
 			classroom = classroom==null ? "" : classroom;
 			trolley = trolley==null ? "" : trolley;
 			this.checkParamsUninstallSoftware(classroom, trolley, professor, softwareInstance);
+			this.checkArguments(classroom, trolley, null, computers);
 			
 			Status status = null;
 			if(!classroom.isEmpty())
@@ -603,6 +642,8 @@ public class RestHandlerAdministration implements IChecker
 			computerNumber = computerNumber==null ? "" : computerNumber;
 			//Comprobamos que los parametros coincidan
 			computer = this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computer,computers);
+			this.checkComputer(serialNumber, andaluciaId, computerNumber, computers);
+			
 			//Reemplazamos el ordenador antiguo por el nuevo
 			this.computers = this.replaceComputer(computer, computers);
 			return ResponseEntity.ok().body("OK");
