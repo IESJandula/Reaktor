@@ -2694,4 +2694,127 @@ public class HorariosRest
 		}
 		return tramoActual;
 	}
+	
+	/**
+	 * Method getTeachersSchedule
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET , value = "/get/teachers/pdf" , produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> getTeachersSchedule()
+	{
+		try {
+		Map<Profesor,Map<String,List<Actividad>>> mapProfesors = new HashMap<Profesor,Map<String,List<Actividad>>>();
+		if(this.centroPdfs!=null) 
+		{
+			// --- CENTRO PDF IS LOADED---
+			for(Profesor profesor: this.centroPdfs.getDatos().getProfesores().getProfesor()) 
+			{
+				// --- FOR EACH PROFESOR ---
+				HorarioProf horarioProf = null;
+				for(HorarioProf horarioPrf : this.centroPdfs.getHorarios().getHorariosProfesores().getHorarioProf()) 
+				{
+					if(horarioPrf.getHorNumIntPR().trim().equalsIgnoreCase(profesor.getNumIntPR().trim())) 
+					{
+						horarioProf = horarioPrf;
+					}
+				}
+				
+				if(horarioProf!=null) 
+				{
+					// --- HORARIO PROF EXISTS ---
+					
+					// --- FOR EACH ACTIVIDAD ---
+					Map<String,List<Actividad>> mapProfesor = new HashMap<String,List<Actividad>>();
+					for(Actividad atcv : horarioProf.getActividad()) 
+					{
+						Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, atcv);
+						
+						if(!mapProfesor.containsKey(temporalTramo.getNumeroDia().trim())) 
+						{
+							List<Actividad> temporalList = new ArrayList<Actividad>();
+							temporalList.add(atcv);
+							mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
+						}
+						else 
+						{
+							List<Actividad> temporalList = mapProfesor.get(temporalTramo.getNumeroDia().trim());
+							temporalList.add(atcv);
+							mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
+						}
+					}
+
+					// --- ADD THE PROFESSOR WITH THE PROFESSOR MAP ---
+					mapProfesors.put(profesor, mapProfesor);
+				}
+				else 
+				{
+					log.error("ERROR profesor "+profesor+" HORARIO PROF NOT FOUND OR NULL");
+				}
+			}
+			
+			try
+			{
+				// --- USING APPLICATION PDF TO GENERATE THE PDF , WITH ALL TEACHERS ---
+				ApplicationPdf applicationPdf = new ApplicationPdf();
+				applicationPdf.getAllTeachersPdfInfo(mapProfesors,this.centroPdfs);
+				
+				// --- GETTING THE PDF BY NAME URL ---
+				File file = new File("All_Teachers_Horarios.pdf");
+
+				// --- SETTING THE HEADERS WITH THE NAME OF THE FILE TO DOWLOAD PDF ---
+				HttpHeaders responseHeaders = new HttpHeaders();
+				// --- SET THE HEADERS ---
+				responseHeaders.set("Content-Disposition", "attachment; filename=" + file.getName());
+
+				try
+				{
+					// --- CONVERT FILE TO BYTE[] ---
+					byte[] bytesArray = Files.readAllBytes(file.toPath());
+
+					// --- RETURN OK (200) WITH THE HEADERS AND THE BYTESARRAY ---
+					return ResponseEntity.ok().headers(responseHeaders).body(bytesArray);
+				}
+				catch (IOException exception)
+				{
+					// --- ERROR ---
+					String error = "ERROR GETTING THE BYTES OF PDF ";
+
+					log.info(error);
+
+					HorariosError horariosError = new HorariosError(500, error, exception);
+					log.info(error, horariosError);
+					return ResponseEntity.status(500).body(horariosError);
+				}
+			}
+			catch (HorariosError exception)
+			{
+				// --- ERROR ---
+				String error = "ERROR getting the info pdf ";
+
+				log.info(error);
+
+				HorariosError horariosError = new HorariosError(400, error, exception);
+				log.info(error, horariosError);
+				return ResponseEntity.status(400).body(horariosError);
+			}
+		}
+		else 
+		{
+			// --- ERROR ---
+			String error = "ERROR centroPdfs IS NULL OR NOT FOUND";
+
+			log.info(error);
+
+			HorariosError horariosError = new HorariosError(400, error, null);
+			log.info(error, horariosError);
+			return ResponseEntity.status(400).body(horariosError);
+		}
+		}catch (Exception exception)
+		{
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error, exception);
+			log.error(error, exception);
+			return ResponseEntity.status(500).body(horariosError);
+		}
+	}
 }

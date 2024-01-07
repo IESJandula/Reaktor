@@ -496,4 +496,145 @@ public class ApplicationPdf
 		}
 		return null;
 	}
+
+	/**
+	 * Method getAllTeachersPdfInfo
+	 * @param mapProfesors
+	 * @throws HorariosError 
+	 */
+	public void getAllTeachersPdfInfo(Map<Profesor, Map<String, List<Actividad>>> mapProfesors, Centro centroPdfs) throws HorariosError
+	{
+		try
+		{
+			Document document = new Document();
+			
+			// --- ROTATE THE DOCUMENT HORIZONTAL MODE ---
+			document.setPageSize(PageSize.A4.rotate());
+			
+			PdfWriter.getInstance(document, new FileOutputStream("All_Teachers_Horarios.pdf"));
+			document.open();
+			
+			PdfPTable pdfTable = null;
+			for(Map.Entry entry : mapProfesors.entrySet()) 
+			{
+				System.out.println(((Profesor)entry.getKey()));
+				
+				// --- GETTING THE PROFESSOR ---
+				Profesor profesor = ((Profesor)entry.getKey());
+				
+				// --- GETTING THE MAP OF THE PROFESSOR ---
+				Map<String,List<Actividad>> mapa = (Map<String,List<Actividad>>)entry.getValue();
+				
+				// --- FONT FOR THE PARAGRAPH ---
+				Font font = FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 12, BaseColor.RED);
+				document.add(new Paragraph("HORARIO "+profesor.getNombre().trim(), font));
+				document.add(new Paragraph("\n"));
+				
+				// --- CREATE THE PDF TABLE ---
+				pdfTable = new PdfPTable(mapa.size());
+				
+				// --- SET THE WIDTH OF TABLE TO 100% WITH FLOAT ---
+				pdfTable.setWidthPercentage(100f);
+				
+				// --- FOR EACH ENTRY ON THE MAPA ---
+				for(Map.Entry entry2 : mapa.entrySet()) 
+				{
+					String temporalDay = this.extractTemporalDayTramo(entry2.getKey().toString());
+					log.info("DIA -> "+temporalDay);
+					
+					// --- OTHER FONT FOR THE CELL TEXT ---
+					Font fontCell = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
+					
+					// --- CREATE THE CELL ---
+					PdfPCell temporalDayCell = new PdfPCell();
+					
+					// --- PUT THE PARAGRAPH WITH THE FONT ON THE CELL ---
+					temporalDayCell.addElement(new Paragraph(temporalDay,fontCell));
+					
+					// --- SET COLOR TO THE CELL (HEADERS LUNES MARTES ...) ---
+					temporalDayCell.setBackgroundColor(BaseColor.CYAN);
+					
+					// --- SET TEH VERTICAL ALIG ON CENTER TO THE TEXT ON THE CELL ---
+					temporalDayCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+					
+					// --- HORIZONTAL ALIG ON THE CENTER ---
+					temporalDayCell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+					
+					// FINALLY ADD THE CELL TO HTE TABLE ---
+					pdfTable.addCell(temporalDayCell);
+					
+					
+					List<Actividad> temporalList = (List<Actividad>) entry2.getValue();
+					Collections.sort(temporalList);
+					
+					// --- FOR EACH ACTIVIDAD ---
+					for(Actividad actv : temporalList) 
+					{
+						// --- GET THE TRAMO OF THE ACTIVIDAD ---
+						Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
+						
+						String horaInicio = temporalTramo.getHoraInicio().trim();
+						String horaFinal = temporalTramo.getHoraFinal().trim();
+						
+						Asignatura asignatura = this.getAsignaturaById(actv.getAsignatura().trim(), centroPdfs);
+						
+						String nombreAsignatura = asignatura.getNombre().trim();
+						
+						String nombreProfesor = profesor.getNombre().trim()+" "+profesor.getPrimerApellido().trim()+" "+profesor.getSegundoApellido().trim();
+						
+						log.info(" ASIGNATURA : "+nombreAsignatura);
+						log.info("HORARIO : "+horaInicio+" "+horaFinal);
+						log.info("PROFESOR : "+nombreProfesor);
+						
+						
+						// --- CREATE THE FONT FOR THE CELL ---
+						fontCell = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.BLACK);
+						
+						// --- CREATE TEH CELL WITH ALL THE INFO ---
+						PdfPCell temporalData = new PdfPCell();
+						
+						// --- PUT THE INFO INTO THE CELL WITH PARAGRAPH ---
+						temporalData.addElement(new Paragraph(nombreAsignatura+"\n"+horaInicio+"-"+horaFinal+"\n"+nombreProfesor,fontCell));
+						
+						//--- SET COLOR TO THE CELL ---
+						temporalData.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						
+						// --- SET THE HEIGHT FOR THE CELL ---
+						temporalData.setCalculatedHeight(90f);
+						
+						// --- FINALLY PUT THE CELL ON THE TABLE AND REPEAT WITH ALL ACTIVIDADES ---
+						pdfTable.addCell(temporalData);
+						
+						
+					}
+					pdfTable.completeRow();
+				}
+				document.add(pdfTable);
+				document.newPage();
+			}
+			document.close();
+		}
+		catch (FileNotFoundException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR FileNotFoundException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+		catch (DocumentException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR DocumentException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+	}
 }
