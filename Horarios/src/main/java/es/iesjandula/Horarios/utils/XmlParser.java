@@ -103,7 +103,7 @@ public class XmlParser
 		
 		List<Student> alumnos = new ParseAlumnos("alumnos.csv").parse();
 		
-		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos, new ArrayList<Student>());
+		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos, alumnos);
 	}
 
 	private Map<Integer, Asignatura> parseAsignaturas(NodeList list)
