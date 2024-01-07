@@ -3,9 +3,14 @@ package es.reaktor.horarios.rest;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -454,7 +459,353 @@ public class HorariosRest
 		}
 	}
 	
+		
+	/**
+	 * @author MANU
+	 * @param name
+	 * @param lastname
+	 * @param course
+	 * @return
+	 */	
+	@RequestMapping(method = RequestMethod.POST,value = "/student/visita/bathroom",produces = "application/json")
+	public ResponseEntity<?> postVisit(
+			@RequestHeader(required=true) String name,
+			@RequestHeader(required=true) String lastname,
+			@RequestHeader(required=true) String course,
+			HttpSession session)
+	{
+		try 
+		{
+			
+			Student student = new Student(name,lastname,new Course(course,null));
+	        
+			//GET THE CURRENT TIME
+	        LocalDateTime currentDateTime = LocalDateTime.now();
+
+	        //MAP WITH THE STUDENT AND THE TIME HE GO TO THE BATHROOM
+	        Map<String, Object> studentDataTimeMap = new HashMap<>();
+	        studentDataTimeMap.put("Informacion estudiante", student);
+	        studentDataTimeMap.put("Fecha Actual", currentDateTime);
+	        String studenNameLastname = name + " " + lastname; 
+	        //STUDENTS WITH A LIST OF DATES FOR EVERYONE SAVED IN SESSION
+	        List<LocalDateTime> fechasAlumno = (List<LocalDateTime>) session.getAttribute(studenNameLastname + "_visitas");
+	        //CREATE THE LIST IF ITS NULL
+	        if(fechasAlumno == null) 
+	        {
+	        	
+	        	fechasAlumno = new ArrayList<LocalDateTime>();
+	        	
+	        }
+	        //WE ADD THE DATE TO THE LIST
+	        fechasAlumno.add(currentDateTime);
+	        //SET THE ATRIBUTTE
+	        session.setAttribute(studenNameLastname + "_visitas", fechasAlumno);
+	          
+	        return ResponseEntity.ok().body(studentDataTimeMap);		
+		}
+		catch(Exception exception) 
+		{		
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+			log.error(error,exception);
+			return ResponseEntity.status(500).body(horariosError);	
+		}		
+	}
 	
+	
+	/**
+	 * @author MANU
+	 * @param name
+	 * @param lastname
+	 * @param course
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST,value = "/student/regreso/bathroom",produces = "application/json")
+	public ResponseEntity<?> postReturnBathroom(
+			@RequestHeader(required=true) String name,
+			@RequestHeader(required=true) String lastname,
+			@RequestHeader(required=true) String course,
+			HttpSession session)
+	{
+		try 
+		{
+			Student student = new Student(name,lastname,new Course(course,null));
+			//GET THE CURRENT TIME
+	        LocalDateTime currentDateTime = LocalDateTime.now();
+
+	      //MAP WITH THE STUDENT AND THE TIME HE COMEBACK TO THE BATHROOM
+	        Map<String, Object> studentDataComebackTimeMap = new HashMap<>();
+	        studentDataComebackTimeMap.put("Informacion estudiante", student);
+	        studentDataComebackTimeMap.put("Fecha Actual", currentDateTime);
+	        String studenNameLastname = name + " " + lastname; 
+	        List<LocalDateTime> fechasAlumnoComeback = (List<LocalDateTime>) session.getAttribute(studenNameLastname + "_visitas");
+	        //CREATE THE LIST IF ITS NULL
+	        if(fechasAlumnoComeback == null) 
+	        {
+	        	
+	        	fechasAlumnoComeback = new ArrayList<LocalDateTime>();
+	        	
+	        }
+	        //WE ADD THE DATE TO THE LIST
+	        fechasAlumnoComeback.add(currentDateTime);
+
+	        return ResponseEntity.ok().body(studentDataComebackTimeMap);		
+		}
+		catch(Exception exception) 
+		{		
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+			log.error(error,exception);
+			return ResponseEntity.status(500).body(horariosError);	
+		}		
+	}
+	
+	
+	/**
+	 * @author MANU
+	 * @param name
+	 * @param lastname
+	 * @param fechaInicio
+	 * @param fechaEnd
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/get/veces/visitado/studentFechas",produces = "application/json")
+	public ResponseEntity<?> getNumberVisitsBathroom(
+			@RequestHeader(required=true) String name,
+			@RequestHeader(required=true) String lastname,
+			@RequestHeader(required=true) String fechaInicio,
+			@RequestHeader(required=true) String fechaEnd,
+			HttpSession session)
+	{
+		try 
+		{
+			//CONCAT NAME WITH LASTNAME TO GET A UNIC KEY
+			String studentNameLastname = name + " " + lastname;
+			//PARSE STRING TO DATE
+			LocalDate startDate = LocalDate.parse(fechaInicio);
+	        LocalDate endDate = LocalDate.parse(fechaEnd);
+	        //CALL METHOD TO COUNT THE VISITS
+	        int visitCount = getVisitsInRange(session, studentNameLastname, startDate, endDate);
+	        return ResponseEntity.ok().body("Número de visitas del alumno: " + visitCount);
+			
+		}
+		catch(Exception exception) 
+		{		
+			String error = "Server Error";
+			HorariosError horariosError = new HorariosError(500, error,exception);
+			log.error(error,exception);
+			return ResponseEntity.status(500).body(horariosError);	
+		}	
+	}
+	
+	/**
+	 * @author MANU
+	 * @param fechaInicio
+	 * @param fechaEnd
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/get/students/visitas/bathroom",produces = "application/json")
+	public ResponseEntity<?> getListTimesBathroom(
+			@RequestHeader(required=true) String fechaInicio,
+			@RequestHeader(required=true) String fechaEnd,
+			HttpSession session)
+	{
+		try 
+		{
+	        //PARSE STRING TO DATES
+	        LocalDate startDate = LocalDate.parse(fechaInicio);
+	        LocalDate endDate = LocalDate.parse(fechaEnd);
+	        //SAVE THE RESPONSE OF THE METHOD IN A MAP
+	        Map<String, Integer> studentVisitsMap = getStudentVisitsMap(session, startDate, endDate);
+
+	        return ResponseEntity.ok().body(studentVisitsMap);
+	    } 
+			catch (Exception exception) 
+		{
+	        String error = "Server Error";
+	        HorariosError horariosError = new HorariosError(500, error, exception);
+	        log.error(error, exception);
+	        return ResponseEntity.status(500).body(horariosError);
+	    }
+	}
+	
+	
+	
+	/**
+	 * @author MANU
+	 * @param name
+	 * @param lastname
+	 * @param fechaInicio
+	 * @param fechaEnd
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET,value = "/get/dias/studentBathroom",produces = "application/json")
+	public ResponseEntity<?> getDayHourBathroom(
+			@RequestHeader(required=true) String name,
+			@RequestHeader(required=true) String lastname,
+			@RequestHeader(required=true) String fechaInicio,
+			@RequestHeader(required=true) String fechaEnd,
+			HttpSession session)
+	{
+		try 
+		{
+			//PARSE THE STRING TO DATES
+	        LocalDate startDate = LocalDate.parse(fechaInicio);
+	        LocalDate endDate = LocalDate.parse(fechaEnd);
+
+	      //CONCAT NAME WITH LASTNAME TO GET A UNIC KEY
+	        String studentNameLastname = name + " " + lastname;
+
+	        // MAP TO SAVE THE VISITS PER DAY
+	        Map<LocalDate, Integer> visitsPerDay = new HashMap<>();
+
+	        //WE TAKE THE INITIAL DATE AND ADD 1 DAY UNTIL WE REACH THE END DATE 
+	        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) 
+	        {
+	        	int visitsOnDay = 0;
+	            // CALL METHOT THE GET THE VISITS IN THE RANGE OF DATES
+	            visitsOnDay = getVisitsInRange(session, studentNameLastname, date, date);
+	            visitsPerDay.put(date, visitsOnDay);
+	        }
+	        return ResponseEntity.ok().body(visitsPerDay);
+	    } 
+		catch (Exception exception) 
+		{
+	        String error = "Error en el servidor";
+	        HorariosError horariosError = new HorariosError(500, error, exception);
+	        log.error(error, exception);
+	        return ResponseEntity.status(500).body(horariosError);
+	    }
+	}
+	
+	
+	/**
+	 * 
+	 * @param session
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	private Map<String, Integer> getStudentVisitsMap(HttpSession session, LocalDate startDate, LocalDate endDate) {
+	    // CREATE A MAP TO SAVE THE RESULTS
+	    Map<String, Integer> studentVisitsMap = new HashMap<>();
+
+	    // GET A LIST OF ATTRIBUTE NAMES FROM THE SESSION 
+	    List<String> attributeNames = Collections.list(session.getAttributeNames());
+
+	    // ITERATE THROUGH THE ATTRIBUTE NAMES TO FIND THOSE ENDING WITH _VISITAS 
+	    for (String attributeName : attributeNames) 
+	    {
+	        if (attributeName.endsWith("_visitas")) 
+	        {
+	            // EXTRACT THE STUDENT NAMELASTNAME FROM THE ATTRIBUTENAME
+	            String studentNameLastname = attributeName.replace("_visitas", "");
+
+	            // CALL METHOD TO GET THE TOTAL VISITS IN A RANGE
+	            int visitsInRange = getTotalVisitsInRange(session, studentNameLastname, startDate, endDate);
+
+	            // PUT THE STUDENT NAMELASTNAME AND TOTAL VISITS INTO THE MAP
+	            studentVisitsMap.put(studentNameLastname, visitsInRange);
+	        }
+	    }
+
+	    // RETURN THE MAP
+	    return studentVisitsMap;
+	}
+	/**
+	 * Method
+	 * @param session
+	 * @param studentNameLastname
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public int getTotalVisitsInRange(HttpSession session, String studentNameLastname, LocalDate startDate, LocalDate endDate) 
+	{
+	    // INITIALIZE THE TOAL VISITS COUNT 
+	    int totalVisitsInRange = 0;
+
+	    // GET A LIST OF ATTRIBUTENAMES FROM THE SESSION
+	    List<String> attributeNames = Collections.list(session.getAttributeNames());
+
+	    //ITERATE THROUGH THE ATTRIBUTE NAMES TO FIND THOSE ENDING WITH _VISITAS 
+	    for (String attributeName : attributeNames) 
+	    {
+	        if (attributeName.endsWith("_visitas")) 
+	        {
+	            // EXTRACT _VISITAS TO GET THE STUDENT 
+	            String studentTemporal = attributeName.replace("_visitas", "");
+
+	            // CHECK IF THE STUDENT EXISTS
+	            if (studentTemporal.equals(studentNameLastname)) 
+	            {
+	                // CALL METHOD THE GET THE VISITS IN THE RANGE
+	                int visitsInRange = getVisitsInRange(session, studentTemporal, startDate, endDate);
+
+	                // UPDATE THE TOTAL VISITS
+	                totalVisitsInRange += visitsInRange;
+	            }
+	        }
+	    }
+
+	    // RETURN TOTALS VISITS
+	    return totalVisitsInRange;
+	}
+	
+
+	/**
+	 * @author MANU
+	 * @param session
+	 * @param studentNameLastname
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public int getVisitsInRange(HttpSession session, String studentNameLastname, LocalDate startDate, LocalDate endDate) 
+	{
+		//COUNT FOR THE VISITS
+	    int visitsInRange = 0;
+	    //GET THE LIST IN SESSION
+	    List <LocalDateTime> lista = (List<LocalDateTime>)session.getAttribute(studentNameLastname + "_visitas");
+	    
+	    if(lista != null) 
+	    {
+	    	
+	    	for(LocalDateTime date : lista) 
+		    {
+	    		LocalDate localDate = date.toLocalDate();
+	    		//LIST DATE HAS TO BE FREATER THAN OR EQUAL TO STARDATE AND LESS THAN OR EQUAL TO ENDDATE
+	    		if (localDate.isEqual(startDate) || (localDate.isAfter(startDate) && localDate.isBefore(endDate)) || localDate.isEqual(endDate))
+		    	{
+		    		//INCREMENT THE COUNT
+	    			visitsInRange++;
+	    			
+		    	}	
+		    }	
+	    }
+	    
+	    return visitsInRange;
+	}
+
+		
+	/**
+	 * @author MANU
+	 * get the number of times a student go to the bathroom saved in session
+	 * @param session
+	 * @param studentNameLastname
+	 * @return
+	 */
+	public int getVisitCount(HttpSession session, String studentNameLastname) 
+	{
+		//GET THE NUMBER OF TIMES THE STUDENT WENT TO THE BATHROOM FROM THE SESSION
+        Integer visitCount = (Integer) session.getAttribute(studentNameLastname + "_visitas");
+        //RETURN THE NUMBER OF TIMES THE STUDENT WENT TO THE BATHROOM OR 0 IF NULL
+        return visitCount != null ? visitCount : 0;
+    }
 	
 	
 	/**

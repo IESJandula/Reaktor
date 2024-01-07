@@ -22,6 +22,8 @@ public class Student implements Comparable<Student>
 	/** Attribute course*/
 	private Course course;
 
+	
+	
 	/**
 	 * Method compareTo with personal preferences (by lastName)
 	 * @param other
