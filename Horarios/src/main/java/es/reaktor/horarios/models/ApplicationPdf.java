@@ -2,7 +2,6 @@ package es.reaktor.horarios.models;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import es.reaktor.horarios.models.parse.Actividad;
 import es.reaktor.horarios.models.parse.Asignatura;
 import es.reaktor.horarios.models.parse.Aula;
 import es.reaktor.horarios.models.parse.Centro;
+import es.reaktor.horarios.models.parse.Grupo;
 import es.reaktor.horarios.models.parse.Profesor;
 import es.reaktor.horarios.models.parse.Tramo;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is created for the conflicts with Document class of XML Parser and the iText dependency
+ * 
  * @author David Martinez
+ * 
  * Example how to use:
  * 		try
 		{
@@ -527,7 +529,7 @@ public class ApplicationPdf
 				
 				// --- FONT FOR THE PARAGRAPH ---
 				Font font = FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 12, BaseColor.RED);
-				document.add(new Paragraph("HORARIO "+profesor.getNombre().trim(), font));
+				document.add(new Paragraph("HORARIO "+profesor.getNombre().trim()+" "+profesor.getPrimerApellido().trim()+" "+profesor.getSegundoApellido().trim(), font));
 				document.add(new Paragraph("\n"));
 				
 				// --- CREATE THE PDF TABLE ---
@@ -577,6 +579,150 @@ public class ApplicationPdf
 						String horaFinal = temporalTramo.getHoraFinal().trim();
 						
 						Asignatura asignatura = this.getAsignaturaById(actv.getAsignatura().trim(), centroPdfs);
+						Aula aula = this.getAulaById(actv.getAula().trim(), centroPdfs);
+						
+						String nombreAsignatura = asignatura.getNombre().trim();
+						
+						String nombreAula = aula.getNombre().trim();
+						
+						log.info(" ASIGNATURA : "+nombreAsignatura);
+						log.info("HORARIO : "+horaInicio+" "+horaFinal);
+						log.info("AULA : "+nombreAula);
+						
+						
+						// --- CREATE THE FONT FOR THE CELL ---
+						fontCell = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.BLACK);
+						
+						// --- CREATE TEH CELL WITH ALL THE INFO ---
+						PdfPCell temporalData = new PdfPCell();
+						
+						// --- PUT THE INFO INTO THE CELL WITH PARAGRAPH ---
+						temporalData.addElement(new Paragraph(nombreAsignatura+"\n"+horaInicio+"-"+horaFinal+"\n"+nombreAula,fontCell));
+						
+						//--- SET COLOR TO THE CELL ---
+						temporalData.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						
+						// --- SET THE HEIGHT FOR THE CELL ---
+						temporalData.setCalculatedHeight(90f);
+						
+						// --- FINALLY PUT THE CELL ON THE TABLE AND REPEAT WITH ALL ACTIVIDADES ---
+						pdfTable.addCell(temporalData);
+						
+						
+					}
+					pdfTable.completeRow();
+				}
+				document.add(pdfTable);
+				document.newPage();
+			}
+			document.close();
+		}
+		catch (FileNotFoundException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR FileNotFoundException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+		catch (DocumentException exception)
+		{
+			// --- ERROR ---
+			String error = "ERROR DocumentException";
+			
+			log.info(error);
+			
+			HorariosError horariosError = new HorariosError(400, error, exception);
+			log.info(error,horariosError);
+			throw horariosError;
+		}
+	}
+
+	/**
+	 * Method getAllGroupsPdfInfo
+	 * @param mapGroups
+	 * @param centroPdfs
+	 * @throws HorariosError 
+	 */
+	public void getAllGroupsPdfInfo(Map<Grupo, Map<String, List<Actividad>>> mapGroups, Centro centroPdfs) throws HorariosError
+	{
+		try
+		{
+			Document document = new Document();
+			
+			// --- ROTATE THE DOCUMENT HORIZONTAL MODE ---
+			document.setPageSize(PageSize.A4.rotate());
+			
+			PdfWriter.getInstance(document, new FileOutputStream("All_Groups_Horarios.pdf"));
+			document.open();
+			
+			PdfPTable pdfTable = null;
+			for(Map.Entry entry : mapGroups.entrySet()) 
+			{
+				System.out.println(((Grupo)entry.getKey()));
+				
+				// --- GETTING THE PROFESSOR ---
+				Grupo grupo = ((Grupo)entry.getKey());
+				
+				// --- GETTING THE MAP OF THE PROFESSOR ---
+				Map<String,List<Actividad>> mapa = (Map<String,List<Actividad>>)entry.getValue();
+				
+				// --- FONT FOR THE PARAGRAPH ---
+				Font font = FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 12, BaseColor.RED);
+				document.add(new Paragraph("HORARIO "+grupo.getNombre(), font));
+				document.add(new Paragraph("\n"));
+				
+				// --- CREATE THE PDF TABLE ---
+				pdfTable = new PdfPTable(mapa.size());
+				
+				// --- SET THE WIDTH OF TABLE TO 100% WITH FLOAT ---
+				pdfTable.setWidthPercentage(100f);
+				
+				// --- FOR EACH ENTRY ON THE MAPA ---
+				for(Map.Entry entry2 : mapa.entrySet()) 
+				{
+					String temporalDay = this.extractTemporalDayTramo(entry2.getKey().toString());
+					log.info("DIA -> "+temporalDay);
+					
+					// --- OTHER FONT FOR THE CELL TEXT ---
+					Font fontCell = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
+					
+					// --- CREATE THE CELL ---
+					PdfPCell temporalDayCell = new PdfPCell();
+					
+					// --- PUT THE PARAGRAPH WITH THE FONT ON THE CELL ---
+					temporalDayCell.addElement(new Paragraph(temporalDay,fontCell));
+					
+					// --- SET COLOR TO THE CELL (HEADERS LUNES MARTES ...) ---
+					temporalDayCell.setBackgroundColor(BaseColor.CYAN);
+					
+					// --- SET TEH VERTICAL ALIG ON CENTER TO THE TEXT ON THE CELL ---
+					temporalDayCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+					
+					// --- HORIZONTAL ALIG ON THE CENTER ---
+					temporalDayCell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+					
+					// FINALLY ADD THE CELL TO HTE TABLE ---
+					pdfTable.addCell(temporalDayCell);
+					
+					
+					List<Actividad> temporalList = (List<Actividad>) entry2.getValue();
+					Collections.sort(temporalList);
+					
+					// --- FOR EACH ACTIVIDAD ---
+					for(Actividad actv : temporalList) 
+					{
+						// --- GET THE TRAMO OF THE ACTIVIDAD ---
+						Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
+						
+						String horaInicio = temporalTramo.getHoraInicio().trim();
+						String horaFinal = temporalTramo.getHoraFinal().trim();
+						
+						Asignatura asignatura = this.getAsignaturaById(actv.getAsignatura().trim(), centroPdfs);
+						Profesor profesor = this.getProfesorById(actv.getProfesor().trim(), centroPdfs);
 						
 						String nombreAsignatura = asignatura.getNombre().trim();
 						
