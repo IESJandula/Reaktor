@@ -25,12 +25,11 @@ public class ParseAlumnos
 
 	public List<Student> parse()
 	{
-		File file = new File(this.path);
-
+		File file = new File("C:\\Users\\Juan\\Downloads\\ALUMNADO.csv");
+		
 		Scanner scanner = null;
 
 		List<Student> alumnos = new ArrayList<Student>();
-		
 		try
 		{
 			scanner = new Scanner(file);
@@ -39,18 +38,23 @@ public class ParseAlumnos
 
 			while (scanner.hasNextLine())
 			{
-
+				System.out.println("a");
 				String[] parameters = scanner.nextLine().split(";");
 				
-				
-				alumnos.add(new Student());
+				alumnos.add(this.createStudent(parameters));
 				
 			}
 
 		} catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String error = "error al parsear alumnos";
+			
+			System.out.println(e);
+		}finally {
+			if (scanner != null)
+			{
+				scanner.close();
+			}
 		}
 
 		return alumnos;

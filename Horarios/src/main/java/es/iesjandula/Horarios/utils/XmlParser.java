@@ -101,7 +101,7 @@ public class XmlParser
 		NodeList nodesTramos = datos.getElementsByTagName("TRAMO");
 		Map<Integer, TramoHorario> tramos = this.parseTramos(nodesTramos);
 		
-//		List<Student> alumnos = new ParseAlumnos(".\\src\\main\\resources\\alumnos.csv").parse();
+		List<Student> alumnos = new ParseAlumnos("alumnos.csv").parse();
 		
 		return new Datos(asignaturas, GRUPOS, aulas, profesores, tramos, new ArrayList<Student>());
 	}

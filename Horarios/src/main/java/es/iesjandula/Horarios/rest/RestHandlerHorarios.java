@@ -439,7 +439,7 @@ public class RestHandlerHorarios
 
 			for (Profesor profesor : info.getDatos().getProfesores().values())
 			{
-				new HorariosUtils().getInfoPdf(profesor, info);
+				new HorariosUtils().getInfoPdfFromProfesor(profesor, info);
 
 				ficheros.add(profesor.getNombre() + "_Horario.pdf");
 			}
@@ -556,7 +556,7 @@ public class RestHandlerHorarios
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers/pdf", produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/groups/pdf", produces = "application/json")
 	public ResponseEntity<?> getGroupsPdfs(HttpSession session)
 	{
 		try
