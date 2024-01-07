@@ -1,11 +1,15 @@
 package es.reaktor.reaktorclient.scheduled_task;
 
 import es.reaktor.models.Action;
+
+import es.reaktor.models.ComputerError;
 import es.reaktor.reaktorclient.utils.exceptions.ConstantsErrors;
 import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -15,11 +19,13 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @Slf4j
-public class PendingActions {
+public class PendingActions
+{
 	@Value("${reaktor.server.url}")
 	private String reaktorServerUrl;
 
