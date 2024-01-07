@@ -80,7 +80,27 @@ public class PendingActions
 		}
 		
 	}
-	
+
+	private void execCommandRemote(String command) throws ComputerError
+	{
+		try
+		{
+			Process proceso = new ProcessBuilder(command).start();
+			proceso.waitFor();
+		} catch (IOException e)
+		{
+      String error="El comando introducido tiene problemas de sintaxis :"+e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1,error, e);
+      } catch (InterruptedException e)
+		{
+			String error="Ha ocurrido un error al ejecutar el comando en este pc : "+e.getMessage();
+			log.warn(error);
+			e.printStackTrace();
+			throw new ComputerError(1,error, e);
+		}
+	}
 	private void configWifi(String nombreRed,String tipoSeguridad,String methodEap,String methodAuth,String password) throws ComputerError
 	{
 		String rutaBatch = "C:\\Users\\alvar\\git\\Reaktor\\ReaktorClient\\src\\main\\resources\\wifiConfig.bat";
@@ -98,15 +118,15 @@ public class PendingActions
 			log.warn(error);
 			e.printStackTrace();
 			throw new ComputerError(1,error, e);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException e)
+		{
 			String error="Ha ocurrido un error al ejecutar el comando en este pc : "+e.getMessage();
-			log.warn(e.getMessage());
+			log.warn(error);
 			e.printStackTrace();
-			throw new ComputerError(1, error, e);
+			throw new ComputerError(1,error, e);
 		}
-
 	}
-	
+  
 	private void uninstallApp(String appName)
 	{
 
