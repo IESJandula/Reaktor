@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.csv.ModelCSV;
+import es.iesjandula.horarios.models.xml.Profesor;
 
 /**
  * 
@@ -91,24 +92,35 @@ public interface ICSVParser
 			//Leemos solo la primera linea que contiene los campos
 			String linea = br.readLine();
 			String [] campos = linea.split(",");
-			//Eliminamos los espacios del separador
-			campos[1] = campos[1].substring(0);
-			campos[2] = campos[2].substring(0);
-			campos[3] = campos[3].substring(0);
-			//Comprobamos que los campos sean apellido,nombre,dni/pasaporte y curso en caso de que el csv sea de alumnos
-			if(campos[0].equalsIgnoreCase("apellido") && campos[1].equalsIgnoreCase("nombre") && campos[2].equalsIgnoreCase("dni/pasaporte") && campos[3].equalsIgnoreCase("curso"))
+			if(campos.length==4)
 			{
-				profesor = false;
-				check = true;
-			}	
-			//Comprobamos que los campos sean nombre,apellidos y roles en caso de que el csv sea de profesores
-			else if(!campos[0].equalsIgnoreCase("nombre") && !campos[1].equalsIgnoreCase("apellidos") && !campos[2].equalsIgnoreCase("email") && !campos[3].equalsIgnoreCase("roles"))
-			{
-				check = false;
+				//Eliminamos los espacios del separador
+				campos[1] = campos[1].substring(0);
+				campos[2] = campos[2].substring(0);
+				campos[3] = campos[3].substring(0);
+				//Comprobamos que los campos sean apellido,nombre,dni/pasaporte y curso en caso de que el csv sea de alumnos
+				if(campos[0].equalsIgnoreCase("apellido") && campos[1].equalsIgnoreCase("nombre") && campos[2].equalsIgnoreCase("dni/pasaporte") && campos[3].equalsIgnoreCase("curso"))
+				{
+					profesor = false;
+					check = true;
+				}	
 			}
 			else
 			{
-				check = true;
+				//Eliminamos los espacios del separador
+				campos[1] = campos[1].substring(0);
+				campos[2] = campos[2].substring(0);
+				campos[3] = campos[3].substring(0);
+				campos[4] = campos[4].substring(0);
+				//Comprobamos que los campos sean nombre,apellidos y roles en caso de que el csv sea de profesores
+				if(!campos[0].equalsIgnoreCase("nombre") && !campos[1].equalsIgnoreCase("apellidos") && !campos[2].equalsIgnoreCase("email") && !campos[3].equalsIgnoreCase("telefono") && !campos[3].equalsIgnoreCase("roles"))
+				{
+					check = false;
+				}
+				else
+				{
+					check = true;
+				}
 			}
 			if(br!=null)
 			{
@@ -214,24 +226,26 @@ public interface ICSVParser
 				//Se eliminan los espacios sobrantes del separador
 				campos[1] = campos[1].substring(0);
 				campos[2] = campos[2].substring(0);
+				campos[3] = campos[3].substring(0);
 				//Guardamos el valor de los atributos en variables
 				String nombre = campos[0];
 				String apellidos = campos [1];
 				String email = campos [2];
+				String telefono = campos[3];
 				//Roles y rolesArray se quedan vacias para analizarlas
 				String roles = "";
 				String [] rolesArray = null;
 				//Si la lista mide 4 de longitud guardamos los roles sin mas
-				if(campos.length==4)
+				if(campos.length==5)
 				{
-					roles = campos[3];
+					roles = campos[4];
 					rolesArray = new String [1];
 					rolesArray[0] = roles;
 				}
 				//Si no juntamos todo para que en un string quede asi "rol1 rol2"
 				else
 				{
-					for(int i = 3;i<campos.length;i++)
+					for(int i = 4;i<campos.length;i++)
 					{
 						if(campos.length-1 == i)
 						{
@@ -247,7 +261,7 @@ public interface ICSVParser
 					roles = roles.substring(0, roles.length()-1);
 					rolesArray = roles.split(" ");
 				}
-				modelos.add(new ModelCSV(nombre,apellidos,email,rolesArray));
+				modelos.add(new ModelCSV(nombre,apellidos,email,telefono,rolesArray));
 				linea = br.readLine();
 			}
 		}
@@ -300,7 +314,7 @@ public interface ICSVParser
 			{
 				String [] campos = linea.split(",");
 				//Eliminamos los espacios del split
-				campos[1] = campos[1].substring(0);
+				campos[1] = campos[1].substring(1);
 				campos[2] = campos[2].substring(0);
 				campos[3] = campos[3].substring(0);	
 				//Añadimos los alumnos uno a uno a la lista
@@ -332,5 +346,96 @@ public interface ICSVParser
 			}
 		}
 		return alumnos;
+	}
+	
+	public default void escribirModelos(List<Profesor> profesores) throws HorarioError
+	{
+		List<ModelCSV> modelos = new LinkedList<>();
+		File file = new File("src/main/resources/modelos.csv");
+		FileWriter fw = null;
+		try
+		{
+			fw = new FileWriter(file);
+			for(Profesor p:profesores)
+			{
+				String [] campos = p.getNombre().split(",");
+				campos[1] = campos[1].substring(1);
+				String [] apellidos = campos[0].split(" ");
+				apellidos[1] = apellidos[1].substring(0);
+				String correo = campos[1].substring(0,0) + apellidos[0].substring(0, 2) + apellidos[1].substring(0, 2) + "@g.educaand.es";
+				correo = correo.toLowerCase();
+				int numTele = (int)(Math.random()*999999999+100000000);
+				String telefono = String.valueOf(numTele);
+				numTele = (int)(Math.random()*3+1);
+				String [] rol = this.seleccionarRol(numTele);
+				ModelCSV modelo = new ModelCSV(campos[0],campos[1],correo,telefono,rol);
+				modelos.add(modelo);
+			}
+			fw.write("Nombre,Apellidos,Email,Telefono,Roles\n");
+			for(ModelCSV m:modelos)
+			{
+				String [] roles = m.getRoles();
+				String campoRol = "";
+				if(roles.length==1)
+				{
+					campoRol = "\""+roles[0] +"\"";
+				}
+				else if(roles.length==2)
+				{
+					campoRol = "\""+roles[0] +","+roles[1]+"\"";
+				}
+				else
+				{
+					campoRol = "\""+roles[0] +","+roles[1]+","+roles[2]+"\"";
+				}
+				fw.write(m.getNombre()+","+m.getApellido()+","+m.getEmail()+","+m.getTelefono()+","+campoRol+"\n");
+			}
+			fw.flush();
+			log.info("Fichero escrito");
+		}
+		catch(IOException ex)
+		{
+			log.error("Error al escribir los modelos de los profesores");
+			throw new HorarioError(0,"Error al parsear los profesores a modelos");
+		}
+		finally
+		{
+			try
+			{
+				if(fw != null)
+				{
+					fw.close();
+				}
+			}
+			catch(IOException ex)
+			{
+				log.error("Error al cerrar e fichero");
+			}
+		}
+		
+	}
+	
+	private String [] seleccionarRol(int numTele)
+	{
+		String [] roles = null;
+		if(numTele==1)
+		{
+			roles = new String[1];
+			roles[0] = "Docente";
+		}
+		else if(numTele==2)
+		{
+			roles = new String[2];
+			roles[0] = "Docente";
+			roles[1] = "Administrador";
+		}
+		else
+		{
+			roles = new String[3];
+			roles[0] = "Docente";
+			roles[1] = "Administrador";
+			roles[2] = "Conserje";
+		}
+		return roles;
 	}
 }

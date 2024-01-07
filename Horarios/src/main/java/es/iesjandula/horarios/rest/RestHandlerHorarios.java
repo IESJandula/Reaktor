@@ -102,7 +102,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			if(!isTeacher)
 			{
 				log.error("El csv pasado no corresponde al de los profesores");
-				throw new HorarioError(5,"Error la estructura del csv no es correcta, los campos principales han de ser apellidos,nombre, apellidos, email y roles");
+				throw new HorarioError(5,"Error la estructura del csv no es correcta, los campos principales han de ser apellidos,nombre, apellidos, email, telefono y roles");
 			}
 			//Parseamos el fichero y guardamos los datos
 			this.modelos = this.parseCSV();
@@ -401,6 +401,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * Obtienes el profesor y la asignatura que tiene ese grupo ese dia a esa hora
 	 * @param nombreDelCurso
 	 * @return ResponseEntity
+	 * @author Javier Martinez Megias
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/teacher-subject")
     public ResponseEntity<?> getNombreProfesorAsignatura(
@@ -436,6 +437,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * Obtienes el aula que tiene ese grupo ese dia a esa hora
 	 * @param nombreDelCurso
 	 * @return ResponseEntity
+	 * @author Javier Martinez Megias
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/aula")
     public ResponseEntity<?> getAula(
@@ -466,6 +468,51 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
 		}
     }
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/loc-alumno")
+	public ResponseEntity<?> getAlumnoLocation(
+			@RequestHeader(value="nombre",required = true)String nombre,
+			@RequestHeader(value="apellido",required = true)String apellido
+			)
+	{
+		try
+		{
+			Alumno alumno = this.checkAlumno(nombre, apellido, alumnos);
+			String resultado = this.nombreProfesorAsignatura(alumno.getCurso(), centro);
+			this.getDatosProfesor(resultado, centro.getDatos().getProfesor());
+			return ResponseEntity.ok().body(resultado);
+		}
+		catch(HorarioError ex)
+		{
+			log.error(ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/modelos")
+	public ResponseEntity<?> getModelo()
+	{
+		try
+		{
+			this.escribirModelos(centro.getDatos().getProfesor());
+			return ResponseEntity.ok().body("Modelos cargados");
+		}
+		catch(HorarioError ex)
+		{
+			log.error(ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
+		}
+	}
 	
 	
 		

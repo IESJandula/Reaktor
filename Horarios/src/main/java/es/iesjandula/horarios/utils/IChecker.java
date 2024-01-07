@@ -367,6 +367,7 @@ public interface IChecker
 	 * @param listaTramos
 	 * @param numeroTramo
 	 * @return int
+	 * @author Javier Martinez Megias
 	 */
 	private int getTramoHorario(Integer dia, String horaActual, List<Tramo> listaTramos)
 	{
@@ -389,6 +390,7 @@ public interface IChecker
 	/**
 	 * Return the actual day
 	 * @return integer
+	 * @author Javier Martinez Megias
 	 */
 	private Integer getDay()
 	{
@@ -403,6 +405,7 @@ public interface IChecker
 	 * Se obrtiene el aula mediante el nombre del curso
 	 * @param nombreDelCurso
 	 * @return String
+	 * @author Javier Martinez Megias
 	 */
 	public default String nombreAula(String nombreDelCurso,Centro centro)
 	{
@@ -473,12 +476,13 @@ public interface IChecker
 	 * Obtienes el profesor y la asignatura que tiene ese grupo ese dia a esa hora
 	 * @param nombreDelCurso
 	 * @return String 
+	 * @author Javier Martinez Megias
 	 */
 	public default String nombreProfesorAsignatura(String nombreDelCurso, Centro centro)
 	{
 		//Obtenemso el dia y la hora
-		String hora = this.getActualHour();
-		int dia = this.getDay();
+		String hora = "10:15";
+		int dia = 5;
 		
 		List<TipoHorario> listaHorarios = centro.getDatos().getHorarios().getHorarioGrupo();
 		List<Grupo> listaGrupos = centro.getDatos().getGrupo();
@@ -499,7 +503,7 @@ public interface IChecker
 		//Obtenemso el grupo
 		for(Grupo grupo : listaGrupos)
 		{
-			if(nombreDelCurso.equals(grupo.getNombre()))
+			if(nombreDelCurso.equals(grupo.getNombre()) || nombreDelCurso.equals(grupo.getAbreviatura()))
 			{
 				numeroGrupo = grupo.getNum_int_gr();
 			}
@@ -547,5 +551,61 @@ public interface IChecker
 		
 				
 		return result;
+	}
+	/**
+	 * Metodo que busca y comprueba si un alumno existe pasandole un nombre y un apellido
+	 * @param nombre
+	 * @param apellido
+	 * @param alumnos
+	 * @return el alumno encontrado o una excepcion si no lo encuentra
+	 * @throws HorarioError
+	 * @author Pablo Ruiz Canovas
+	 */
+	public default Alumno checkAlumno(String nombre,String apellido,List<Alumno> alumnos) throws HorarioError
+	{
+		Alumno alumno = null;
+		if(nombre.isEmpty() || apellido.isEmpty())
+		{
+			log.error("El nombre y apellidos estan vacios");
+			throw new HorarioError(10, "El nombre o el apellido estan vacios");	
+		}
+		else
+		{
+			boolean encontrado = false;
+			int index = 0;
+			while(index<alumnos.size())
+			{
+				Alumno a = alumnos.get(index);
+				if(a.getNombre().equals(nombre) && a.getApellido().equals(apellido))
+				{
+					encontrado = true;
+					alumno = a;
+					break;
+				}
+				index++;
+			}
+			if(!encontrado)
+			{
+				log.error("Alumno "+apellido+" "+nombre+" no encontrado en el sistema");
+				throw new HorarioError(20,"Alumno "+apellido+" "+nombre+" no encontrado en el sistema");
+			}
+		}
+		return alumno;
+	}
+	
+	public default Profesor getDatosProfesor(String datos,List<Profesor> profesores)
+	{
+		Profesor profesor = null;
+		String [] splitDatos = datos.split("\n");
+		datos = splitDatos[0].substring(10);
+		for(Profesor p:profesores)
+		{
+			if(p.getNombre().equals(datos))
+			{
+				profesor = p;
+			}
+		}
+		return profesor;
+		
 	}
 }

@@ -21,6 +21,8 @@ public class ModelCSV
 	private String apellido;
 	/**Cuenta de correo de la persona del csv */
 	private String email;
+	/**Telefono de contacto de la persona del csv */
+	private String telefono;
 	/**Lista de roles de la persona del csv */
 	private String [] roles;
 }
