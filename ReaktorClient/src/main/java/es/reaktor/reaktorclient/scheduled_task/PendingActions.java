@@ -186,6 +186,32 @@ public class PendingActions
 			}
 		}
 	}
+
+	
+	private void installApp(File appName)
+	{
+
+		Scanner scanner = null;
+		try
+		{
+			log.info("inicio instalación aplicacion");
+			Process proceso = new ProcessBuilder("cmd.exe", "/c", "dir /s /b C:\\" + appName + " > resultados.txt")
+					.start();
+			
+			int resultado = proceso.waitFor();
+			log.info("fin instalación aplicacion");
+
+		} catch (IOException | InterruptedException e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (scanner != null)
+			{
+				scanner.close();
+			}
+    }
+	}
   
 	private void reset() {
 		Scanner scanner = null;
