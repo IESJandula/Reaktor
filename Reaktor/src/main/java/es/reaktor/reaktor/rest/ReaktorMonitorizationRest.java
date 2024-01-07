@@ -53,10 +53,17 @@ public class ReaktorMonitorizationRest
 	@Autowired
 	private ReaktorService reaktorService;
 	
-	private Map<String, List<Action>> toDo = new HashMap<String, List<Action>>(Map.of(
-   			"001", new ArrayList<Action>( List.of(new Action("shutdown",""),new Action("reset", ""),new Action("configurarWifi", "JadulaWifi"))),
-   			"002", new ArrayList<Action>(),
-			"003", new ArrayList<Action>(List.of(new Action("configurarWifi", "Direccion")))));
+	private Map<String, List<Action>> toDo;
+	
+  		
+
+	public ReaktorMonitorizationRest() 
+    {
+    this.toDo= new HashMap<String, List<Action>>();
+    this.toDo.put("001", new ArrayList<Action>( List.of(new Action("shutdown",""),new Action("reset", ""),new Action("configurarWifi", "JadulaWifi"))));
+    this.toDo.put("002",  new ArrayList<Action>());
+    this.toDo.put("003", new ArrayList<Action>(List.of(new Action("configurarWifi", "Direccion"))));
+    }
 
 	@RequestMapping(method = RequestMethod.POST, value = "/reaktor")
 	public ResponseEntity<?> sendInformation(@RequestBody Reaktor reaktor)
@@ -192,7 +199,7 @@ public class ReaktorMonitorizationRest
 			return ResponseEntity.ok(response);
     	}catch (ComputerError computerError){
     		log.error("Computer error", computerError);
-    		return ResponseEntity.status(400).body(computerError.toMap());
+    		return ResponseEntity.status(400).body(computerError);
     	}catch (Exception e) {
     		log.error("Server error", e);
     		return ResponseEntity.status(500).body(e.getMessage());
@@ -204,7 +211,7 @@ public class ReaktorMonitorizationRest
 	   
 	   if (serialNumber.isBlank() || !this.toDo.containsKey(serialNumber))
 	   {
-		   throw new ComputerError(2, "invalid SerialNumber", null);
+		   throw new ComputerError(2, "invalid SerialNumber");
 	   }
    }
 	
@@ -315,7 +322,9 @@ public class ReaktorMonitorizationRest
 	    {
 	        try
 	        {
+	        	
 	            testComputer(computerInstance);
+	            
 	        }
 	        catch (ComputerError computerError)
 	        {
