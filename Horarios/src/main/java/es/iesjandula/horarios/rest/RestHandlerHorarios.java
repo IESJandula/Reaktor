@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -694,6 +695,113 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 		}
 	}
 	
+	/**
+	 * Obtienes el numero de veces que ha ido el alumno al baño en un tramo horario
+	 * @param nombre
+	 * @param apellido
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return ResponseEntity
+	 * @author Javier Martinez
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/bathroomTimes")
+	public ResponseEntity<?> getBathroomTimes(
+	        @RequestHeader(value= "nombre", required = true) String nombre,
+	        @RequestHeader(value= "apellido", required = true) String apellido,
+	        @RequestHeader(value= "fechaInicio", required = true) String fechaInicio,
+	        @RequestHeader(value= "fechaFin", required = true) String fechaFin)
+	{
+		try
+		{		
+			//tramoBathroom.add(new TramoBathroom(new Alumno(apellido, nombre, fechaInicio, fechaFin), "11:00", "11:05", "5"));
+			//tramoBathroom.add(new TramoBathroom(new Alumno(apellido, nombre, fechaInicio, fechaFin), "09:00", "10:07", "5"));
+			//Se obtiene el numero de veces
+			String result = this.getTimesBathroom(this.tramoBathroom, nombre, apellido,fechaInicio,fechaFin);
+			// Se comprueba que no sea vacio
+
+			if(result.equals(""))
+			{
+				throw new HorarioError(1, "No se ha encontrado el alumno");
+			}
+			return ResponseEntity.ok().body(result);    	
+		}
+		catch (HorarioError exception)
+		{
+			String error = "No se ha encontrado el alumno";
+			HorarioError horarioError = new HorarioError(404, error);
+			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+	}
 	
+	/**
+	 * Obtienes el numero de veces que ha ido el alumno al baño en un tramo horario
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return ResponseEntity
+	 * @author Javier Martinez
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/get/bathroomTimesList")
+	public ResponseEntity<?> getBathroomTimes(
+	        @RequestHeader(value= "fechaInicio", required = true) String fechaInicio,
+	        @RequestHeader(value= "fechaFin", required = true) String fechaFin)
+	{
+		try
+		{		
+			//tramoBathroom.add(new TramoBathroom(new Alumno("", "", fechaInicio, fechaFin), "11:00", "11:05", "5"));
+			//tramoBathroom.add(new TramoBathroom(new Alumno("a", "a", fechaInicio, fechaFin), "10:00", "10:07", "5"));
+			//tramoBathroom.add(new TramoBathroom(new Alumno("a", "a", fechaInicio, fechaFin), "11:00", "11:07", "5"));
+			//Se obtiene el numero de veces
+			TreeMap<String, Integer> result = this.getTimesBathroom(this.tramoBathroom,fechaInicio,fechaFin);
+			// Se comprueba que no sea vacio
+
+			if(result.isEmpty())
+			{
+				throw new HorarioError(1, "No ha ido ningun alumno en ese tramo horario");
+			}
+			return ResponseEntity.ok().body(result);    	
+		}
+		catch (HorarioError exception)
+		{
+			String error = "No se ha encontrado el alumno";
+			HorarioError horarioError = new HorarioError(404, error);
+			return ResponseEntity.status(404).body(horarioError.getBodyMessageException());
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+		
+		
+	}
+	
+	/**
+	 * Devuelve el profesor que esta en el aula de reflexion
+	 * No existe este aula en el xml????
+	 * @return Lista de todos los profesores
+	 * @author Javier Martinez Megias
+	 */
+
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teacherReflexionRoom", produces = "application/json")
+    public ResponseEntity<?> teacherReflexionRoom()
+    {
+		try
+		{		
+			return ResponseEntity.ok().body("Profesor : ");    	
+		}
+		catch (Exception exception)
+		{     	
+			log.error(exception.getMessage());
+			HorarioError horarioError = new HorarioError(500, exception.getMessage());
+			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
+		}
+    }
 		
 }

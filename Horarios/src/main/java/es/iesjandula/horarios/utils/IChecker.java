@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -782,4 +783,74 @@ public interface IChecker
 		return mapas;
 	}
 	
+	/**
+	 * @author Javier Martinez
+	 * Devuelve el numero de veces que ha ido el alumno al baño en un tramo
+	 * @param alumnos
+	 * @param nombre
+	 * @param apellidos
+	 * @param horaInicio
+	 * @param horaFinal
+	 * @return String
+	 */
+	public default String getTimesBathroom(List<TramoBathroom> alumnos, String nombre,String apellidos ,String horaInicio, String horaFinal)
+	{
+		Integer veces = 0;
+		String result = "";
+		for(TramoBathroom alumno : alumnos)
+		{
+			if(alumno.getAlumno().getNombre().equalsIgnoreCase(nombre) && alumno.getAlumno().getApellido().equalsIgnoreCase(apellidos))
+			{
+				int menorHoraFinal = horaFinal.compareTo(alumno.getTramoFinal());
+				int mayorHoraInicial = horaInicio.compareTo(alumno.getTramoInicial());
+				
+				if(menorHoraFinal >= 0 && mayorHoraInicial <= 0)
+				{
+					veces++;
+					result = "El alumno "+nombre+" "+apellidos+" ha ido al baño "+veces+" veces entre las "+horaInicio+" y las "+horaFinal+".";
+				}
+			}
+		}
+		return result;
+		
+	}
+
+	/**
+	 * @author Javier Martinez
+	 * @param alumnos
+	 * @param horaInicio
+	 * @param horaFinal
+	 * @return TreeMap<String, Integer>
+	 */
+	public default TreeMap<String, Integer> getTimesBathroom(List<TramoBathroom> alumnos , String horaInicio, String horaFinal)
+	{
+		Integer veces = 0;
+		String result = "";
+		
+		TreeMap<String, Integer> listaOrdenada = new TreeMap<String, Integer>();
+		for(TramoBathroom alumno : alumnos)
+		
+		{
+			
+			int menorHoraFinal = horaFinal.compareTo(alumno.getTramoFinal());
+			int mayorHoraInicial = horaInicio.compareTo(alumno.getTramoInicial());
+			
+			if(menorHoraFinal >= 0 && mayorHoraInicial <= 0)
+			{
+				String nombre = alumno.getAlumno().getNombre()+" "+alumno.getAlumno().getApellido();
+				if(listaOrdenada.containsKey(nombre))
+				{
+					listaOrdenada.put(nombre, listaOrdenada.get(nombre)+1);
+				}
+				else
+				{
+					listaOrdenada.put(nombre, 1);
+				}
+					
+			}
+			
+		}
+		return listaOrdenada;
+		
+	}
 }
