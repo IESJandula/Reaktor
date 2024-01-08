@@ -1,9 +1,15 @@
 package es.reaktor.reaktor.utils;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.reaktor.reaktor.constants.Constantes;
 import es.reaktor.reaktor.exceptions.ComputerError;
@@ -11,6 +17,7 @@ import es.reaktor.reaktor.models.CommandLine;
 import es.reaktor.reaktor.models.Computer;
 import es.reaktor.reaktor.models.Peripheral;
 import es.reaktor.reaktor.models.Software;
+import es.reaktor.reaktor.models.Status;
 
 /**
  * 
@@ -134,11 +141,11 @@ public interface IChecker
 	 * @throws ComputerError
 	 * @see Metodo principal {@link #checkParams(String, String, String, Integer, CommandLine)}
 	 */
-	public default List<Computer> checkParams(String serialNumber, String juntaNumber, String computerNumber, Integer cpuNumber, Integer ramCap, Integer hdCap, String classroom, String trolley, Integer plant, String teacher, List<Computer> computers) throws ComputerError
+	public default List<Computer> checkParams(String serialNumber, String juntaNumber, String computerNumber, String classroom, String trolley, Integer plant, String teacher, List<Computer> computers) throws ComputerError
 	{
 		
 		//Se comprueba que los parametros no esten vacios, y si lo estan se devolvera la lista entera de los ordenadores
-		if(serialNumber.isEmpty() && juntaNumber.isEmpty() && computerNumber.isEmpty() && cpuNumber == null && ramCap == null && hdCap == null && classroom.isEmpty())
+		if(serialNumber.isEmpty() && juntaNumber.isEmpty() && computerNumber.isEmpty() && classroom.isEmpty())
 		{
 			computers = Constantes.cargarOrdenadores();
 		}
@@ -154,18 +161,6 @@ public interface IChecker
 		{
 			this.iterateListComputer(computerNumber, "computerNumber", computers);
 		}	
-		else if (cpuNumber != null) 
-		{
-			this.iterateListComputer(String.valueOf(cpuNumber), "cpuNumber", computers);
-		}
-		else if (ramCap != null) 
-		{
-			this.iterateListComputer(String.valueOf(ramCap), "ramCap", computers);
-		}
-		else if (hdCap != null) 
-		{
-			this.iterateListComputer(String.valueOf(hdCap), "hdCap", computers);
-		}
 		else if (!classroom.isEmpty()) 
 		{
 			this.iterateListComputer(classroom, "classroom", computers);
@@ -531,48 +526,7 @@ public interface IChecker
 				}
 			}
 		}
-		else if (dataType.equals("cpuNumber"))
-		{
-			for(Computer a:computers)
-			{
-				for (int i = 0; i < a.getHardwareList().size(); i++)
-				{
-					if (String.valueOf(a.getHardwareList().get(i).getCuantity()).equals(data))
-					{
-						computers.add(a);
-					}
-					Object o = a.getClass();
-				}
-			}
-		}
-		else if (dataType.equals("ramCap"))
-		{
-			for(Computer a:computers)
-			{
-				
-				for (int i = 0; i < a.getHardwareList().size(); i++)
-				{
-					if (String.valueOf(a.getHardwareList().get(i).getCuantity()).equals(data))
-					{
-						computers.add(a);
-					}
-				}
-			}
-		}
-		else if (dataType.equals("hdCap"))
-		{
-			for(Computer a:computers)
-			{
-				
-				for (int i = 0; i < a.getHardwareList().size(); i++)
-				{
-					if (String.valueOf(a.getHardwareList().get(i).getCuantity()).equals(data))
-					{
-						computers.add(a);
-					}
-				}
-			}
-		}
+		
 		else if (dataType.equals("classroom"))
 		{
 			for(Computer a:computers)
@@ -624,5 +578,158 @@ public interface IChecker
 		
 		return computers;
 		
+	}
+	
+	public default void writeJson(String datos) throws ComputerError
+	{
+		File file = new File("src/main/resources/status.json");
+		FileWriter fw = null;
+		try
+		{
+			fw = new FileWriter(file);
+			fw.write(datos);
+			fw.flush();
+		}
+		catch(IOException ex)
+		{
+			throw new ComputerError(1,"Error writing the json file");
+		}
+		finally
+		{
+			try
+			{
+				if(fw!=null)
+				{
+					fw.close();
+				}
+			}
+			catch(IOException ex)
+			{
+				
+			}
+		}
+	}
+	
+	public default void deleteJson(String datos) throws ComputerError
+	{
+		File file = new File("src/main/resources/status.json");
+		FileWriter fw = null;
+		try
+		{
+			fw = new FileWriter(file);
+			fw.write("");
+			fw.flush();
+		}
+		catch(IOException ex)
+		{
+			throw new ComputerError(1,"Error writing the json file");
+		}
+		finally
+		{
+			try
+			{
+				if(fw!=null)
+				{
+					fw.close();
+				}
+			}
+			catch(IOException ex)
+			{
+				
+			}
+		}
+	}
+	
+	public default String execute(List<Computer> computers) throws ComputerError
+	{
+		ObjectMapper mapper = Json.mapper();
+		String datos = "";
+		try
+		{
+			List<Status> statuses = mapper.readValue(Paths.get("src/main/resources/status.json").toFile(), new TypeReference<List<Status>> () {});
+			for(Status s:statuses)
+			{
+				datos += this.clavesOrdenador(s, computers);
+				datos += this.multiplesOrdenadores(s, computers);
+			}
+		}
+		catch(Exception ex)
+		{
+			throw new ComputerError(1,"Error parsing the json "+ex);
+		}
+		return datos;
+	}
+	
+	private String clavesOrdenador(Status s,List<Computer>computers)
+	{
+		String datos = "";
+		if(s.getKey().equals("serialNumber"))
+		{
+			for(Computer c:computers)
+			{
+				if(c.getSerialNumber().equals(s.getValue()))
+				{
+					datos+= "Tarea "+s.getInfo()+" aplicada sobre el ordenador "+c.toString()+"\n";
+				}
+			}
+		}
+		if(s.getKey().equals("andaluciaId"))
+		{
+			for(Computer c:computers)
+			{
+				if(c.getAndaluciaID().equals(s.getValue()))
+				{
+					datos+= "Tarea "+s.getInfo()+" aplicada sobre el ordenador "+c.toString()+"\n";
+				}
+			}
+		}
+		if(s.getKey().equals("computerNumber"))
+		{
+			for(Computer c:computers)
+			{
+				if(c.getComputerNumber().equals(s.getValue()))
+				{
+					datos+= "Tarea "+s.getInfo()+" aplicada sobre el ordenador "+c.toString()+"\n";
+				}
+			}
+		}
+		return datos;
+	}
+	
+	private String multiplesOrdenadores(Status s,List<Computer>computers)
+	{
+		String datos = "";
+		if(s.getKey().equals("classroom"))
+		{
+			for(Computer c:computers)
+			{
+				if(c.getLocation().getClassroom().equals(s.getValue()));
+				{
+					datos+= "Tarea "+s.getInfo()+" aplicada sobre el ordenador "+c.toString()+"\n";
+				}
+			}
+		}
+		if(s.getKey().equals("trolley"))
+		{
+			for(Computer c:computers)
+			{
+				if(c.getLocation().getTrolley().equals(s.getValue()));
+				{
+					datos+= "Tarea "+s.getInfo()+" aplicada sobre el ordenador "+c.toString()+"\n";
+				}
+			}
+		}
+		if(s.getKey().equals("plant"))
+		{
+			for(Computer c:computers)
+			{
+				String valorPlanta = String.valueOf(c.getLocation().getPlant());
+				if(valorPlanta.equals(s.getValue()));
+				{
+					datos+= "Tarea "+s.getInfo()+" aplicada sobre el ordenador "+c.toString()+"\n";
+				}
+			}
+		}
+		return datos;
 	}
 }

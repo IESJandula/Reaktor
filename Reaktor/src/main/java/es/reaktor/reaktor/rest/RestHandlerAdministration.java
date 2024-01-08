@@ -3,8 +3,8 @@ package es.reaktor.reaktor.rest;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +38,7 @@ public class RestHandlerAdministration implements IChecker
 	/** Class logger */
 	private static Logger log = LogManager.getLogger();
 	/** Mapa de status para identificar procesos a ejecutar */
-	private Map<String, Status> pcStatus;
+	private List<Status> pcStatus;
 	/**Lista de ordenadores para casos de prueba */
 	private List<Computer> computers;
 	
@@ -49,7 +49,7 @@ public class RestHandlerAdministration implements IChecker
 	public RestHandlerAdministration()
 	{
 		// Public constructor
-		this.pcStatus = new HashMap<String, Status>();
+		this.pcStatus = new LinkedList<Status>();
 		this.computers = Constantes.cargarOrdenadores();
 	}
 
@@ -94,31 +94,32 @@ public class RestHandlerAdministration implements IChecker
 			if (!serialNumber.isEmpty())
 			{
 				
-				status = new Status(serialNumber,String.valueOf(commandLine.getCommands()), false);
+				status = new Status("serialNumber",serialNumber,String.valueOf(commandLine.getCommands()), false);
 				// Añadimos como clave el pc y como valor un objeto status con command line
-				this.pcStatus.put("serialNumber", status);
+				this.pcStatus.add(status);
 				
 			}
 			if (!classroom.isEmpty())
 			{
-				status = new Status(classroom,String.valueOf(commandLine.getCommands()), false);
+				status = new Status("classroom",classroom,String.valueOf(commandLine.getCommands()), false);
 				// Añadimos como clave una clase en la que hay ordenadores y como valor un
 				// objeto status con command line
-				this.pcStatus.put("classroom", status);
+				this.pcStatus.add(status);		
 				
 			}
 			if (!trolley.isEmpty())
 			{
 				
-				status = new Status(trolley,String.valueOf(commandLine.getCommands()), false);
+				status = new Status("trolley",trolley,String.valueOf(commandLine.getCommands()), false);
 				// Añadimos como clave el pc y como valor un objeto status con command line
-				this.pcStatus.put("trolley", status);	
-			}
+				this.pcStatus.add(status);	
+				}
 			if (plant != null)
 			{
-				status = new Status(String.valueOf(plant),String.valueOf(commandLine.getCommands()), false);
+				status = new Status("plant",String.valueOf(plant),String.valueOf(commandLine.getCommands()), false);
 				// Añadimos como clave el pc y como valor un objeto status con command line
-				this.pcStatus.put("plant", status);
+				this.pcStatus.add(status);	
+				
 			}
 			return ResponseEntity.ok().body("Comandos mandados a ejecutar");
 		} catch (ComputerError ex)
@@ -167,29 +168,29 @@ public class RestHandlerAdministration implements IChecker
 			}
 			if (!serialNumber.isEmpty())
 			{
-				status = new Status(serialNumber,"apagado", false);
+				status = new Status("serialNumber",serialNumber,"apagado", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado apagado
-				this.pcStatus.put("serialNumber", status);
+				this.pcStatus.add(status);
 			}
 			if (!classroom.isEmpty())
 			{
-				status = new Status(classroom,"apagado", false);
+				status = new Status("classroom",classroom,"apagado", false);
 				// Añadimos como clave una clase en la que hay ordenadores y como valor un
 				// objeto status con el estado apagado
-				this.pcStatus.put("classroom", status);
+				this.pcStatus.add(status);
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,"apagado", false);
+				status = new Status("trolley",trolley,"apagado", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado apagado
-				this.pcStatus.put("trolley", status);
+				this.pcStatus.add(status);
 			}
 			if (plant != null)
 			{
-				status = new Status(String.valueOf(plant),"apagado", false);
+				status = new Status("plant",String.valueOf(plant),"apagado", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado apagado
-				this.pcStatus.put("plant", status);
-			}
+				this.pcStatus.add(status);
+				}
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
 		{
@@ -238,31 +239,31 @@ public class RestHandlerAdministration implements IChecker
 			}
 			if (!serialNumber.isEmpty())
 			{
-				status = new Status(serialNumber,"reiniciado", false);
+				status = new Status("serialNumber",serialNumber,"reiniciado", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "reiniciado"
-				this.pcStatus.put("serialNumber", status);
+				this.pcStatus.add(status);
 			}
 			if (!classroom.isEmpty())
 			{
-				status = new Status(classroom,"reiniciado", false);
+				status = new Status("classroom",classroom,"reiniciado", false);
 				// Añadimos como clave una clase en la que hay ordenadores y como valor un
 				// objeto status con el estado "reiniciado"
-				this.pcStatus.put("classroom", status);
+				this.pcStatus.add(status);
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,"reiniciado", false);
+				status = new Status("trolley",trolley,"reiniciado", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "reiniciado"
-				this.pcStatus.put("trolley", status);
+				this.pcStatus.add(status);
 			}
 			if (plant != null)
 			{
-				status = new Status(String.valueOf(plant),"reiniciado", false);
+				status = new Status("plant",String.valueOf(plant),"reiniciado", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "reiniciado"
-				this.pcStatus.put("plant", status);
+				this.pcStatus.add(status);
 			}
 			return ResponseEntity.ok().body("OK");
 		} catch (ComputerError exception)
@@ -305,17 +306,17 @@ public class RestHandlerAdministration implements IChecker
 			
 			if (!classroom.isEmpty())
 			{
-				status = new Status(classroom,Arrays.toString(peripherals), false);
+				status = new Status("classroom",classroom,Arrays.toString(peripherals), false);
 				// Añadimos como clave una clase en la que hay ordenadores y como valor un
 				// objeto status con el estado "perifericos"
-				this.pcStatus.put("classroom", status);
+				this.pcStatus.add(status);
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,Arrays.toString(peripherals), false);
+				status = new Status("trolley",trolley,Arrays.toString(peripherals), false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "perifericos"
-				this.pcStatus.put("trolley", status);
+				this.pcStatus.add(status);
 			}
 			return ResponseEntity.ok().body("All OK");
 		} catch (ComputerError ce)
@@ -354,17 +355,17 @@ public class RestHandlerAdministration implements IChecker
 			
 			if (!classroom.isEmpty())
 			{
-				status = new Status(classroom,"sendCapturas", false);
+				status = new Status("classroom",classroom,"sendCapturas", false);
 				// Añadimos como clave una clase en la que hay ordenadores y como valor un
 				// objeto status con el estado "capturas"
-				this.pcStatus.put("classroom", status);
+				this.pcStatus.add(status);
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,"sendCapturas", false);
+				status = new Status("trolley",trolley,"sendCapturas", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "capturas"
-				this.pcStatus.put("trolley", status);
+				this.pcStatus.add(status);
 			}
 			return ResponseEntity.ok().body("Screenshot send successfully");
 		} catch (ComputerError ex)
@@ -399,17 +400,17 @@ public class RestHandlerAdministration implements IChecker
 			
 			if (!classroom.isEmpty())
 			{
-				status = new Status(classroom,"capturas", false);
+				status = new Status("classroom",classroom,"capturas", false);
 				// Añadimos como clave una clase en la que hay ordenadores y como valor un
 				// objeto status con el estado "capturas"
-				this.pcStatus.put("classroom", status);
+				this.pcStatus.add(status);
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,"capturas", false);
+				status = new Status("trolley",trolley,"capturas", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "capturas"
-				this.pcStatus.put("trolley", status);
+				this.pcStatus.add(status);
 			}
 			File zipFile = new File("screenshots.zip");
 			// TODO: Cuando se implante la bbdd llamar al ordenador ye incluirlo en
@@ -461,31 +462,31 @@ public class RestHandlerAdministration implements IChecker
 			
 			if (!serialNumber.isEmpty())
 			{
-				status = new Status(serialNumber,"ejecutable", false);
+				status = new Status("serialNumber",serialNumber,"ejecutable", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "ejecutable"
-				this.pcStatus.put("serialNumber", status);
+				this.pcStatus.add(status);
 			}
 			if (!classroom.isEmpty())
 			{
-				status = new Status(classroom,"ejecutable", false);
+				status = new Status("classroom",classroom,"ejecutable", false);
 				// Añadimos como clave una clase en la que hay ordenadores y como valor un
 				// objeto status con el estado "ejecutable"
-				this.pcStatus.put("classroom", status);
+				this.pcStatus.add(status);
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,"ejecutable", false);
+				status = new Status("trolley",trolley,"ejecutable", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "ejecutable"
-				this.pcStatus.put("trolley", status);
+				this.pcStatus.add(status);
 			}
 			if (plant != null)
 			{
-				status = new Status(String.valueOf(plant),"ejecutable", false);
+				status = new Status("plant",String.valueOf(plant),"ejecutable", false);
 				// Añadimos como clave el pc y como valor un objeto status con el estado
 				// "ejecutable"
-				this.pcStatus.put(String.valueOf(plant), status);
+				this.pcStatus.add(status);
 			}
 			
 			return ResponseEntity.ok().body("Computer update success");
@@ -530,16 +531,16 @@ public class RestHandlerAdministration implements IChecker
 			Status status = null;
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,"install" + softwareInstance, false);
-				this.pcStatus.put("trolley", status);
+				status = new Status("trolley",trolley,"install" + softwareInstance, false);
+				this.pcStatus.add(status);
 				// Añadimos como clave el carrito que contiene ordenadores y como valor un
 				// objeto status con el estado
 				// "install" + Nombre de la Aplicacion
 			}
 			if (!professor.isEmpty())
 			{
-				status = new Status(professor,"install" + softwareInstance, false);
-				this.pcStatus.put("professor", status);
+				status = new Status("professor",professor,"install" + softwareInstance, false);
+				this.pcStatus.add(status);
 				// Añadimos como clave el ordenador del profesor y como valor un objeto status
 				// con el estado
 				// "install" + Nombre de la Aplicacion
@@ -585,22 +586,22 @@ public class RestHandlerAdministration implements IChecker
 			Status status = null;
 			if(!classroom.isEmpty())
 			{
-				status = new Status(classroom,"uninstall" + softwareInstance, false);
-				this.pcStatus.put("classroom", status);
+				status = new Status("classroom",classroom,"uninstall" + softwareInstance, false);
+				this.pcStatus.add(status);
 				// Añadimos como clave una clase que contiene ordenadores y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
 			}
 			if (!trolley.isEmpty())
 			{
-				status = new Status(trolley,"uninstall" + softwareInstance, false);
-				this.pcStatus.put("trolley", status);
+				status = new Status("trolley",trolley,"uninstall" + softwareInstance, false);
+				this.pcStatus.add(status);
 				// Añadimos como clave el carrito que contiene ordenadores y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
 			}
 			if (!professor.isEmpty())
 			{
-				status = new Status(professor,"uninstall" + softwareInstance, false);
-				this.pcStatus.put("professor", status);
+				status = new Status("professor",professor,"uninstall" + softwareInstance, false);
+				this.pcStatus.add(status);
 				// Añadimos como clave el ordenador del profesor y como valor un objeto status con el estado
 				// "uninstall" + Nombre de la Aplicacion
 			}
@@ -676,7 +677,7 @@ public class RestHandlerAdministration implements IChecker
 		}
 		finally
 		{
-			this.pcStatus = new HashMap<String,Status>();
+			this.pcStatus = new LinkedList<Status>();
 		}
 	}
 

@@ -76,6 +76,8 @@ public class RestHandlerMonitorizacion implements IChecker
 			//Obtenemos la respuesta
 			this.statusJson = EntityUtils.toString(response.getEntity());
 			log.info("Respuesta aceptada "+this.statusJson);
+			this.writeJson(this.statusJson);
+			log.info("Json escrito");
 			return ResponseEntity.ok("Status recibido");
 		
 		}
@@ -106,45 +108,32 @@ public class RestHandlerMonitorizacion implements IChecker
 		
 	}
 	
-//	@RequestMapping(method = RequestMethod.GET, value = "/get/info-status")
-//	public ResponseEntity<?> infoStatus(
-//			@RequestHeader(value = "shutdown", required = false) Boolean shutdown,
-//			@RequestHeader(value = "reboot", required = false) Boolean reboot,
-//			@RequestHeader(value = "executable", required = false) Boolean exec,
-//			@RequestHeader(value = "install", required = false) Boolean install,
-//			@RequestHeader(value = "uninstall", required = false) Boolean uninstall,
-//			@RequestHeader(value = "envWifi", required = false) Boolean envWifi
-//			)
-//	{
-//		try
-//		{
-//			String ejecutables = "";
-//			//Se comprueba si el usuario ha introducido atributos
-//			shutdown = shutdown==null ? false : shutdown;
-//			reboot = reboot==null ? false : reboot;
-//			exec = exec==null ? false : exec;
-//			install = install==null ? false : install;
-//			uninstall = uninstall==null ? false : uninstall;
-//			envWifi = envWifi==null ? false : envWifi;
-//			if(!shutdown && !reboot && !exec && !install && !uninstall && !envWifi)
-//			{
-//				return ResponseEntity.status(204).body("Ahora mismo no hay ninguna peticion a ejecutar");
-//			}
-//			else
-//			{
-//				
-//			}
-//			
-//		}
-//		catch(ComputerError ex)
-//		{
-//			
-//		}
-//		catch(Exception ex)
-//		{
-//			
-//		}
-//	}
+	@RequestMapping(method = RequestMethod.GET, value = "/get/execute-task")
+	public ResponseEntity<?> executeTask()
+	{
+		try
+		{
+			File file = new File("src/main/resources/status.json");
+			String resultadoTarea = "";
+			if(!file.exists())
+			{
+				throw new ComputerError(1,"Error the json file doesn't exists");
+			}
+			else
+			{
+				resultadoTarea = this.execute(computers);
+			}
+			return ResponseEntity.ok().body(resultadoTarea);
+		}
+		catch(ComputerError ex)
+		{
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
+		}
+	}
 	
 	/**
 	 * Metodo que devuelve una captura de un ordenador usando su numero de serie
@@ -233,7 +222,7 @@ public class RestHandlerMonitorizacion implements IChecker
 		{
 			this.checkParams(serialNumber, andaluciaId, computerNumber, computerInstance);
 			Computer computer = this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computerInstance, this.computers);
-			return ResponseEntity.ok().body("OK");
+			return ResponseEntity.ok().body(computer);
 		}
 		catch(ComputerError ex)
 		{

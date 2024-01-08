@@ -13,7 +13,8 @@ public class Status
 {
 	/**Atributo que representa el valor de un pc, clase, aula, carrito o planta */
 	private String key;
-	
+	/**Valor de la key */
+	private String value;
 	/**Specific pc status, reboot, shut down, install, ... */
 	private String info;
 	
