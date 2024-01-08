@@ -60,7 +60,8 @@ public class RestHandlerWeb implements IChecker
 			classroom = classroom==null ? "" : classroom;
 			trolley = trolley==null ? "" : trolley;
 			teacher = teacher==null ? "" : teacher;
-			this.checkParams(serialNumber, juntaNumber, computerNumber, cpuNumber, ramCap, hdCap, classroom, trolley, plant, teacher, computers);
+			List<Computer> computersReturn = this.checkParams(serialNumber, juntaNumber, computerNumber, cpuNumber, ramCap, hdCap, classroom, trolley, plant, teacher, computers);
+			return ResponseEntity.ok().body(computersReturn);
 		} 
 		catch (ComputerError ex)
 		{
@@ -72,7 +73,7 @@ public class RestHandlerWeb implements IChecker
 			log.error("Internal server error", ex);
 			return ResponseEntity.status(500).body("Server error");
 		}
-		return ResponseEntity.ok().build();
+		
 	}
 	
 	
