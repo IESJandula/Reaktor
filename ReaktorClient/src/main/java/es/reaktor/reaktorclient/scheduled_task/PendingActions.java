@@ -156,21 +156,13 @@ public class PendingActions
 		try
 		{
 			log.info("inicio busqueda chrome");
-			Process proceso = new ProcessBuilder("cmd.exe", "/c", "dir /s /b C:\\" + appName + " > resultados.txt")
+			Process proceso = new ProcessBuilder("cmd.exe /c winget uninstall --id "+appName+" --silent --force")
 					.start();
 			int resultado = proceso.waitFor();
 			log.info("fin busqueda chrome");
 			if (resultado == 0)
 			{
-				scanner = new Scanner(new File("resultados.txt"));
-				String path = scanner.nextLine();
-				log.info("inicio borrado resultado");
-				proceso = new ProcessBuilder("cmd.exe", "/c", "del resultados.txt").start();
-				resultado = proceso.waitFor();
-				log.info("inicio desinstalacion");
-				proceso = new ProcessBuilder("cmd.exe", "/c", "\"" + path + "\" --uninstall --force-uninstall").start();
-				resultado = proceso.waitFor();
-				log.info("fin desinstalacion");
+				log.info("Desinstalacion completa");
 			} else
 			{
 				System.out.println("Error en la desinstalación. Código de salida: " + resultado);
@@ -227,7 +219,7 @@ public class PendingActions
 		try
 		{
 			log.info("inicio instalación aplicacion");
-			Process proceso = new ProcessBuilder("cmd.exe", "/c", "dir /s /b C:\\" + appName + " > resultados.txt")
+			Process proceso = new ProcessBuilder("cmd.exe /c winget install "+appName+" --silent --accept-package-agreements --accept-source-agreements --force")
 					.start();
 
 			int resultado = proceso.waitFor();
