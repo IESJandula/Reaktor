@@ -555,7 +555,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * @param apellido
 	 * @param curso
 	 * @return ok si se han introducido bien todos los parametros, 404 si estan mal introducidos o 500 si huvo un error de servidor
-	 * @author Pablo Ruiz Canovas
+	 * @author Javier Martinez Megias
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/alumno-bathroom-ida")
 	public ResponseEntity<?> sendAlumnoBathroom(
@@ -603,7 +603,7 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	 * @param apellido
 	 * @param curso
 	 * @return ok si se han introducido bien todos los parametros, 404 si estan mal introducidos o 500 si huvo un error de servidor 
-	 * @author Pablo Ruiz Canovas
+	 * @author Javier Martinez Megias
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/alumno-bathroom-vuelta")
 	public ResponseEntity<?>sendAlumnoBathroomBack(
@@ -641,7 +641,58 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body("Error de servidor "+ex);
 		}
 	}
-	
+	/**
+	 * Endpoint que devuelve los dias y los tramos horarios en el que un alumno ha ido al servicio
+	 * @param nombre
+	 * @param apellido
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return ok mas una lista de mapas donde se organiza la informacion, 404 si los parametros fallan o 500 si hubo un error de servidor
+	 * @author Pablo Ruiz Canovas 
+	 */
+	@RequestMapping( method = RequestMethod.GET, value = "/get/day-hour-bathroom")
+	public ResponseEntity<?>sendAlumnoBathroomBack(
+			@RequestHeader(value = "nombre",required = true)String nombre,
+			@RequestHeader(value = "apellido",required = true)String apellido,
+			@RequestHeader(value = "fechaInicio",required = true)String fechaInicio,
+			@RequestHeader(value = "fechaFin",required = true)String fechaFin
+			)
+	{
+		try
+		{
+			//Cargamos los ejemplos
+			Alumno alumno = new Alumno("Reina","Pepe","123456789","Curso");
+			this.alumnos.add(alumno);
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:00","9:15","10/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:20","9:25","10/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:40","9:45","10/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:00","9:15","11/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:20","9:25","11/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:40","9:45","11/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:00","9:15","12/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:20","9:25","12/10/2023"));
+			tramoBathroom.add(new TramoBathroom(new Alumno("Reina","Pepe","123456789","Curso"),"9:40","9:45","12/10/2023"));
+			//Comprobamos que el alumno exista
+			alumno = this.checkAlumno(nombre, apellido, alumnos);
+			//Cargamos el mapa DATO:Alumno es una variable condicional su uso es
+			//SOLO PARA LA COMPILACION DEL METODO
+			List<Map<String,String>> mapas = this.getTimesBathroom(fechaInicio, fechaFin, alumno, tramoBathroom);
+			//Reseteamos la lista
+			this.tramoBathroom = new LinkedList<>();
+			return ResponseEntity.ok().body(mapas);
+			
+		}
+		catch(HorarioError ex)
+		{
+			log.error("Error al actualizar el tramo",ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
+		}
+		catch(Exception ex)
+		{
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(500).body("Error de servidor "+ex);
+		}
+	}
 	
 	
 		

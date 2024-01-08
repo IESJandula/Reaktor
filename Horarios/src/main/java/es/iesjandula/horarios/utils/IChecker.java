@@ -727,6 +727,7 @@ public interface IChecker
 	 * @param tramo
 	 * @param tramos
 	 * @return Lista de tramos actualizada
+	 * @author Pablo Ruiz Canovas
 	 */
 	public default List<TramoBathroom> reemplazarTramo(TramoBathroom tramo,List<TramoBathroom> tramos)
 	{
@@ -743,6 +744,42 @@ public interface IChecker
 			index++;
 		}
 		return tramos;
+	}
+	/**
+	 * Metodo que devuelve una lista de mapas con la informacion de los tramos horarios, dias e informacion del alumno
+	 * @param fechaInicio
+	 * @param tramoFin
+	 * @param alumno
+	 * @param tramos
+	 * @return 
+	 * @throws HorarioError
+	 * @author Pablo Ruiz Canovas
+	 */
+	public default List<Map<String,String>>getTimesBathroom(String fechaInicio,String tramoFin,Alumno alumno,List<TramoBathroom> tramos) throws HorarioError
+	{
+		List<Map<String,String>> mapas = new LinkedList<>();
+		Map<String,String> veces = new HashMap<>();
+		int index = 0;
+		while(index<tramos.size())
+		{
+			TramoBathroom t = tramos.get(index);
+			
+			int horaInicial = fechaInicio.compareTo(t.getTramoFinal());
+            int horaFinal = tramoFin.compareTo(t.getTramoInicial());
+
+            if(horaFinal <= 0 && horaInicial <= 0)
+            {
+            	veces.put("alumno",t.getAlumno().getNombre()+" "+t.getAlumno().getApellido());
+                veces.put("dia", t.getDia());
+                veces.put("hora_inicio", t.getTramoInicial());
+                veces.put("hora_fin", t.getTramoFinal());
+                mapas.add(veces);
+        		veces = new HashMap<>();
+            }
+				
+			index++;
+		}
+		return mapas;
 	}
 	
 }
