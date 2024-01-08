@@ -96,6 +96,7 @@ public class HorariosUtils {
 			if (profesores.get(cont).getNombre().equals(nombre)) {
 				profesor = profesores.get(cont);
 			}
+			cont++;
 
 		}
 
