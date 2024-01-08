@@ -44,9 +44,6 @@ public class RestHandlerWeb implements IChecker
 			@RequestHeader(value = "serialNumber", required = false) String serialNumber,
 			@RequestHeader(value = "juntaNumber", required = false) String juntaNumber,
 			@RequestHeader(value = "computerNumber", required = false) String computerNumber,
-			@RequestHeader(value = "cpuNumber", required = false) Integer cpuNumber,
-			@RequestHeader(value = "ramCap", required = false) Integer ramCap,
-			@RequestHeader(value = "hdCap", required = false) Integer hdCap,
 			@RequestHeader(value = "classroom", required = false) String classroom,
 			@RequestHeader(value = "trolley", required = false) String trolley,
 			@RequestHeader(value = "plant", required = false) Integer plant,
@@ -60,7 +57,7 @@ public class RestHandlerWeb implements IChecker
 			classroom = classroom==null ? "" : classroom;
 			trolley = trolley==null ? "" : trolley;
 			teacher = teacher==null ? "" : teacher;
-			List<Computer> computersReturn = this.checkParams(serialNumber, juntaNumber, computerNumber, cpuNumber, ramCap, hdCap, classroom, trolley, plant, teacher, computers);
+			List<Computer> computersReturn = this.checkParams(serialNumber, juntaNumber, computerNumber, classroom, trolley, plant, teacher, computers);
 			return ResponseEntity.ok().body(computersReturn);
 		} 
 		catch (ComputerError ex)
