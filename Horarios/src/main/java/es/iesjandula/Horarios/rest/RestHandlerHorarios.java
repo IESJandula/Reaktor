@@ -186,7 +186,7 @@ public class RestHandlerHorarios
 
 	//ENDPOINT 4
 	@RequestMapping(method = RequestMethod.GET, value = " /get/roles")
-	public ResponseEntity<?> getRoles(@RequestHeader(required = true) String email, HttpSession httpSession)
+	public ResponseEntity<?> getRoles(@RequestHeader(value = "email", required = true) String email, HttpSession httpSession)
 	{
 		InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
 		List<Profesor> profesoresList = new ArrayList<>(infoCentro.getDatos().getProfesores().values());
