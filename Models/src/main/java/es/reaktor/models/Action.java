@@ -14,15 +14,4 @@ public class Action
 	
 	private String info;
 	
-	private String fileName;
-	
-	private byte[] file;
-
-	public Action(String actionName, String info) {
-		super();
-		this.actionName = actionName;
-		this.info = info;
-	}
-	
-	
 }

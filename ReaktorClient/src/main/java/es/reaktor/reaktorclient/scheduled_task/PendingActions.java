@@ -36,7 +36,7 @@ public class PendingActions
 			httpClient = HttpClients.createDefault();
 			String url = reaktorServerUrl + "/computers/get/status";
 			HttpGet request = new HttpGet(url);
-			request.addHeader("serialNumber", "003");
+			request.addHeader("serialNumber", "002");
 			response = httpClient.execute(request);
 			Action action = new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), Action.class);
 			if (action.getActionName() != null)
@@ -152,31 +152,20 @@ public class PendingActions
 
 	private void uninstallApp(String appName)
 	{
-		Scanner scanner = null;
+		
 		try
 		{
 			log.info("inicio busqueda chrome");
-			Process proceso = new ProcessBuilder("cmd.exe /c winget uninstall --id "+appName+" --silent --force")
-					.start();
-			int resultado = proceso.waitFor();
-			log.info("fin busqueda chrome");
-			if (resultado == 0)
-			{
-				log.info("Desinstalacion completa");
-			} else
-			{
-				System.out.println("Error en la desinstalación. Código de salida: " + resultado);
-			}
-		} catch (IOException | InterruptedException e)
+			Runtime.getRuntime().exec
+			(
+			"cmd.exe /c winget uninstall --id "+appName+" --silent --force"
+			);
+			
+		} catch (IOException e)
 		{
+			log.error("Error en la desinstalacion");
 			e.printStackTrace();
-		} finally
-		{
-			if (scanner != null)
-			{
-				scanner.close();
-			}
-		}
+		} 
 	}
 
 	private void blockDevicesIO()
@@ -214,27 +203,19 @@ public class PendingActions
 
 	private void installApp(File appName)
 	{
-
-		Scanner scanner = null;
 		try
 		{
-			log.info("inicio instalación aplicacion");
-			Process proceso = new ProcessBuilder("cmd.exe /c winget install "+appName+" --silent --accept-package-agreements --accept-source-agreements --force")
-					.start();
-
-			int resultado = proceso.waitFor();
-			log.info("fin instalación aplicacion");
-
-		} catch (IOException | InterruptedException e)
+			log.info("inicio busqueda chrome");
+			Runtime.getRuntime().exec
+			(
+				"cmd.exe /c winget install "+appName+" --silent --accept-package-agreements --accept-source-agreements --force"
+			);
+			
+		} catch (IOException e)
 		{
+			log.error("Error en la desinstalacion");
 			e.printStackTrace();
-		} finally
-		{
-			if (scanner != null)
-			{
-				scanner.close();
-			}
-		}
+		} 
 	}
 
 	private void reset()

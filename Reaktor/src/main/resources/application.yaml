@@ -8,7 +8,7 @@ spring:
       connection-timeout: 60000
       maximum-pool-size: 5
 server:
-  port: 8084
+  port: 8080
 
 reaktor:
   cronComputerOn: 5_000

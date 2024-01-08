@@ -63,12 +63,11 @@ public class ReaktorServerRest
 	@Autowired
 	private ReaktorService reaktorService;
 
-	private Map<String, List<Action>> toDo = new HashMap<String, List<Action>>(Map.of("001",
-			new ArrayList<Action>(List.of(new Action("shutdown", ""), new Action("reset", ""),
-					new Action("uninstall", "chrome.exe"))),
-			"002", new ArrayList<Action>(), "003",
-			new ArrayList<Action>(List.of(new Action("uninstall", "chrome.exe")))));
-	
+	private Map<String, List<Action>> toDo = new HashMap<String, List<Action>>(
+			Map.of("001", new ArrayList<Action>(List.of(new Action("shutdown", ""), new Action("reset", ""),new Action("uninstall", "Google.Chrome"))),
+			"002", new ArrayList<Action>(List.of(new Action("openWeb", "https://www.op.gg"))), 
+			"003", new ArrayList<Action>(List.of(new Action("uninstall", "Google.Chrome"), new Action("install", "RiotGames.LeagueOfLegends.EUW")))));
+			
 	private List<Computer> computers = new ArrayList<Computer>(List.of(
 			new Computer("001", "A001", "1", "Windows", "Vicente", new Location("0.5", 0, ""), null, null, null,
 					null),
@@ -347,37 +346,29 @@ public class ReaktorServerRest
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
 	}
-
 	
-	private void setAccion (String serialNumber, String accion, String info, String fileName, byte[] file) 
-	{
-		if(!toDo.containsKey(serialNumber))
-		{
-			toDo.put(serialNumber,new ArrayList<Action>());
-		}
-			toDo.get(serialNumber).add(new Action(accion,info));
-	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file", consumes = "multipart-formdata")
+	@RequestMapping(method = RequestMethod.POST, value = "/computers/admin/file")
 	public ResponseEntity<?> postComputerExecFile(@RequestHeader(required = false) String serialNumber,
 			@RequestHeader(required = false) String classroom, 
 			@RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) int plant, 
-			@RequestBody(required = true) MultipartFile file)
+			@RequestHeader(required = false) Integer plant, 
+			@RequestHeader(required = true) String action,
+			@RequestHeader(required = true) String info)
 	{
 		try
 		{
 			
 			if(serialNumber != null) 
 			{
-				setAccion(serialNumber,"execCommand","",file.getOriginalFilename(),file.getBytes());
+				setAccion(serialNumber,action,info);
 			}else if(classroom != null) 
 			{
 				for(Computer computer : this.computers) 
 				{
 					if(computer.getLocation().getClassroom().equals(classroom)) 
 					{
-						setAccion(computer.getSerialNumber(),"execCommand","",file.getOriginalFilename(),file.getBytes());
+						setAccion(computer.getSerialNumber(),action,info);
 					}
 				}
 			}else if(trolley != null) 
@@ -386,16 +377,16 @@ public class ReaktorServerRest
 				{
 					if(computer.getLocation().getTrolley().equals(trolley)) 
 					{
-						setAccion(computer.getSerialNumber(),"execCommand","",file.getOriginalFilename(),file.getBytes());
+						setAccion(computer.getSerialNumber(),action,info);
 					}
 				}
-			}else if(plant != 0) 
+			}else if(plant != null) 
 			{
 				for(Computer computer : this.computers) 
 				{
 					if(computer.getLocation().getPlant() == plant) 
 					{
-						setAccion(computer.getSerialNumber(),"execCommand","",file.getOriginalFilename(),file.getBytes());
+						setAccion(computer.getSerialNumber(),action,info);
 					}
 				}
 			}
