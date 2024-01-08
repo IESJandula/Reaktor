@@ -1,9 +1,11 @@
 package es.reaktor.reaktor.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import es.reaktor.reaktor.constants.Constantes;
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.CommandLine;
 import es.reaktor.reaktor.models.Computer;
@@ -115,6 +117,73 @@ public interface IChecker
 		{
 			throw new ComputerError(2,"Los parametros no pueden estar vacios");
 		}
+	}
+	
+	/**
+	 * Metodo sobrecargado que comprueba que los parametros esten correctos y que encuentra la informacion solicitada
+	 * @param serialNumber
+	 * @param juntaNumber
+	 * @param computerNumber
+	 * @param cpuNumber
+	 * @param ramCap
+	 * @param hdCap
+	 * @param classroom
+	 * @param trolley
+	 * @param plant
+	 * @param teacher
+	 * @throws ComputerError
+	 * @see Metodo principal {@link #checkParams(String, String, String, Integer, CommandLine)}
+	 */
+	public default List<Computer> checkParams(String serialNumber, String juntaNumber, String computerNumber, Integer cpuNumber, Integer ramCap, Integer hdCap, String classroom, String trolley, Integer plant, String teacher, List<Computer> computers) throws ComputerError
+	{
+		
+		//Se comprueba que los parametros no esten vacios, y si lo estan se devolvera la lista entera de los ordenadores
+		if(serialNumber.isEmpty() && juntaNumber.isEmpty() && computerNumber.isEmpty() && cpuNumber == null && ramCap == null && hdCap == null && classroom.isEmpty())
+		{
+			computers = Constantes.cargarOrdenadores();
+		}
+		else  if (!serialNumber.isEmpty()) 
+		{
+			this.iterateListComputer(serialNumber, "serialNumber", computers);
+		}
+		else if (!juntaNumber.isEmpty()) 
+		{
+			this.iterateListComputer(juntaNumber, "andaluciaId", computers);
+		}
+		else if (!computerNumber.isEmpty()) 
+		{
+			this.iterateListComputer(computerNumber, "computerNumber", computers);
+		}	
+		else if (cpuNumber != null) 
+		{
+			this.iterateListComputer(String.valueOf(cpuNumber), "cpuNumber", computers);
+		}
+		else if (ramCap != null) 
+		{
+			this.iterateListComputer(String.valueOf(ramCap), "ramCap", computers);
+		}
+		else if (hdCap != null) 
+		{
+			this.iterateListComputer(String.valueOf(hdCap), "hdCap", computers);
+		}
+		else if (!classroom.isEmpty()) 
+		{
+			this.iterateListComputer(classroom, "classroom", computers);
+		}
+		else if (!trolley.isEmpty()) 
+		{
+			this.iterateListComputer(trolley, "trolley", computers);
+		}
+		else if (plant != null) 
+		{
+			this.iterateListComputer(String.valueOf(plant), "plant", computers);
+		}
+		else if (!teacher.isEmpty()) 
+		{
+			this.iterateListComputer(teacher, "teacher", computers);
+		}
+		
+		return computers;
 	}
 	/**
 	 * Metodo que comprueba que el fichero pasado por parametro sea una imagen y tenga contenido
@@ -423,6 +492,137 @@ public interface IChecker
 		}
 		
 		return computerReturn;
+		
+	}
+	
+	private List<Computer> iterateListComputer(String data, String dataType, List<Computer>computers) throws ComputerError 
+	{
+		if (dataType.equals("serialNumber"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getSerialNumber().equals(data))
+				{
+					computers.add(a);
+				}
+			}
+		}
+		
+		else if (dataType.equals("juntaNumber"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getAndaluciaID().equals(data))
+				{
+					computers.add(a);
+				}
+			}
+		}
+		else if (dataType.equals("computerNumber"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getComputerNumber().equals(data))
+				{
+					computers.add(a);
+				}
+			}
+		}
+		else if (dataType.equals("cpuNumber"))
+		{
+			for(Computer a:computers)
+			{
+				for (int i = 0; i < a.getHardwareList().size(); i++)
+				{
+					if (String.valueOf(a.getHardwareList().get(i).getCuantity()).equals(data))
+					{
+						computers.add(a);
+					}
+					Object o = a.getClass();
+				}
+			}
+		}
+		else if (dataType.equals("ramCap"))
+		{
+			for(Computer a:computers)
+			{
+				
+				for (int i = 0; i < a.getHardwareList().size(); i++)
+				{
+					if (String.valueOf(a.getHardwareList().get(i).getCuantity()).equals(data))
+					{
+						computers.add(a);
+					}
+				}
+			}
+		}
+		else if (dataType.equals("hdCap"))
+		{
+			for(Computer a:computers)
+			{
+				
+				for (int i = 0; i < a.getHardwareList().size(); i++)
+				{
+					if (String.valueOf(a.getHardwareList().get(i).getCuantity()).equals(data))
+					{
+						computers.add(a);
+					}
+				}
+			}
+		}
+		else if (dataType.equals("classroom"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getLocation().getClassroom().equals(data))
+				{
+					computers.add(a);
+				}
+			}
+		}
+		else if (dataType.equals("trolley"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getLocation().getTrolley().equals(data))
+				{
+					computers.add(a);
+				}
+			}
+		}
+		else if (dataType.equals("plant"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (String.valueOf(a.getLocation().getPlant()).equals(data))
+				{
+					computers.add(a);
+				}
+			}
+		}
+		else if (dataType.equals("teacher"))
+		{
+			for(Computer a:computers)
+			{
+				
+				if (a.getProfessor().equals(data))
+				{
+					computers.add(a);
+				}
+			}
+		}
+		else
+		{
+			throw new ComputerError(1, "data types are not correct");
+		}
+		
+		return computers;
 		
 	}
 }
