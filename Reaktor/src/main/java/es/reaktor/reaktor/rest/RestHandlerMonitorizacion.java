@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import es.reaktor.reaktor.constants.Constantes;
 import es.reaktor.reaktor.exceptions.ComputerError;
 import es.reaktor.reaktor.models.Computer;
 import es.reaktor.reaktor.models.Status;
@@ -40,6 +41,8 @@ public class RestHandlerMonitorizacion implements IChecker
 	
 	/**String temporal que almacena los status */
 	private String statusJson;
+	/**Lista de ordenadores para casos de prueba */
+	private List<Computer> computers;
 	/**
 	 * Default constructor
 	 */
@@ -47,6 +50,7 @@ public class RestHandlerMonitorizacion implements IChecker
 	{
 		//Public constructor
 		this.statusJson = "";
+		this.computers = Constantes.cargarOrdenadores();
 	}
 	
 	/**
@@ -228,7 +232,7 @@ public class RestHandlerMonitorizacion implements IChecker
 		try
 		{
 			this.checkParams(serialNumber, andaluciaId, computerNumber, computerInstance);
-			//TODO: Mandar la informacion al ordenador afectado obtenido de otro endpoint
+			Computer computer = this.checkParamsUpdatecomputer(serialNumber, andaluciaId, computerNumber, computerInstance, this.computers);
 			return ResponseEntity.ok().body("OK");
 		}
 		catch(ComputerError ex)
