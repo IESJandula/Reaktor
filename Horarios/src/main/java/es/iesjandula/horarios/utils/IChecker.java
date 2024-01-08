@@ -677,7 +677,7 @@ public interface IChecker
 	 * @param alumno
 	 * @param alumnos
 	 * @return lista de alumnos actualizada
-	 * @author Pablo Ruiz Canovas
+	 * @author Javier Martinez Megias
 	 */
 	public default List<Alumno> reemplazarAlumno(Alumno alumno,List<Alumno> alumnos) throws HorarioError
 	{
