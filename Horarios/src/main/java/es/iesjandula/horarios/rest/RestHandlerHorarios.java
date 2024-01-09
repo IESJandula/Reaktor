@@ -803,5 +803,26 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 			return ResponseEntity.status(500).body(horarioError.getBodyMessageException());
 		}
     }
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/get/horario/teacher/pdf", produces = "application/pdf")
+	public ResponseEntity <?> getTeacherPDF(
+				@RequestHeader(value = "name",required = true) String name,
+				@RequestHeader(value = "lastName",required = true) String lastName
+			)
+	{
+		try
+		{
+			this.checkNameSurnameDay(lastName, name, 2, centro.getDatos().getProfesor());
+			this.createPDF(name, lastName, centro.getDatos().getProfesor(), centro., null, null)
+		}
+		catch(HorarioError ex)
+		{
+			
+		}
+		catch(Exception ex)
+		{
+			
+		}
+	}
 		
 }

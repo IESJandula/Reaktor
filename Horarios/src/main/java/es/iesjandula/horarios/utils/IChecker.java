@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import es.iesjandula.horarios.constants.Constantes;
 import es.iesjandula.horarios.exception.HorarioError;
 import es.iesjandula.horarios.models.Alumno;
 import es.iesjandula.horarios.models.TramoBathroom;
@@ -252,6 +253,14 @@ public interface IChecker
 		return date.getDayOfMonth()+"/"+date.getMonthValue()+"/"+date.getYear();
 	}
 	
+	/**
+	 * Metodo que comprueba que el profesor introducido exista
+	 * @param name
+	 * @param surname
+	 * @param dia
+	 * @param listaProfesores
+	 * @throws HorarioError
+	 */
 	public default void checkNameSurnameDay(String name,String surname,int dia,  List<Profesor> listaProfesores) throws HorarioError
 	{
 		//Comprobamos que el nombre o apellido no esten vacios
@@ -853,4 +862,97 @@ public interface IChecker
 		return listaOrdenada;
 		
 	}
+	
+	public default void createPDF(String name,String lastName,List<Profesor> profesores,List<Actividad>actividades,List<Asignatura> asignaturas,List<Tramo> tramos)
+	{
+		String datos = "";
+		Tramo tramo = null;
+		Profesor profe = this.buscarProfesor(0, lastName+", "+name, profesores);
+		Actividad actividad = null;
+		Asignatura asignatura = null;
+		Aula aula = null;
+		int dia = 1;
+		List<String> horas = Constantes.cargarHorasInicio();
+		for(Actividad a:actividades)
+		{
+			tramo = this.buscarTramo(dia, tramos);
+			asignatura = this.buscarAsignatura(a.getAulaOAsignatura(), asignaturas);
+			if(a.getProfesorOAula() == profe.getNum_int_pr() && tramo.getNumero_dia() == dia)
+			{
+				datos += tramo.getHora_inicio()+"/"+tramo.getHora_final()+" el profesor "+profe.getNombre()+" tiene "+asignatura.getNombre()+"\n";
+			}
+		}
+		System.out.println(datos);
+	}
+	/**
+	 * Metodo que busca y devuelve una asignatura
+	 * @param numero
+	 * @param asignaturas
+	 * @return asignatura encontrada
+	 */
+	private Asignatura buscarAsignatura(int numero,List<Asignatura>asignaturas)
+	{
+		int index = 0;
+		Asignatura a = null;
+		while(index<asignaturas.size())
+		{
+			a = asignaturas.get(index);
+			if(a.getNum_int_as()==numero)
+			{
+				break;
+			}
+			index++;
+		}
+		
+		return a;
+	}
+	
+	private Profesor buscarProfesor(int numero,String nombre,List<Profesor> profesores)
+	{
+		Profesor p = null;
+		int index = 0;
+		if(!nombre.isEmpty())
+		{
+			while(index<profesores.size())
+			{
+				p = profesores.get(index);
+				if(p.getNombre().equals(nombre))
+				{
+					break;
+				}
+				index++;
+			}
+		}
+		else
+		{
+			while(index<profesores.size())
+			{
+				p = profesores.get(index);
+				if(p.getNum_int_pr() == numero)
+				{
+					break;
+				}
+				index++;
+			}
+		}
+		return p;
+		
+	}
+	
+	private Tramo buscarTramo(int numero,List<Tramo> tramos)
+	{
+		Tramo t = null;
+		int index = 0;
+		while(index<tramos.size())
+		{
+			t = tramos.get(index);
+			if(t.getNum_tr() == numero)
+			{
+				break;
+			}
+			index++;
+		}
+		return t;
+	}
+	
 }

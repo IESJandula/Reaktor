@@ -72,4 +72,18 @@ public final class Constantes
 		puntos.add(new Puntos(10,"Ayuda a mejorar la convivencia en el centro"));
 		return puntos;
 	}
+	
+	/**CARGADO DE HORAS */
+	public static final List<String> cargarHorasInicio()
+	{
+		List<String> horas = new LinkedList<>();
+		horas.add("8:15");
+		horas.add("9:15");
+		horas.add("10:15");
+		horas.add("11:15");
+		horas.add("12:45");
+		horas.add("13:45");
+		horas.add("14:45");
+		return horas;
+	}
 }
