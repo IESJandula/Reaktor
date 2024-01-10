@@ -1962,8 +1962,7 @@ public class HorariosRest
 			studentDataTimeMap.put("Fecha Actual", currentDateTime);
 			String studenNameLastname = name + " " + lastname;
 			// STUDENTS WITH A LIST OF DATES FOR EVERYONE SAVED IN SESSION
-			List<LocalDateTime> fechasAlumno = (List<LocalDateTime>) session
-					.getAttribute(studenNameLastname + "_visitas");
+			List<LocalDateTime> fechasAlumno = (List<LocalDateTime>) session.getAttribute(studenNameLastname + "_visitas");
 			// CREATE THE LIST IF ITS NULL
 			if (fechasAlumno == null)
 			{
@@ -1976,7 +1975,7 @@ public class HorariosRest
 			// SET THE ATRIBUTTE
 			session.setAttribute(studenNameLastname + "_visitas", fechasAlumno);
 
-			return ResponseEntity.ok().body(studentDataTimeMap);
+			return ResponseEntity.ok().build();
 		}
 		catch (Exception exception)
 		{
@@ -2023,7 +2022,7 @@ public class HorariosRest
 			// WE ADD THE DATE TO THE LIST
 			fechasAlumnoComeback.add(currentDateTime);
 
-			return ResponseEntity.ok().body(studentDataComebackTimeMap);
+			return ResponseEntity.ok().build();
 		}
 		catch (Exception exception)
 		{
