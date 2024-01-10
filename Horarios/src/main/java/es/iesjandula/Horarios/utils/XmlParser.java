@@ -104,7 +104,7 @@ public class XmlParser
 		List<Student> alumnos = new ArrayList<Student>(List.of(
 				new Student("Juan", "Sutil", "1234", "1ESOA"),
 				new Student("Manuel", "Martin", "1111", "2ESOC"),
-				new Student("Alejandro", "Cazaya", "2222", "3ESOA"),
+				new Student("Alejandro", "Cazalla", "2222", "3ESOA"),
 				new Student("Alvaro", "Marmol", "3333", "4ESOA")		
 				));
 		
@@ -183,6 +183,7 @@ public class XmlParser
 		return profesores;
 	}
 
+	@SuppressWarnings("deprecation")
 	private Map<Integer, TramoHorario> parseTramos(NodeList list)
 	{
 		Map<Integer, TramoHorario> tramos = new TreeMap<Integer, TramoHorario>();
@@ -193,21 +194,16 @@ public class XmlParser
 
 			int id = Integer.valueOf(tramo.getAttributes().getNamedItem("num_tr").getTextContent());
 			int dia = Integer.valueOf(tramo.getAttributes().getNamedItem("numero_dia").getTextContent());
-			String hI = tramo.getAttributes().getNamedItem("hora_inicio").getTextContent();
-			String hF = tramo.getAttributes().getNamedItem("hora_final").getTextContent();
-			Date horaInicio;
-			Date horaFinal;
-			try
-			{
-				horaInicio = new SimpleDateFormat("HH:mm").parse(hI);
-				horaFinal = new SimpleDateFormat("HH:mm").parse(hF);
-				tramos.put(id, new TramoHorario(id, dia, horaInicio, horaFinal));
-
-			} catch (ParseException e)
-			{
-				String message = "Error";
-				logger.error(message, e);
-			}
+			String[] hI = tramo.getAttributes().getNamedItem("hora_inicio").getTextContent().split(":");
+			String[] hF = tramo.getAttributes().getNamedItem("hora_final").getTextContent().split(":");
+			Date horaInicio = new Date();
+			Date horaFinal = new Date();
+			horaInicio.setHours(Integer.valueOf(hI[0]));
+			horaInicio.setMinutes(Integer.valueOf(hI[1]));
+			
+			horaFinal.setHours(Integer.valueOf(hF[0]));
+			horaFinal.setMinutes(Integer.valueOf(hF[1]));
+			tramos.put(id, new TramoHorario(id, dia, horaInicio, horaFinal));
 
 		}
 

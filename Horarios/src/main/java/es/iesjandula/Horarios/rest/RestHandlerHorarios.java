@@ -247,7 +247,7 @@ public class RestHandlerHorarios
 	// enpoint 8 MMM
 	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/Classroom/tramo", produces = "application/json")
 	public ResponseEntity<?> getClassroomTeacherSchedule(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastName, @RequestHeader(required = true) Hour hora,
+			@RequestHeader(required = true) String lastName, @RequestHeader(required = true) String hora,
 			@RequestHeader(required = true) String day, HttpSession httpSession)
 	{
 		try
@@ -265,14 +265,14 @@ public class RestHandlerHorarios
 		}
 	}
 
-	private Aula getClassroom(String name, String lastName, Hour hora, List<Profesor> profesoresList, InfoCentro info,
+	private Aula getClassroom(String name, String lastName, String hora, List<Profesor> profesoresList, InfoCentro info,
 			String day) throws HorarioError
 	{
 
 		String nombreCompleto = lastName + ", " + name;
 		for (Profesor profesor : profesoresList)
 		{
-			if (profesor.getNombre().equals(name))
+			if (profesor.getNombre().equals(nombreCompleto))
 			{
 				List<Actividad> listActiviadades = info.getHorarios().getHorariosProfesores().get(profesor);
 				return this.getActividadByHour(listActiviadades, hora, day, info).getAula();
@@ -284,7 +284,7 @@ public class RestHandlerHorarios
 
 	}
 
-	private Actividad getActividadByHour(List<Actividad> listActividades, Hour hour, String day, InfoCentro info)
+	private Actividad getActividadByHour(List<Actividad> listActividades, String hour, String day, InfoCentro info)
 			throws HorarioError
 	{
 
@@ -326,7 +326,7 @@ public class RestHandlerHorarios
 				return ResponseEntity.ok().body(response);
 			}
 			
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().body("El grupo no se encuentra en ninguna clase ahora mismo");
 		}catch (HorarioError horarioError)
 		{
 
@@ -499,31 +499,29 @@ public class RestHandlerHorarios
 		try {
 			InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
 			
-			List<Profesor> profesores = new ArrayList<>(infoCentro.getDatos().getProfesores().values());
+			Aula reflexion = null;
+			for(Aula aula : infoCentro.getDatos().getAulas().values()) 
+			{
+				if(aula.getAbreviatura().equals("1.4")) 
+				{
+					reflexion = aula;
+				}
+			}
 			
 			TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
 			
 			if (tramoHorario != null)
 			{
 				
-				Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosProfesores().get(profesores));
+				Actividad actividad = this.getActividad(tramoHorario, infoCentro.getHorarios().getHorariosAulas().get(reflexion));
 				
 				Map<String, String> response = new TreeMap<String, String>();
 				
-				String nombreProfesor = "";
-				for(int i = 0; i < profesores.size(); i++) 
-				{
-					if(profesores.get(i).getId() == actividad.getAula().getId()) 
-					{
-						nombreProfesor = profesores.get(i).getNombre();
-					}
-				}
-				
-				response.put("nombreProfesor", nombreProfesor);
+				response.put("nombreProfesor", actividad.getProfesor().getNombre());
 				return ResponseEntity.ok().body(response);
 			}
 			
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().body("El grupo no se encuentra en ninguna clase ahora mismo");
 		}catch (HorarioError horarioError)
 		{
 
@@ -556,13 +554,12 @@ public class RestHandlerHorarios
 				
 				Map<String, String> response = new TreeMap<String, String>();
 				
-				response.put("correoProfesor", actividad.getProfesor().getCuentaDeCorreo());
 				response.put("curso", actividad.getAula().getNombre());
 				
 				return ResponseEntity.ok().body(response);
 			}
 			
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().body("El grupo no se encuentra en ninguna clase ahora mismo");
 		}catch (HorarioError horarioError)
 		{
 
@@ -596,7 +593,6 @@ public class RestHandlerHorarios
 				
 				Map<String, String> response = new TreeMap<String, String>();
 				
-				response.put("correoProfesor", actividad.getProfesor().getCuentaDeCorreo());
 				response.put("curso", actividad.getAula().getNombre());
 				
 				return ResponseEntity.ok().body(response);

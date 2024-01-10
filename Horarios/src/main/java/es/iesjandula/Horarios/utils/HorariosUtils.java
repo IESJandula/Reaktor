@@ -3,11 +3,10 @@ package es.iesjandula.Horarios.utils;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.ProcessHandle.Info;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +26,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import es.iesjandula.Horarios.exceptions.HorarioError;
-import es.iesjandula.Horarios.models.Hour;
 import es.iesjandula.Horarios.models.RolReaktor;
 import es.iesjandula.Horarios.models.xml.Grupo;
 import es.iesjandula.Horarios.models.xml.InfoCentro;
@@ -161,15 +159,19 @@ public class HorariosUtils {
 		return n;
 	}
 	
-	public TramoHorario getTramo(Hour hour, String dia, InfoCentro info) throws HorarioError
+	public TramoHorario getTramo(String hour, String dia, InfoCentro info) throws HorarioError
 	{
+		String[] horas = hour.split(":");
+		Date date = new Date();
+		date.setHours(Integer.valueOf(horas[0]));
+		date.setMinutes(Integer.valueOf(horas[1]));
 		int n = getDiaByString(dia);
 		if(n < 0) 
 			throw new HorarioError(1, "el dia es incorrecto", null);
 		
 		for(TramoHorario tramo : info.getDatos().getTramos().values())
 		{
-			if(tramo.getDia() == n && tramo.getHoraInicio().equals(hour.getStart()) && tramo.getHoraFinal().equals(hour.getEnd())) 
+			if(tramo.getDia() == n && tramo.getHoraInicio().equals(date)) 
 			{
 				return tramo;
 			}
@@ -197,12 +199,15 @@ public class HorariosUtils {
 			
 			List<TramoHorario> tramos = new ArrayList<TramoHorario>(info.getDatos().getTramos().values());
 			pdfTable.addCell(this.createCell(""));
+			List<String> listaHoras = new ArrayList<String> ();
 			for (int i = 0; i < 7 ; i++)
 			{
 				
 				TramoHorario tramo = tramos.get(i);
 				
 				String horaInicio = tramo.getHoraInicio().getHours() + ":" + tramo.getHoraInicio().getMinutes();
+				listaHoras.add(horaInicio);
+				
 				String horaFin = tramo.getHoraFinal().getHours() + ":" + tramo.getHoraFinal().getMinutes();
 				
 				pdfTable.addCell(this.createCell(horaInicio + "-" + horaFin));
@@ -212,27 +217,43 @@ public class HorariosUtils {
 			pdfTable.completeRow();
 			
 			int n = 1;
+			int hora = 0;
 			pdfTable.addCell(this.createCell("LUNES"));
 			
 			if (info.getHorarios().getHorariosProfesores().get(profesor)!= null)
 			{
 				info.getHorarios().getHorariosProfesores().get(profesor).sort(null);
 			
-			
-			for(Actividad actividad : info.getHorarios().getHorariosProfesores().get(profesor)) 
+			int i = 0;
+			while(i < info.getHorarios().getHorariosProfesores().get(profesor).size()) 
 			{
+				Actividad actividad = info.getHorarios().getHorariosProfesores().get(profesor).get(i);
 				if(actividad.getTramo().getDia() != n) {
 					
-					pdfTable.completeRow();
+					hora = 0;
 					
+					pdfTable.completeRow();
+			
 					n = actividad.getTramo().getDia();
 					
 					pdfTable.addCell(this.createCell(this.getDiaByInt(n)));
 					
 				}
 				
-				String content = actividad.getAsignatura().getNombre() + "\n" + actividad.getAula().getAbreviatura();
+				String content;
+				String horaActual = actividad.getTramo().getHoraInicio().getHours() + ":" + actividad.getTramo().getHoraInicio().getMinutes();
+				if(horaActual.equals(listaHoras.get(hora)))
+				{
+					
+					content = actividad.getAsignatura().getNombre() + "\n" + actividad.getAula().getAbreviatura();
+					i ++;
+				}
+				else
+				{
+					content = "";
+				}
 				
+				hora ++;
 				pdfTable.addCell(this.createCell(content));
 				
 			}
@@ -267,12 +288,15 @@ public class HorariosUtils {
 			
 			List<TramoHorario> tramos = new ArrayList<TramoHorario>(info.getDatos().getTramos().values());
 			pdfTable.addCell(this.createCell(""));
+			List<String> listaHoras = new ArrayList<String> ();
 			for (int i = 0; i < 7 ; i++)
 			{
 				
 				TramoHorario tramo = tramos.get(i);
 				
 				String horaInicio = tramo.getHoraInicio().getHours() + ":" + tramo.getHoraInicio().getMinutes();
+				listaHoras.add(horaInicio);
+				
 				String horaFin = tramo.getHoraFinal().getHours() + ":" + tramo.getHoraFinal().getMinutes();
 				
 				pdfTable.addCell(this.createCell(horaInicio + "-" + horaFin));
@@ -282,27 +306,43 @@ public class HorariosUtils {
 			pdfTable.completeRow();
 			
 			int n = 1;
+			int hora = 0;
 			pdfTable.addCell(this.createCell("LUNES"));
 			
 			if (info.getHorarios().getHorariosGrupos().get(grupo)!= null)
 			{
 				info.getHorarios().getHorariosGrupos().get(grupo).sort(null);
 			
-			
-			for(Actividad actividad : info.getHorarios().getHorariosGrupos().get(grupo)) 
+			int i = 0;
+			while(i < info.getHorarios().getHorariosGrupos().get(grupo).size()) 
 			{
+				Actividad actividad = info.getHorarios().getHorariosGrupos().get(grupo).get(i);
 				if(actividad.getTramo().getDia() != n) {
 					
-					pdfTable.completeRow();
+					hora = 0;
 					
+					pdfTable.completeRow();
+			
 					n = actividad.getTramo().getDia();
 					
 					pdfTable.addCell(this.createCell(this.getDiaByInt(n)));
 					
 				}
 				
-				String content = actividad.getAsignatura().getNombre() + "\n" + actividad.getAula().getAbreviatura();
+				String content;
+				String horaActual = actividad.getTramo().getHoraInicio().getHours() + ":" + actividad.getTramo().getHoraInicio().getMinutes();
+				if(horaActual.equals(listaHoras.get(hora)))
+				{
+					
+					content = actividad.getAsignatura().getNombre() + "\n" + actividad.getAula().getAbreviatura();
+					i ++;
+				}
+				else
+				{
+					content = "";
+				}
 				
+				hora ++;
 				pdfTable.addCell(this.createCell(content));
 				
 			}
