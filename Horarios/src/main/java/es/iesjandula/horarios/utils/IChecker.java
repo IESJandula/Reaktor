@@ -1,5 +1,7 @@
 package es.iesjandula.horarios.utils;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +14,18 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import es.iesjandula.horarios.constants.Constantes;
 import es.iesjandula.horarios.exception.HorarioError;
@@ -863,27 +877,135 @@ public interface IChecker
 		
 	}
 	
-	public default void createPDF(String name,String lastName,List<Profesor> profesores,List<Actividad>actividades,List<Asignatura> asignaturas,List<Tramo> tramos)
+	public default void createPDF(String name,String lastName,List<Profesor> profesores,List<TipoHorario> asignaturaHorario,List<Asignatura> asignaturas,List<Tramo> tramos) throws HorarioError
 	{
 		String datos = "";
-		Tramo tramo = null;
 		Profesor profe = this.buscarProfesor(0, lastName+", "+name, profesores);
-		Actividad actividad = null;
-		Asignatura asignatura = null;
-		Aula aula = null;
+		List<Actividad> actividades = this.rellenarActividad(asignaturaHorario);
+		List <String> horas = Constantes.cargarHorasInicio();
 		int dia = 1;
-		List<String> horas = Constantes.cargarHorasInicio();
+		while(dia<=5)
+		{
+			datos += this.getDatosActividades(actividades, tramos, profe, asignaturas, dia);
+			dia++;
+		}
+		String [] splitDatos = datos.split("\n");
+		for(int i = 1;i<splitDatos.length;i++)
+		{
+			splitDatos[i] = splitDatos[i].substring(0);
+		}
+		
+		try
+		{
+			Document document = new Document();
+			
+			document.setPageSize(PageSize.A4.rotate());
+			
+			PdfWriter.getInstance(document, new FileOutputStream("horario.pdf"));
+			
+			document.open();
+			
+			PdfPTable pdfTable = new PdfPTable(6);
+			pdfTable.setWidthPercentage(100f);
+			
+			pdfTable.addCell(this.createCell(profe.getNombre()));
+			pdfTable.addCell(this.createCell("LUNES"));
+			pdfTable.addCell(this.createCell("MARTES"));
+			pdfTable.addCell(this.createCell("MIERCOLES"));
+			pdfTable.addCell(this.createCell("JUEVES"));
+			pdfTable.addCell(this.createCell("VIERNES"));
+			pdfTable.completeRow();
+			
+			for(String h:horas)
+			{
+				pdfTable.addCell(this.createCell(h));
+				int checkDia = 1;
+				int index = 1;
+				for(String s:splitDatos)
+				{
+					
+					String [] split = s.split(",");
+					split[1] = split[1].substring(0);
+					split[2] = split[2].substring(0);
+
+					int diaSplit = Integer.parseInt(split[2]);
+					if(checkDia!=diaSplit)
+					{
+						pdfTable.addCell(this.createCell(""));
+						checkDia++;
+					}
+					if(split[0].equals(h))
+					{
+						pdfTable.addCell(this.createCell(split[1]));
+						if(checkDia==5)
+						{
+							index=0;
+						}
+					}
+					index++;
+					if(index>=splitDatos.length)
+					{
+						pdfTable.addCell(this.createCell(""));
+					}
+				}
+				checkDia = 1;
+			}
+			document.add(pdfTable);
+			document.close();	
+		}
+		catch(FileNotFoundException ex)
+		{
+			log.error("Error",ex);
+			throw new HorarioError(23,"Error en la creacion del documento");
+		}
+		catch(DocumentException ex)
+		{
+			log.error("Error",ex);
+			throw new HorarioError(24,"Error en la formacion del documento");
+		}
+	}
+	
+	
+	private String getDatosActividades (List<Actividad> actividades, List<Tramo> tramos,Profesor profe, List<Asignatura> asignaturas, int dia)
+	{
+		Tramo tramo = null;
+		Asignatura asignatura = null;
+		String datos = "";
+		String [] ordenarHoras = new String[0];
 		for(Actividad a:actividades)
 		{
-			tramo = this.buscarTramo(dia, tramos);
+			tramo = this.buscarTramo( a.getTramo(),tramos);
 			asignatura = this.buscarAsignatura(a.getAulaOAsignatura(), asignaturas);
 			if(a.getProfesorOAula() == profe.getNum_int_pr() && tramo.getNumero_dia() == dia)
 			{
-				datos += tramo.getHora_inicio()+"/"+tramo.getHora_final()+" el profesor "+profe.getNombre()+" tiene "+asignatura.getNombre()+"\n";
+				ordenarHoras = Arrays.copyOf(ordenarHoras, ordenarHoras.length+1);
+				ordenarHoras[ordenarHoras.length-1]  = tramo.getHora_inicio()+"/"+tramo.getHora_final()+","+asignatura.getNombre()+","+dia;
 			}
 		}
-		System.out.println(datos);
+		Arrays.sort(ordenarHoras);
+		for(String s:ordenarHoras)
+		{
+			datos += s+"\n";
+		}
+		return datos;
 	}
+	
+	private List<Actividad> rellenarActividad(List<TipoHorario> horario)
+	{
+		List<Actividad> actividades = new LinkedList<>();
+		
+		for(TipoHorario h:horario)
+		{
+			List<Actividad> act = h.getActividades();
+			for(Actividad a:act)
+			{
+				actividades.add(a);
+			}
+		}
+		
+		return actividades;
+	}
+	
 	/**
 	 * Metodo que busca y devuelve una asignatura
 	 * @param numero
@@ -953,6 +1075,20 @@ public interface IChecker
 			index++;
 		}
 		return t;
+	}
+	
+	private PdfPCell createCell(String texto) 
+	{
+		Font fontCell = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
+		
+		PdfPCell cell = new PdfPCell();
+		
+		cell.addElement(new Paragraph(texto,fontCell));
+		
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		
+		cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+		return cell;
 	}
 	
 }

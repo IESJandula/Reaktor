@@ -812,16 +812,19 @@ public class RestHandlerHorarios implements IParserXML,ICSVParser,IChecker
 	{
 		try
 		{
-			this.checkNameSurnameDay(lastName, name, 2, centro.getDatos().getProfesor());
-			this.createPDF(name, lastName, centro.getDatos().getProfesor(), centro., null, null)
+			this.checkNameSurnameDay(name, lastName, 2, centro.getDatos().getProfesor());
+			this.createPDF(name, lastName, centro.getDatos().getProfesor(), centro.getDatos().getHorarios().getHorarioAsignatura(), centro.getDatos().getAsignatura(), centro.getDatos().getTramo());
+			return ResponseEntity.ok().body("He llegado");
 		}
 		catch(HorarioError ex)
 		{
-			
+			log.error("Error al devolver el pdf",ex);
+			return ResponseEntity.status(404).body(ex.getBodyMessageException());
 		}
 		catch(Exception ex)
 		{
-			
+			log.error("Error de servidor",ex);
+			return ResponseEntity.status(404).body("He llegado");
 		}
 	}
 		

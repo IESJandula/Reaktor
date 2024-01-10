@@ -77,13 +77,13 @@ public final class Constantes
 	public static final List<String> cargarHorasInicio()
 	{
 		List<String> horas = new LinkedList<>();
-		horas.add("8:15");
-		horas.add("9:15");
-		horas.add("10:15");
-		horas.add("11:15");
-		horas.add("12:45");
-		horas.add("13:45");
-		horas.add("14:45");
+		horas.add(" 8:15/ 9:15");
+		horas.add(" 9:15/10:15");
+		horas.add("10:15/11:15");
+		horas.add("11:15/11:45");
+		horas.add("11:45/12:45");
+		horas.add("12:45/13:45");
+		horas.add("13:45/14:45");
 		return horas;
 	}
 }
