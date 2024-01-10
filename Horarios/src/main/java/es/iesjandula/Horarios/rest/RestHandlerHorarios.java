@@ -161,6 +161,7 @@ public class RestHandlerHorarios
 			Profesor profesor = this.getProfesor(name, lastName, infoCentro);
 			
 			TramoHorario tramoHorario = this.getTramo(new Date(), infoCentro);
+			System.out.println(tramoHorario.getHoraInicio());
 			
 			if (tramoHorario != null)
 			{
@@ -180,12 +181,13 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(400).body(horarioError);
 		} catch (Exception e)
 		{
+			System.out.println(e.getStackTrace());
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
 	}
 
 	//ENDPOINT 4
-	@RequestMapping(method = RequestMethod.GET, value = " /get/roles")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/roles")
 	public ResponseEntity<?> getRoles(@RequestHeader(value = "email", required = true) String email, HttpSession httpSession)
 	{
 		InfoCentro infoCentro = (InfoCentro) httpSession.getAttribute("info");
@@ -362,11 +364,11 @@ public class RestHandlerHorarios
 					return ResponseEntity.ok().body(response);
 				}
 				
-				return ResponseEntity.ok().build();
+				return ResponseEntity.ok().body("El grupo no se encuentra en ninguna clase ahora mismo");
 			}catch (HorarioError horarioError)
 			{
 
-				return ResponseEntity.status(400).body(horarioError);
+				return ResponseEntity.status(400).body(horarioError.getBodyExceptionMessage());
 			} catch (Exception e)
 			{
 				return ResponseEntity.status(500).body(e.getMessage());
@@ -384,10 +386,11 @@ public class RestHandlerHorarios
 			// ArrayList<>(map.values());
 			List<TramoHorario> tramosList = new ArrayList<>(infoCentro.getDatos().getTramos().values());
 			List<Hour> hourList = new ArrayList<Hour>();
-			for (int i = 0 ; i < tramosList.size() ; i++)
+			
+			for (int i = 0 ; i < 7 ; i++)
 			{
-
-				switch (i)
+				System.out.println(tramosList.get(i).getDia());
+				switch (i + 1)
 				{
 				case 1:
 				{
@@ -431,8 +434,6 @@ public class RestHandlerHorarios
 					Hour hora = new Hour("sexta", tramosList.get(i).getHoraInicio(), tramosList.get(i).getHoraFinal());
 					hourList.add(hora);
 				}
-				default:
-					throw new IllegalArgumentException("Unexpected value: " + i);
 				}
 
 			}
@@ -669,7 +670,7 @@ public class RestHandlerHorarios
 	private TramoHorario getTramo(Date date, InfoCentro info) throws HorarioError {
 		for (TramoHorario tramoHorario : info.getDatos().getTramos().values())
 		{
-			if ((tramoHorario.getHoraInicio().equals(date) || tramoHorario.getHoraInicio().before(date)) && (tramoHorario.getHoraFinal().equals(date) || tramoHorario.getHoraFinal().before(date)) )
+			if ((tramoHorario.getHoraInicio().equals(date) || tramoHorario.getHoraInicio().before(date)) && (tramoHorario.getHoraFinal().equals(date) || tramoHorario.getHoraFinal().after(date)) )
 			{
 				return tramoHorario;
 			}
@@ -868,7 +869,7 @@ public class RestHandlerHorarios
 
 		for (Grupo grupo : info.getDatos().getGrupos().values())
 		{
-			if (grupo.getNombre().equals(nombre))
+			if (grupo.getAbreviatura().equals(nombre))
 			{
 				return grupo;
 			}

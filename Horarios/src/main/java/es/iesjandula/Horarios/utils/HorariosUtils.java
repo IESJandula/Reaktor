@@ -61,9 +61,15 @@ public class HorariosUtils {
 
 			sc.nextLine();
 			while (sc.hasNextLine()) {
-				String[] parts = sc.nextLine().split(";");
+				String s = sc.nextLine();
+				
+				System.out.println(s);
+				
+				String[] parts = s.split(";");
 
 				String nombre = parts[1] + ", " + parts[0];
+				
+				System.out.println(nombre);
 
 				Profesor profesor = this.getIdProfesor(profesores, nombre);
 
