@@ -83,6 +83,7 @@ public class RestHandlerHorarios
 			return ResponseEntity.status(400).body(horarioError.getBodyExceptionMessage());
 		} catch (Exception e)
 		{
+			System.out.println(e);
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
 

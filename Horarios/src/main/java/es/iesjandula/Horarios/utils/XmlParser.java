@@ -198,11 +198,11 @@ public class XmlParser
 			String[] hF = tramo.getAttributes().getNamedItem("hora_final").getTextContent().split(":");
 			Date horaInicio = new Date();
 			Date horaFinal = new Date();
-			horaInicio.setHours(Integer.valueOf(hI[0]));
-			horaInicio.setMinutes(Integer.valueOf(hI[1]));
+			horaInicio.setHours(Integer.valueOf(hI[0].strip()));
+			horaInicio.setMinutes(Integer.valueOf(hI[1].strip()));
 			
-			horaFinal.setHours(Integer.valueOf(hF[0]));
-			horaFinal.setMinutes(Integer.valueOf(hF[1]));
+			horaFinal.setHours(Integer.valueOf(hF[0].strip()));
+			horaFinal.setMinutes(Integer.valueOf(hF[1].strip()));
 			tramos.put(id, new TramoHorario(id, dia, horaInicio, horaFinal));
 
 		}
