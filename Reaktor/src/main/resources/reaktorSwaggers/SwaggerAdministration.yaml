@@ -1,6 +1,6 @@
 swagger: '2.0'
 host: iesjandula.es
-basePath: /Reaktor
+basePath: /computers
 schemes:
   - http
   - https
@@ -17,7 +17,7 @@ info:
 paths:
 #--------------------------ADMINISTRATION-ENDEPOINTS-----------------------------------------------
 #--------------------------ENDPOINT---------------------------------------------------------------
-  /computers/admin/commandLine:
+  /admin/commandLine:
     #-- OPEN-WEBS ---BY COMMANDLINE-CODE --
     post:
       operationId: postComputerCommandLine
@@ -26,21 +26,25 @@ paths:
        - application/json
       parameters:
       - name: serialNumber
+        required: false
         type: string
         in: header
         description: The computer s / n
         
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
         
       - name: plant
+        required: false
         type: integer
         format : int32
         in: header
@@ -66,31 +70,33 @@ paths:
           schema:
             $ref: '#/definitions/ComputerError'
 #--------------------------ENDPOINT---------------------------------------------------------------
-  /computers/admin/shutdown:
+  /admin/shutdown:
     #-----Post--------    
     #-- PUT OFF-- COMPUTERS --
     post:
       operationId: putComputerShutdown
       description: Used for put off computers
-      consumes:
-       - application/json
       parameters:
       - name: serialNumber
+        required: false
         type: string
         in: header
         description: The computer s / n
         
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
         
       - name: plant
+        required: false
         type: integer
         format : int32
         in: header
@@ -108,31 +114,33 @@ paths:
           schema:
             $ref: '#/definitions/ComputerError'
 #--------------------------ENDPOINT---------------------------------------------------------------
-  /computers/admin/restart:
+  /admin/restart:
     #-----Post--------    
     #-- RESTART-- COMPUTERS --
     post:
       operationId: putComputerRestart
       description: Used for restart computers
-      consumes:
-       - application/json
       parameters:
       - name: serialNumber
+        required: false
         type: string
         in: header
         description: The computer s / n
         
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
         
       - name: plant
+        required: false
         type: integer
         format : int32
         in: header
@@ -149,7 +157,7 @@ paths:
           description: Server Error  
           schema:
             $ref: '#/definitions/ComputerError' 
-  /computers/admin/peripheral:
+  /admin/peripheral:
     #---POST------
     #---SEND CFG TO PERIPHERALS-----
     post:
@@ -159,11 +167,13 @@ paths:
        - application/json
       parameters:
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
@@ -196,11 +206,13 @@ paths:
       description: Send the order to take screenshot from computer by classroom , trolley
       parameters:
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
@@ -226,11 +238,13 @@ paths:
         - application/zip
       parameters:
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
@@ -249,7 +263,7 @@ paths:
             $ref: '#/definitions/ComputerError'
   
   
-  /computers/admin/file:        
+  /admin/file:        
     #-----Post--------
     #-----SEND , CFG FILE , EXECUTABLES ----
     post:
@@ -259,21 +273,25 @@ paths:
         - multipart/form-data
       parameters:
       - name: serialNumber
+        required: false
         type: string
         in: header
         description: The computer s / n
         
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
         
       - name: plant
+        required: false
         type: integer
         format : int32
         in: header
@@ -297,7 +315,7 @@ paths:
           schema:
             $ref: '#/definitions/ComputerError'
 #--------------------------ENDPOINT---------------------------------------------------------------                
-  /computers/admin/software:        
+  /admin/software:        
     #-----Post--------
     #-----INSTALL ANY SOFTWARE ON CLASSROOM ,TROLLEY, PROFESSOR ---
     post:
@@ -307,16 +325,19 @@ paths:
        - application/json
       parameters:
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
     
       - name: professor
+        required: false
         type: string
         in: header
         description: The trolley
@@ -351,16 +372,19 @@ paths:
        - application/json
       parameters:
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
     
       - name: professor
+        required: false
         type: string
         in: header
         description: The trolley
@@ -397,16 +421,19 @@ paths:
        - application/json
       parameters:
        - name: serialNumber
+         required: false
          type: string
          in: header
          description: The computer identifier S/N
         
        - name: andaluciaId
+         required: false
          type: string
          in: header
          description: The computer Andalucia id
         
        - name: computerNumber
+         required: false
          type: string
          in: header
          description: The computer identifier number

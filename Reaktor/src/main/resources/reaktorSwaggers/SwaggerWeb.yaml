@@ -1,6 +1,6 @@
 swagger: '2.0'
 host: iesjandula.es
-basePath: /Reaktor
+basePath: /computers
 schemes:
   - http
   - https
@@ -17,50 +17,58 @@ info:
 paths:
 #--------------------------WEB-ENDEPOINTS-----------------------------------------------
 #--------------------------ENDPOINT---------------------------------------------------------------   
-  /computers/web:
-    #-----Post--------    
+  /web:
+    #-----Post--------
     #----GETING THE COMPUTERS BY ANY OF THE IDENTIFIERS OR LOCATIONS---
     post:
       operationId: getComputersByAny
-      description: Get any computer by serialNumber, andaluciaId, computerNumber, clasroom , trolley , plant , professor, any type of HardwareComponent or empty to get all computers 
+      description: Get any computer by serialNumber, andaluciaId, computerNumber, clasroom , trolley , plant , professor, any type of HardwareComponent or empty to get all computers.
       parameters:
       - name: serialNumber
+        required: false
         type: string
         in: header
         description: The computer identifier S/N
         
       - name: andaluciaId
+        required: false
         type: string
         in: header
         description: The computer Andalucia id
         
       - name: computerNumber
+        required: false
         type: string
         in: header
         description: The computer identifier number
         
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
         
       - name: plant
+        required: false
         type: integer
         format : int32
         in: header
         description: The plant
         
       - name: professor
+        required: false
         type: string
         in: header
         description: The professor
       
       - name: hardwareList
+        required: false
         in: body
         schema:
           type: array
@@ -85,7 +93,7 @@ paths:
           schema:
             $ref: '#/definitions/ComputerError'
             
-  /computers/web/screenshot:
+  /web/screenshot:
     #-----Post--------    
     #----GETING THE COMPUTERS SCREENS BY CLASSROOM TROLLEY PLANT OR PROFESSOR---
     get:
@@ -95,22 +103,26 @@ paths:
         - application/zip
       parameters:
       - name: classroom
+        required: false
         type: string
         in: header
         description: The classroom
         
       - name: trolley
+        required: false
         type: string
         in: header
         description: The trolley
         
       - name: plant
+        required: false
         type: integer
         format : int32
         in: header
         description: The plant
         
       - name: professor
+        required: false
         type: string
         in: header
         description: The professor

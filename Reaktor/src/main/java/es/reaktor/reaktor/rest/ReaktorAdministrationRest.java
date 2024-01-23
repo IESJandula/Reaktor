@@ -69,9 +69,12 @@ public class ReaktorAdministrationRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/commandLine", consumes = "application/json")
-	public ResponseEntity<?> postComputerCommandLine(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) Integer plant, @RequestBody(required = true) CommandLine commandLine)
+	public ResponseEntity<?> postComputerCommandLine(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) Integer plant,
+			@RequestBody(required = true) CommandLine commandLine)
 	{
 		try
 		{
@@ -145,8 +148,10 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/shutdown")
-	public ResponseEntity<?> putComputerShutdown(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+	public ResponseEntity<?> putComputerShutdown(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley,
 			@RequestHeader(required = false) Integer plant)
 	{
 		try
@@ -220,8 +225,10 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/restart")
-	public ResponseEntity<?> putComputerRestart(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
+	public ResponseEntity<?> putComputerRestart(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley,
 			@RequestHeader(required = false) Integer plant)
 	{
 		try
@@ -289,7 +296,8 @@ public class ReaktorAdministrationRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/peripheral", consumes = "application/json")
-	public ResponseEntity<?> postPeripheral(@RequestHeader(required = false) String classroom,
+	public ResponseEntity<?> postPeripheral(
+			@RequestHeader(required = false) String classroom,
 			@RequestHeader(required = false) String trolley,
 			@RequestBody(required = true) List<Peripheral> peripheralInstance)
 	{
@@ -382,7 +390,8 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/screenshot")
-	public ResponseEntity<?> sendScreenshotOrder(@RequestHeader(required = false) String classroom,
+	public ResponseEntity<?> sendScreenshotOrder(
+			@RequestHeader(required = false) String classroom,
 			@RequestHeader(required = false) String trolley)
 	{
 		try
@@ -441,8 +450,10 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/software", consumes = "application/json")
-	public ResponseEntity<?> sendSoftware(@RequestHeader(required = false) String classroom,
-			@RequestHeader(required = false) String trolley, @RequestHeader(required = false) String professor,
+	public ResponseEntity<?> sendSoftware(
+			@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) String professor,
 			@RequestBody(required = true) List<Software> softwareInstance)
 	{
 		try
@@ -548,8 +559,10 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/software", consumes = "application/json")
-	public ResponseEntity<?> unistallSoftware(@RequestHeader(required = false) String classroom,
-			@RequestHeader(required = false) String trolley, @RequestHeader(required = false) String professor,
+	public ResponseEntity<?> unistallSoftware(
+			@RequestHeader(required = false) String classroom,
+			@RequestHeader(required = false) String trolley, 
+			@RequestHeader(required = false) String professor,
 			@RequestBody(required = true) List<Software> softwareInstance)
 	{
 		try
@@ -664,8 +677,10 @@ public class ReaktorAdministrationRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.PUT, value = "/computer/edit", consumes = "application/json")
-	public ResponseEntity<?> updateComputer(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
+	public ResponseEntity<?> updateComputer(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId,
+			@RequestHeader(required = false) String computerNumber,
 			@RequestBody(required = true) Computer computerInstance)
 	{
 		try
@@ -1205,9 +1220,12 @@ public class ReaktorAdministrationRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/file", consumes = "multipart/form-data")
-	public ResponseEntity<?> postComputerCommandLine(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String classroom, @RequestHeader(required = false) String trolley,
-			@RequestHeader(required = false) Integer plant, @RequestBody(required = true) MultipartFile execFile)
+	public ResponseEntity<?> postComputerCommandLine(
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String classroom, 
+			@RequestHeader(required = false) String trolley,
+			@RequestHeader(required = false) Integer plant, 
+			@RequestBody(required = true) MultipartFile execFile)
 	{
 		try
 		{
@@ -1387,7 +1405,8 @@ public class ReaktorAdministrationRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/computer/admin/screenshot", produces = "application/zip")
-	public ResponseEntity<?> getComputer(@RequestHeader(required = false) String classroom,
+	public ResponseEntity<?> getComputer(
+			@RequestHeader(required = false) String classroom,
 			@RequestHeader(required = false) String trolley)
 	{
 		try

@@ -122,7 +122,8 @@ public class ReaktorMonitoringRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/status", consumes = "application/json")
-	public ResponseEntity<?> sendStatusComputer(@RequestHeader(required = true) String serialNumber,
+	public ResponseEntity<?> sendStatusComputer(
+			@RequestHeader(required = true) String serialNumber,
 			@RequestBody(required = true) List<Status> statusList)
 	{
 		try
@@ -346,8 +347,11 @@ public class ReaktorMonitoringRest
 	 * @return ResponseEntity response
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/fullInfo", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> sendFullComputer(@RequestHeader(required = false) String serialNumber,
-			@RequestHeader(required = false) String andaluciaId, @RequestHeader(required = false) String computerNumber,
+	public ResponseEntity<?> sendFullComputer
+	(		
+			@RequestHeader(required = false) String serialNumber,
+			@RequestHeader(required = false) String andaluciaId,
+			@RequestHeader(required = false) String computerNumber,
 			@RequestBody(required = true) Computer computerInstance)
 	{
 		try
@@ -418,7 +422,7 @@ public class ReaktorMonitoringRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/pendingActions", produces = "application/json")
-	public ResponseEntity<?> getCommandLine(@RequestHeader(required = true) String serialNumber)
+	public ResponseEntity<?> getPendingActions(@RequestHeader(required = true) String serialNumber)
 	{
 		try
 		{

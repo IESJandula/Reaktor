@@ -302,7 +302,7 @@ public class ReaktorWebRest
 	 * @param professor
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/web/screenshot", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/web/screenshot", produces = "application/zip")
 	public ResponseEntity<?> getComputersScreens(
 			@RequestHeader(required = false) String classroom,
 			@RequestHeader(required = false) String trolley,
