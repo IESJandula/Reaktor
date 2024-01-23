@@ -25,7 +25,7 @@ paths:
       consumes:
         - multipart/form-data
       parameters:
-        - name: file
+        - name: xmlFile
           in: formData
           description: XML file to be parsed
           required: true
@@ -49,7 +49,7 @@ paths:
       consumes:
         - multipart/form-data
       parameters:
-        - name: file
+        - name: csvFile
           in: formData
           description: CSV file to be parsed
           required: true
@@ -70,6 +70,8 @@ paths:
     get:
       operationId: getListCourses
       description: obtains list of students by course
+      produces:
+        - application/json
       responses:
         200:
           description: sent list 
@@ -90,6 +92,8 @@ paths:
     get:
       operationId: getRoles
       description: Returns a list of roles
+      produces:
+        - application/json
       parameters:
         - name: email
           in: header
@@ -112,10 +116,12 @@ paths:
           schema:
             $ref: '#/definitions/HorarioError'
   
-  /get/teacheres:
+  /get/teachers:
     get:
       operationId: getListTeachers
       description: Get list of teachers
+      produces:
+        - application/json
       responses:
         200:
           description: list of teachers sent successfully
@@ -136,6 +142,8 @@ paths:
     get:
       operationId: getListStudentsAlphabetically
       description: Obtain a list of students ordered alphabetically by first surname
+      produces:
+        - application/json
       responses:
         200:
           description: list returned successfully
@@ -156,17 +164,21 @@ paths:
     get:
       operationId: getClassroomTeacher
       description: Get a teacher's current classroom
+      produces:
+        - application/json
       parameters:
         - name: name
           in: header
           description: teacher name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: teacher last name
           required: true
           type: string
+          
       responses:
         200:
           description: classroom sent
@@ -181,31 +193,31 @@ paths:
           schema:
             $ref: '#/definitions/HorarioError'
 
-  /teacher/get/Classroom/tramo:
+  /teacher/get/classroom/tramo:
     get:
       operationId: getClassroomTeacherSchedule
       description: Get a teacher's classroom in a specific time slot
+      produces:
+        - application/json
       parameters:
         - name: name
           in: header
           description: teacher name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: teacher lastname
           required: true
           type: string
-        - name: tramohourrio
-          in: header
-          description: time slot
-          required: true
-          type: string
-        - name: day
-          in: header
-          description: day 
-          required: true
-          type: string
+          
+        - name: profTime
+          in: body
+          schema:
+            $ref: '#/definitions/TimeSlot'
+          description: Professor TimeSlot instance
+          
       responses:
         200:
           description: classroom sent
@@ -224,6 +236,8 @@ paths:
     get:
       operationId: getTeacherSubject
       description: Get teacher and subject by course and at the current time (at the moment)
+      produces:
+        - application/json
       parameters:
         - name: courseName
           in: header
@@ -245,10 +259,12 @@ paths:
             $ref: '#/definitions/HorarioError'
   
   
-  /get/Classroomcourse:
+  /get/classroomcourse:
     get:
       operationId: getClassroomCourse
       description: Get classroom number by course
+      produces:
+        - application/json
       parameters:
         - name: courseName
           in: header
@@ -273,6 +289,8 @@ paths:
     get:
       operationId: getListHours
       description: Get a list with the hours of the day
+      produces:
+        - application/json
       responses:
         200:
           description: list sent
@@ -293,6 +311,8 @@ paths:
     get:
       operationId: getListAlumCourseFirstSurname
       description: Obtain a list of students of a course ordered by first last name
+      produces:
+        - application/json
       parameters:
         - name: course
           in: header
@@ -319,6 +339,8 @@ paths:
     get:
       operationId: getListPointsCoexistence
       description: Obtain a list of coexistence attitude points
+      produces:
+        - application/json
       responses:
         200:
           description: list sent 
@@ -339,6 +361,8 @@ paths:
     get:
       operationId: getFirstNameSurname
       description: Obtain the name and surname of the reflection classroom teacher
+      produces:
+        - application/json
       responses:
         200:
           description: Submitted successfully
@@ -357,12 +381,15 @@ paths:
     get:
       operationId: getLocationStudentTutor
       description: Obtain student information by name and surname, location and tutor information
+      produces:
+        - application/json
       parameters:
         - name: name
           in: header
           description: student name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: student lastname
@@ -394,11 +421,13 @@ paths:
           description: course name
           required: true
           type: string
+          
         - name: name
           in: header
           description: student name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: student lastname
@@ -422,19 +451,19 @@ paths:
     post:
       operationId: postVisit
       description: Record bathroom visit by student, course and date
-      consumes:
-        - application/json
       parameters:
         - name: course
           in: header
           description: course name
           required: true
           type: string
+          
         - name: name
           in: header
           description: student name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: student lastname
@@ -456,19 +485,19 @@ paths:
     post:
       operationId: postReturnBathroom
       description: Record return from the bathroom by student, course and date
-      consumes:
-        - application/json
       parameters:
         - name: course
           in: header
           description: course name
           required: true
           type: string
+          
         - name: name
           in: header
           description: student name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: student lastname
@@ -498,17 +527,20 @@ paths:
           description: student name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: student lastname
           required: true
           type: string
+          
         - name: fechaInicio
           in: header
           description: Start date
           required: true
           type: string
-        - name: fechaend
+          
+        - name: fechaEnd
           in: header
           description: endish data 
           required: true
@@ -540,7 +572,8 @@ paths:
           description: start date
           required: true
           type: string
-        - name: fechaend
+          
+        - name: fechaEnd
           in: header
           description: endish date 
           required: true
@@ -573,17 +606,20 @@ paths:
           description: student name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: student lastname
           required: true
           type: string
+          
         - name: fechaInicio
           in: header
           description: start date 
           required: true
           type: string
-        - name: fechaend
+          
+        - name: fechaEnd
           in: header
           description: endish date 
           required: true
@@ -614,6 +650,7 @@ paths:
           description: student name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: student lastname
@@ -623,7 +660,7 @@ paths:
         200:
           description: Submitted successfully
           schema:
-            $ref: "#/definitions/TeacherClassroom"
+            $ref: "#/definitions/TeacherMoment"
         400:
           description: not found
           schema:
@@ -636,9 +673,7 @@ paths:
   /get/horario/teacher/pdf:
     get:
       operationId: getSchedulePdf
-      description: Generate PDF schedule for a teacher
-      consumes:
-        - application/json
+      description: Generate PDF for a teacher
       produces:
         - application/pdf
       parameters:
@@ -647,6 +682,7 @@ paths:
           description: teacher name
           required: true
           type: string
+          
         - name: lastname
           in: header
           description: teacher lastname
@@ -854,6 +890,24 @@ definitions:
       descripcion:
         type: string
         description: teacher's comment
+        
+#----------AttitudePoints------------------- 
+  TimeSlot:
+    type: object
+    properties:
+      numTr:
+        type: string
+        description: The number identifier if exists , null if not is possible to detect
+      dayNumber:
+        type: string
+        description: the day number 1 ,2 ,3 ,4 5
+      startHour:
+        type: string
+        description: The start hour example '8:15'
+      endHour:
+        type: string
+        description: The end hour example '9:15'
+        
 #----------ERRORS-------------------      
   HorarioError:
     type: object
