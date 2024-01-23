@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class TramosHorarios
 {
 	/** Attribute tramo*/
-	private List<Tramo> tramo;
+	private List<TimeSlot> tramo;
 	
 	/** Attribute totTr*/
 	private String totTr;

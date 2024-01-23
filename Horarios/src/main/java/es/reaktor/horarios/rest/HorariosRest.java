@@ -68,7 +68,7 @@ import es.reaktor.horarios.models.parse.HorariosGrupos;
 import es.reaktor.horarios.models.parse.HorariosProfesores;
 import es.reaktor.horarios.models.parse.Profesor;
 import es.reaktor.horarios.models.parse.Profesores;
-import es.reaktor.horarios.models.parse.Tramo;
+import es.reaktor.horarios.models.parse.TimeSlot;
 import es.reaktor.horarios.models.parse.TramosHorarios;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +92,9 @@ public class HorariosRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/xml", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> sendXmlToObjects(@RequestPart MultipartFile xmlFile, HttpSession session)
+	public ResponseEntity<?> sendXmlToObjects(
+			@RequestPart MultipartFile xmlFile, 
+			HttpSession session)
 	{
 		try
 		{
@@ -224,7 +226,7 @@ public class HorariosRest
 					// GETTING THE LIST OF TRAMO
 					NodeList tramosHorariosNodeList = tramosHorariosElement.getElementsByTagName("TRAMO");
 
-					List<Tramo> tramosList = new ArrayList<>();
+					List<TimeSlot> tramosList = new ArrayList<>();
 					// GETTING VALUES OF EACH TRAMO
 					this.gettingValuesOfTramo(tramosHorariosNodeList, tramosList);
 					log.info(tramosList.toString());
@@ -381,7 +383,9 @@ public class HorariosRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/roles", produces = "application/json")
-	public ResponseEntity<?> getRoles(@RequestHeader(required = true) String email, HttpSession session)
+	public ResponseEntity<?> getRoles(
+			@RequestHeader(required = true) String email, 
+			HttpSession session)
 	{
 		try
 		{
@@ -810,14 +814,14 @@ public class HorariosRest
 	 * @param tramosHorariosNodeList
 	 * @param tramosList
 	 */
-	private void gettingValuesOfTramo(NodeList tramosHorariosNodeList, List<Tramo> tramosList)
+	private void gettingValuesOfTramo(NodeList tramosHorariosNodeList, List<TimeSlot> tramosList)
 	{
 		for (int i = 0; i < tramosHorariosNodeList.getLength(); i++)
 		{
-			Tramo newTramo = new Tramo();
-			newTramo.setHoraFinal(tramosHorariosNodeList.item(i).getAttributes().item(0).getTextContent());
-			newTramo.setHoraInicio(tramosHorariosNodeList.item(i).getAttributes().item(1).getTextContent());
-			newTramo.setNumeroDia(tramosHorariosNodeList.item(i).getAttributes().item(3).getTextContent());
+			TimeSlot newTramo = new TimeSlot();
+			newTramo.setEndHour(tramosHorariosNodeList.item(i).getAttributes().item(0).getTextContent());
+			newTramo.setStartHour(tramosHorariosNodeList.item(i).getAttributes().item(1).getTextContent());
+			newTramo.setDayNumber(tramosHorariosNodeList.item(i).getAttributes().item(3).getTextContent());
 			newTramo.setNumTr(tramosHorariosNodeList.item(i).getAttributes().item(2).getTextContent());
 
 			tramosList.add(newTramo);
@@ -952,12 +956,14 @@ public class HorariosRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/send/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> sendCsvTo(@RequestPart MultipartFile archivo, HttpSession session)
+	public ResponseEntity<?> sendCsvTo(
+			@RequestPart MultipartFile csvFile,
+			HttpSession session)
 	{
 		try
 		{
 			List<Teacher> teachers = new ArrayList<>();
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(archivo.getInputStream())))
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile.getInputStream())))
 			{
 				// --- READEING LINES FROM CSV ---
 				String line;
@@ -1140,8 +1146,10 @@ public class HorariosRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/teacher/get/classroom", produces = "application/json")
-	public ResponseEntity<?> getClassroomTeacher(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastname, HttpSession session)
+	public ResponseEntity<?> getClassroomTeacher(
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname,
+			HttpSession session)
 	{
 		try
 		{
@@ -1167,7 +1175,7 @@ public class HorariosRest
 							String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
 							log.info(actualTime);
 
-							Tramo profTramo = null;
+							TimeSlot profTramo = null;
 							profTramo = this.gettingTramoActual(centro, actualTime, profTramo);
 
 							// --- IF PROF TRAMO IS NOT NULL ---
@@ -1309,14 +1317,16 @@ public class HorariosRest
 	 * @param lastname
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/teacher/get/Classroom/tramo", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> getClassroomTeacherSchedule(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastname, @RequestBody(required = true) Tramo profTramo,
+	@RequestMapping(method = RequestMethod.POST, value = "/teacher/get/classroom/tramo", produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> getClassroomTeacherSchedule(
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, 
+			@RequestBody(required = true) TimeSlot profTime,
 			HttpSession session)
 	{
 		try
 		{
-			log.info(profTramo.toString());
+			log.info(profTime.toString());
 			if (!name.isEmpty() && !name.isBlank() && !lastname.isBlank() && !lastname.isEmpty())
 			{
 				// --- GETTING THE STORED CENTRO DATA SESSION ---
@@ -1340,7 +1350,7 @@ public class HorariosRest
 							log.info(actualTime);
 
 							// --- IF PROF TRAMO IS NOT NULL ---
-							if (profTramo != null)
+							if (profTime != null)
 							{
 								for (HorarioProf horarioProf : centro.getHorarios().getHorariosProfesores()
 										.getHorarioProf())
@@ -1353,7 +1363,7 @@ public class HorariosRest
 										for (Actividad actividad : horarioProf.getActividad())
 										{
 											if (actividad.getTramo().trim()
-													.equalsIgnoreCase(profTramo.getNumTr().trim()))
+													.equalsIgnoreCase(profTime.getNumTr().trim()))
 											{
 												log.info("ENCONTRADO ACTIVIDAD -> " + actividad);
 												profActividad = actividad;
@@ -1364,10 +1374,10 @@ public class HorariosRest
 										}
 										if (profActividad == null)
 										{
-											log.info("EL TRAMO " + profTramo
+											log.info("EL TRAMO " + profTime
 													+ "\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR " + prof);
 											// --- ERROR ---
-											String error = "EL TRAMO " + profTramo
+											String error = "EL TRAMO " + profTime
 													+ "\nNO EXISTE EN LAS ACTIVIDADES DEL PROFESOR " + prof;
 											HorariosError horariosError = new HorariosError(500, error, null);
 											log.info(error, horariosError);
@@ -1437,7 +1447,7 @@ public class HorariosRest
 							else
 							{
 								// --- ERROR ---
-								String error = "Tramo introducido null" + profTramo;
+								String error = "Tramo introducido null" + profTime;
 								HorariosError horariosError = new HorariosError(400, error, null);
 								log.info(error, horariosError);
 								return ResponseEntity.status(400).body(horariosError);
@@ -1477,7 +1487,9 @@ public class HorariosRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/teachersubject", produces = "application/json")
-	public ResponseEntity<?> getTeacherSubject(@RequestHeader(required = true) String courseName, HttpSession session)
+	public ResponseEntity<?> getTeacherSubject(
+			@RequestHeader(required = true) String courseName,
+			HttpSession session)
 	{
 		try
 		{
@@ -1501,7 +1513,7 @@ public class HorariosRest
 					if (grup != null)
 					{
 						// --- GRUPO EXIST , NOW GET THE ACUTAL TRAMO ---
-						Tramo acutalTramo = null;
+						TimeSlot acutalTramo = null;
 
 						// Getting the actual time
 						String actualTime = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute();
@@ -1695,8 +1707,10 @@ public class HorariosRest
 	 * @param session
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/Classroomcourse", produces = "application/json")
-	public ResponseEntity<?> getClassroomCourse(@RequestHeader(required = true) String courseName, HttpSession session)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/classroomcourse", produces = "application/json")
+	public ResponseEntity<?> getClassroomCourse(
+			@RequestHeader(required = true) String courseName, 
+			HttpSession session)
 	{
 		try
 		{
@@ -1859,7 +1873,7 @@ public class HorariosRest
 				{
 					// --- GETTING THE INFO OF EACH TRAMO, BUT ONLY THE FIRST 7 TRAMOS , BECAUSE THT
 					// REPRESENT "LUNES" "PRIMERA-ULTIMA-HORA" ---
-					Tramo tramo = centro.getDatos().getTramosHorarios().getTramo().get(i);
+					TimeSlot tramo = centro.getDatos().getTramosHorarios().getTramo().get(i);
 
 					// --- GETTING THE HOURNAME BY THE ID OF THE TRAMO 1-7 (1,2,3,R,4,5,6) ---
 					String hourName = "";
@@ -1908,7 +1922,7 @@ public class HorariosRest
 					}
 					}
 					// --- ADD THE INFO OF THE TRAMO ON HOUR OBJECT ---
-					hourList.add(new Hour(hourName, tramo.getHoraInicio().trim(), tramo.getHoraFinal().trim()));
+					hourList.add(new Hour(hourName, tramo.getStartHour().trim(), tramo.getEndHour().trim()));
 				}
 				// --- RESPONSE WITH THE HOURLIST ---
 				return ResponseEntity.ok(hourList);
@@ -1943,9 +1957,11 @@ public class HorariosRest
 	 * @param course
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/student/visita/bathroom", produces = "application/json")
-	public ResponseEntity<?> postVisit(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String course,
+	@RequestMapping(method = RequestMethod.POST, value = "/student/visita/bathroom")
+	public ResponseEntity<?> postVisit(
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, 
+			@RequestHeader(required = true) String course,
 			HttpSession session)
 	{
 		try
@@ -1994,9 +2010,11 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/student/regreso/bathroom", produces = "application/json")
-	public ResponseEntity<?> postReturnBathroom(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String course,
+	@RequestMapping(method = RequestMethod.POST, value = "/student/regreso/bathroom")
+	public ResponseEntity<?> postReturnBathroom(
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, 
+			@RequestHeader(required = true) String course,
 			HttpSession session)
 	{
 		try
@@ -2043,8 +2061,10 @@ public class HorariosRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/veces/visitado/studentFechas", produces = "application/json")
-	public ResponseEntity<?> getNumberVisitsBathroom(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String fechaInicio,
+	public ResponseEntity<?> getNumberVisitsBathroom(
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname,
+			@RequestHeader(required = true) String fechaInicio,
 			@RequestHeader(required = true) String fechaEnd, HttpSession session)
 	{
 		try
@@ -2076,8 +2096,10 @@ public class HorariosRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/students/visitas/bathroom", produces = "application/json")
-	public ResponseEntity<?> getListTimesBathroom(@RequestHeader(required = true) String fechaInicio,
-			@RequestHeader(required = true) String fechaEnd, HttpSession session)
+	public ResponseEntity<?> getListTimesBathroom(
+			@RequestHeader(required = true) String fechaInicio,
+			@RequestHeader(required = true) String fechaEnd,
+			HttpSession session)
 	{
 		try
 		{
@@ -2108,8 +2130,10 @@ public class HorariosRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/dias/studentBathroom", produces = "application/json")
-	public ResponseEntity<?> getDayHourBathroom(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastname, @RequestHeader(required = true) String fechaInicio,
+	public ResponseEntity<?> getDayHourBathroom(
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname, 
+			@RequestHeader(required = true) String fechaInicio,
 			@RequestHeader(required = true) String fechaEnd, HttpSession session)
 	{
 		try
@@ -2279,8 +2303,9 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/horario/teacher/pdf", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> getSchedulePdf(@RequestHeader(required = true) String name,
+	@RequestMapping(method = RequestMethod.GET, value = "/get/horario/teacher/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+	public ResponseEntity<?> getSchedulePdf(
+			@RequestHeader(required = true) String name,
 			@RequestHeader(required = true) String lastname)
 	{
 		try
@@ -2341,25 +2366,25 @@ public class HorariosRest
 							// ACTIVIDADES OF THIS DAY (LIST ACTIVIDAD) ---
 							for (Actividad actividad : horarioProfesor.getActividad())
 							{
-								Tramo tramo = this.extractTramoFromCentroActividad(centro, actividad);
+								TimeSlot tramo = this.extractTramoFromCentroActividad(centro, actividad);
 
 								// --- CHECKING IF THE TRAMO DAY EXISTS ---
-								if (!profesorMap.containsKey(tramo.getNumeroDia().trim()))
+								if (!profesorMap.containsKey(tramo.getDayNumber().trim()))
 								{
 									// --- ADD THE NEW KEY AND VALUE ---
 									List<Actividad> actividadList = new ArrayList<>();
 									actividadList.add(actividad);
 									Collections.sort(actividadList);
 
-									profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
+									profesorMap.put(tramo.getDayNumber().trim(), actividadList);
 								}
 								else
 								{
 									// -- ADD THE VALUE TO THE ACTUAL VALUES ---
-									List<Actividad> actividadList = profesorMap.get(tramo.getNumeroDia().trim());
+									List<Actividad> actividadList = profesorMap.get(tramo.getDayNumber().trim());
 									actividadList.add(actividad);
 									Collections.sort(actividadList);
-									profesorMap.put(tramo.getNumeroDia().trim(), actividadList);
+									profesorMap.put(tramo.getDayNumber().trim(), actividadList);
 								}
 							}
 
@@ -2480,9 +2505,9 @@ public class HorariosRest
 	 * @param tramo
 	 * @return
 	 */
-	private Tramo extractTramoFromCentroActividad(Centro centro, Actividad actividad)
+	private TimeSlot extractTramoFromCentroActividad(Centro centro, Actividad actividad)
 	{
-		for (Tramo tram : centro.getDatos().getTramosHorarios().getTramo())
+		for (TimeSlot tram : centro.getDatos().getTramosHorarios().getTramo())
 		{
 			// --- GETTING THE TRAMO ---
 			if (actividad.getTramo().trim().equalsIgnoreCase(tram.getNumTr().trim()))
@@ -2501,7 +2526,7 @@ public class HorariosRest
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/grupo/pdf", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/grupo/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<?> getGroupSchedule(@RequestHeader(required = true) String grupo)
 	{
 		try
@@ -2562,24 +2587,24 @@ public class HorariosRest
 								for (Actividad actv : actividadList)
 								{
 									// --- GET THE TRAMO ---
-									Tramo tramo = this.extractTramoFromCentroActividad(this.centroPdfs, actv);
+									TimeSlot tramo = this.extractTramoFromCentroActividad(this.centroPdfs, actv);
 
 									// --- IF THE MAP NOT CONTAINS THE TRAMO DAY NUMBER , ADD THE DAY NUMBER AND THE
 									// ACTIVIDAD LIST ---
-									if (!grupoMap.containsKey(tramo.getNumeroDia().trim()))
+									if (!grupoMap.containsKey(tramo.getDayNumber().trim()))
 									{
 										List<Actividad> temporalList = new ArrayList<>();
 										temporalList.add(actv);
-										grupoMap.put(tramo.getNumeroDia().trim(), temporalList);
+										grupoMap.put(tramo.getDayNumber().trim(), temporalList);
 
 									}
 									else
 									{
 										// --- IF THE MAP ALRREADY CONTAINS THE TRAMO DAY , GET THE ACTIVIDAD LIST AND
 										// ADD THE ACTV , FINALLY PUT THEN ON THE DAY ---
-										List<Actividad> temporalList = grupoMap.get(tramo.getNumeroDia().trim());
+										List<Actividad> temporalList = grupoMap.get(tramo.getDayNumber().trim());
 										temporalList.add(actv);
-										grupoMap.put(tramo.getNumeroDia().trim(), temporalList);
+										grupoMap.put(tramo.getDayNumber().trim(), temporalList);
 									}
 								}
 
@@ -2717,8 +2742,10 @@ public class HorariosRest
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/teacher/Classroom", produces = "application/json")
-	public ResponseEntity<?> getTeacherClassroom(@RequestHeader(required = true) String name,
-			@RequestHeader(required = true) String lastname, HttpSession session)
+	public ResponseEntity<?> getTeacherClassroom(
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastname,
+			HttpSession session)
 	{
 		// -- LISTA ESTUDIANTES -- (FAKE) ---
 		List<Student> listaEstudiantes = new ArrayList<>(
@@ -2794,7 +2821,7 @@ public class HorariosRest
 								String actualTime = LocalDateTime.now().getHour() + ":"
 										+ LocalDateTime.now().getMinute();
 
-								Tramo tramoActual = null;
+								TimeSlot tramoActual = null;
 
 								tramoActual = this.gettingTramoActual(centro, actualTime, tramoActual);
 
@@ -2977,18 +3004,18 @@ public class HorariosRest
 	 * @param tramoActual
 	 * @return
 	 */
-	private Tramo gettingTramoActual(Centro centro, String actualTime, Tramo tramoActual)
+	private TimeSlot gettingTramoActual(Centro centro, String actualTime, TimeSlot tramoActual)
 	{
-		for (Tramo tramo : centro.getDatos().getTramosHorarios().getTramo())
+		for (TimeSlot tramo : centro.getDatos().getTramosHorarios().getTramo())
 		{
 			int numTr = Integer.parseInt(tramo.getNumTr());
 
 			// --- GETTING THE HORA,MINUTO , INICIO AND FIN ---
-			int horaInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[0].trim());
-			int minutoInicio = Integer.parseInt(tramo.getHoraInicio().split(":")[1].trim());
+			int horaInicio = Integer.parseInt(tramo.getStartHour().split(":")[0].trim());
+			int minutoInicio = Integer.parseInt(tramo.getStartHour().split(":")[1].trim());
 
-			int horaFin = Integer.parseInt(tramo.getHoraFinal().split(":")[0].trim());
-			int minutoFin = Integer.parseInt(tramo.getHoraFinal().split(":")[1].trim());
+			int horaFin = Integer.parseInt(tramo.getEndHour().split(":")[0].trim());
+			int minutoFin = Integer.parseInt(tramo.getEndHour().split(":")[1].trim());
 
 			// --- GETTING THE HORA, MINUTO ACTUAL ---
 			int horaActual = Integer.parseInt(actualTime.split(":")[0].trim());
@@ -3012,7 +3039,7 @@ public class HorariosRest
 			}
 
 			// --- DAY OF TRAMO ---
-			if (Integer.parseInt(tramo.getNumeroDia()) == dayOfWeek)
+			if (Integer.parseInt(tramo.getDayNumber()) == dayOfWeek)
 			{
 				// --- IF HORA ACTUAL EQUALS HORA INICIO ---
 				if (horaActual == horaInicio)
@@ -3049,7 +3076,7 @@ public class HorariosRest
 	 *
 	 * @return ResponseEntity , File PDF
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers/pdf", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/teachers/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<?> getTeachersSchedule()
 	{
 		try
@@ -3079,19 +3106,19 @@ public class HorariosRest
 						Map<String, List<Actividad>> mapProfesor = new HashMap<>();
 						for (Actividad atcv : horarioProf.getActividad())
 						{
-							Tramo temporalTramo = this.extractTramoFromCentroActividad(this.centroPdfs, atcv);
+							TimeSlot temporalTramo = this.extractTramoFromCentroActividad(this.centroPdfs, atcv);
 
-							if (!mapProfesor.containsKey(temporalTramo.getNumeroDia().trim()))
+							if (!mapProfesor.containsKey(temporalTramo.getDayNumber().trim()))
 							{
 								List<Actividad> temporalList = new ArrayList<>();
 								temporalList.add(atcv);
-								mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
+								mapProfesor.put(temporalTramo.getDayNumber().trim(), temporalList);
 							}
 							else
 							{
-								List<Actividad> temporalList = mapProfesor.get(temporalTramo.getNumeroDia().trim());
+								List<Actividad> temporalList = mapProfesor.get(temporalTramo.getDayNumber().trim());
 								temporalList.add(atcv);
-								mapProfesor.put(temporalTramo.getNumeroDia().trim(), temporalList);
+								mapProfesor.put(temporalTramo.getDayNumber().trim(), temporalList);
 							}
 						}
 
@@ -3176,7 +3203,7 @@ public class HorariosRest
 	 *
 	 * @return ResponseEntity , File PDF
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/grupos/pdf", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/grupos/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<?> getGlobalSchedule()
 	{
 		try
@@ -3205,19 +3232,19 @@ public class HorariosRest
 						Map<String, List<Actividad>> mapGroup = new HashMap<>();
 						for (Actividad atcv : horarioGrup.getActividad())
 						{
-							Tramo temporalTramo = this.extractTramoFromCentroActividad(this.centroPdfs, atcv);
+							TimeSlot temporalTramo = this.extractTramoFromCentroActividad(this.centroPdfs, atcv);
 
-							if (!mapGroup.containsKey(temporalTramo.getNumeroDia().trim()))
+							if (!mapGroup.containsKey(temporalTramo.getDayNumber().trim()))
 							{
 								List<Actividad> temporalList = new ArrayList<>();
 								temporalList.add(atcv);
-								mapGroup.put(temporalTramo.getNumeroDia().trim(), temporalList);
+								mapGroup.put(temporalTramo.getDayNumber().trim(), temporalList);
 							}
 							else
 							{
-								List<Actividad> temporalList = mapGroup.get(temporalTramo.getNumeroDia().trim());
+								List<Actividad> temporalList = mapGroup.get(temporalTramo.getDayNumber().trim());
 								temporalList.add(atcv);
-								mapGroup.put(temporalTramo.getNumeroDia().trim(), temporalList);
+								mapGroup.put(temporalTramo.getDayNumber().trim(), temporalList);
 							}
 						}
 
@@ -3305,8 +3332,9 @@ public class HorariosRest
 	 */
 	// REQUEST MAPPING FOR GETTING SORTED STUDENT LIST BASED ON FIRST SURNAME AND
 	// COURSE
-	@RequestMapping(method = RequestMethod.GET, value = "/get/course/sort/students")
-	public ResponseEntity<?> getListAlumnoFirstSurname(@RequestHeader(required = true) String course)
+	@RequestMapping(method = RequestMethod.GET, value = "/get/course/sort/students" , produces = "application/json")
+	public ResponseEntity<?> getListAlumnoFirstSurname(
+			@RequestHeader(required = true) String course)
 	{
 		// CREATE AN EMPTY LIST TO STORE STUDENT OBJECTS
 		List<Student> listStudents = new ArrayList<>();
@@ -3372,7 +3400,7 @@ public class HorariosRest
 	 * 
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/points")
+	@RequestMapping(method = RequestMethod.GET, value = "/get/points" , produces = "application/json")
 	public ResponseEntity<?> getListPointsCoexistence()
 	{
 		// CREATE AN EMPTY LIST TO STORE COEXISTENCE ACTITUDE POINTS
@@ -3480,8 +3508,9 @@ public class HorariosRest
 	 * @param lastName
 	 * @return ResponseEntity
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor")
-	public ResponseEntity<?> getLocationStudentTutor(@RequestHeader(required = true) String name,
+	@RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor",produces = "application/json")
+	public ResponseEntity<?> getLocationStudentTutor(
+			@RequestHeader(required = true) String name,
 			@RequestHeader(required = true) String lastName)
 	{
 
@@ -3545,8 +3574,10 @@ public class HorariosRest
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/get/location/studentTutor/course", produces = "application/json")
-	public ResponseEntity<?> getLocationStudentTutorCourse(@RequestHeader(required = true) String course,
-			@RequestHeader(required = true) String name, @RequestHeader(required = true) String lastName)
+	public ResponseEntity<?> getLocationStudentTutorCourse(
+			@RequestHeader(required = true) String course,
+			@RequestHeader(required = true) String name,
+			@RequestHeader(required = true) String lastName)
 	{
 
 		try

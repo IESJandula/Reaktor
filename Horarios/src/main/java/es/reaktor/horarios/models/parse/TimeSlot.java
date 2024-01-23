@@ -13,19 +13,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Tramo
+public class TimeSlot
 {
 	/** Attribute numTr*/
 	private String numTr;
 	
 	/** Attribute numeroDia*/
-	private String numeroDia;
+	private String dayNumber;
 	
 	/** Attribute horaInicio*/
-	private String horaInicio;
+	private String startHour;
 	
 	/** Attribute horaFinal*/
-	private String horaFinal;
+	private String endHour;
 	
 	
 }

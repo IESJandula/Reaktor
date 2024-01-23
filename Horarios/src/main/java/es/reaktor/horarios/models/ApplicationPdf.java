@@ -27,7 +27,7 @@ import es.reaktor.horarios.models.parse.Aula;
 import es.reaktor.horarios.models.parse.Centro;
 import es.reaktor.horarios.models.parse.Grupo;
 import es.reaktor.horarios.models.parse.Profesor;
-import es.reaktor.horarios.models.parse.Tramo;
+import es.reaktor.horarios.models.parse.TimeSlot;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -128,11 +128,11 @@ public class ApplicationPdf
 				for(Actividad act : set.getValue()) 
 				{
 					// -- GET THE TRAMO OBJECT FROM THE ACTIVIDAD ---
-					Tramo temporalTramo = this.extractTramoFromCentroActividad(centro, act);
+					TimeSlot temporalTramo = this.extractTramoFromCentroActividad(centro, act);
 					if(temporalTramo!=null) 
 					{
 						// --- GET THE TIME START AND END FROM THE TEMPORAL_TRAMO ---
-						String temporalHourTime = temporalTramo.getHoraInicio().trim()+" - "+temporalTramo.getHoraFinal().trim();	
+						String temporalHourTime = temporalTramo.getStartHour().trim()+" - "+temporalTramo.getEndHour().trim();	
 						
 						log.info(temporalHourTime);
 						
@@ -334,9 +334,9 @@ public class ApplicationPdf
 	 * @param tramo
 	 * @return
 	 */
-	private Tramo extractTramoFromCentroActividad(Centro centro, Actividad actividad)
+	private TimeSlot extractTramoFromCentroActividad(Centro centro, Actividad actividad)
 	{
-		for(Tramo tram : centro.getDatos().getTramosHorarios().getTramo()) 
+		for(TimeSlot tram : centro.getDatos().getTramosHorarios().getTramo()) 
 		{
 			// --- GETTING THE TRAMO ---
 			if(actividad.getTramo().trim().equalsIgnoreCase(tram.getNumTr().trim())) 
@@ -412,10 +412,10 @@ public class ApplicationPdf
 				Collections.sort(temporalList);
 				for(Actividad actv : temporalList) 
 				{
-					Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
+					TimeSlot temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
 					
-					String horaInicio = temporalTramo.getHoraInicio().trim();
-					String horaFinal = temporalTramo.getHoraFinal().trim();
+					String horaInicio = temporalTramo.getStartHour().trim();
+					String horaFinal = temporalTramo.getEndHour().trim();
 					
 					Asignatura asignatura = this.getAsignaturaById(actv.getAsignatura().trim(), centroPdfs);
 					
@@ -573,10 +573,10 @@ public class ApplicationPdf
 					for(Actividad actv : temporalList) 
 					{
 						// --- GET THE TRAMO OF THE ACTIVIDAD ---
-						Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
+						TimeSlot temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
 						
-						String horaInicio = temporalTramo.getHoraInicio().trim();
-						String horaFinal = temporalTramo.getHoraFinal().trim();
+						String horaInicio = temporalTramo.getStartHour().trim();
+						String horaFinal = temporalTramo.getEndHour().trim();
 						
 						Asignatura asignatura = this.getAsignaturaById(actv.getAsignatura().trim(), centroPdfs);
 						Aula aula = this.getAulaById(actv.getAula().trim(), centroPdfs);
@@ -716,10 +716,10 @@ public class ApplicationPdf
 					for(Actividad actv : temporalList) 
 					{
 						// --- GET THE TRAMO OF THE ACTIVIDAD ---
-						Tramo temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
+						TimeSlot temporalTramo = this.extractTramoFromCentroActividad(centroPdfs, actv);
 						
-						String horaInicio = temporalTramo.getHoraInicio().trim();
-						String horaFinal = temporalTramo.getHoraFinal().trim();
+						String horaInicio = temporalTramo.getStartHour().trim();
+						String horaFinal = temporalTramo.getEndHour().trim();
 						
 						Asignatura asignatura = this.getAsignaturaById(actv.getAsignatura().trim(), centroPdfs);
 						Profesor profesor = this.getProfesorById(actv.getProfesor().trim(), centroPdfs);
