@@ -9,7 +9,7 @@
         <version>3.0.4</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
-    <groupId>es.reaktor</groupId>
+    <groupId>es.monitoringserver</groupId>
     <artifactId>MonitoringClient</artifactId>
     <version>1.0.0</version>
     <name>MonitoringClient</name>
