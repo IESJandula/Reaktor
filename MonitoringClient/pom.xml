@@ -79,7 +79,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                es.monitoringserver.monitoringclient.ReaktorClientApplication</mainClass>
+                                es.monitoringserver.monitoringclient.MonitoringClientApplication</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

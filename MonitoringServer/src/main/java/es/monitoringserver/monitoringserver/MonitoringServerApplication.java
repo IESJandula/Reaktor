@@ -9,12 +9,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EntityScan(basePackages = "es.monitoringserver.models")
-public class ReaktorApplication
+public class MonitoringServerApplication
 {
     public static void main(String[] args)
     {
     	// -- NECESARY FOR ENABLE TAKE SCREENSHOTS FROM CLIENTS (ROBOT AWT) ---
     	System.setProperty("java.awt.headless", "false");
-        SpringApplication.run(ReaktorApplication.class, args);
+        SpringApplication.run(MonitoringServerApplication.class, args);
     }
 }
