@@ -1,0 +1,921 @@
+swagger: '2.0'
+host: iesjandula.es
+basePath: /horarios
+schemes:
+  - http
+  - https
+produces:
+  - application/json
+info:
+  version: 1.0.0
+  title: IES Jandula Reaktor Website
+  description: This is the Reaktor swagger API
+  contact:
+    name: Manuel Belmonte Oliva
+    email: mbeloli2503@g.educaand.es
+    url: https://www.iesjandula.es/drupal/
+paths:
+#--------------------------horarios-ENDEPOINTS-----------------------------------------------
+#--------------------------ENDPOINT----------------------------------------------------------
+
+  /send/xml:
+    post:
+      operationId: sendXmlToObjects
+      description: parse an xml document
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: xmlFile
+          in: formData
+          description: XML file to be parsed
+          required: true
+          type: file
+      responses:
+        200:
+          description: parsed correctly
+        400:
+          description: Error sending file
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+
+  /send/csv:
+    post:
+      operationId: sendCsvTo
+      description: get a csv file
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: csvFile
+          in: formData
+          description: CSV file to be parsed
+          required: true
+          type: file
+      responses:
+        200: 
+          description: okey
+        400:
+          description: request not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+   
+  /get/courses:
+    get:
+      operationId: getListCourses
+      description: obtains list of students by course
+      produces:
+        - application/json
+      responses:
+        200:
+          description: sent list 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Course'
+        400: 
+          description: not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+   
+  /get/roles:
+    get:
+      operationId: getRoles
+      description: Returns a list of roles
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: header
+          description: Email account with roles
+          required: true
+          type: string
+      responses:
+        200:
+          description: correct list
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Rol'
+        400:
+          description: email account not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error   
+          schema:
+            $ref: '#/definitions/HorarioError'
+  
+  /get/teachers:
+    get:
+      operationId: getListTeachers
+      description: Get list of teachers
+      produces:
+        - application/json
+      responses:
+        200:
+          description: list of teachers sent successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Teacher'
+        400:
+          description: list not found 
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+        
+  /get/sortstudents:
+    get:
+      operationId: getListStudentsAlphabetically
+      description: Obtain a list of students ordered alphabetically by first surname
+      produces:
+        - application/json
+      responses:
+        200:
+          description: list returned successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Student'
+        400:
+          description: list not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error  
+          schema:
+            $ref: '#/definitions/HorarioError'
+            
+  /teacher/get/classroom:
+    get:
+      operationId: getClassroomTeacher
+      description: Get a teacher's current classroom
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: header
+          description: teacher name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: teacher last name
+          required: true
+          type: string
+          
+      responses:
+        200:
+          description: classroom sent
+          schema:
+            $ref: '#/definitions/Classroom'
+        400:
+          description: classroom not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+
+  /teacher/get/classroom/tramo:
+    get:
+      operationId: getClassroomTeacherSchedule
+      description: Get a teacher's classroom in a specific time slot
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: header
+          description: teacher name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: teacher lastname
+          required: true
+          type: string
+          
+        - name: profTime
+          in: body
+          schema:
+            $ref: '#/definitions/TimeSlot'
+          description: Professor TimeSlot instance
+          
+      responses:
+        200:
+          description: classroom sent
+          schema:
+            $ref: '#/definitions/Classroom'
+        400:
+          description: classroom not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/teachersubject:
+    get:
+      operationId: getTeacherSubject
+      description: Get teacher and subject by course and at the current time (at the moment)
+      produces:
+        - application/json
+      parameters:
+        - name: courseName
+          in: header
+          description: Course name
+          required: true
+          type: string
+      responses:
+        200:
+          description: Teacher and Subject sent
+          schema:
+            $ref: '#/definitions/TeacherMoment'
+        400:
+          description: Could not endd course or time
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+  
+  
+  /get/classroomcourse:
+    get:
+      operationId: getClassroomCourse
+      description: Get classroom number by course
+      produces:
+        - application/json
+      parameters:
+        - name: courseName
+          in: header
+          description: Course name
+          required: true
+          type: string
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            $ref: '#/definitions/Classroom'
+        400:
+          description: classroom not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+
+  /get/hours:
+    get:
+      operationId: getListHours
+      description: Get a list with the hours of the day
+      produces:
+        - application/json
+      responses:
+        200:
+          description: list sent
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Hour'
+        400:
+          description: list not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/course/sort/students:
+    get:
+      operationId: getListAlumCourseFirstSurname
+      description: Obtain a list of students of a course ordered by first last name
+      produces:
+        - application/json
+      parameters:
+        - name: course
+          in: header
+          description: course name
+          required: true
+          type: string
+      responses:
+        200:
+          description: list sent
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Student'
+        400:
+          description: list not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/points:
+    get:
+      operationId: getListPointsCoexistence
+      description: Obtain a list of coexistence attitude points
+      produces:
+        - application/json
+      responses:
+        200:
+          description: list sent 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AttitudePoints'
+        400:
+          description: list not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/namelastname/reflexion:
+    get:
+      operationId: getFirstNameSurname
+      description: Obtain the name and surname of the reflection classroom teacher
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            $ref: '#/definitions/Teacher'
+        400: 
+          description: teacher not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/location/studentTutor:
+    get:
+      operationId: getLocationStudentTutor
+      description: Obtain student information by name and surname, location and tutor information
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: header
+          description: student name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: student lastname
+          required: true
+          type: string
+      responses:
+        200:
+          description: student sent
+          schema:
+            $ref: '#/definitions/Teacher'
+        400: 
+          description: student not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+      
+  /get/location/studentTutor/course:
+    get:
+      operationId: getLocationStudentTutorCourse
+      description: Obtain student information by name, surname and course
+      produces:
+        - application/json
+      parameters:
+        - name: course
+          in: header
+          description: course name
+          required: true
+          type: string
+          
+        - name: name
+          in: header
+          description: student name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: student lastname
+          required: true
+          type: string
+      responses:
+        200:
+          description: student sent
+          schema:
+            $ref: '#/definitions/Teacher'
+        400: 
+          description: student not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /student/visita/bathroom:
+    post:
+      operationId: postVisit
+      description: Record bathroom visit by student, course and date
+      parameters:
+        - name: course
+          in: header
+          description: course name
+          required: true
+          type: string
+          
+        - name: name
+          in: header
+          description: student name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: student lastname
+          required: true
+          type: string
+      responses:
+        200:
+          description: Visit completed correctly
+        400:
+          description: visit not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /student/regreso/bathroom:
+    post:
+      operationId: postReturnBathroom
+      description: Record return from the bathroom by student, course and date
+      parameters:
+        - name: course
+          in: header
+          description: course name
+          required: true
+          type: string
+          
+        - name: name
+          in: header
+          description: student name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: student lastname
+          required: true
+          type: string
+      responses:
+        200:
+          description: return added successfully
+        400:
+          description: return not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/veces/visitado/studentFechas:
+    get:
+      operationId: getNumberVisitsBathroom
+      description: Get number of times the student went to the bathroom in a range of dates
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: header
+          description: student name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: student lastname
+          required: true
+          type: string
+          
+        - name: fechaInicio
+          in: header
+          description: Start date
+          required: true
+          type: string
+          
+        - name: fechaEnd
+          in: header
+          description: endish data 
+          required: true
+          type: string
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            type: integer
+            format: int32
+        400:
+          description: not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+            
+  /get/students/visitas/bathroom:
+    get:
+      operationId: getListTimesBathroom
+      description: Obtain a list of students with the number of times in the bathroom in a range of dates
+      produces:
+        - application/json
+      parameters:
+        - name: fechaInicio
+          in: header
+          description: start date
+          required: true
+          type: string
+          
+        - name: fechaEnd
+          in: header
+          description: endish date 
+          required: true
+          type: string
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StudentBathroom'
+        400:
+          description: list not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+   
+  /get/dias/studentBathroom:
+    get:
+      operationId: getDayHourBathroom
+      description: Get days and times the student went to the bathroom in a date range
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: header
+          description: student name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: student lastname
+          required: true
+          type: string
+          
+        - name: fechaInicio
+          in: header
+          description: start date 
+          required: true
+          type: string
+          
+        - name: fechaEnd
+          in: header
+          description: endish date 
+          required: true
+          type: string
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            $ref: '#/definitions/DayBathroom'
+        400:
+          description: not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+      
+  /get/teacher/Classroom:
+    get:
+      operationId: getTeacherClassroom
+      description: Get teacher and classroom from where the student left
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: header
+          description: student name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: student lastname
+          required: true
+          type: string
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            $ref: "#/definitions/TeacherMoment"
+        400:
+          description: not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/horario/teacher/pdf:
+    get:
+      operationId: getSchedulePdf
+      description: Generate PDF for a teacher
+      produces:
+        - application/pdf
+      parameters:
+        - name: name
+          in: header
+          description: teacher name
+          required: true
+          type: string
+          
+        - name: lastname
+          in: header
+          description: teacher lastname
+          required: true
+          type: string
+      responses:
+        200:
+          description: pdf generated correctly
+          schema:
+            type: file
+        400:
+          description: not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/teachers/pdf:
+    get:
+      operationId: getTeachersSchedule
+      description: Generate PDF schedules for all teachers
+      produces:
+        - application/pdf
+      responses:
+        200:
+          description: pdf generated correctly
+          schema:
+            type: file
+        400:
+          description: not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/grupo/pdf:
+    get:
+      operationId: getGroupSchedule
+      description: Generate a PDF schedule for a group
+      produces:
+        - application/pdf
+      parameters:
+        - name: grupo
+          in: header
+          description: group name
+          required: true
+          type: string
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            type: file
+        400:
+          description: group not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+          
+  /get/grupos/pdf:
+    get:
+      operationId: getGlobalSchedule
+      description: Generate PDF schedule for all groups
+      produces:
+        - application/pdf
+      responses:
+        200:
+          description: Submitted successfully
+          schema:
+            type: file
+        400:
+          description: not found
+          schema:
+            $ref: '#/definitions/HorarioError'
+        500:
+          description: server error
+          schema:
+            $ref: '#/definitions/HorarioError'
+    
+#------------------------------OBJECTS definitions-----------------------------
+definitions:
+
+#----------teacher------------------- 
+  Teacher:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of the teacher
+      lastname:
+        type: string
+        description: lastname of the teacher
+      email:
+        type: string
+        description: email of the teacher
+      telephoneTutor:
+        type: string
+        description: teacher's phone number
+      roles:
+        type: array
+        items:
+          $ref: "#/definitions/Rol"
+      
+        
+#----------course------------------- 
+  Course:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of the course
+      Classroom:
+        $ref: "#/definitions/Classroom"
+
+#----------teacherMoment------------------- 
+  TeacherMoment:      
+    type: object
+    properties:
+      teacher:
+        $ref: '#/definitions/Teacher'
+      subject:
+        type: string
+        description: subject taught at the moment
+      classroom:
+        $ref: "#/definitions/Classroom"
+        
+#----------Classroom-------------------
+  Classroom:
+    type: object
+    properties:
+        number:
+          type: integer
+          format: int32
+          description: location of classroom
+        floor:
+          type: integer
+          format: int32
+          
+#----------student------------------- 
+  Student:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of the student
+      lastname:
+        type: string
+        description: lastname of the student
+      course:
+        $ref: "#/definitions/Course"
+#----------studentBathroom------------------- 
+  StudentBathroom:
+    type: object
+    properties:
+      student:
+        $ref: "#/definitions/Student"
+      timesBath:
+        type: integer
+        description: number of times you go to the bathroom
+        
+#----------ROL-------------------       
+  Rol:
+    type: string
+    enum: 
+        - docente
+        - administrador
+        - conserje
+    description: roles that exist    
+#----------DiasBanio-------------------  
+  DayBathroom:
+    type: object
+    properties: 
+      day:
+        type: string
+        description: day on which it occurs
+      hours:
+        $ref: "#/definitions/Hour"
+        
+#----------hour-------------------      
+  Hour:      
+    type: object
+    properties:
+      hour:
+        type: string
+        description: time it occurs
+      start:
+        type: string
+        description: time it starts
+      end:
+        type: string
+        description: time it end
+#----------AttitudePoints------------------- 
+  AttitudePoints:
+    type: object
+    properties:
+      points:
+        type: integer
+        description: attitude points
+      descripcion:
+        type: string
+        description: teacher's comment
+        
+#----------AttitudePoints------------------- 
+  TimeSlot:
+    type: object
+    properties:
+      numTr:
+        type: string
+        description: The number identifier if exists , null if not is possible to detect
+      dayNumber:
+        type: string
+        description: the day number 1 ,2 ,3 ,4 5
+      startHour:
+        type: string
+        description: The start hour example '8:15'
+      endHour:
+        type: string
+        description: The end hour example '9:15'
+        
+#----------ERRORS-------------------      
+  HorarioError:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: The error code
+      text:
+        type: string
+        description: the error text body
