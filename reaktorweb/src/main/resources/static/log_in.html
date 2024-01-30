@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in</title>
+</head>
+<body>
+    <style>
+    .input_log_in{
+        width: 100%;
+        padding: 8px;
+        box-sizing:border-box;
+        background-color: transparent;
+        color: black;
+        border-color: black;
+        border-radius: 5px;
+        height: 45px;
+        font-size: 18px;
+        display: flex;
+    }
+    .label_log_in{
+        display: block;
+        margin-bottom: 8px;
+        padding-top: 20px;
+    }
+    #form-container {
+        width: 400px;
+        padding: 20px;
+        border:none;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+    .boton_inicio_sesion {
+        background-color:  rgb(157, 189, 235) ;
+        color: black;
+        border: none;
+        border-radius: 20px;
+        padding: 4%;
+        font-size: 18px;
+        margin-top: 8%;
+        justify-content: center;
+        width: 100%;
+      }
+    
+      .boton_inicio_sesion:hover {
+        background-color: rgb(111, 161, 236);
+        cursor: pointer;
+      }
+      .Iniciar_sesión{
+        font-size: 30px;
+      }
+    .boton_ojo{
+      background-color: white;
+      border-color: transparent;
+      border-radius: 20%;
+    }
+    .boton_ojo:hover{
+      background-color: rgb(157, 189, 235)
+    }
+    </style>
+    <!--Formulario-->
+    <main>
+        <div class="container">
+            <div id="form-container">
+                <p class="Iniciar_sesión"><b>Iniciar sesión</b><p>
+                <label for="email" class="label_log_in">Email</label>
+                <input type="text" class="input_log_in" id="email" name="email">
+                <div class="error-message" id="email-error"></div>
+            
+                <label for="password" class="label_log_in">Contraseña</label>
+                <div style="display: flex;">
+                <input type="password" class="input_log_in" id="password" name="password">
+                <button id="show-password" onclick="togglePasswordVisibility()" class="boton_ojo"><img src="img/eye.svg"></button> 
+                </div>
+                <div class="error-message" id="password-error"></div>
+            
+                <button class="boton_inicio_sesion ">Iniciar sesión</button>
+            </div>
+        </div>
+    <!--Final del formulario-->
+    </main>
+
+    <script> 
+        //Boton para ocultar o ver la contraseña
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById('password');
+            var showPasswordButton = document.getElementById('show-password');
+
+            if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            } else {
+            passwordInput.type = 'password';
+            }
+        }
+    </script>
+</body>
+</html>

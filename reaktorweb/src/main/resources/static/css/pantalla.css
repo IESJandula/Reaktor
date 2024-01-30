@@ -1,0 +1,560 @@
+
+#aula{
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+#titulo-aula{
+    font-size: 30px;
+    margin-left: 10px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* Diseño General */
+#pc{
+    float: left;
+    border: 3px solid ;
+    border-color: rgb(199, 199, 199);
+    border-radius: 5%;
+    margin-left: 50px;
+    margin-bottom: 50px;
+    width: 250px;
+    height: auto;
+}
+
+#pc-arriba{
+    width: 100%;
+    height: 50px;
+}
+
+#pc-arriba-izquierda{
+    float: left;
+    width: 50%;
+    height: 35px;
+}
+
+#nombre-pc{
+    padding-left: 10px;
+    padding-top: 5px;
+    font-size: 20px;
+}
+
+#pc-arriba-derecha{
+    float: left;
+    width: 50%; 
+}
+
+#pc-estado {
+    float: right;
+    width: 50%;
+    height: 35px;
+}
+
+#pc-estado svg{
+    position: relative;
+    padding-bottom: 50px;
+    padding-right: 30px;
+}
+
+#peligro{
+    color: red !important;
+}
+
+#pc-medio{
+    width: 100%;
+    height: 210px;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+.margen{
+    margin-top: -12px;
+}
+
+#pc-medio-imagen{
+    position: relative;
+    width: 175px;
+    height: 110px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.contenedor {
+    width: 100%;
+    margin-left: 50%; 
+    margin-top: 0.5%;
+    transform: translate(-50%);
+    padding: 20px;
+    background-color: #f4f4f4;
+    box-shadow: 0 4px 8px rgb(170, 170, 170);
+    max-width: 80%; /* Puedes ajustar según tus necesidades */
+}
+
+.contenedor img {
+    max-width: 100%; /* La imagen se ajustará al ancho del contenedor */
+    display: block; /* Eliminar espacio extra por defecto */
+    border: 1px solid;
+    border-color: black;
+}
+
+
+#pc-medio-imagen img{
+    width: 100%;
+    height: 100%;
+    border: 2px solid rgb(0, 0, 0);
+}
+
+#pc-abajo{
+    float: left;
+    border-bottom-right-radius: 5%;
+    border-bottom-left-radius: 5%;
+    width: 100%;
+    height: 50px;
+    border-top: 2px solid;
+    border-color: rgb(199, 199, 199);
+}
+
+#pc-boton-encender{
+    float: left;
+    align-items: center;
+    width: 33%;
+    height: 100%;
+    border-radius: 5%;
+}
+
+#boton-encender{
+    position: relative;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: rgb(199, 199, 199);
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 1px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#boton-encender:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: rgb(199, 199, 199);
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#pc-boton-reiniciar{
+    float: left;
+    align-items: center;
+    width: 34%;
+    height: 100%;
+}
+
+#boton-reiniciar{
+    position: relative;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: rgb(199, 199, 199);
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 5px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+}
+
+#boton-reiniciar:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: rgb(199, 199, 199);
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+}
+
+#pc-boton-bloquear{
+    float: left;
+    align-items: center;
+    width: 33%;
+    height: 100%;
+}
+
+#boton-bloquear{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: rgb(199, 199, 199);
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-bottom: 2px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+
+#boton-bloquear:hover{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: rgb(199, 199, 199);
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+/* Cierre Diseño General*/
+/* Diseño 1 - PC Activa*/
+#pc-activo{
+    float: left;
+    width: 250px;
+    height: 307px;
+    border: 3px solid ;
+    border-color: green;
+    border-radius: 5%;
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0px 5px 25px 2px green;
+}
+
+#pc-abajo-activo{
+    float: left;
+    border-bottom-right-radius: 5%;
+    border-bottom-left-radius: 5%;
+    width: 100%;
+    height: 50px;
+    border-top: 2px solid;
+    border-color: green;
+}
+
+
+#boton-encender-activo{
+    position: relative;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: green;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 1px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#boton-encender-activo:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: green;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#boton-reiniciar-activo{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: green;
+    position: relative;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 5px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+}
+
+#boton-reiniciar-activo:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: green;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+}
+
+
+#boton-bloquear-activo{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: green;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-bottom: 2px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+
+#boton-bloquear-activo:hover{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: green;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+
+/* Cierre Diseño 1 - PC Activo*/
+/* Diseño 2 - PC Error*/
+#pc-error{
+    float: left;
+    width: 250px;
+    height: 307px;
+    border: 3px solid ;
+    border-color: orange;
+    border-radius: 5%;
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0px 5px 25px 2px orange;
+}
+
+
+#pc-abajo-error{
+    float: left;
+    border-bottom-right-radius: 5%;
+    border-bottom-left-radius: 5%;
+    width: 100%;
+    height: 50px;
+    border-top: 2px solid;
+    border-color: orange;
+}
+
+
+#boton-encender-error{
+    position: relative;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: orange;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 1px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#boton-encender-error:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: orange;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#boton-reiniciar-error{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: orange;
+    position: relative;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 5px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+}
+
+#boton-reiniciar-error:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: orange;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+}
+
+
+#boton-bloquear-error{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: orange;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-bottom: 2px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+
+#boton-bloquear-error:hover{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: orange;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+
+/* Cierre Diseño 2 - PC Error*/
+
+/* Diseño 3 - PC Apagado*/
+#pc-apagado{
+    float: left;
+    width: 250px;
+    height: 307px;
+    border: 3px solid ;
+    border-color: red;
+    border-radius: 5%;
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0px 5px 25px 2px red;
+}
+
+#pc-medio-imagen-apagado{
+    position: relative;
+    width: 125px;
+    height: 80px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+#pc-medio-imagen-apagado img{
+    width: 100%;
+    height: 100%;
+    border: 2px solid red;
+}
+
+#pc-abajo-apagado{
+    float: left;
+    border-bottom-right-radius: 5%;
+    border-bottom-left-radius: 5%;
+    width: 100%;
+    height: 50px;
+    border-top: 2px solid;
+    border-color: red;
+}
+
+
+#boton-encender-apagado{
+    position: relative;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: red;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 1px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#boton-encender-apagado:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: none;
+    border-color: red;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 17%;
+}
+
+#boton-reiniciar-apagado{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: red;
+    position: relative;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-top: 5px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+}
+
+#boton-reiniciar-apagado:hover{
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    border-color: red;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+}
+
+
+#boton-bloquear-apagado{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: red;
+    background-color: black;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    padding-bottom: 2px;
+    /*Padding para que el avg se coloque a la altura de los demas botones*/
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+
+#boton-bloquear-apagado:hover{
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: none;
+    border-left: none;
+    border-color: red;
+    background-color: rgb(61, 61, 61);
+    width: 100%;
+    height: 100%;
+    border-bottom-right-radius: 17%;
+}
+/* Cierre Diseño 3 - PC Apagado*/
