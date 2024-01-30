@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 public class ReaktorServerRest
 {
-
     @Autowired
     private ReaktorActions reaktorActions;
 

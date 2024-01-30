@@ -61,6 +61,8 @@ public class ReaktorClientApplication implements CommandLineRunner
      */
     public static void main(String[] args)
     {
+    	// -- NECESARY FOR ENABLE TAKE SCREENSHOTS FROM CLIENTS (ROBOT AWT) ---
+    	System.setProperty("java.awt.headless", "false");
 
         // como actualmente no soporta linux, introduzco esta linea para que no se ejecute en linux
         if (!System.getProperty("os.name").toLowerCase().contains(Constants.OS_WINDOWS.toLowerCase()))
@@ -81,6 +83,8 @@ public class ReaktorClientApplication implements CommandLineRunner
     @Override
     public void run(String... args) throws Exception
     {
+    	// -- NECESARY FOR ENABLE TAKE SCREENSHOTS FROM CLIENTS (ROBOT AWT) ---
+    	System.setProperty("java.awt.headless", "false");
         try
         {
             // We carry out the actions with the arguments that are passed on to us
