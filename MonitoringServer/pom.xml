@@ -58,7 +58,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>es.reaktor.reaktor.ReaktorApplication</mainClass>
+							<mainClass>es.monitoringserver.monitoringserver.ReaktorApplication</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

@@ -1,15 +1,15 @@
-package es.reaktor.reaktor.rest;
+package es.monitoringserver.monitoringserver.rest;
 
-import es.reaktor.models.DTO.MalwareDTOWeb;
-import es.reaktor.models.DTO.ReaktorDTO;
-import es.reaktor.models.DTO.SimpleComputerDTO;
-import es.reaktor.models.Malware;
-import es.reaktor.models.Motherboard;
-import es.reaktor.models.Reaktor;
-import es.reaktor.reaktor.reaktor_actions.ReaktorActions;
-import es.reaktor.reaktor.reaktor_actions.ReaktorService;
-import es.reaktor.reaktor.repository.IMalwareRepository;
-import es.reaktor.reaktor.repository.IMotherboardRepository;
+import es.monitoringserver.models.Malware;
+import es.monitoringserver.models.Motherboard;
+import es.monitoringserver.models.Reaktor;
+import es.monitoringserver.models.DTO.MalwareDTOWeb;
+import es.monitoringserver.models.DTO.ReaktorDTO;
+import es.monitoringserver.models.DTO.SimpleComputerDTO;
+import es.monitoringserver.monitoringserver.reaktor_actions.ReaktorActions;
+import es.monitoringserver.monitoringserver.reaktor_actions.ReaktorService;
+import es.monitoringserver.monitoringserver.repository.IMalwareRepository;
+import es.monitoringserver.monitoringserver.repository.IMotherboardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

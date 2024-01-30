@@ -1,8 +1,9 @@
-package es.reaktor.reaktor.repository;
+package es.monitoringserver.monitoringserver.repository;
 
-import es.reaktor.models.GraphicCard;
-import es.reaktor.models.Id.GraphicCardId;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import es.monitoringserver.models.GraphicCard;
+import es.monitoringserver.models.Id.GraphicCardId;
 
 public interface IGraphicCardRepository extends JpaRepository<GraphicCard, GraphicCardId>
 {

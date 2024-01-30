@@ -1,4 +1,4 @@
-package es.reaktor.reaktor.utils;
+package es.monitoringserver.monitoringserver.utils;
 
 import lombok.Getter;
 import lombok.Setter;

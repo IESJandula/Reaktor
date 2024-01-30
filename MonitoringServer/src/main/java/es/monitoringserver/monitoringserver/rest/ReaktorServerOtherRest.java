@@ -1,4 +1,4 @@
-package es.reaktor.reaktor.rest;
+package es.monitoringserver.monitoringserver.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

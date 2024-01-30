@@ -1,8 +1,8 @@
-package es.reaktor.reaktor.reaktor_actions;
+package es.monitoringserver.monitoringserver.reaktor_actions;
 
-import es.reaktor.models.*;
-import es.reaktor.models.Id.MotherboardMalwareId;
-import es.reaktor.reaktor.repository.*;
+import es.monitoringserver.models.*;
+import es.monitoringserver.models.Id.MotherboardMalwareId;
+import es.monitoringserver.monitoringserver.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

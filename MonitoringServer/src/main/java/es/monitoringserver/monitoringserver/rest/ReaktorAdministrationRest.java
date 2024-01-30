@@ -1,4 +1,4 @@
-package es.reaktor.reaktor.rest;
+package es.monitoringserver.monitoringserver.rest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
 
-import es.reaktor.exceptions.ComputerError;
-import es.reaktor.models.CommandLine;
-import es.reaktor.models.Computer;
-import es.reaktor.models.HardwareComponent;
-import es.reaktor.models.Location;
-import es.reaktor.models.MonitorizationLog;
-import es.reaktor.models.Peripheral;
-import es.reaktor.models.Software;
+import es.monitoringserver.exceptions.ComputerError;
+import es.monitoringserver.models.CommandLine;
+import es.monitoringserver.models.Computer;
+import es.monitoringserver.models.HardwareComponent;
+import es.monitoringserver.models.Location;
+import es.monitoringserver.models.MonitorizationLog;
+import es.monitoringserver.models.Peripheral;
+import es.monitoringserver.models.Software;
 import lombok.extern.slf4j.Slf4j;
 
 /**

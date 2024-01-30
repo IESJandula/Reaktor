@@ -1,8 +1,9 @@
-package es.reaktor.reaktor.repository;
+package es.monitoringserver.monitoringserver.repository;
 
-import es.reaktor.models.HardDisk;
-import es.reaktor.models.Id.HardDiskId;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import es.monitoringserver.models.HardDisk;
+import es.monitoringserver.models.Id.HardDiskId;
 
 public interface IHardDiskRepository extends JpaRepository<HardDisk, HardDiskId>
 {

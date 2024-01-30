@@ -1,8 +1,9 @@
-package es.reaktor.reaktor.repository;
+package es.monitoringserver.monitoringserver.repository;
 
-import es.reaktor.models.Id.SoundCardId;
-import es.reaktor.models.SoundCard;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import es.monitoringserver.models.SoundCard;
+import es.monitoringserver.models.Id.SoundCardId;
 
 public interface ISoundCardRepository extends JpaRepository <SoundCard, SoundCardId>
 {

@@ -1,8 +1,8 @@
-package es.reaktor.reaktor.scheduled_task;
+package es.monitoringserver.monitoringserver.scheduled_task;
 
-import es.reaktor.models.Motherboard;
-import es.reaktor.reaktor.repository.IMotherboardRepository;
-import es.reaktor.reaktor.utils.AppConfig;
+import es.monitoringserver.models.Motherboard;
+import es.monitoringserver.monitoringserver.repository.IMotherboardRepository;
+import es.monitoringserver.monitoringserver.utils.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

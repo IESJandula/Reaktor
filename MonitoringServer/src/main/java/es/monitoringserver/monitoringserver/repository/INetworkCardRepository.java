@@ -1,8 +1,9 @@
-package es.reaktor.reaktor.repository;
+package es.monitoringserver.monitoringserver.repository;
 
-import es.reaktor.models.Id.NetworkCardId;
-import es.reaktor.models.NetworkCard;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import es.monitoringserver.models.NetworkCard;
+import es.monitoringserver.models.Id.NetworkCardId;
 
 public interface INetworkCardRepository extends JpaRepository<NetworkCard, NetworkCardId>
 {
