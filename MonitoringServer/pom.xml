@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.reaktor</groupId>
-	<artifactId>Reaktor</artifactId>
+	<artifactId>MonitoringServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Reaktor</name>
-	<description>Reaktor</description>
+	<name>MonitoringServer</name>
+	<description>MonitoringServer</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

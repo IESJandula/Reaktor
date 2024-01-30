@@ -10,10 +10,10 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>es.reaktor</groupId>
-    <artifactId>ReaktorClient</artifactId>
+    <artifactId>MonitoringClient</artifactId>
     <version>1.0.0</version>
-    <name>ReaktorClient</name>
-    <description>ReaktorClient</description>
+    <name>MonitoringClient</name>
+    <description>MonitoringClient</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -75,7 +75,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>ReaktorClient</finalName>
+                    <finalName>MonitoringClient</finalName>
                     <archive>
                         <manifest>
                             <mainClass>

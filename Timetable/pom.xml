@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.iesjandula</groupId>
-	<artifactId>Horarios</artifactId>
+	<artifactId>Timetable</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Horarios</name>
-	<description>Project Horarios</description>
+	<name>Timetable</name>
+	<description>Project Timetable</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
