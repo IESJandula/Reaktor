@@ -13,14 +13,14 @@
 		<!-- Models -->
 		<module>../Models</module>
 		
-		<!-- Reaktor -->
-		<module>../Reaktor</module>
+		<!-- MonitoringServer -->
+		<module>../MonitoringServer</module>
 		
-		<!-- Reaktor Client -->
-		<module>../ReaktorClient</module>
+		<!-- MonitoringServer Client -->
+		<module>../MonitoringClient</module>
 		
-		<!-- Reaktor Horarios -->
-        <module>../Horarios</module>
+		<!-- MonitoringServer Timetable -->
+        <module>../Timetable</module>
 		
 	</modules>
 </project>

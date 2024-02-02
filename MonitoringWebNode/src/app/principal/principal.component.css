@@ -1,0 +1,35 @@
+.computer-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.computer-card {
+  width: calc(33.33% - 10px);
+  margin-bottom: 10px;
+}
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.malware-button {
+  background-color: #3366FF;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.malware-button:hover {
+  background-color: #264CFF;
+}
