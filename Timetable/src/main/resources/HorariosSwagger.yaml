@@ -919,3 +919,4 @@ definitions:
       text:
         type: string
         description: the error text body
+
