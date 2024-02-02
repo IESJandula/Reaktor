@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "286196859062",
+    "project_id": "ijandula-17ffd",
+    "storage_bucket": "ijandula-17ffd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286196859062:android:54075fee392de3f962a617",
+        "android_client_info": {
+          "package_name": "com.example.iseneca"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286196859062-qsoadc7a6gboc9d5upvpplqe6j8o4o8q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.iseneca",
+            "certificate_hash": "dcd87d631cfaad859565625e840a654f2166a2d0"
+          }
+        },
+        {
+          "client_id": "286196859062-nbjutn1om6957qqbfkj5crp5plqd9fut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_N2s3r0oAe6ozfqljwFj4K9yLe8vO4_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286196859062-nbjutn1om6957qqbfkj5crp5plqd9fut.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "286196859062-q2dt1svb6muaon99vtgkf7imo4ljh5b3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.iseneca.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286196859062:android:ffde213b3a74b7d462a617",
+        "android_client_info": {
+          "package_name": "es.iesjandula.iseneca"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286196859062-nbjutn1om6957qqbfkj5crp5plqd9fut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_N2s3r0oAe6ozfqljwFj4K9yLe8vO4_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286196859062-nbjutn1om6957qqbfkj5crp5plqd9fut.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "286196859062-q2dt1svb6muaon99vtgkf7imo4ljh5b3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.iseneca.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
