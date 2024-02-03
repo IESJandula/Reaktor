@@ -21,6 +21,9 @@
 		
 		<!-- MonitoringServer Timetable -->
         <module>../Timetable</module>
+        
+        <!-- MonitoringServer MonitoringWeb -->
+        <module>../MonitoringWeb</module>
 		
 	</modules>
 </project>
