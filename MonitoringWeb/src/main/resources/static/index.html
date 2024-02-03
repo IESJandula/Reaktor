@@ -1,0 +1,774 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Admin panel</title>
+        <link rel="stylesheet" type="text/css" href="css/pantalla.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/ee2f80d5ba.js" crossorigin="anonymous"></script>
+        <script src="js/testjs.js"></script>
+    </head>
+
+    <header style="width: 80%; margin-left:11%;">
+
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <img src="img/icono.PNG" alt="">
+          <button onclick="myFunction('acciones-apagar')" class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-1" aria-selected="true" style="color: black;">Shutdown</button>
+                  <button onclick="myFunction('acciones-bloqueopuertos')" class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="nav-2" aria-selected="false" style="color: black;">Block</button>
+                  <button onclick="myFunction('acciones-screenshot')" class="nav-link" id="nav-3-tab" data-bs-toggle="tab" data-bs-target="#nav-3" type="button" role="tab" aria-controls="nav-3" aria-selected="false" style="color: black;">Screenshot</button>
+                  <button onclick="myFunction('acciones-navegador')" class="nav-link" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4" type="button" role="tab" aria-controls="nav-4" aria-selected="false" style="color: black;">Open web page</button>
+                  <button onclick="myFunction('acciones-instalar-aplicacion')" class="nav-link" id="nav-5-tab" data-bs-toggle="tab" data-bs-target="#nav-5" type="button" role="tab" aria-controls="nav-5" aria-selected="false" style="color: black;">Install</button>
+                  <button onclick="myFunction('acciones-desistalar')" class="nav-link" id="nav-6-tab" data-bs-toggle="tab" data-bs-target="#nav-6" type="button" role="tab" aria-controls="nav-6" aria-selected="false" style="color: black;">Uninstall</button>
+                  <button onclick="myFunction('acciones-networking')" class="nav-link" id="nav-7-tab" data-bs-toggle="tab" data-bs-target="#nav-7" type="button" role="tab" aria-controls="nav-7" aria-selected="false" style="color: black;">WIFI config</button>
+                  <button onclick="myFunction('acciones-id-junta')" class="nav-link" id="nav-8-tab" data-bs-toggle="tab" data-bs-target="#nav-8" type="button" role="tab" aria-controls="nav-8" aria-selected="false" style="color: black;">Data update</button>
+                  <button onclick="myFunction('acciones-script')" class="nav-link" id="nav-9-tab" data-bs-toggle="tab" data-bs-target="#nav-9" type="button" role="tab" aria-controls="nav-9" aria-selected="false" style="color: black;">Run code</button>
+        </div>
+      </nav>
+      <div id="acciones-apagar-des" class="card-des">
+        <div style="font-size: 13px;"class="card-body">
+          &nbsp; &nbsp; Apagado y reinicio de ordenadores en aulas, carritos y profesores.
+        </div>
+      </div>
+      <div id="acciones-bloqueopuertos-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" class="card-body">
+          &nbsp; &nbsp; Bloqueo de dispositivos E/S en aulas y carritos.
+        </div>
+      </div>
+      <div id="acciones-screenshot-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" class="card-body">
+          &nbsp; &nbsp; Captura de pantallas en aulas y carritos.
+        </div>
+      </div>
+      <div id="acciones-navegador-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" class="card-body">
+          &nbsp; &nbsp; Apertura remota de enlace web a aulas y carritos.
+        </div>
+      </div>
+      <div id="acciones-instalar-aplicacion-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" class="card-body">
+          &nbsp; &nbsp; Instalación remota de aplicaciones en aulas, carritos y profesores.
+        </div>
+      </div>
+      <div id="acciones-desistalar-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" class="card-body">
+          &nbsp; &nbsp; Desinstalación remota de aplicaciones en aulas, carritos y profesores.
+        </div>
+      </div>
+      <div id="acciones-networking-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" class="card-body">
+          &nbsp; &nbsp; Envío de configuración WiFi a aulas, carritos y profesores.
+        </div>
+      </div>
+      <div id="acciones-id-junta-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" class="card-body">
+          &nbsp; &nbsp; Actualización de info de PC concreto con código de la Junta de Andalucía, número de serie del portátil/caja y número escrito sobre la caja.
+        </div>
+      </div>
+      <div id="acciones-script-des" class="card-des" style="display: none">
+        <div style="font-size: 13px;" >
+          &nbsp; &nbsp; Ejecución de código en remoto en aulas, carritos y profesores.
+        </div>
+      </div>
+    </header>
+    <body>
+        <main>
+          <!-- Aqui se insertara la imagen con zoom de cada pc-->
+          <div id="imagenInsertada" style="position:absolute; pointer-events: none; z-index: 1000;"></div>
+            <!-- Contenedor de tipo fluido principal -->
+            <div class="container-fluid">
+
+            <!-- Boton de apertura del panel -->
+            <button class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                <!-- icono flecha boostrap-->
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+            </button>
+
+                <!-- data-bs-scroll TRUE permite deslizar arriba/abajo el contenido de la pagina con el panel abierto-->
+                <!-- data-bs-backdrop FALSE evita el oscurecimiento del contenido del body cuando el panel esta abierto -->
+                <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel"  style="margin-top: 90px; border-top: solid; border-width: 1px; border-color: grey;">
+                    
+                    <!-- Header del off-canvas-->
+                    <div class="offcanvas-header">
+
+                    <!-- Titulo del panel de administracion.-->
+                    <!-- Boton con X para cerrar el panel-->
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+                    </div>
+
+                    <!-- Cuerpo principal del modal ofcanvas. Aqui va el contenido.-->
+                    <div class="offcanvas-body">
+                      
+                        <!-- Sección de filtro. -->
+                        <div id="filtro">
+                        
+                            <!-- elemento de accordeon filtro-->
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+
+                            <div class="accordion-item"> 
+
+                              <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                  <strong>Filtros de dispositivos</strong>
+                                </button>
+                              </h2>
+
+                              <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                                <!-- cuerpo del objeto del acordeon.-->
+                                <div class="accordion-body">
+
+                                    <!-- ejemplo de formulario de opciones de filtrado.-->
+                                    <form action="dirección-del-servicio-en-escucha" method="post" target="_blank" enctype="text/plain">
+
+                                        <!-- Lista opciones principales -->
+                                        <ul> 
+
+                                                <!-- elementos de seleccion de planta -->
+
+                                                <li><b>Aulas</b></li>
+                                                    <ul style="list-style-type: none;">
+                                                        <li><input type="checkbox" id="aula0.1" name="aulas" value="aula0.1">&nbsp;Aula 0.1</li>
+                                                        <li><input type="checkbox" id="aula0.3" name="aulas" value="aula0.3">&nbsp;Aula 0.3</li>
+                                                        <li><input type="checkbox" id="aula0.5" name="aulas" value="aula0.5">&nbsp;Aula 0.5</li>
+                                                        <li><input type="checkbox" id="aula0.7" name="aulas" value="aula0.7">&nbsp;Aula 0.7</li>
+                                                        <li><input type="checkbox" id="aula2.11" name="aulas" value="aula2.11">&nbsp;Aula 2.11</li>
+                                                        <li><input type="checkbox" id="aula2.13" name="aulas" value="aula2.13">&nbsp;Aula 2.13</li>
+                                                    </ul>
+                                                </li>
+
+                                                <li><b>Carritos</b></li>
+                                                  <ul style="list-style-type: none;">
+                                                      <li><input type="checkbox" id="carritoHpPlantaCero" name="carritos" value="carritoHpPlantaCero">&nbsp;Carrito HP - Planta cero</li>
+													  <li><input type="checkbox" id="carritoHpPlantaUno" name="carritos" value="carritoHpPlantaUno">&nbsp;Carrito HP - Planta uno</li>
+													  <li><input type="checkbox" id="carritoHpPlantaDos" name="carritos" value="carritoHpPlantaDos">&nbsp;Carrito HP - Planta dos</li>
+													  <li><input type="checkbox" id="carritoLenovoPlantaUno" name="carritos" value="carritoLenovoPlantaUno">&nbsp;Carrito Lenovo - Planta uno</li>
+													  <li><input type="checkbox" id="carritoLenovoPlantaDos" name="carritos" value="carritoLenovoPlantaDos">&nbsp;Carrito Lenovo - Planta dos</li>
+                                                  </ul>
+                                                </li>
+
+                                                <li><b>Tipo de usuario</b></li>
+                                                    <ul style="list-style-type: none;">
+                                                        <li><input type="checkbox" id="Professor" name="Professor" value="Professor">&nbsp;Profesor</li>
+                                                        <li><input type="checkbox" id="Student" name="Student" value="Student">&nbsp;Estudiante</li>
+                                                    </ul>
+                                                </li>
+                                            </ul> <!-- cierra el cuerpo de lista principal -->
+
+
+                                            <div style="margin-top: 5%;"> <!-- buscador de ordenadores segun numero de serie...-->
+                                              <label for=""><b>Búsqueda por identificador:</b></label>
+                                              <input type="text" id="searchById" style="width:100%; margin-bottom: 10px;">
+                                            </div> <!-- cierre buscador de ordenadores segun numero de serie...-->
+
+
+                                            <input type="submit" value="Aplicar filtro"> <!--boton para aplicar los filtros-->
+
+                                            <input type="reset" value="Limpiar filtro"> <!--boton para limpiar el filtro-->
+                                            
+                                            <!--Estilos para la lista con los checkboxes-->
+
+                                            <style> 
+                                              .multiselect {
+                                                  width: 200px;
+                                                  position:relative;
+                                              }
+                                           
+                                              .selectBox {
+                                                  position: relative;
+                                              }
+                                           
+                                              .selectBox select {
+                                                  width: 100%;
+                                              }
+                                           
+                                              .overSelect {
+                                                  position: absolute;
+                                                  left: 0;
+                                                  right: 0;
+                                                  top: 0;
+                                                  bottom: 0;
+                                              }
+                                           
+                                              #checkboxes {
+                                                  display: block;
+                                                  border: 1px #dadada solid;
+                                                  position:absolute;
+                                                  width:100%;
+                                                  background-color:white;
+                                                  box-sizing: border-box;
+                                                  overflow-y:auto;
+                                                  max-height:110px;
+                                                  z-index: 1;
+                                              }
+                                              #checkboxes.hide {display:none;}
+                                           
+                                              #checkboxes label {
+                                                  display: block;
+                                              }
+                                           
+                                              #checkboxes label:hover {
+                                                  background-color: #1e90ff;
+                                              }
+                                              </style>
+
+                                              <!--Fin de los estilos para la lista con los checkboxes-->
+
+                                            <div class="multiselect" style="margin-top: 5%;">
+                                              <div class="selectBox" onclick="showCheckboxes()">
+                                                  <select>
+                                                      <option>Seleccionar todos</option>
+                                                  </select>
+                                                  <div class="overSelect"></div>
+                                              </div>
+                                              <div id="checkboxes" class="hide" >
+                                                  <label for="c1"><input type="checkbox" id="c1" />&nbsp;Seleccionar todos</label>
+                                                  <label for="c2"><input type="checkbox" id="c2" />&nbsp;Pc 0.5.2</label>
+                                                  <label for="c3"><input type="checkbox" id="c3" />&nbsp;Pc 0.5.3</label>
+                                                  <label for="c4"><input type="checkbox" id="c4" />&nbsp;Pc 0.5.4</label>
+                                                  <label for="c5"><input type="checkbox" id="c5" />&nbsp;Pc 1.2.3</label>
+                                              </div>
+                                          </div>
+                                      </form>
+                                      
+
+                                      <!--Script para hacer que el select contenga checkboxes-->
+                                      <script> 
+                                      function showCheckboxes() {
+                                          var checkboxes = document.getElementById("checkboxes");
+                                          if(checkboxes.classList.contains("hide")) {
+                                              checkboxes.classList.remove("hide");
+                                          } else {
+                                              checkboxes.classList.add("hide");
+                                          }
+                                      }
+                                      </script>
+
+                                       <!--Fin del script para hacer que el select contenga checkboxes-->
+
+
+                                        </form>
+
+                                    </div> <!-- cierra el cuerpo del objeto del acordeon.-->
+                                  </div>
+                                </div>
+                                
+                              </div>
+                        
+                        
+                        
+                        </div><!-- cierra la seccion de filtro.-->
+
+                    <!-- seccion de parametros y opciones de accion -->
+                    <div id="acciones" style="background-color: rgb(255, 255, 255); width: 100%;" class="pb-3"> 
+                        
+                        <!-- parametros accion apagar -->
+                        <div id="acciones-apagar-fil"> 
+
+                              <h2 class="accordion-header mt-3">
+                                  <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                    <strong>Apagado de ordenadores</strong>
+                                  </button>
+                              </h2>
+
+
+                              <!-- Botones radio de apagar-bloquear-reiniciar -->
+                              <div class="container pt-2" id="shutdown">  
+                                <center>                              
+                                  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                    <form>
+
+                                      <input type="radio" class="btn-check" name="btnradioapagado" id="log-off-button" autocomplete="off">
+                                      <label class="btn btn-outline-warning" for="log-off-button">Bloquear</label>
+                                    
+                                      <input type="radio" class="btn-check" name="btnradioapagado" id="shut-down-button" autocomplete="off">
+                                      <label class="btn btn-outline-danger" for="shut-down-button">Apagar</label>
+                                    
+                                      <input type="radio" class="btn-check" name="btnradioapagado" id="reboot-button" autocomplete="off">
+                                      <label class="btn btn-outline-info" for="reboot-button">Reiniciar</label>
+                                      <input type="submit" value="Realizar acción" class="mt-2">
+
+                                    </form>
+                                  </div>
+                                </center>
+                              </div>
+                              <!-- Ceirra botones radio de apagar-bloquear-reiniciar -->
+                                
+                            </div>
+
+                        <!-- parametros accion navegador -->
+                        <div id="acciones-navegador-fil" style="display: none;"> 
+
+                            <h2 class="accordion-header mt-3">
+                                <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                  <strong>Apertura de enlace web</strong>
+                                </button>
+                            </h2>
+
+                                <!-- opciones de enlace remoto.-->
+                                <div class="container pt-3" id="shutdown" >
+                                    <form method="post" action=""> 
+                                        <input type="text" style="width:100%; margin-bottom: 10px;">
+                                        <input type="submit" value="Enviar">&ensp;<input type="reset" class="mt-2">
+                                    </form>
+
+                                </div>
+                                <!-- cierre opciones de enlace remoto-->
+                                
+                                
+                            </div>
+                            <!-- cierre opciones de enlace remoto-->
+                            
+                            
+                        </div>
+
+                        <div id="acciones-script-fil" style="display: none;"> <!-- parametros accion orden remota -->
+
+                          <h2 class="accordion-header mt-3">
+                              <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                <strong>Ejecución de comando</strong>
+                              </button>
+                          </h2>
+
+                              <div> <!-- opciones de la acción.-->
+                                <form method="post" action="dirección-donde-enviar-los-archivos">
+                                <label for="">Comando:</label>
+                                <textarea id="send-command" name="send-command" style="width: 100%; min-height: 100px;"></textarea>
+                                <input type="submit" value="Enviar">&ensp;<input type="reset" class="mt-2">
+                                </form>
+                              </div> <!-- cierre opciones accion-->
+
+                        </div>
+
+                        <!-- parametros accion desistalar -->
+                        <div id="acciones-desistalar-fil" style="display: none;"> 
+
+                              <h2 class="accordion-header mt-3">
+                                  <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                    <strong>Desinstalar aplicación</strong> 
+                                  </button>
+                              </h2>
+
+                              <div class="pt-2">
+                                <form method="post" action="dirección-donde-enviar-los-archivos">
+                                  <input type="text" placeholder="Nombre de la aplicación" style="width: 100%;">
+                                  <input type="submit" value="Desinstalar" class="mt-2">&ensp;
+                                  <input type="reset" class="mt-2">
+                                </form>
+                              </div>        
+                            </div>
+                            <!-- cierre parametros accion desistalar -->
+
+                        <div id="acciones-instalar-aplicacion-fil" style="display: none;"> <!-- parametros accion nombreaccion -->
+
+                          <h2 class="accordion-header mt-3">
+                              <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                <strong>Instalar aplicación</strong>
+                              </button>
+                          </h2>
+
+                              <div class="pt-3"> <!-- opciones de la acción.-->
+                                <form method="post" action="donde-enviar-los-archivos" enctype="multipart/form-data">
+                                  <input type="file">
+                                  <input type="submit" class="mt-2" value="Instalar">&ensp;
+                                  <input type="reset" class="mt-2">
+                                </form>
+                              </div> <!-- cierre opciones accion-->
+                              
+                            </div>
+
+                        <div id="acciones-id-junta-fil"style="display: none;"> <!-- parametros accion nombreaccion -->
+
+                              <h2 class="accordion-header mt-3">
+                                  <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                    <strong>Actuaización de ID Junta de Andaluc&íacute;a</strong>
+                                  </button>
+                              </h2>
+
+                          <div> <!-- opciones de id junta.-->
+                            <div class="pt-2">
+                              <form method="post" action="dirección-donde-enviar-los-archivos">
+                                <input type="text" placeholder="ID Junta andalucia" style="width: 100%;">
+                                <input type="submit" value="Actualizar" class="mt-2">&ensp;<input type="reset" class="mt-2">
+                              </form>
+                            </div>   
+                          </div> <!-- cierre opciones id junta-->
+                          
+                        </div>
+                          
+                           <!-- PANEL MOSTRAR FOTOGRAMA.-->
+                           <div id="acciones-screenshot-fil" style="display: none;"> 
+                            <!-- parametros accion mostrar fotograma -->
+
+                                <h2 class="accordion-header mt-3">
+                                    <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                      <strong>Visualización de pantalla</strong>
+                                    </button>
+                                </h2>
+  
+                                <!-- opciones de mostrar fotograma.-->
+                                <div style="padding-top: 3%;"> 
+                                      <center>                              
+                                      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                        <form>
+                                          <input type="radio" class="btn-check" name="btnradioblock" id="btnradio-screenshoton" autocomplete="off">
+                                          <label class="btn btn-outline-success" for="btnradio-screenshoton">Activar</label>
+                                        
+                                          <input type="radio" class="btn-check" name="btnradioblock" id="btnradio-screenshotoff" autocomplete="off">
+                                          <label class="btn btn-outline-danger" for="btnradio-screenshotoff">Desactivar</label>
+                                        </form>
+                                      </div>
+                                      </center>
+                                       
+                                  </div>
+                                </div> 
+                                <!-- cierre opciones mostrar fotograma-->
+                              <!-- CIERRE PANEL FOTOGRAMA.-->
+
+                          <!-- PANEL BLOQUEAR O DESBLOQUEAR PUERTOS ENTRADA-SALIDA.-->
+                          <div id="acciones-bloqueopuertos-fil" style="display: none;"> 
+                            <!-- parametros accion bloquear o desbloquear puertos entrada-salida -->
+
+                                <h2 class="accordion-header mt-3">
+                                    <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                      <strong>Bloqueo I/O</strong>
+                                    </button>
+                                </h2>
+
+                                <!-- opciones de bloquear o desbloquear puertos entrada-salida.-->
+                                <div style="padding-top: 3%;"> 
+                                      <center>                              
+                                      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                        <form>
+                                          <input type="radio" class="btn-check" name="btnradioblock" id="btnradio-block" autocomplete="off">
+                                          <label class="btn btn-outline-success" for="btnradio-block">Desbloquear</label>
+
+                                          <input type="radio" class="btn-check" name="btnradioblock" id="btnradio-unblock" autocomplete="off">
+                                          <label class="btn btn-outline-danger" for="btnradio-unblock">Bloquear</label>
+                                        
+                                          
+                                        </form>
+                                      </div>
+                                      </center> 
+                                  </div>
+                                </div> 
+                                <!-- cierre opciones bloquear o desbloquear puertos entrada-salida-->
+                              <!-- CIERRE BLOQUEAR O DESBLOQUEAR PUERTOS ENTRADA-SALIDA.-->
+
+                        <!-- EJEMPLO PANEL OPCIONES.-->
+                        <div id="acciones-networking-fil" style="display: none;"> <!-- parametros accion nombreaccion -->
+
+                              <h2 class="accordion-header mt-3">
+                                  <button id="Actions" style="height: 40px; background-color: rgb(193, 212, 240); border-radius: 5px; padding-left: 22px;" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-controls="panelsStayOpen-collapseOne">
+                                    <strong>Configuración de red</strong>
+                                  </button>
+                              </h2>
+
+                                <!-- Botón que abre el modal de configuración de tarjeta de red -->
+                                <center>
+                                <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                  Interfaz de configuración de red
+                                </button>
+                                </center>
+
+                                <!-- Modal -->
+                                <!-- data-bs-backdrop="false" añadido para esconder el backdrop oscuro que impide interaccion -->
+                                <div class="modal fade" data-bs-backdrop="false" id="exampleModal" tabindex="-1" aria-labelledby="networkConfigModal" aria-hidden="true">
+                                  <div class="modal-dialog">
+
+                                    <!-- Contenido del modal -->
+                                    <div class="modal-content">
+
+                                      <!-- Cabecero del modal -->
+                                      <!-- utilidad a titulo informativo -->
+                                      <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="networkConfigModal">Configuración de red</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+
+                                      <!-- cuerpo del modal ( Rellenar con trabajo de NERE )-->
+                                      <!-- aqui van los botones de configuración, los valores a configurar en la tarjeta. -->
+                                      <div class="modal-body">
+                                            <div class="mb-3">
+                                              <label for="exampleFormControlInput1" class="form-label">Nombre de red</label>
+                                              <input type="nombre de red" class="form-control">
+                                            </div>
+
+                                            <!-- cuerpo de tarjeta de configuracion - Trabajo de NERE. -->
+
+                                            <div class="fw-bold">Tipo de seguridad</div>
+                                            <select class="form-select" aria-label="Default select example">
+                                              <option selected>Abierta</option>
+                                              <option value="1">WEP</option>
+                                              <option value="2">AES WPA2-Personal</option>
+                                              <option value="3">AES WPA2-Enterprise</option>
+                                              <option value="4">ERP 802.11x</option>
+                                            </select>
+
+                                            <div class="fw-bold">Método EAP</div>
+                                            <select class="form-select" aria-label="Default select example">
+                                              <label for="exampleFormControlInput1" class="form-label">Método EAP</label>
+                                              <option selected>Tarjeta inteligente u otro certificado</option>
+                                              <option value="1">EAP protegido (PEAP)</option>
+                                              <option value="2">EAP-SIM</option>
+                                              <option value="3">EAP-TTLS</option>
+                                              <option value="4">EAP-AKA</option>
+                                              <option value="5">EAP-AKA'</option>
+                                            </select>
+
+                                            <div class="fw-bold">Método de autenticación</div>
+                                            <select class="form-select" aria-label="Default select example">
+                                              <label for="exampleFormControlInput1" class="form-label">Método de autenticación</label>
+                                              <option selected>Contraseña no cifrada (PAP)</option>
+                                              <option value="1">Protocolo de autenticación por desafío mutuo (CHAP)</option>
+                                              <option value="2">Microsoft CHAP (MS-CHAP)</option>
+                                              <option value="3">Microsoft CHAP Versión 2 (MS-CHAP v2)</option>
+                                              <option value="4">Tarjeta inteligente u otro certificado</option>
+                                              <option value="5">Contraseña segura (EAP-MSCHAP v2)</option>
+                                            </select>
+
+                                             <!-- fin cuerpo de tarjeta de configuracion-->
+                                      </div>
+
+                                      <!-- footer del modal-->
+                                      <!-- aqui introducir botones de aplicar y cerrar-->
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              <div> <!-- opciones de la acción -->
+
+                              </div> <!-- cierre opciones accion -->
+                              
+                            </div><!-- parametros accion nombreaccion -->
+                            <!-- CIERRE EJEMPLO PANEL OPCIONES -->
+
+                        </div> <!--Cierra la seccion de parametros y opciones de accion -->
+
+                    </div> <!-- cierra el body del offcanvas -->
+
+            </div> <!-- cierra el elemento principal del panel off-canvas -->
+
+            </div> <!-- closes main fluid container -->
+            <section>
+              <!--Comienzo de planta 1-->
+              <div id="planta">
+                  <!--Comienzo de aula 1-->
+                  <div id="aula">
+                      <div id="titulo-aula">
+                          Class 0.5
+                      </div>
+                      <!--Comienzo de div donde se agruparan todos los pc del aula 1-->
+                      <div id="aula-pc">
+                          <!--Comienzo de pc-->
+                          <!--Aqui pondremos pc seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                          <div id="pc-activo">
+                              <!--Comienzo de la parte superior del pc donde se encuentra su nombre e imagen de pantalla-->
+                              <div id="pc-arriba">
+                                  <!--Nombre del pc-->
+                                  <div id="pc-arriba-izquierda">
+                                      <div id="nombre-pc">
+                                          <b>PC1</b>
+                                      </div>
+                                  </div>
+                                  <!--Estado del pc-->
+                                  <div id="pc-arriba-derecha">
+                                      <!--En el svg en el campo fill se puede poner el color que queremos, si el pc esta activo sería verde, si el pc esta apagado sería rojo y si el pc tiene algun error sería naranja-->
+                                      <div id="pc-estado">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" fill="green" class="bi bi-dot" viewBox="0 0 16 16">
+                                              <path d="M8 9.5a1.5 1.5 0 1 0 0-6 2 2 0 0 0 0 6"/>
+                                            </svg>
+                                      </div>
+                                  </div>
+                              </div>
+                              <!--Informacion general acerca del dispositivo-->
+                              <div id="pc-medio">
+                                  <div id="pc-medio-contenido">
+                                      <p class="margen"><b>Malware count:</b> <!--Aqui deberia estar insertada la variable de malware-->0<!--Aqui deberia estar insertada la variable de malware--></p>
+                                      <p class="margen"><b>Location:</b> <!--Aqui deberia estar insertada la variable del aula-->Class 0.5<!--Aqui deberia estar insertada la variable del aula--></p>
+                                      <p class="margen"><b>Identificator:</b> <!--Aqui deberia estar insertada la variable del identificador-->2342<!--Aqui deberia estar insertada la variable del identificador--></p> 
+                                  </div>
+                                  <div id="pc-medio-imagen">
+                                      <img src="img/Prueba.PNG" id="imagenAmpliada" onclick="ampliarImagen()">
+                                  </div>
+                              </div>
+                              <!--Botones usables de la aplicacion-->
+                              <!--Aqui pondremos pc-abajo seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                              <div id="pc-abajo-activo">
+                                  <div id="pc-boton-encender">
+                                      <!--Aqui pondremos boton-encender seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                                      <button type="button" id="boton-encender-activo">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" class="bi bi-power" viewBox="0 0 16 16">
+                                              <path d="M7.5 1v7h1V1z"/>
+                                              <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+                                            </svg>
+                                      </button>
+                                  </div>
+                                  <div id="pc-boton-reiniciar">
+                                      <!--Aqui pondremos boton-reiniciar seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                                      <button type="button" id="boton-reiniciar-activo">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                        </svg>
+                                      </button>
+                                  </div>
+                                  <div id="pc-boton-bloquear">
+                                      <!--Aqui pondremos boton-bloquear seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                                      <button type="button" id="boton-bloquear-activo">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                                          </svg>
+                                      </button>
+                                  </div>
+                              </div>
+                      </div>
+                      <!--Cierre de pc-->
+                      <!--Comienzo de pc-->
+                      <!--Aqui pondremos pc seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                      <div id="pc-apagado">
+                          <!--Comienzo de la parte superior del pc donde se encuentra su nombre e imagen de pantalla-->
+                          <div id="pc-arriba">
+                              <!--Nombre del pc-->
+                              <div id="pc-arriba-izquierda">
+                                  <div id="nombre-pc">
+                                      <b>PC2</b>
+                                  </div>
+                              </div>
+                              <!--Estado del pc-->
+                              <div id="pc-arriba-derecha">
+                                  <div id="pc-estado">
+                                      <!--En el svg en el campo fill se puede poner el color que queremos, si el pc esta activo sería verde, si el pc esta apagado sería rojo y si el pc tiene algun error sería naranja-->
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" fill="red" class="bi bi-dot" viewBox="0 0 16 16">
+                                          <path d="M8 9.5a1.5 1.5 0 1 0 0-6 2 2 0 0 0 0 6"/>
+                                        </svg>
+                                  </div>
+                              </div>
+                          </div>
+                          <!--Informacion general acerca del dispositivo-->
+                          <div id="pc-medio">
+                              <div id="pc-medio-contenido">
+                                  <p class="margen"><b>Malware count:</b> <!--Aqui deberia estar insertada la variable de malware-->0<!--Aqui deberia estar insertada la variable de malware--></p>
+                                  <p class="margen"><b>Location:</b> <!--Aqui deberia estar insertada la variable del aula-->Class 0.5<!--Aqui deberia estar insertada la variable del aula--></p>
+                                  <p class="margen"><b>Identificator:</b> <!--Aqui deberia estar insertada la variable del identificador-->2242<!--Aqui deberia estar insertada la variable del identificador--></p> 
+                              </div>
+                              <div id="pc-medio-imagen">
+                                  <img src="img/Prueba1.PNG" id="imagenAmpliada1" onclick="ampliarImagen2()">
+                              </div>
+                          </div>
+                          <!--Botones usables de la aplicacion-->
+                          <!--Aqui pondremos pc-abajo seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                          <div id="pc-abajo-apagado">
+                              <div id="pc-boton-encender">
+                                  <!--Aqui pondremos boton-encender seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                                  <button type="button" id="boton-encender-apagado">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" class="bi bi-power" viewBox="0 0 16 16">
+                                          <path d="M7.5 1v7h1V1z"/>
+                                          <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+                                        </svg>
+                                  </button>
+                              </div>
+                              <div id="pc-boton-reiniciar">
+                                  <!--Aqui pondremos boton-reiniciar seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                                  <button type="button" id="boton-reiniciar-apagado">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                      <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                      <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                    </svg>
+                                  </button>
+                              </div>
+                              <!--Aqui pondremos boton-bloquear seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                              <div id="pc-boton-bloquear">
+                                  <button type="button" id="boton-bloquear-apagado">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                          <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                                      </svg>
+                                  </button>
+                              </div>
+                          </div>
+                  </div>
+                  <!--Cierre de pc-->
+                  <!--Comienzo de pc-->
+                  <!--Aqui pondremos pc seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                  <div id="pc-error">
+                      <!--Comienzo de la parte superior del pc donde se encuentra su nombre e imagen de pantalla-->
+                      <div id="pc-arriba">
+                          <!--Nombre del pc-->
+                          <div id="pc-arriba-izquierda">
+                              <div id="nombre-pc">
+                                  <b>PC3</b>
+                              </div>
+                          </div>
+                          <!--Estado del pc-->
+                          <div id="pc-arriba-derecha">
+                              <div id="pc-estado">
+                                  <!--En el svg en el campo fill se puede poner el color que queremos, si el pc esta activo sería verde, si el pc esta apagado sería rojo y si el pc tiene algun error sería naranja-->
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" fill="orange" class="bi bi-dot" viewBox="0 0 16 16">
+                                      <path d="M8 9.5a1.5 1.5 0 1 0 0-6 2 2 0 0 0 0 6"/>
+                                    </svg>
+                              </div>
+                          </div>
+                      </div>
+                      <!--Informacion general acerca del dispositivo-->
+                      <div id="pc-medio">
+                          <div id="pc-medio-contenido">
+                              <!--Si el equipo tiene un malware deberá mostrarse el texto en rojo, con el id #peligro -->
+                              <p class="margen" ><span id="peligro"><b>Malware count: </b></span><!--Aqui deberia estar insertada la variable de malware-->5<!--Aqui deberia estar insertada la variable de malware--></p>
+                              <p class="margen"><b>Location:</b> <!--Aqui deberia estar insertada la variable del aula-->Class 0.5<!--Aqui deberia estar insertada la variable del aula--></p>
+                              <p class="margen"><b>Identificator:</b> <!--Aqui deberia estar insertada la variable del identificador-->1342<!--Aqui deberia estar insertada la variable del identificador--></p> 
+                          </div>
+                          <div id="pc-medio-imagen">
+                                  <img src="img/Prueba2.PNG" id="imagenAmpliada2" onclick="ampliarImagen3()">
+                          </div>
+                      </div>
+                      <!--Botones usables de la aplicacion-->
+                      <!--Aqui pondremos pc-abajo seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                      <div id="pc-abajo-error">
+                          <div id="pc-boton-encender">
+                              <!--Aqui pondremos boton-encender seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                              <button type="button" id="boton-encender-error">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" class="bi bi-power" viewBox="0 0 16 16">
+                                      <path d="M7.5 1v7h1V1z"/>
+                                      <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+                                    </svg>
+                              </button>
+                          </div>
+                          <div id="pc-boton-reiniciar">
+                              <!--Aqui pondremos boton-reiniciar seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                              <button type="button" id="boton-reiniciar-error">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                  <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                </svg>
+                              </button>
+                          </div>
+                          <div id="pc-boton-bloquear">
+                              <!--Aqui pondremos boton-bloquear seguido del estado del pc, si esta activo: -activo, si esta apagado: -apagado, si tiene algun error: -error-->
+                              <button type="button" id="boton-bloquear-error">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                      <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                                  </svg>
+                              </button>
+                          </div>
+                      </div>
+              </div>
+              <!--Cierre de pc 3-->
+                  </div>
+                      <!--Cierre de div donde se agruparan todos los pc del aula 1-->
+                  </div>
+              <!--Cierre de aula 1-->
+              </div>
+              <!--Cierre de planta 1-->
+          </section>
+        </main>
+      <!--Script que amplia la imagen-->
+      <script src="js/ampliar.js"></script>
+    </body>
+</html>
