@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rOGYmcyVnylX5IicWPbVWFjKtRGSDkeyx5XPy1gfrg4hWXFPq3Hqv71u4QrvjddGMh2+egoAva9Dp9CKFcnnFA==",
+  "dgSpecHash": "UD75+UnSL4+12KLKb0ucczLQ6MAvDYr9BKMPJN85h4DO1H0ixX6ckL/x0jQVNMdF0tRe7MQMJpqCYlQFaUs47Q==",
   "success": true,
-  "projectFilePath": "/Users/router/Reaktor/MonitoringBeep/beep_app.csproj",
+  "projectFilePath": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\MonitoringBeep.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

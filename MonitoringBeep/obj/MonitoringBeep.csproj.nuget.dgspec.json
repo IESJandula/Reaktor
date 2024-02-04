@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\beep_app.csproj": {}
+    "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\MonitoringBeep.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\beep_app.csproj": {
+    "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\MonitoringBeep.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\beep_app.csproj",
-        "projectName": "beep_app",
-        "projectPath": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\beep_app.csproj",
+        "projectUniqueName": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\MonitoringBeep.csproj",
+        "projectName": "MonitoringBeep",
+        "projectPath": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\MonitoringBeep.csproj",
         "packagesPath": "C:\\Users\\USUARIO\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\obj\\",
         "projectStyle": "PackageReference",
