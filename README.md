@@ -187,23 +187,6 @@ java .\Reaktor\MonitoringClient\src\main\java\es\monitoringserver\monitoringclie
 
 Todos los parametros son obligatorios si falta alguno el cliente no arranca
 
-## Funcionalidades
-
-Una vez que hayamos arrancado el servidor y el cliente podemos hacer llamadas al servidor para gestionar los ordenadores guardados en la base de datos, estas funcionalidades son:
-
-<ul>
-    <li>Envio de comandos windows o linux a ejecutar</li>
-    <li>Reinicio de un ordenador</li>
-    <li>Apagado de un ordenador</li>
-    <li>Instalación de una app</li>
-    <li>Desinstalación de una app</li>
-    <li>Bloqueo de puertos USB</li>
-    <li>Realizar una captura de pantalla</li>
-    <li>Mandar un .zip con capturas de pantalla</li>
-    <li>Editar un ordenador existente</li>
-</ul>
-
-Para realizar estas opciones el usuario debe de ser <b>administrador</b> en caso de que no lo sea solo será un ordenador afectado
 ## Créditos
 El proyecto REAKTOR fue desarrollado por Alejandro Aljarilla Castro y Neil Hernández Salvador bajo la supervisión del profesor D.Francisco Benítez Chico.
 
