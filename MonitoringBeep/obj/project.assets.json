@@ -8,24 +8,26 @@
     "net7.0": []
   },
   "packageFolders": {
-    "/Users/router/.nuget/packages/": {}
+    "C:\\Users\\USUARIO\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/router/Reaktor/MonitoringBeep/beep_app.csproj",
-      "projectName": "beep_app",
-      "projectPath": "/Users/router/Reaktor/MonitoringBeep/beep_app.csproj",
-      "packagesPath": "/Users/router/.nuget/packages/",
-      "outputPath": "/Users/router/Reaktor/MonitoringBeep/obj/",
+      "projectUniqueName": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\MonitoringBeep.csproj",
+      "projectName": "MonitoringBeep",
+      "projectPath": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\MonitoringBeep.csproj",
+      "packagesPath": "C:\\Users\\USUARIO\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\USUARIO\\git\\Reaktor\\MonitoringBeep\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/router/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\USUARIO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -59,7 +61,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.302/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

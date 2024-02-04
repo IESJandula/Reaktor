@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("beep_app")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("MonitoringBeep")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("beep_app")]
-[assembly: System.Reflection.AssemblyTitleAttribute("beep_app")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bbfbcd52a078c23b09813a24a96bc8cd04886ef6")]
+[assembly: System.Reflection.AssemblyProductAttribute("MonitoringBeep")]
+[assembly: System.Reflection.AssemblyTitleAttribute("MonitoringBeep")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Generado por la clase WriteCodeFragment de MSBuild.
