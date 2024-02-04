@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.iesjandula.reaktor</groupId>
-	<artifactId>Timetable</artifactId>
+	<artifactId>TimetableServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Timetable</name>
 	<description>Project Timetable</description>
