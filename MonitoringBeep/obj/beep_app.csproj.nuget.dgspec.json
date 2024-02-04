@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/router/Reaktor/beep_app/beep_app.csproj": {}
+    "/Users/router/Reaktor/MonitoringBeep/beep_app.csproj": {}
   },
   "projects": {
-    "/Users/router/Reaktor/beep_app/beep_app.csproj": {
+    "/Users/router/Reaktor/MonitoringBeep/beep_app.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/router/Reaktor/beep_app/beep_app.csproj",
+        "projectUniqueName": "/Users/router/Reaktor/MonitoringBeep/beep_app.csproj",
         "projectName": "beep_app",
-        "projectPath": "/Users/router/Reaktor/beep_app/beep_app.csproj",
+        "projectPath": "/Users/router/Reaktor/MonitoringBeep/beep_app.csproj",
         "packagesPath": "/Users/router/.nuget/packages/",
-        "outputPath": "/Users/router/Reaktor/beep_app/obj/",
+        "outputPath": "/Users/router/Reaktor/MonitoringBeep/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/router/.nuget/NuGet/NuGet.Config"
