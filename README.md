@@ -13,6 +13,7 @@ El proyecto REAKTOR se desarrolla en colaboración con los responsables del proy
 
 - [Instalación](#instalación)
 - [Uso](#uso)
+- [Funcionalidades](#funcionalidades)
 - [Créditos](#créditos)
 
 
@@ -144,9 +145,70 @@ docker run -d -p 80:80 --network=host --name reaktor-nginx reaktor-nginx
 ```
 ## Uso
 
+Para usar reaktor adecuadamente tenemos que ejecutar 2 fichero de extensión .java con una configuración determinada, estos ficheros son 
+MonitoringServerApplication.java y MonitoringClientApplication.java
+
+1. MonitoringServerApplication.java <br>
+
+Se ubica en ( dentro del proyecto )
+```
+.\Reaktor\MonitoringServer\src\main\java\es\monitoringserver\monitoringserver
+```
+Al ejecutarlo tenemos que tener la base de datos <b>reaktor</b> creada en MySql además de que el usuario y password de nuestra conexión sql sea igual al fichero application.yaml ubicado en
+```
+.\Reaktor\MonitoringServer\src\main\resources
+```
+Al principio nos dará una excepción debido a que las tablas no existen y la aplicación las tiene que crear, nos tenemos que dar cuenta de que el servidor sigue arrancado
+
+2. MonitoringClientApplication.java <br>
+
+Se ubica en ( dentro del proyecto )
+```
+.\Reaktor\MonitoringClient\src\main\java\es\monitoringserver\monitoringclient
+```
+Y al ejecutarlo tenemos que usar los siguientes argumentos:
+<ul>
+    <li>-admin "true" | "false"</li>
+    <li>-classroom "valor"</li>
+    <li>-t "valor"</li>
+    <li>-andalucia "valor"</li>
+    <li>-cn "valor"</li>
+    <li>-p "valor"</li>
+    <li>-sn "valor"</li>
+</ul>
+
+Los parametros valor se reemplaza por el valor real del ordenador a subir a a web y deben de ir entre comillas
+
+Ejecución de prueba:
+
+
+java .\Reaktor\MonitoringClient\src\main\java\es\monitoringserver\monitoringclient\MonitoringClientApplication.java -admin "true" -classroom "2 DAM" -t "Carrito test" -andalucia "AND-55DVX" -cn "5D" -p "Profesor" -sn "123456-DFG"
+
+
+Todos los parametros son obligatorios si falta alguno el cliente no arranca
+
+## Funcionalidades
+
+Una vez que hayamos arrancado el servidor y el cliente podemos hacer llamadas al servidor para gestionar los ordenadores guardados en la base de datos, estas funcionalidades son:
+
+<ul>
+    <li>Envio de comandos windows o linux a ejecutar</li>
+    <li>Reinicio de un ordenador</li>
+    <li>Apagado de un ordenador</li>
+    <li>Instalación de una app</li>
+    <li>Desinstalación de una app</li>
+    <li>Bloqueo de puertos USB</li>
+    <li>Realizar una captura de pantalla</li>
+    <li>Mandar un .zip con capturas de pantalla</li>
+    <li>Editar un ordenador existente</li>
+</ul>
+
+Para realizar estas opciones el usuario debe de ser <b>administrador</b> en caso de que no lo sea solo será un ordenador afectado
 ## Créditos
 El proyecto REAKTOR fue desarrollado por Alejandro Aljarilla Castro y Neil Hernández Salvador bajo la supervisión del profesor D.Francisco Benítez Chico.
 
 - [Alejandro Aljarilla Castro](https://github.com/Aljarilla11)
 - [Francisco Benítez Chico](https://www.linkedin.com/in/franciscobenitezchico/)
 - [Neil Hernández Salvador](https://www.linkedin.com/in/neilhdez/)
+
+Desarrollo de funcionalidades y servidor continuado por los alumnos de 1DAM y 2DAM bajo la supervisión del profesor D.Francisco Benítez Chico 
