@@ -6,7 +6,7 @@
 		<version>3.0.4</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>es.monitoringserver</groupId>
+	<groupId>es.iesjandula.reaktor</groupId>
 	<artifactId>MonitoringWeb</artifactId>
 	<version>1.0.0</version>
 	<description>Reaktor</description>
@@ -27,7 +27,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>es.monitoringserver.monitoringweb.MonitoringWebApplication</mainClass>
+							<mainClass>es.iesjandula.reaktor.monitoringweb.MonitoringWebApplication</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

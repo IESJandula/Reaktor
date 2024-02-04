@@ -9,7 +9,7 @@
         <version>3.0.4</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
-    <groupId>es.monitoringserver</groupId>
+    <groupId>es.iesjandula.reaktor</groupId>
     <artifactId>MonitoringClient</artifactId>
     <version>1.0.0</version>
     <name>MonitoringClient</name>
@@ -63,7 +63,7 @@
 
 
         <dependency>
-        	<groupId>es.monitoringserver</groupId>
+        	<groupId>es.iesjandula.reaktor</groupId>
         	<artifactId>Models</artifactId>
         	<version>1.0-SNAPSHOT</version>
         </dependency>
@@ -79,7 +79,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                es.monitoringserver.monitoringclient.MonitoringClientApplication</mainClass>
+                                es.iesjandula.reaktor.monitoring_client.MonitoringClientApplication</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
