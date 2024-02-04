@@ -9,7 +9,6 @@
 	<version>1.0.0</version>
 	
 	<modules>
-		
 		<!-- Models -->
 		<module>../Models</module>
 		
@@ -20,10 +19,9 @@
 		<module>../MonitoringClient</module>
 		
 		<!-- MonitoringServer Timetable -->
-        <module>../Timetable</module>
+        <module>../TimetableServer</module>
         
         <!-- MonitoringServer MonitoringWeb -->
         <module>../MonitoringWeb</module>
-		
 	</modules>
 </project>
