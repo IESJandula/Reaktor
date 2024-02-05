@@ -10,7 +10,7 @@ Está desarrollado en java utilizando la tecnología de springboot para conectar
 
 Para arrancar el proyecto es necesario lanzar el fichero de arranque del proyecto ubicado en ( dentro del proyecto )
 ```
-.\Reaktor\MonitoringClient\src\main\java\es\monitoringserver\monitoringclient
+.\Reaktor\MonitoringClient\src\main\java\es\iesjandula\reaktor\monitoring_client
 ```
 Y al ejecutarlo tenemos que usar los siguientes argumentos:
 <ul>
@@ -23,12 +23,25 @@ Y al ejecutarlo tenemos que usar los siguientes argumentos:
     <li>-sn "valor"</li>
 </ul>
 
-Los parametros valor se reemplaza por el valor real del ordenador a subir a a web y deben de ir entre comillas
+Para arrancarlo se debe hacer desde el IDE Eclipse ya que se necesita un jar que ejecute todo el proyecto porque 
+si ejecutamos desde cmd la clase MonitoringClientApplication.java solo ejecutará esa clase y no el resto de modulos
+dando errores de compilación por lo que dentro del IDE Eclipse buscamos el proyecto y cuando localicemos tenemos dos opciones
 
-Ejecución de prueba:
+<ol>
+    <li>Si es la primera vez que ejecutamos la clase seleccionamos run Java Application, en ese momento paramos la ejecución, en la rama de proyectos buscamos la clase, hacemos click derecho sobre ella y seleccionamos run as y buscamos run configurations, y allí tenemos que meter <b>todos</b> los parámetros</li>
+    <br>
+    <li>Si la hemos ejecutado más de una vez basta con buscar la clase en la rama de proyectos seleccionar run as buscar run configurations, comprobar que la clase está correcta e introducir los parámetros</li>
+    <br>
+</ol>
 
+<b>Arranque de configuración</b>
 
-java .\Reaktor\MonitoringClient\src\main\java\es\monitoringserver\monitoringclient\MonitoringClientApplication.java -admin "true" -classroom "2 DAM" -t "Carrito test" -andalucia "AND-55DVX" -cn "5D" -p "Profesor" -sn "123456-DFG"
+![imagen1](../readme_images/runConfigurationsImage.png)
+
+<b>Parámetros y configuración de clase</b>
+
+![imagen2](../readme_images/argumentosYClase.png)
+
 
 
 Todos los parametros son <b>obligatorios</b> si falta alguno el cliente no arranca
