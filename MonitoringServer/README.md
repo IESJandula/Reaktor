@@ -23,8 +23,25 @@ El proyecto se divide en 3 ramas además de los pasos previos para ejecutar el p
 ## Pasos previos
 
 Antes de ejecutar el proyecto debemos de tener instalado [MySQL](https://dev.mysql.com/downloads/installer/) (MSI Installer tamaño 285.3M)
-y configurar el usuario y contraseña al usuario y contraseña del fichero application.yaml, además de que tenemos que tener la base de datos
-reaktor creada y vacía para el arranque del proyecto
+y configurar el usuario y contraseña al usuario y contraseña del fichero application.yaml
+
+Cuando tengamos mysql instalado accedemos a <b>MySQL 8.0 Command Line Client </b>
+
+Cuando entremos en la linea de comandos ejecutamos esta sentencia 
+
+```
+create database reaktor;
+```
+
+Nos salimos de la línea de comandos y ya tenemos las preparaciones realizadas
+
+Loamentablemente el servidor no se puede ejecutar desde cmd porque es necesario la creación de un .jar para ello usaremos el IDE de eclipse, lo único que tenemos que hacer es importar el proyecto entero de reaktor dentro del IDE ubicar la clase que está en:
+
+```
+.\Reaktor\MonitoringServer\src\main\java\es\iesjandula\reaktor\monitoring_server
+```
+
+Y ejecutarla como java application, al principio nos arrojará una excepcion pero es porque las tablas aún no se han creado.
 
 ## Administración
 
