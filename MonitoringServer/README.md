@@ -80,11 +80,11 @@ La parte de monitorización se encarga de recibir las peticiones hechas en [Admi
     <br>
     <li>Obtener y ejecutar la petición de captura de pantalla de un ordenador usando su número de serie como identificador</li>
     <br>
-    <li>Activar la captura de pantalla periódica, pasando un numero de serie de un ordenador, ese ordenador hace captura y la manda cada cierto tiempo para tener un seguimiento real</li>
+    <li>Activar la captura de pantalla periódica, pasando un número de serie de un ordenador, ese ordenador hace captura y la manda cada cierto tiempo para tener un seguimiento real</li>
     <br>
-    <li>Mandar y actualizar periodicamente la información de un ordenador usando su numero de serie o su numero de andalucia o su numero identificador </li>
+    <li>Mandar y actualizar periodicamente la información de un ordenador usando su número de serie o su número de andalucía o su número identificador </li>
     <br>
-    <li>Mostrar el estado de las peticiones del ordenador pasandole su numero de serie para identificarlo </li>
+    <li>Mostrar el estado de las peticiones del ordenador pasandole su número de serie para identificarlo </li>
     <br>
 
 </ul>
