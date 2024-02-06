@@ -25,7 +25,7 @@ Y al ejecutarlo tenemos que usar los siguientes argumentos:
 
 Para arrancarlo se debe hacer desde el IDE Eclipse ya que se necesita un jar que ejecute todo el proyecto porque 
 si ejecutamos desde cmd la clase MonitoringClientApplication.java solo ejecutará esa clase y no el resto de modulos
-dando errores de compilación por lo que dentro del IDE Eclipse buscamos el proyecto y cuando localicemos tenemos dos opciones
+dando errores de compilación, por lo que dentro del IDE Eclipse buscamos el proyecto y cuando localicemos tenemos dos opciones
 
 <ol>
     <li>Si es la primera vez que ejecutamos la clase seleccionamos run Java Application, en ese momento paramos la ejecución, en la rama de proyectos buscamos la clase, hacemos click derecho sobre ella y seleccionamos run as y buscamos run configurations, y allí tenemos que meter <b>todos</b> los parámetros</li>
