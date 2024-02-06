@@ -4,7 +4,7 @@
 
 Monitoring client o servidor cliente es una de las partes del proyecto de reaktor que se encarga de recoger información de los ordenadores conectados y mandarlas a la base de datos para posteriormente su uso en servidor
 
-Está desarrollado en java utilizando la tecnología de springboot para conectarse a una parte del servidor de reaktor que se encarga de mandar la información del ordenador que se ha conectado a una base de datos
+Está desarrollado en Java utilizando la tecnología de springboot para conectarse a una parte del servidor de reaktor que se encarga de mandar la información del ordenador que se ha conectado a una base de datos
 
 # Arranque del proyecto
 
@@ -14,13 +14,13 @@ Para arrancar el proyecto es necesario lanzar el fichero de arranque del proyect
 ```
 Y al ejecutarlo tenemos que usar los siguientes argumentos:
 <ul>
-    <li>-admin "true" | "false"</li>
-    <li>-classroom "valor"</li>
-    <li>-t "valor"</li>
-    <li>-andalucia "valor"</li>
-    <li>-cn "valor"</li>
-    <li>-p "valor"</li>
-    <li>-sn "valor"</li>
+    <li>-admin "true" | "false" (opcional) indica si el usuario es o no administrador</li>
+    <li>-classroom "valor" (obligatorio) indica la clase en la que se encuentra el ordenador</li>
+    <li>-t "valor" (obligatorio) indica el carrito al que pertenece el ordenador</li>
+    <li>-andalucia "valor" (obligatorio) número de andalucía del ordenador</li>
+    <li>-cn "valor" (obligatorio) pegatina identificativa del ordenador</li>
+    <li>-p "valor" (obligatorio) profesor que gestiona el ordenador</li>
+    <li>-sn "valor" (obligatorio) número de serie del ordenador</li>
 </ul>
 
 Para arrancarlo se debe hacer desde el IDE Eclipse ya que se necesita un jar que ejecute todo el proyecto porque 
@@ -42,16 +42,19 @@ dando errores de compilación por lo que dentro del IDE Eclipse buscamos el proy
 
 ![imagen2](../readme_images/argumentosYClase.png)
 
+```
+-admin "true" -classroom "2-DAM" -t "Carrito test" -andalucia "AND-55DVX" -cn "5D" -p "Profesor" -sn "SerialNumber123"
+```
 
-
-Todos los parametros son <b>obligatorios</b> si falta alguno el cliente no arranca
+Todos los parámetros son <b>obligatorios</b> (excepto admin) si falta alguno el cliente no arranca
 
 ## Créditos
 
 Este proyecto es una continuación del proyecto base Reaktor realizado por:
 
 - [Alejandro Aljarilla Castro](https://github.com/Aljarilla11)
-- [Francisco Benítez Chico](https://www.linkedin.com/in/franciscobenitezchico/)
 - [Neil Hernández Salvador](https://www.linkedin.com/in/neilhdez/)
 
 Los alumnos de 2DAM se encargaron de desarrollar esta parte del proyecto supervisado por el profesor D.Francisco Benítez Chico.
+
+- [Francisco Benítez Chico](https://www.linkedin.com/in/franciscobenitezchico/)
