@@ -23,5 +23,7 @@
         
         <!-- MonitoringServer MonitoringWeb -->
         <module>../MonitoringWeb</module>
+        <!-- MonitoringServer MonitoringWeb -->
+        <module>../JPA</module>
 	</modules>
 </project>
