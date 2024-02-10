@@ -25,13 +25,13 @@ public class Task
 	private Status status;
 	
 	@ManyToOne
-	@JoinColumn(name = "serialNumber")
-	@MapsId("serialNumber")
-	private MotherBoard serialNumber;
+	@JoinColumn(name = "motherBoardId")
+	@MapsId("motherBoardId")
+	private MotherBoard motherBoard;
 	
 	@ManyToOne
-	@JoinColumn(name = "name")
-	@MapsId("name")
-	private Action name;
+	@JoinColumn(name = "actionId")
+	@MapsId("actionId")
+	private Action action;
 
 }

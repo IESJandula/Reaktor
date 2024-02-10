@@ -20,12 +20,12 @@ public class TaskId implements Serializable
 	 */
 	private static final long serialVersionUID = -2686153173707368266L;
 	
-	private Action name;
+	private String actionId;
 	
 	private Date date;
 	
 	private String info;
 	
-	private MotherBoard serialNumber;
+	private Long motherBoardId;
 
 }

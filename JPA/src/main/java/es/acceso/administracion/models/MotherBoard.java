@@ -5,7 +5,6 @@ import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,7 +22,7 @@ public class MotherBoard
 	@Column(length = 10)
 	private Long serialNumber;
 	
-	@OneToMany(mappedBy = "serialNumber")
+	@OneToMany(mappedBy = "motherBoard")
 	private List<Task> taskList;
 	
 	@OneToMany(mappedBy = "id")

@@ -21,14 +21,14 @@ public class Action
 	@Id
 	@Column(length = 100)
 	private String name;
+	
 	@Column(length = 100)
 	private String commandL;
+	
 	@Column(length = 100)
 	private String commandW;
 	
-	@OneToMany(mappedBy = "name")
+	@OneToMany(mappedBy = "action")
 	private List<Task> taskList;
 	
-	
-
 }
