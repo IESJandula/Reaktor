@@ -1,0 +1,13 @@
+package es.acceso.adiministracion;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class AdiministracionApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
