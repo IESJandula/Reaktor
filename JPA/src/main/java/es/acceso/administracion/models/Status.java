@@ -1,4 +1,4 @@
-package es.acceso.adiministracion.utils;
+package es.acceso.administracion.models;
 
 public enum Status {
     TO_DO,

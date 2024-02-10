@@ -1,4 +1,4 @@
-package es.acceso.adiministracion.utils;
+package es.acceso.administracion.models;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,5 +25,7 @@ public class TaskId implements Serializable
 	private Date date;
 	
 	private String info;
+	
+	private MotherBoard serialNumber;
 
 }

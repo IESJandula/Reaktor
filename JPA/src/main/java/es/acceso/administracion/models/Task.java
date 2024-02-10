@@ -1,8 +1,8 @@
-package es.acceso.adiministracion.utils;
+package es.acceso.administracion.models;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -10,24 +10,28 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="usb")
-public class USB 
+@Table(name="task")
+public class Task 
 {
-	@Id
+	@EmbeddedId
+	private TaskId taskId;
+	
 	@Column(length = 10)
-	private Long id;
-	@Column(length = 10)
-	private Boolean active;
-	@Column(length = 100)
-	private String type;
+	private Status status;
+	
 	@ManyToOne
 	@JoinColumn(name = "serialNumber")
 	@MapsId("serialNumber")
 	private MotherBoard serialNumber;
 	
+	@ManyToOne
+	@JoinColumn(name = "name")
+	@MapsId("name")
+	private Action name;
 
 }
